@@ -23,3 +23,19 @@ $factory->define(App\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Employee::class, function (Faker $faker) {
+    static $password;
+
+    return [
+    	'newbie' => false,
+    	'employeeNumber' => str_random(6),
+        'firstName' => $faker->name,
+        'lastName' => $faker->name,
+        'cName' => $faker->word,
+        'email' => $faker->unique()->safeEmail,
+        'hired' => $faker->date(),
+        'termination' => $faker->date(),
+        'status' => 'active',
+    ];
+});

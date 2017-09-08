@@ -1,0 +1,45 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);.in {
+  background-color: #3897da;
+  height: 100vh;
+  text-align: center;
+}
+
+.out {
+  background-color: #e3595a;
+  height: 100vh;
+  text-align: center;
+}
+
+.action-tag {
+  position: relative;
+  top: 25%;
+  border: 1px solid white;
+  width: 50%;
+  height: 50%;
+  margin: 0 auto;
+}
+
+.action-button {
+  position: relative;
+  top: 25%;
+  color: white;
+  width: 50%;
+  height: 50%;
+  margin: 0 auto;
+}
+
+.scanner {
+  height: 100vh;
+}
+
+#clockForm {
+  top: 30%;
+  height: 50%;
+}
+
+img.logo {
+  display: block;
+  width: 90%;
+  margin: 0 auto 50px auto;
+}
+
