@@ -15,7 +15,7 @@ Route::get('/timeclock','ClockController@index')->name('timeclock');
 Route::get('/timeclock/in','ClockController@in');
 Route::get('/timeclock/out','ClockController@out');
 Route::post('/timeclock/in','ClockController@clockIn');
-
+Route::post('/timeclock/out','ClockController@clockOut');
 
 Route::get('/', function () {
     return view('welcome');

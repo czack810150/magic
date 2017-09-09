@@ -6,10 +6,9 @@
 
 <div class="col-xs-12 col-sm-12 col-md-5" id="clockForm">
 
-	<!-- <img src="{{asset('img/logo.png')}}" alt="company logo" class="logo"> -->
-<h1 class="centered green-jungle"><i class="fa fa-sign-in fa-5x" aria-hidden="true"></i></h1>
+	<h1 class="centered red-flamingo"><i class="fa fa-sign-out fa-5x" aria-hidden="true"></i></h1>
          
-<form method="POST" action="/timeclock/in">
+<form method="POST" action="/timeclock/out">
 {{csrf_field()}}
   <div class="form-group">
     <label for="employeeCard">请扫描员工卡</label>
@@ -22,7 +21,7 @@
     <small id="emailHelp" class="form-text text-muted">请确认光标在当前输入项</small>
   </div>
  
-  <div style="text-align:center;"><button type="submit" class="btn btn-primary">打卡上班</button></div>
+  <div style="text-align:center;"><button type="submit" class="btn btn-danger">打卡下班</button></div>
 </form>
 <br>
 

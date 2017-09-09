@@ -43,3 +43,15 @@ img.logo {
   margin: 0 auto 50px auto;
 }
 
+.centered {
+  text-align: center;
+}
+
+.green-jungle {
+  color: #1ac891;
+}
+
+.red-flamingo {
+  color: #f7443b;
+}
+
