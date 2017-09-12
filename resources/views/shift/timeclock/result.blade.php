@@ -5,11 +5,12 @@
 <div class="row  scanner justify-content-center" >
 
 <div class="jumbotron">
-	@if($alreadyClocked)
-	<h1 class="display-3 alert-warning">{{$employee->cName}} 已打过{{$inout?"上班":"下班"}}卡</h1>
+	@if($result)
+	
+	<h1 class="display-3 {{$inout?"alert-success":"alert-danger"}}">员工{{$employee->cName}} {{$inout?"开始上班":"结束工作"}}</h1>
 	<p class="lead"> </p>
 	@else
-	<h1 class="display-3 {{$inout?"alert-success":"alert-danger"}}">员工{{$employee->cName}} {{$inout?"开始上班":"结束工作"}}</h1>
+	<h1 class="display-3 alert-warning">{{$employee->cName}} 已打过{{$inout?"上班":"下班"}}卡</h1>
 	@endif
   
   

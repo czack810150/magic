@@ -17,14 +17,21 @@ class CreateShiftsTable extends Migration
             $table->increments('id');
             $table->integer('location_id')->unsigned();
             $table->integer('employee_id')->unsigned();
-            $table->dateTime('scheduleIn')->nullable();
-            $table->dateTime('scheduleOut')->nullable();
-            $table->dateTime('clockIn')->nullable();
-            $table->dateTime('clockOut')->nullable();
+            $table->dateTime('start');
+            $table->dateTime('end');
             $table->boolean('published')->default(false);
-            $table->string('comment');
+            $table->string('comment')->nullable();
             $table->timestamps();
             $table->integer('created_by')->unsigned();
+        });
+         Schema::create('clocks', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('location_id')->unsigned();
+            $table->integer('employee_id')->unsigned();
+            $table->dateTime('clock');
+            $table->boolean('in')->default(false);
+            $table->string('comment')->nullable;
+            $table->timestamps();
         });
     }
 

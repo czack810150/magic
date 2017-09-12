@@ -17,10 +17,11 @@ class CreateEmployeesTable extends Migration
             $table->increments('id');
             $table->boolean('newbie');
             $table->string('employeeNumber');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('firstName');
             $table->string('lastName');
             $table->string('cName');
+            $table->integer('location_id')->unsigned;
             $table->date('hired');
             $table->date('termination')->nullable();
             $table->enum('status',['active','vacation','terminated']);
