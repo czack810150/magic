@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Clock extends Model
+class Job extends Model
 {
-    protected $dates = array('in','out');
+    //
 }

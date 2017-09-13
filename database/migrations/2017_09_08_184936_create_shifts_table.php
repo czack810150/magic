@@ -17,6 +17,7 @@ class CreateShiftsTable extends Migration
             $table->increments('id');
             $table->integer('location_id')->unsigned();
             $table->integer('employee_id')->unsigned();
+            $table->integer('role_id')->unsigned();
             $table->dateTime('start');
             $table->dateTime('end');
             $table->boolean('published')->default(false);
@@ -28,8 +29,8 @@ class CreateShiftsTable extends Migration
             $table->increments('id');
             $table->integer('location_id')->unsigned();
             $table->integer('employee_id')->unsigned();
-            $table->dateTime('clock');
-            $table->boolean('in')->default(false);
+            $table->dateTime('in');
+            $table->dateTime('out')->nullable();
             $table->string('comment')->nullable;
             $table->timestamps();
         });

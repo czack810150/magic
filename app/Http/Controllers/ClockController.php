@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Employee;
 use App\Shift;
 use App\Clock;
+use Carbon\Carbon;
 date_default_timezone_set("America/Toronto");
 class ClockController extends Controller
 {
@@ -43,31 +44,36 @@ class ClockController extends Controller
    		$shifts = Shift::where('employee_id',$employee->id)->whereDate('start',date('Y-m-d'))->get();	
    		$result = false;
 
-   		$latest = Clock::where('employee_id',$employee->id)->whereDate('clock','2017-09-12')->orderBy('clock','desc')->first();
+   		$latest = Clock::where('employee_id',$employee->id)->whereDate('in',$date)->orderBy('in','desc')->first();
    		if(count($latest)){
    		
-   			if($latest->in){
-   	
-   				$result = false;
-   			} else {
-   				$this->clockEmployee($location,$employee->id,$time,$inout,'');
+   			if($latest->out){
+        	$this->clockEmployee($location,$employee->id,$time,$inout,'');
    				$result = true;
+   			} else {
+   				$result = false;
    			}
 
-   		} else {
+   		} else { // no record today, clock in
    			$this->clockEmployee($location,$employee->id,$time,$inout,'');
    			$result = true;
    		}
    	
-    	return view('shift.timeclock.result',compact('employee','inout','shifts','result'));
+    	  $records = Clock::where('employee_id',$employee->id)->whereDate('in',$date)->get();
+        $forgotten  = Clock::where('employee_id',$employee->id)->whereDate('in','!=',$date)->where('out',null)->orderby('in','desc')->first();
+        $message = "You can do it!";
+        return view('shift.timeclock.result',compact('employee','shifts','inout','result','records','forgotten','message'));
     }
     private function clockEmployee($location,$employee,$time,$inout,$comment)
     {
     	$clock = new Clock;
+      if($inout){
+        $clock->in = $time;
+      } else {
+        $clock->out = $time;
+      }
     	$clock->location_id = $location;
     	$clock->employee_id = $employee;
-    	$clock->clock = $time;
-    	$clock->in = $inout;
     	$clock->comment = $comment;
     	$clock->save();
 
@@ -81,28 +87,29 @@ class ClockController extends Controller
             return view('shift.timeclock.notEmployee');
         }
         $location = 9;
-    	$result = false;
+    	  $result = false;
         $inout = false;
         $time = date('Y-m-d H:i:s');
-    	$date = date('Y-m-d');
+    	  $date = date('Y-m-d');
    		
    		$shifts = Shift::where('employee_id',$employee->id)->whereDate('start',date('Y-m-d'))->get();
-    	$latest = Clock::where('employee_id',$employee->id)->whereDate('clock','2017-09-12')->orderBy('clock','desc')->first();
-
-    	if($latest){
-    		if($latest->in){
-    			$this->clockEmployee($location,$employee->id,$time,false,'');
-    			$result = true;
-    		} else {
+    	$latest = Clock::where('employee_id',$employee->id)->whereDate('in',$date)->orderBy('in','desc')->first();
+  
+    	if(count($latest)){
+    		if($latest->out){
     			$result = false;
+    		} else {
+    			
+          $latest->out = $time;
+          $latest->save();
+          $result = true;
     		}
 
-    	} else {
+    	} else { // no record
     		 return view('shift.timeclock.noClockIn');
     	}
-   		
-
-        return view('shift.timeclock.result',compact('employee','shifts','inout','result'));
+   		  $records = Clock::where('employee_id',$employee->id)->whereDate('in',$date)->get();
+        return view('shift.timeclock.result',compact('employee','shifts','inout','result','records'));
     }
  
   
