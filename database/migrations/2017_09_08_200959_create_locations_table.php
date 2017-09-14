@@ -28,10 +28,10 @@ class CreateLocationsTable extends Migration
             $table->integer('head')->nullable();
             $table->timestamps();
         });
-        Schema::create('employee_locations', function (Blueprint $table) {
+        Schema::create('employee_location', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('employee_id')->unsigned();
-            $table->integer('location_id')->unsigned();
+            $table->integer('employee_id');
+            $table->integer('location_id');
             $table->date('start')->nullable();
             $table->date('end')->nullable();
             $table->timestamps();
@@ -46,5 +46,6 @@ class CreateLocationsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('locations');
+        Schema::dropIfExists('employee_location');
     }
 }
