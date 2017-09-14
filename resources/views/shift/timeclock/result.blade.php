@@ -16,7 +16,7 @@
 	@else
   <h1 class="display-3">{{$employee->cName}}</h1>
   <h1 class="display-4">
-  <span class="badge badge-warning">今日已打过{{$inout?"上班":"下班"}}卡</span></h1>
+  <span class="badge badge-warning">已打过{{$inout?"上班":"下班"}}卡</span></h1>
 	@endif
 
   @if(isset($forgotten))
@@ -25,7 +25,13 @@
     <div class="card-body">
       <h3 class="card-title mb-3"><span class="badge badge-danger">注意</span></h6>
       <h6 class="card-subjtitle text-muted">有打卡不完整记录</span></h3>
-      <p class="card-text mb-3" style="">{{$forgotten->in}} 打卡上班后，忘记打下班卡,请填表补充下班时间，并通知店长！</p>
+      <p class="card-text mb-3" style="">{{$forgotten->in}} 打卡上班后，忘记打下班卡,请遵循如下步骤.</p>
+      <ol>
+        <li>打卡下班</li>
+         <li>填表补充实际下班时间</li>
+          <li>通知店长人工审核</li>
+          <li>再次打卡上班</li>
+      </ol>
     </div>
   </div>
 
@@ -61,7 +67,7 @@
     <p class="alert alert-warning">今日无排班 No scheduled shifts for today.</p>
   @endif
 
-    @if($records)
+    @if(count($records))
   <p>打卡记录</p>
     <table class="table">
     <thead>
@@ -85,6 +91,7 @@
     @endforeach
     </tbody>
     </table>
+    @else
   @endif
 
   <p class="lead">

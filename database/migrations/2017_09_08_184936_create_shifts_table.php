@@ -34,10 +34,11 @@ class CreateShiftsTable extends Migration
             $table->string('comment')->nullable;
             $table->timestamps();
         });
-           Schema::create('clock-shift', function (Blueprint $table) {
+           Schema::create('ins', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('clock_id');
-            $table->integer('shift_id');
-            $table->primary(['clock_id','shift_id']);
+            $table->integer('employee_id');
+            $table->timestamps();
            
         });
     }
@@ -51,6 +52,6 @@ class CreateShiftsTable extends Migration
     {
         Schema::dropIfExists('shifts');
         Schema::dropIfExists('clocks');
-        Schema::dropIfExists('clock-shift');
+        Schema::dropIfExists('ins');
     }
 }

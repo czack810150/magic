@@ -7,7 +7,11 @@
 <div class="jumbotron">
 	
 	
-	<h1 class="display-3 alert-danger">无上班记录</h1>
+	<h1 class="display-5 alert alert-info">无
+		<span class="badge badge-warning">
+		{{ $employee->cName }}
+		</span>
+	的上班记录</h1>
 
   
   
