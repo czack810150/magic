@@ -11,8 +11,6 @@ date_default_timezone_set("America/Toronto");
 class ClockController extends Controller
 {
 
-
-
     public function index(){
     	return view('shift.timeclock.inout');
     }

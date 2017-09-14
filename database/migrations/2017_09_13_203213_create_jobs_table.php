@@ -26,6 +26,13 @@ class CreateJobsTable extends Migration
             $table->float('tip')->nullable();
             $table->timestamps();
         });
+        Schema::create('roles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->enum('type',['front','back','admin']);
+            $table->string('c_name',32);
+            $table->string('e_name',32);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -36,5 +43,6 @@ class CreateJobsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('jobs');
+        Schema::dropIfExists('roles');
     }
 }
