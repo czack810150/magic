@@ -10,6 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/api/newShift','ShiftController@apiCreate');
+Route::post('/api/newShift','ShiftController@apiCreate');
+
 
 Route::get('/timeclock','ClockController@index')->name('timeclock')->middleware('auth');
 Route::get('/timeclock/in','ClockController@in')->middleware('auth');
