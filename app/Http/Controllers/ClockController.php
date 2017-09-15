@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Employee;
 use App\Shift;
 use App\Clock;
@@ -12,8 +13,16 @@ date_default_timezone_set("America/Toronto");
 class ClockController extends Controller
 {
 
+    
+   
+
     public function index(){
-    	return view('shift.timeclock.inout');
+   
+
+
+        return view('shift.timeclock.inout');
+      
+    	
     }
     public function in(){
     	return view('shift.timeclock.clockin');
@@ -23,6 +32,11 @@ class ClockController extends Controller
     }
     public function clockIn()
     {
+      $auth = Auth::user()->authorization;
+      if($auth->type === 'location'){
+        $location = $auth->location->id;
+      }
+
     	$this->validate(request(),[
     		'employeeCard' => 'required',
     		]);
@@ -36,8 +50,6 @@ class ClockController extends Controller
     		return view('shift.timeclock.notActiveEmployee',compact('employee'));
     	}
       
-
-    	$location = $employee->location_id;
     	$inout = true; //clock in or out;
     	$now = Carbon::now();
     	
@@ -87,7 +99,6 @@ class ClockController extends Controller
         if(!$employee){
             return view('shift.timeclock.notEmployee');
         }
-        $location = $employee->location_id;
     	  $result = false;
         $inout = false;
         $now = Carbon::now();

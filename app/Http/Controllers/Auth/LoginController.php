@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -25,7 +26,19 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    //protected $redirectTo = '/home';
+
+    protected function redirectTo(){
+        $authorization = Auth::user()->authorization;
+        if($authorization->type == 'location'){
+            $redirectTo = '/timeclock';
+        } else {
+            $redirectTo = '/home';
+        }
+        
+        return $redirectTo;
+    }
+
 
     /**
      * Create a new controller instance.
