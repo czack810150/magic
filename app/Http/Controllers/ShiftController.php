@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Shift;
 
 class ShiftController extends Controller
 {
@@ -81,8 +82,18 @@ class ShiftController extends Controller
     {
         //
     }
-    public function apiCreate()
+    public function apiCreate(Request $request)
     {
-        return 'API';
+        $shift = new Shift;
+        $shift->location_id = $request->input('location');  
+        $shift->employee_id = $request->input('employee_id');
+        $shift->role_id = $request->input('role');
+        $shift->start = $request->input('start_time');
+        $shift->end = $request->input('end_time');        
+        $shift->published = 1;
+        $shift->comment = $request->input('note');
+        $shift->created_by = 1;
+        $shift->save();      
+        return $shift->start;
     }
 }
