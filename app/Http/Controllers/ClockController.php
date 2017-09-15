@@ -37,7 +37,7 @@ class ClockController extends Controller
     	}
       
 
-    	$location = 9;
+    	$location = $employee->location_id;
     	$inout = true; //clock in or out;
     	$now = Carbon::now();
     	
@@ -87,7 +87,7 @@ class ClockController extends Controller
         if(!$employee){
             return view('shift.timeclock.notEmployee');
         }
-        $location = 9;
+        $location = $employee->location_id;
     	  $result = false;
         $inout = false;
         $now = Carbon::now();

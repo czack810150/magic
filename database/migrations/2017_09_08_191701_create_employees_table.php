@@ -17,7 +17,7 @@ class CreateEmployeesTable extends Migration
             $table->increments('id');
             $table->boolean('newbie');
             $table->string('employeeNumber');
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->string('firstName');
             $table->string('lastName');
             $table->string('cName');
