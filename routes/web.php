@@ -11,11 +11,11 @@
 |
 */
 
-Route::get('/timeclock','ClockController@index')->name('timeclock');
-Route::get('/timeclock/in','ClockController@in');
-Route::get('/timeclock/out','ClockController@out');
-Route::post('/timeclock/in','ClockController@clockIn');
-Route::post('/timeclock/out','ClockController@clockOut');
+Route::get('/timeclock','ClockController@index')->name('timeclock')->middleware('auth');
+Route::get('/timeclock/in','ClockController@in')->middleware('auth');
+Route::get('/timeclock/out','ClockController@out')->middleware('auth');
+Route::post('/timeclock/in','ClockController@clockIn')->middleware('auth');
+Route::post('/timeclock/out','ClockController@clockOut')->middleware('auth');
 
 Route::get('/', function () {
     return view('welcome');

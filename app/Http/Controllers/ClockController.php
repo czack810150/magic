@@ -13,16 +13,9 @@ date_default_timezone_set("America/Toronto");
 class ClockController extends Controller
 {
 
-    
-   
-
     public function index(){
    
-
-
-        return view('shift.timeclock.inout');
-      
-    	
+        return view('shift.timeclock.inout'); 	
     }
     public function in(){
     	return view('shift.timeclock.clockin');
@@ -35,6 +28,8 @@ class ClockController extends Controller
       $auth = Auth::user()->authorization;
       if($auth->type === 'location'){
         $location = $auth->location->id;
+      } else {
+
       }
 
     	$this->validate(request(),[
