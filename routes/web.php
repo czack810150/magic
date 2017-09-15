@@ -10,7 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Route::get('/api/newShift','ShiftController@apiCreate');
+Route::get('/api/newShift',function(){
+	return 'API';
+});
 Route::post('/api/newShift','ShiftController@apiCreate');
 
 
