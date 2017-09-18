@@ -126,4 +126,10 @@ class ClockController extends Controller
     	}
     }
 
+    public function inShift(){
+      $inShiftEmployees = Employee::has('shift')->get();
+    
+      return view('shift.timeclock.inShiftEmployees',compact('inShiftEmployees'));
+    }
+
 }

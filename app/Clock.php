@@ -12,4 +12,8 @@ class Clock extends Model
     {
     	return $this->belongsTo('App\Employee');
     }
+    public function location()
+    {
+    	return $this->belongsTo('App\Location');
+    }
 }

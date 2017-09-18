@@ -16,6 +16,11 @@ class Employee extends Model
     	return $this->belongsToMany('App\Location');
     }
 
+     public function shift()
+    {
+        return $this->hasOne('App\In');
+    }
+
     public function scopeActiveEmployee($query)
     {
     	return $query->where('status','active');
