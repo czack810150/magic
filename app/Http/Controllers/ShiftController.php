@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Shift;
+use App\Location;
 
 class ShiftController extends Controller
 {
@@ -14,7 +15,8 @@ class ShiftController extends Controller
      */
     public function index()
     {
-        return view('shift.shift.index');
+        $locations = Location::get();
+        return view('shift.shift.index',compact('locations'));
     }
 
     /**
@@ -100,9 +102,10 @@ class ShiftController extends Controller
     {
         $start = $request->input('start');
         $end = $request->input('end');
-        $shifts = Shift::whereDate('start','>=',$start)
+        $location = $request->input('location');
+        $shifts = Shift::where('location_id',$location)
+                    ->whereDate('start','>=',$start)
                     ->whereDate('end','<',$end)
-                   
                     ->get();
         return view('shift/shift/shiftList',compact('shifts'));
     }

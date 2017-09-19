@@ -1,7 +1,7 @@
 @extends('layouts.timeclock.master')
 @section('content')
 <div class="container">
-<h1>Scheduled Shifts</h1>
+<h1>Sales</h1>
 
 
 <form class="form-inline">

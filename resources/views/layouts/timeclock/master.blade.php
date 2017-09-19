@@ -15,6 +15,8 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="{{asset('css/timeclock.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet" />
   </head>
 
   <body>
@@ -30,6 +32,7 @@
   <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <!-- Include Date Range Picker -->
 <script src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
   
 <script>
 (function(){
@@ -38,6 +41,7 @@
   var end = moment().startOf('week');
 
   $('input[name="dateRange"]').daterangepicker({
+    autoUpdateInput:false,
     startDate: start,
     endDate: end,
     format:'YYYY-MM-DD',
@@ -45,26 +49,36 @@
 
   $('input[name="dateRange"]').on('apply.daterangepicker',function(ev,picker){
     $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-    viewScheduledShift(picker.startDate.format('YYYY-MM-DD'),picker.endDate.format('YYYY-MM-DD'));
-
+    
+    sessionStorage.start = picker.startDate.format('YYYY-MM-DD');
+    sessionStorage.end = picker.endDate.format('YYYY-MM-DD');
+    viewScheduledShift(sessionStorage.start,sessionStorage.end);
   });
 
 
   function viewScheduledShift(start,end){
     $.post(
-      '/shift/post/',
+      '/shift/getShift',
       {
         start: start,
         end: end,
+        location: $("#locationPicker").val(),
         _token: $('input[name="_token"]').val(),
       },
       function(data,status){
         $("#shiftTable").html(data);
       }
       );
-
   }
 
+  $("#locationPicker").select2({
+    minimumResultsForSearch: Infinity,
+  });
+  var $eventSelect = $("#locationPicker");
+  $eventSelect.on('change',function(e){
+    sessionStorage.location = $("#locationPicker").val();
+    viewScheduledShift(sessionStorage.start,sessionStorage.end);
+  });
 
 
 })(); 

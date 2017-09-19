@@ -35,6 +35,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 //Scheduled Shifts
 Route::get('/shift','ShiftController@index');
-Route::post('/shift/post','ShiftController@getShift');
+Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@getShift'));
 
-
+//Sales
+Route::get('/sales','SaleController@index');
