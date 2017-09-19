@@ -30,3 +30,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+
+//Scheduled Shifts
+Route::get('/shift','ShiftController@index');
+Route::post('/shift/post','ShiftController@getShift');
+
+

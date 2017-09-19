@@ -14,7 +14,7 @@ class ShiftController extends Controller
      */
     public function index()
     {
-        //
+        return view('shift.shift.index');
     }
 
     /**
@@ -95,5 +95,15 @@ class ShiftController extends Controller
         $shift->created_by = 1;
         $shift->save();      
         return $shift->start;
+    }
+    public function getShift(Request $request)
+    {
+        $start = $request->input('start');
+        $end = $request->input('end');
+        $shifts = Shift::whereDate('start','>=',$start)
+                    ->whereDate('end','<',$end)
+                   
+                    ->get();
+        return view('shift/shift/shiftList',compact('shifts'));
     }
 }
