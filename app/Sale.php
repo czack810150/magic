@@ -20,6 +20,23 @@ class Sale extends Model
 		return round($salesTotal,2);
     }
 
+    public static function getStoreSales($start,$end)
+    {
+    	$sales = self::getAPISales($start,$end);
+		$result = json_decode($sales);
+		$storeSales = array();
+
+		foreach($result as $r){
+			if(isset($r->AmtSold) && $r->Location != 'Main')
+				if(!isset($storeSales[$r->Location])){
+					$storeSales[$r->Location] = $r->AmtSold;
+				} else {
+					$storeSales[$r->Location] += $r->AmtSold;
+				}		
+		}
+		return $storeSales;
+    }
+
     public static function salesBreakDown($start,$end)
     {
     	return self::getAPISales($start,$end);

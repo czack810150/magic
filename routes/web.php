@@ -10,6 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Route::get('/{locale}',function($locale){
+// 	App::setLocale($locale);
+// });
+
+
 Route::get('/api/newShift',function(){
 	return 'API';
 });
