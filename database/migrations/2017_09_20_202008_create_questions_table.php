@@ -15,6 +15,7 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->increments('id');
+            $table->boolean('mc')->default(true);
             $table->text('body');
             $table->unsignedTinyInteger('question_category_id');
             $table->unsignedTinyInteger('difficulty');

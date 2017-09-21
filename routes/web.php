@@ -56,3 +56,4 @@ Route::get('/question/{question}/show','QuestionController@show');
 Route::get('/question/{question}/delete','QuestionController@destroy');
 Route::get('/question/create','QuestionController@create');
 Route::post('/question/create','QuestionController@store');
+Route::post('/question/createShortAnswer','QuestionController@storeShortAnswer');

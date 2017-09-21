@@ -61,6 +61,21 @@ class QuestionController extends Controller
 
         return redirect('/question');
     }
+    public function storeShortAnswer(Request $request)
+    {
+        //dd($request);
+
+        $question = Question::create([
+            'mc' => false,
+            'body' => $request->question,
+            'question_category_id' => $request->category,
+            'difficulty' => $request->difficulty,
+            'created_by' => '0'
+        ]);
+
+
+        return redirect('/question');
+    }
 
     /**
      * Display the specified resource.
