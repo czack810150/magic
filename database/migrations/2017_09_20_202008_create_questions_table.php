@@ -32,6 +32,7 @@ class CreateQuestionsTable extends Migration
             $table->integer('question_id');
             $table->string('answer');
             $table->boolean('correct')->default(false);
+            $table->timestamps();
             $table->index('question_id');
         });
         Schema::create('exams', function (Blueprint $table) {

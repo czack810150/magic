@@ -44,3 +44,15 @@ Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@g
 
 //Sales
 Route::get('/sales','SaleController@index');
+
+//Exams
+Route::get('/question_category/create','QuestionController@newCategory');
+Route::post('/question_category/store','QuestionController@saveCategory');
+Route::get('/question_category/{category}/delete','QuestionController@removeCategory');
+Route::get('/question_category/{id}','QuestionController@showCategoryQuestions');
+
+Route::get('/question','QuestionController@index');
+Route::get('/question/{question}/show','QuestionController@show');
+Route::get('/question/{question}/delete','QuestionController@destroy');
+Route::get('/question/create','QuestionController@create');
+Route::post('/question/create','QuestionController@store');
