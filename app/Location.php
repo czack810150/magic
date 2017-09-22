@@ -10,4 +10,9 @@ class Location extends Model
     {
     	return $this->hasMany('App\Employee');
     }
+
+    public function scopeStore($query)
+    {
+    	return $query->where('type','store');
+    }
 }

@@ -143,4 +143,8 @@ class QuestionController extends Controller
         DB::table('question_categories')->delete($category);
         return redirect('/question_category/create');
     }
+    public function questionsByCategory()
+    {
+        return Question::where('question_category_id',request('category_id'))->get();
+    }
 }

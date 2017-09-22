@@ -18,4 +18,11 @@ class Question extends Model
     {
     	return $this->belongsTo('App\Question_category');
     }
+    public function exam()
+    {
+    	return $this->belongsToMany('App\Exam');
+    }
+    public static function correctAnswer($id){
+        return ;
+    } 
 }

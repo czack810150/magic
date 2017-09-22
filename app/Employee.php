@@ -25,5 +25,9 @@ class Employee extends Model
     {
     	return $query->where('status','active');
     }
+    public function exam()
+    {
+        return $this->hasMany('App\Exam');
+    }
 
 }

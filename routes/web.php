@@ -36,7 +36,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
+//Filters
+Route::post('/employee/location','EmployeeController@employeesByLocation');
 
 //Scheduled Shifts
 Route::get('/shift','ShiftController@index');
@@ -57,3 +58,11 @@ Route::get('/question/{question}/delete','QuestionController@destroy');
 Route::get('/question/create','QuestionController@create');
 Route::post('/question/create','QuestionController@store');
 Route::post('/question/createShortAnswer','QuestionController@storeShortAnswer');
+Route::post('/question/categoryQuestions','QuestionController@questionsByCategory');
+
+Route::get('/exam','ExamController@index');
+Route::get('/exam/all','ExamController@all');
+Route::get('/exam/create','ExamController@create');
+Route::post('/exam/store','ExamController@store');
+Route::get('/exam/{exam}/delete','ExamController@destroy');
+Route::get('/exam/{exam}/show','ExamController@show');
