@@ -86,14 +86,18 @@ class ShiftController extends Controller
     }
     public function apiCreate(Request $request)
     {
+       
         $shift = new Shift;
-        $shift->location_id = $request->input('location');  
-        $shift->employee_id = $request->input('employee_id');
-        $shift->role_id = $request->input('role');
-        $shift->start = $request->input('start_time');
-        $shift->end = $request->input('end_time');        
+        $shift->location_id = $request->location;  
+        $shift->employee_id = $request->employee_id;
+        $shift->role_id = $request->role;
+         $shift->start = $request->start_time;
+        $shift->end = $request->end_time;        
+        // //$shift->start = '2017-09-27 11:00:00';
+        // $shift->end = '2017-09-25 12:25:00';     
         $shift->published = 1;
-        $shift->comment = $request->input('note');
+        $shift->comment = $request->note;
+     
         $shift->created_by = 1;
         $shift->save();      
         return $shift->start;
