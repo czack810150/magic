@@ -43,6 +43,11 @@ Route::post('/employee/location','EmployeeController@employeesByLocation');
 Route::get('/shift','ShiftController@index');
 Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@getShift'));
 
+
+//Payroll
+Route::get('/payroll','PayrollController@index');
+Route::get('/payroll/basic','PayrollController@basic');
+
 //Sales
 Route::get('/sales','SaleController@index');
 
