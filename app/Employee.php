@@ -30,4 +30,14 @@ class Employee extends Model
         return $this->hasMany('App\Exam');
     }
 
+    public function schedule(){
+        return $this->hasMany('App\Shift');
+    }
+
+    public function job_location()
+    {
+        return $this->hasMany('App\Employee_location');
+    }
+
+
 }

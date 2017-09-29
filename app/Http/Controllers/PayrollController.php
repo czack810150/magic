@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Payroll;
 use App\Employee;
 
@@ -84,7 +85,31 @@ class PayrollController extends Controller
     }
      public function basic()
     {
-        $employees = Employee::get();
+        $employees = Employee::where('location_id',1)->get();
+        foreach($employees as $e){
+
+
+
+            $e->hours = DB::table('shifts')->select(DB::raw('sum(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 as total'))
+        ->where('start','>','2017-09-01')
+        ->where('location_id',1)
+        ->where('employee_id',$e->id)
+        ->first();
+
+      
+             $e->grossPay = Payroll::twoWeekGrossPay(44,50,2017);
+             $e->basicPay = Payroll::basicPay(44,50,2017);
+
+             $e->magicNoodlePay = Payroll::magicNoodlePay(2017,44,55,
+                                        $e->job_location()->first()->job->rate/100,
+                                        $e->job_location()->first()->job->tip,
+                                        10,
+                                        0,
+                                        1,
+                                        0
+                                        );
+        }
+       
         return view('payroll.basic.index',compact('employees'));
     }
 }
