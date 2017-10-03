@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Clock extends Model
 {
-    protected $dates = array('in','out');
+    protected $dates = array('clockIn','clockOut');
 
     public function employee()
     {

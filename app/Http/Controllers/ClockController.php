@@ -58,8 +58,8 @@ class ClockController extends Controller
           $result = true;
    		} 
    	
-    	  $records = Clock::where('employee_id',$employee->id)->whereDate('in',$now->toDateString())->get();
-        $forgotten  = Clock::where('employee_id',$employee->id)->whereDate('in','<',$now->toDateString())->where('out',null)->orderby('in','desc')->first();
+    	  $records = Clock::where('employee_id',$employee->id)->whereDate('clockIn',$now->toDateString())->get();
+        $forgotten  = Clock::where('employee_id',$employee->id)->whereDate('clockIn','<',$now->toDateString())->where('clockOut',null)->orderby('clockIn','desc')->first();
         $message = "You can do it!";
         return view('shift.timeclock.result',compact('employee','shifts','inout','result','records','forgotten','message'));
     }
@@ -67,9 +67,9 @@ class ClockController extends Controller
     {
     	$clock = new Clock;
       if($inout){
-        $clock->in = $now;
+        $clock->clockIn = $now;
       } else {
-        $clock->out = $now;
+        $clock->clockOut = $now;
         In::where('employee_id',$employee)->delete();
       }
     	$clock->location_id = $location;
@@ -106,13 +106,13 @@ class ClockController extends Controller
           return view('shift.timeclock.noClockIn',compact('employee'));
       } else {
             $latest = Clock::find($inShift->clock_id);
-            $latest->out = $now;
+            $latest->clockOut = $now;
             $latest->save();
             $result = true;
             $inShift->delete();
       }
 
-   		  $records = Clock::where('employee_id',$employee->id)->whereDate('in',$now->toDateString())->get();
+   		  $records = Clock::where('employee_id',$employee->id)->whereDate('clockIn',$now->toDateString())->get();
         return view('shift.timeclock.result',compact('employee','shifts','inout','result','records'));
     }
  

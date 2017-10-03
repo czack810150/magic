@@ -47,6 +47,7 @@ Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@g
 //Payroll
 Route::get('/payroll','PayrollController@index');
 Route::get('/payroll/basic','PayrollController@basic');
+Route::post('/payroll/fetch','PayrollController@fetch');
 
 //Sales
 Route::get('/sales','SaleController@index');

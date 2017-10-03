@@ -74,9 +74,7 @@ class Payroll extends Model
     	$variablePay = self::variablePay($hours,$positionRate,$tipRate,$hourlyTip,$mealRate,$nightRate,$nightHours,$performanceIndex,$bonus);
     	$magicPay = new MagicNoodlePay($twoWeekGrossPay,$basicPay,$variablePay);
     	return $magicPay;
-
     }
-
 }
 
 Class GrossIncome

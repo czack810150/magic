@@ -77,13 +77,13 @@
     @foreach($records as $r)
     <tr>
 
-    <td>{{$r->in->toTimeString()}}</td>
-    @if(isset($r->out))
+    <td>{{$r->clockIn->toTimeString()}}</td>
+    @if(isset($r->clockOut))
       <td> 
-      {{$r->out->toTimeString()}}
+      {{$r->clockOut->toTimeString()}}
       </td>
       <td> 
-      {{  gmdate('G:i:s',$r->in->diffInSeconds($r->out))  }}
+      {{  gmdate('G:i:s',$r->clockIn->diffInSeconds($r->out))  }}
       </td>
       @endif
       
