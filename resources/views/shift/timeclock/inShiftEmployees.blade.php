@@ -12,7 +12,7 @@
 			@foreach($inShiftEmployees as $e)
 			<tr><td>{{ $e->cName}}</td>
 			<td>{{ $e->shift->clock->location->shortName}}</td>
-			<td>{{ $e->shift->clock->in}}</td></tr>
+			<td>{{ $e->shift->clock->clockIn}}</td></tr>
 			@endforeach
 
 		</tbody>

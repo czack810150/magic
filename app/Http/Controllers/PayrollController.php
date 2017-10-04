@@ -11,8 +11,11 @@ use App\Location;
 use App\Datetime;
 use Carbon\Carbon;
 
+define('YEAR',Carbon::now()->year);
+
 class PayrollController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -90,30 +93,10 @@ class PayrollController extends Controller
      public function basic()
     {
         $locations = Location::Store()->pluck('name','id');
-        $employees = Employee::where('location_id',1)->get();
-        $dates = Datetime::periods(2017);
-        foreach($employees as $e){
-
-
-            $e->wk1 = Hour::effectiveHour($e->id,1,'2017-09-11','2017-09-17');
-            $e->wk2 = Hour::effectiveHour($e->id,1,'2017-09-18','2017-09-24');
-
-            $e->nightHour = $e->wk1['nightHours'] + $e->wk2['nightHours'];
-      
-            // $e->grossPay = Payroll::twoWeekGrossPay($e->wk1['hours'],$e->wk2['hours'],2017);
-            // $e->basicPay = Payroll::basicPay($e->wk1['hours'],$e->wk2['hours'],2017);
-
-             $e->magicNoodlePay = Payroll::magicNoodlePay(2017,$e->wk1['hours'],$e->wk2['hours'],
-                                        $e->job_location()->first()->job->rate/100,
-                                        $e->job_location()->first()->job->tip,
-                                        10,
-                                        $e->nightHour,
-                                        1,
-                                        0
-                                        );
-        }
+        $dates = Datetime::periods(YEAR);
+     
        
-        return view('payroll.basic.index',compact('employees','locations','dates'));
+        return view('payroll.basic.index',compact('locations','dates'));
     }
     public function fetch(Request $r){
 
@@ -124,12 +107,30 @@ class PayrollController extends Controller
         $wk2Start = $startDate->addDay()->toDateString();
         $wk2End = $startDate->addDays(6)->toDateString();
 
+        $sum = array(
+            'regularHour' => 0,
+            'overtimeHour' => 0,
+            'gross' => 0,
+            'EI' => 0,
+            'CPP' => 0,
+            'fedTax' => 0,
+            'pTax' => 0,
+            'cheque' => 0,
+            'meal' => 0,
+            'nightHour' => 0,
+            'nightPay' => 0,
+            'bonus' => 0,
+            'variable' => 0,
+            'total' => 0,
+        );
+
         foreach($employees as $e){
+            
             $e->wk1 = Hour::effectiveHour($e->id,$r->location,$wk1Start,$wk1End);
             $e->wk2 = Hour::effectiveHour($e->id,$r->location,$wk2Start,$wk2End);
             $e->nightHour = $e->wk1['nightHours'] + $e->wk2['nightHours'];
     
-            $e->magicNoodlePay = Payroll::magicNoodlePay(2017,$e->wk1['hours'],$e->wk2['hours'],
+            $e->magicNoodlePay = Payroll::magicNoodlePay(YEAR,$e->wk1['hours'],$e->wk2['hours'],
                                         $e->job_location()->first()->job->rate/100,
                                         $e->job_location()->first()->job->tip,
                                         10,
@@ -137,8 +138,32 @@ class PayrollController extends Controller
                                         1,
                                         0
                                         );
+            if($e->job_location()->first()->job->hour){
+            $sum['regularHour'] += $e->magicNoodlePay->totalHours;
+            $sum['overtimeHour'] += $e->magicNoodlePay->grossPay->overtime1 + $e->magicNoodlePay->grossPay->overtime2;
+            $sum['gross'] += $e->magicNoodlePay->grossPay->total;
+            $sum['EI'] += $e->magicNoodlePay->basicPay->EI;
+            $sum['CPP'] += $e->magicNoodlePay->basicPay->CPP;
+            $sum['fedTax'] += $e->magicNoodlePay->basicPay->federalTax;
+            $sum['pTax'] += $e->magicNoodlePay->basicPay->provincialTax;
+            $sum['cheque'] += $e->magicNoodlePay->basicPay->net;
+            $sum['meal'] += round($e->magicNoodlePay->totalHours * $e->magicNoodlePay->variablePay->mealRate,2);
+            $sum['nightHour'] += $e->magicNoodlePay->variablePay->nightHours;
+            $sum['nightPay'] += $e->magicNoodlePay->variablePay->nightHours * $e->magicNoodlePay->variablePay->nightRate;
+            $sum['bonus'] += $e->magicNoodlePay->variablePay->bonus;
+            $sum['variable'] += $e->magicNoodlePay->variablePay->total;
+            $sum['total'] += $e->magicNoodlePay->netPay;
+            }
         }
 
-        return view('payroll.basic.table',compact('employees'));
+        return view('payroll.basic.table',compact('employees','sum'));
+    }
+
+    public function employeeYear(Request $request)
+    {
+        $employee = Employee::findOrFail($request->employee);
+        $payrolls = Payroll::employeePayrollYear($request->year,$request->employee);
+       // sdd($payrolls);
+        return view('payroll/employee/year',compact('payrolls','employee'));
     }
 }

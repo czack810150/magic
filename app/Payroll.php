@@ -5,6 +5,11 @@ namespace App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Cra;
+use App\Shift;
+use App\Clock;
+use Carbon\Carbon;
+use App\Hour;
+use App\Datetime;
 
 class Payroll extends Model
 {
@@ -23,11 +28,32 @@ class Payroll extends Model
 		$grossIncome = new GrossIncome($wk1Hr,$wk2Hr,$config->minimumPay/100,$overtime1,$overtime2,$rp,$op,$total);
 		return  $grossIncome;
 	}
+	public static function oneWeekGrossPay($hour,$year){
+		$config = DB::table('payroll_config')->where('year',$year)->first();
+		$regular = 0;
+		$overtime = self::overtime($hour,$year);
+		$regular += $hour - $overtime;
+		$rp = $regular * $config->minimumPay/100;
+		$op =  $overtime * $config->minimumPay/100 * $config->overtime_pay;
+		$total = $regular * $config->minimumPay/100 + $overtime * $config->minimumPay/100 * $config->overtime_pay;
+
+		$gp = array(
+			'regular' => $regular,
+			'overtime' => $overtime,
+			'regularPay' => $rp,
+			'overtimePay' => $op,
+			'grossIncome' => $total,
+		);
+		return $gp;
+	}
 
     public static function basicPay($wk1Hr,$wk2Hr,$year){
     	$grossPay = self::twoWeekGrossPay($wk1Hr,$wk2Hr,$year)->total;
     	return Cra::payStubs([$grossPay],26,$year,'ON',1);
     }
+
+
+
     public static function overtime($hours,$year){ // calculate overtime hours per week
     	$overtimeHour = DB::table('payroll_config')->select('overtime')->where('year',$year)->first()->overtime;
     	if($hours > $overtimeHour){
@@ -75,7 +101,74 @@ class Payroll extends Model
     	$magicPay = new MagicNoodlePay($twoWeekGrossPay,$basicPay,$variablePay);
     	return $magicPay;
     }
+
+    public static function employeePayrollYear($year,$employee){
+    	$dt = Carbon::create($year,1,1,0,0,0);
+ 		
+ 		$employee = Employee::findOrFail($employee);
+ 		$locations = array();
+
+ 		foreach($employee->job_location as $location)
+ 		{
+
+
+ 		$result = array(
+ 			'totalHours' => 0,
+ 			'regular' => 0,
+ 			'overtime'  => 0,
+ 			'regularPay' => 0,
+ 			'overtimePay' => 0,
+ 			'grossIncome' => 0,
+ 			'federalTax' => 0,
+ 			'provincialTax' => 0,
+ 			'EI' => 0,
+ 			'CPP' => 0,
+ 			'cheque' => 0,
+ 			);
+    	$weeks = array();
+    	
+    	for($i = 0; $i < Carbon::WEEKS_PER_YEAR; $i++)
+    		{
+    			
+    			$week = new Week($dt->next(Carbon::MONDAY)->toDateString(),$dt->addDays(6)->toDateString());
+    			$hour = Hour::effectiveHour($employee->id,$location->location->id,$week->weekStart,$week->weekEnd);
+    			$week->hours = $hour['hours'];
+    			$week->grossPay = self::oneWeekGrossPay($week->hours,$year);
+    			$week->cheque = Cra::payStubs([$week->grossPay['grossIncome']],Carbon::WEEKS_PER_YEAR,$year,'ON',1);
+    			$weeks[] = $week;
+
+    			$result['totalHours'] += $week->hours;
+    			$result['regular'] += $week->grossPay['regular'];
+    			$result['overtime'] += $week->grossPay['overtime'];
+    			$result['regularPay'] += $week->grossPay['regularPay'];
+    			$result['overtimePay'] += $week->grossPay['overtimePay'];
+    			$result['grossIncome'] += $week->grossPay['grossIncome'];
+    			$result['federalTax'] += $week->cheque[0]->federalTax;
+    			$result['provincialTax'] += $week->cheque[0]->provincialTax;
+    			$result['EI'] += $week->cheque[0]->EI;
+    			$result['CPP'] += $week->cheque[0]->CPP;
+    			$result['cheque'] += $week->cheque[0]->net;
+  
+    		}
+    	$result['weeks'] = $weeks;
+    	$locations[$location->location->name] = $result;
+    	} // end of for each location
+
+    	return $locations;
+    }
 }
+Class Week
+{
+	public $weekStart;
+	public $weekEnd;
+	public $grossPay;
+	public $cheque;
+	function __construct($start,$end){
+		$this->weekStart = $start;
+		$this->weekEnd = $end;
+	}
+}
+
 
 Class GrossIncome
 {

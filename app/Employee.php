@@ -21,10 +21,8 @@ class Employee extends Model
         return $this->hasOne('App\In');
     }
 
-    public function scopeActiveEmployee($query)
-    {
-    	return $query->where('status','active');
-    }
+    
+   
     public function exam()
     {
         return $this->hasMany('App\Exam');
@@ -38,6 +36,16 @@ class Employee extends Model
     {
         return $this->hasMany('App\Employee_location');
     }
+    public function job()
+    {
+        return $this->belongsTo('App\Job');
+    }
+    // scopes
+    public function scopeActiveEmployee($query)
+    {
+        return $query->where('status','active');
+    }
+    
 
 
 }

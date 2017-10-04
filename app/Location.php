@@ -15,4 +15,7 @@ class Location extends Model
     {
     	return $query->where('type','store');
     }
+    public function employee_location(){
+    	return $this->hasMany('App\Employee_location');
+    }
 }
