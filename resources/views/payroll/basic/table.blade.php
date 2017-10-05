@@ -1,5 +1,6 @@
 @if($sum)
 
+
 <table class="table table-sm">
 	<thead>
 		<tr><th>regular</th><th>overtime</th><th>gross</th><th>EI(公司）</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>cheque</th><th>Meal</th>
@@ -11,7 +12,7 @@
 			<td>{{ $sum['regularHour']}}</td>
 			<td>{{ $sum['overtimeHour']}}</td>
 			<td>{{ $sum['gross']}}</td>
-			<td>{{ $sum['EI']*1.4}}</td>
+			<td>{{ round($sum['EI']*1.4,2)}}</td>
 			<td>{{ $sum['CPP']}}</td>
 			<td>{{ $sum['fedTax']}}</td>
 			<td>{{ $sum['pTax']}}</td>

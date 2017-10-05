@@ -49,7 +49,7 @@ class Payroll extends Model
 
     public static function basicPay($wk1Hr,$wk2Hr,$year){
     	$grossPay = self::twoWeekGrossPay($wk1Hr,$wk2Hr,$year)->total;
-    	return Cra::payStubs([$grossPay],26,$year,'ON',1);
+    	return Cra::payStub($grossPay,null,null,26,$year,'ON',1);
     }
 
 
@@ -96,7 +96,7 @@ class Payroll extends Model
 
     	$hours = $wk1Hr + $wk2Hr;
     	$twoWeekGrossPay = self::twoWeekGrossPay($wk1Hr,$wk2Hr,$year);
-    	$basicPay = Cra::payStubs([$twoWeekGrossPay->total],26,$year,'ON',1);
+    	$basicPay = Cra::payStub($twoWeekGrossPay->total,null,null,26,$year,'ON',1);
     	$variablePay = self::variablePay($hours,$positionRate,$tipRate,$hourlyTip,$mealRate,$nightRate,$nightHours,$performanceIndex,$bonus);
     	$magicPay = new MagicNoodlePay($twoWeekGrossPay,$basicPay,$variablePay);
     	return $magicPay;
@@ -134,7 +134,7 @@ class Payroll extends Model
     			$hour = Hour::effectiveHour($employee->id,$location->location->id,$week->weekStart,$week->weekEnd);
     			$week->hours = $hour['hours'];
     			$week->grossPay = self::oneWeekGrossPay($week->hours,$year);
-    			$week->cheque = Cra::payStubs([$week->grossPay['grossIncome']],Carbon::WEEKS_PER_YEAR,$year,'ON',1);
+    			$week->cheque = Cra::payStub($week->grossPay['grossIncome'],$result['CPP'],$result['EI'],Carbon::WEEKS_PER_YEAR,$year,'ON',1);
     			$weeks[] = $week;
 
     			$result['totalHours'] += $week->hours;
@@ -143,15 +143,15 @@ class Payroll extends Model
     			$result['regularPay'] += $week->grossPay['regularPay'];
     			$result['overtimePay'] += $week->grossPay['overtimePay'];
     			$result['grossIncome'] += $week->grossPay['grossIncome'];
-    			$result['federalTax'] += $week->cheque[0]->federalTax;
-    			$result['provincialTax'] += $week->cheque[0]->provincialTax;
-    			$result['EI'] += $week->cheque[0]->EI;
-    			$result['CPP'] += $week->cheque[0]->CPP;
-    			$result['cheque'] += $week->cheque[0]->net;
+    			$result['federalTax'] += $week->cheque->federalTax;
+    			$result['provincialTax'] += $week->cheque->provincialTax;
+    			$result['EI'] += $week->cheque->EI;
+    			$result['CPP'] += $week->cheque->CPP;
+    			$result['cheque'] += $week->cheque->net;
   
     		}
     	$result['weeks'] = $weeks;
-    	$locations[$location->location->name] = $result;
+    	$locations[$location->location->id] = $result;
     	} // end of for each location
 
     	return $locations;
@@ -204,10 +204,10 @@ Class MagicNoodlePay
 	function __construct($grossPay,$basicPay,$variablePay){
 		//$this->twoWeekGrossPay = $twoWeekGrossPay;
 		$this->grossPay = $grossPay;
-		$this->basicPay = $basicPay[0];
+		$this->basicPay = $basicPay;
 		$this->variablePay = $variablePay;
 		$this->totalHours = $variablePay->totalHours;
-		$this->netPay = $basicPay[0]->net + $variablePay->total;
+		$this->netPay = $basicPay->net + $variablePay->total;
 	}
 }
 

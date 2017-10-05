@@ -7,24 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class Cra extends Model
 {
 
-	public static function payStubs($grossIncomes,$P,$year,$zone,$code)
+	public static function payStub($grossIncome,$D = 0,$D1 = 0,$P,$year,$zone,$code)
 	{
 		if($zone == 'ON'){
 			$ca = 'CA';
 		}
-		$stubs = array();
-		foreach($grossIncomes as $i){
-	
 			$stub = new PayStub();
-			$stub->grossIncome = $i;
-			$stub->CPP = self::CPP($i,$P,0,$year,$ca);
-			$stub->EI = self::EI($i,0,$year,$ca);
-			$stub->federalTax = self::basicFedTax($i,$P,$stub->CPP,$stub->EI,$year,$code);
-			$stub->provincialTax = self::ontarioTax($i,$P,$stub->CPP,$stub->EI,$year,$code);
-			$stub->net = $i - $stub->CPP - $stub->EI - $stub->provincialTax - $stub->federalTax;
-			$stubs[] = $stub;
-		}
-		return $stubs;
+			$stub->grossIncome = $grossIncome;
+			$stub->CPP = self::CPP($grossIncome,$P,$D,$year,$ca);
+			$stub->EI = self::EI($grossIncome,$D1,$year,$ca);
+			$stub->federalTax = self::basicFedTax($grossIncome,$P,$stub->CPP,$stub->EI,$year,$code);
+			$stub->provincialTax = self::ontarioTax($grossIncome,$P,$stub->CPP,$stub->EI,$year,$code);
+			$stub->net = $grossIncome - $stub->CPP - $stub->EI - $stub->provincialTax - $stub->federalTax;
+		
+		return $stub;
 	}
 
     public static function getCRA($year,$jurisdiction)
