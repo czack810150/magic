@@ -8,7 +8,7 @@ function locationEmployees(){
         _token: $('input[name="_token"]').val(),
       },
       function(data,status){
-      	var selection = '<select class="form-control" id="selectedEmployee" name="selectedEmployee">';
+      	var selection = '<select class="custom-select" id="selectedEmployee" name="selectedEmployee" placeholder="Choose employee">';
         for(i in data){
         	selection += '<option value="' + data[i].id +'">' + data[i].cName + '</option>';
         }

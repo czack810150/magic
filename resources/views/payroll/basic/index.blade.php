@@ -32,7 +32,9 @@
 <div class="form-group">
 <a href="/payroll/variable" class="btn btn-secondary">Variable Pay</a>
 </div>
-
+<div class="form-group">
+<a href="/payroll/employee" class="btn btn-secondary">Employee</a>
+</div>
 
 
 
@@ -41,7 +43,9 @@
 
 <script>
 
-	let transition = '<div class="row"><div class="col-md-4 offset-md-5"><h1><i class="fa fa-spinner fa-pulse fa-3x"></i></h1></div></div>';
+
+
+    let transition = '<div class="row"><div class="col-md-4 offset-md-5"><h1><i class="fa fa-spinner fa-pulse fa-3x"></i></h1></div></div>';
 
 	function viewLocationDate(){
 		if($("#location").val() == '' || $("#dateRange").val()== ''){
@@ -64,6 +68,7 @@
 		}
 		
 	}
+	
 </script>
 
 @endsection

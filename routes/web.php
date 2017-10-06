@@ -48,8 +48,8 @@ Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@g
 Route::get('/payroll','PayrollController@index');
 Route::get('/payroll/basic','PayrollController@basic');
 Route::post('/payroll/fetch','PayrollController@fetch');
-Route::get('/payroll/{employee}/{year}','PayrollController@employeeYear');
-
+Route::get('/payroll/employee/{employee}/{year}','PayrollController@employeeYear');
+Route::get('/payroll/employee','PayrollController@employee');
 //Sales
 Route::get('/sales','SaleController@index');
 

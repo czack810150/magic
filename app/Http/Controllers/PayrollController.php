@@ -166,4 +166,8 @@ class PayrollController extends Controller
        // sdd($payrolls);
         return view('payroll/employee/year',compact('payrolls','employee'));
     }
+    public function employee(){
+         $locations = Location::Store()->pluck('name','id');
+        return view('payroll.employee.index')->withLocations($locations);
+    }
 }

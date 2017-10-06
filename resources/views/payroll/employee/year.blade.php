@@ -20,22 +20,22 @@
 <p>{{ strtoupper($employee->firstName) }}</p>
 
 <h6><span>14</span> Employment income - line 101</h6>
-<p>{{ $payrolls[1]['grossIncome'] }}</p>
+<p>{{ $payrolls[key($payrolls)]['grossIncome'] }}</p>
 
 <h6><span>16</span> Employee's CPP contributions - line 308</h6>
-<p>{{ $payrolls[1]['CPP'] }}</p>
+<p>{{ $payrolls[key($payrolls)]['CPP'] }}</p>
 
 <h6><span>18</span> Employee's EI premiums - line 312</h6>
-<p>{{ $payrolls[1]['EI'] }}</p>
+<p>{{ $payrolls[key($payrolls)]['EI'] }}</p>
 
 <h6><span>22</span> Income tax deducted - line 437</h6>
-<p>{{ $payrolls[1]['federalTax'] + $payrolls[1]['provincialTax'] }}</p>
+<p>{{ $payrolls[key($payrolls)]['federalTax'] + $payrolls[key($payrolls)]['provincialTax'] }}</p>
 
 <h6><span>24</span> EI insurable earnings </h6>
-<p>{{ $payrolls[1]['grossIncome'] }}</p>
+<p>{{ $payrolls[key($payrolls)]['grossIncome'] }}</p>
 
 <h6><span>26</span> CPP/QPP pensionable earnings </h6>
-<p>{{ $payrolls[1]['grossIncome'] }}</p>
+<p>{{ $payrolls[key($payrolls)]['grossIncome'] }}</p>
 
 <h6><span>29</span> Employment code </h6>
 <p>1</p>
@@ -129,7 +129,9 @@
 <div class="form-group">
 <a href="/payroll/variable" class="btn btn-secondary">Variable Pay</a>
 </div>
-
+<div class="form-group">
+<a href="/payroll/employee" class="btn btn-secondary">Employee</a>
+</div>
 
 
 
