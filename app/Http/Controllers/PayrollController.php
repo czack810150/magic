@@ -10,6 +10,7 @@ use App\Hour;
 use App\Location;
 use App\Datetime;
 use Carbon\Carbon;
+use App\Payroll_log;
 
 define('YEAR',Carbon::now()->year);
 
@@ -100,71 +101,49 @@ class PayrollController extends Controller
     }
     public function fetch(Request $r){
 
-        $employees = Employee::where('location_id',$r->location)->get();
-        $startDate = Carbon::createFromFormat('Y-m-d',$r->startDate,'America/Toronto')->startOfDay();
-        $wk1Start =  $startDate->toDateString();
-        $wk1End = $startDate->addDays(6)->toDateString();
-        $wk2Start = $startDate->addDay()->toDateString();
-        $wk2End = $startDate->addDays(6)->toDateString();
+        $logs = Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->get();
+        
+
 
         $sum = array(
-            'regularHour' => 0,
-            'overtimeHour' => 0,
-            'gross' => 0,
-            'EI' => 0,
-            'CPP' => 0,
-            'fedTax' => 0,
-            'pTax' => 0,
-            'cheque' => 0,
-            'meal' => 0,
-            'nightHour' => 0,
-            'nightPay' => 0,
-            'bonus' => 0,
-            'variable' => 0,
-            'total' => 0,
+            'regularHour' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('week1') + Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('week2'),
+
+            'overtimeHour' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('ot1') +Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('ot2'),
+            'gross' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('grossIncome'),
+            'EI' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('EI'),
+            'CPP' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('CPP'),
+            'fedTax' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('federalTax'),
+            'pTax' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('provincialTax'),
+            'cheque' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('cheque'),
+            'nightHour' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('nightHours'),
+            'bonus' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('bonus'),
+            'variable' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('variablePay'),
+            'total' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('totalPay'),
         );
-
-        foreach($employees as $e){
-            
-            $e->wk1 = Hour::effectiveHour($e->id,$r->location,$wk1Start,$wk1End);
-            $e->wk2 = Hour::effectiveHour($e->id,$r->location,$wk2Start,$wk2End);
-            $e->nightHour = $e->wk1['nightHours'] + $e->wk2['nightHours'];
-    
-            $e->magicNoodlePay = Payroll::magicNoodlePay(YEAR,$e->wk1['hours'],$e->wk2['hours'],
-                                        $e->job_location()->first()->job->rate/100,
-                                        $e->job_location()->first()->job->tip,
-                                        10,
-                                        $e->nightHour,
-                                        1,
-                                        0
-                                        );
-            if($e->job_location()->first()->job->hour){
-            $sum['regularHour'] += $e->magicNoodlePay->totalHours;
-            $sum['overtimeHour'] += $e->magicNoodlePay->grossPay->overtime1 + $e->magicNoodlePay->grossPay->overtime2;
-            $sum['gross'] += $e->magicNoodlePay->grossPay->total;
-            $sum['EI'] += $e->magicNoodlePay->basicPay->EI;
-            $sum['CPP'] += $e->magicNoodlePay->basicPay->CPP;
-            $sum['fedTax'] += $e->magicNoodlePay->basicPay->federalTax;
-            $sum['pTax'] += $e->magicNoodlePay->basicPay->provincialTax;
-            $sum['cheque'] += $e->magicNoodlePay->basicPay->net;
-            $sum['meal'] += round($e->magicNoodlePay->totalHours * $e->magicNoodlePay->variablePay->mealRate,2);
-            $sum['nightHour'] += $e->magicNoodlePay->variablePay->nightHours;
-            $sum['nightPay'] += $e->magicNoodlePay->variablePay->nightHours * $e->magicNoodlePay->variablePay->nightRate;
-            $sum['bonus'] += $e->magicNoodlePay->variablePay->bonus;
-            $sum['variable'] += $e->magicNoodlePay->variablePay->total;
-            $sum['total'] += $e->magicNoodlePay->netPay;
-            }
-        }
-
-        return view('payroll.basic.table',compact('employees','sum'));
+        return view('payroll.basic.table',compact('logs','sum'));
     }
 
     public function employeeYear(Request $request)
     {
         $employee = Employee::findOrFail($request->employee);
-        $payrolls = Payroll::employeePayrollYear($request->year,$request->employee);
+        $payrolls = Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->get();
+        $sum = array(
+            'regular' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('week1') + Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('week2'),
+
+            'overtime' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('ot1') +Payroll_log::where('employee_id',$request->employee)->sum('ot2'),
+            'regularPay' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('regularPay'),
+            'overtimePay' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('overtimePay'),
+            'premiumPay' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('premiumPay'),
+            'holidayPay' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('holidayPay'),
+            'grossIncome' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('grossIncome'),
+            'EI' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('EI'),
+            'CPP' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('CPP'),
+            'federalTax' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('federalTax'),
+            'provincialTax' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('provincialTax'),
+            'cheque' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('cheque'),
+        );
        // sdd($payrolls);
-        return view('payroll/employee/year',compact('payrolls','employee'));
+        return view('payroll/employee/year',compact('payrolls','employee','sum'));
     }
     public function employee(){
          $locations = Location::Store()->pluck('name','id');

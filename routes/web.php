@@ -14,6 +14,14 @@
 // 	App::setLocale($locale);
 // });
 
+//vue
+Route::get('/vue',function(){
+	return view('vue.index');
+});
+
+// end vue
+
+
 
 Route::get('/api/newShift',function(){
 	return 'API';

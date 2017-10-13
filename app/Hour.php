@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Clock;
 use App\Shift;
 use App\Employee;
+use App\Holiday;
 
 class Hour extends Model
 {
@@ -42,6 +43,7 @@ class Hour extends Model
 		$totalSeconds = 0;
 		$totalLateMinutes = 0;
 		$totalNightSeconds = 0;
+		$holidays = Holiday::whereDate('date','>=',$start)->whereDate('date','<',$end)->get();
 
 		$shifts = Shift::where('employee_id',$employee)->where('location_id',$location)->where('start','>=',$start)->whereDate('start','<=',$end)->
     						orderBy('start')->get();
@@ -102,6 +104,7 @@ class Hour extends Model
 				//'late' => $totalLateMinutes,
 				'nightSeconds' => $totalNightSeconds,
 				'nightHours' => round($totalNightSeconds/3600,2),
+				'holidays' => $holidays,
 			);
 				return $result;
 		
@@ -112,6 +115,7 @@ class Hour extends Model
 				//'late' => $totalLateMinutes,
 				'nightSeconds' => 0,
 				'nightHours' => 0,
+				'holidays' => $holidays,
 			);
 				return $result;
 		}					
