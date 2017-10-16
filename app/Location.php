@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class Location extends Model
 {
     public function employee()
@@ -17,5 +18,10 @@ class Location extends Model
     }
     public function employee_location(){
     	return $this->hasMany('App\Employee_location');
+    }
+
+    public function tips()
+    {
+        return $this->hasMany('App\Payroll_tip');
     }
 }

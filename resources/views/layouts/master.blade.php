@@ -16,14 +16,15 @@
     <link href="{{asset('css/timeclock.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <link href="{{asset('css/bootstrap-editable.css')}}" rel="stylesheet">
     <script src="https://use.fontawesome.com/52420008fb.js"></script>
     <script src="{{URL::asset('js/vue.js')}}"></script>
   </head>
 
   <body>
 
-  @yield('content')
-
+ 
+ @yield('content')
 
 
 
@@ -34,6 +35,7 @@
   <!-- Include Date Range Picker -->
 <script src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="{{URL::asset('js/bootstrap-editable.min.js')}}"></script>
 <script src="{{URL::asset('js/magic.js')}}"></script>
 
 

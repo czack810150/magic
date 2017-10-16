@@ -23,7 +23,12 @@
 			<td>{{ $sum['bonus']/100 }}</td>
 			<td>{{ $sum['variable']/100 }}</td>
 			<td>{{ $sum['total']/100 }}</td>
+			@if($sum['total'])
+			<td><a href="/payroll/{{ $sum['startDate'] }}/destroy" class="btn btn-sm btn-danger">Destory</a></td>
+			@endif
 		</tr>
+		<tr><th>BaseRate</th><th>nightRate</th><th>mealRate</th><th>HourlyTip</th></tr>
+		<tr><td>{{ $sum['basicRate'] }}</td><td>{{ $sum['nightRate'] }}</td><td>{{ $sum['mealRate'] }}</td><td>{{ $sum['hourlyTip'] }}</td></tr>
 </tbody>
 @endif
 
@@ -33,7 +38,7 @@
 	<thead>
 		<tr><th>card</th><th>name</th><th>wk1</th><th>wk2</th><th>hours</th><th>regular</th><th>overtime</th><th>Premium</th><th>Holiday</th><th>gross</th>
 			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Cheque</th>
-			<th>Position rate</th><th>Tip %</th><th>hourlyTip</th><th>mealRate</th><th>nightRate</th><th>nightHrs</th>
+			<th>Position rate</th><th>Tip %</th><th>nightHrs</th>
 			<th>performance</th><th>bonus</th>
 			<th>Variable Pay</th><th>total</th>
 		</tr>
@@ -64,9 +69,7 @@
 
 				<td>{{$e->position_rate}}</td>
 				<td>{{$e->tip}}</td>
-				<td>{{$e->hourlyTip}}</td>
-				<td>{{$e->mealRate}}</td>
-				<td>{{$e->nightRate}}</td>
+				
 				<td>{{$e->nightHours}}</td>
 				<td>{{$e->performance}}</td>
 				<td>{{$e->bonus}}</td>

@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Location;
-use App\Datetime;
+use App\Payroll_tip;
 use Carbon\Carbon;
 
-class TipController extends Controller
+class PayrollTipController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +15,7 @@ class TipController extends Controller
      */
     public function index()
     {
-        $locations = Location::store()->get();
-        return view('store.tip.index',compact('locations'));
+        //
     }
 
     /**
@@ -27,9 +25,7 @@ class TipController extends Controller
      */
     public function create()
     {
-        $locations = Location::Store()->pluck('name','id');
-        $dates = Datetime::periods(Carbon::now()->year);
-        return view('store.tip.create',compact('locations','dates'));
+        //
     }
 
     /**
@@ -40,7 +36,24 @@ class TipController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $dt = Carbon::createFromFormat('Y-m-d',$request->startDate);
+
+        $already = Payroll_tip::where('start',$request->startDate)->where('location_id',$request->location)->first();
+     
+        if($already){
+            $already->hourlyTip = $request->tip * 100;
+            $already->save();
+        } else {
+
+        $t = new Payroll_tip;
+        $t->start = $request->startDate;
+        $t->end = $dt->addDays(13)->toDateString();
+        $t->location_id = $request->location;
+        $t->hourlyTip = $request->tip * 100;
+        $t->save();
+        }
+        return $request->tip;
+    
     }
 
     /**
@@ -51,7 +64,8 @@ class TipController extends Controller
      */
     public function show($id)
     {
-        //
+        $tip = Payroll_tip::findOrFail($id);
+        return view('store.tip.show',compact('tip'));
     }
 
     /**
@@ -74,7 +88,10 @@ class TipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $tip = Payroll_tip::findOrFail($id);
+        $tip->hourlyTip = $request->hourlyTip * 100;
+        $tip->save();
+        return redirect('/tips');
     }
 
     /**
@@ -85,6 +102,7 @@ class TipController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Payroll_tip::destroy($id);
+        return redirect('/tips');
     }
 }

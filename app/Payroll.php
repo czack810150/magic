@@ -12,6 +12,7 @@ use App\Hour;
 use App\Datetime;
 use App\Employee;
 use App\Payroll_log;
+use App\Payroll_tip;
 
 class Payroll extends Model
 {
@@ -182,11 +183,18 @@ class Payroll extends Model
 
         $config = DB::table('payroll_config')->where('year',$startDate->year)->first();
         $basicRate = $config->minimumPay/100;
+        
 
         $count = 0;
     	
     	foreach($employees as $e){
-            
+            $hourlyTip = Payroll_tip::where('start',$wk1Start)->where('location_id',$e->job_location()->first()->location_id)->first();
+            if($hourlyTip){
+                $hourlyTip = $hourlyTip->hourlyTip;
+            } else {
+                $hourlyTip = 0;
+            }
+
             $e->wk1 = Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$wk1Start,$wk1End);
             $e->wk2 = Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$wk2Start,$wk2End);
             $e->nightHour = $e->wk1['nightHours'] + $e->wk2['nightHours'];
@@ -222,7 +230,7 @@ class Payroll extends Model
             $e->magicNoodlePay = Payroll::magicNoodlePay($startDate->year,$e->wk1['hours'],$e->wk2['hours'],
                                         $e->job_location()->first()->job->rate/100,
                                         $e->job_location()->first()->job->tip,
-                                        10,
+                                        $hourlyTip,
                                         $e->nightHour,
                                         1,
                                         0,$holidayPay,
@@ -257,7 +265,7 @@ class Payroll extends Model
            		$log->performance = $e->magicNoodlePay->variablePay->performanceIndex;
            		$log->bonus = $e->magicNoodlePay->variablePay->bonus *100;
            		$log->variablePay = $e->magicNoodlePay->variablePay->total *100;
-           		$log->totalPay = $log->cheque + $log->variablePay;
+           		$log->totalPay = $log->cheque*100 + $log->variablePay*100;
            		$log->holidayPay = $holidayPay*100;
            		$log->premiumPay = $premiumPay*100;
            		$log->save();

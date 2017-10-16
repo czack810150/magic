@@ -24,18 +24,7 @@
 </main>
 
 
-
-
-<div class="form-group">
-<a href="/payroll/basic" class="btn btn-secondary">Basic Pay</a>
-</div>
-<div class="form-group">
-<a href="/payroll/variable" class="btn btn-secondary">Variable Pay</a>
-</div>
-<div class="form-group">
-<a href="/payroll/employee" class="btn btn-secondary">Employee</a>
-</div>
-
+@include('payroll.buttons')
 
 
 </div>

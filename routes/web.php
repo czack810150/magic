@@ -54,12 +54,19 @@ Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@g
 //Tips
 Route::get('/tips','TipController@index');
 Route::get('/tips/create','TipController@create');
+Route::post('/tips/store','PayrollTipController@store');
+Route::get('/tips/{id}/delete','PayrollTipController@destroy');
+Route::get('/tips/{id}/update','PayrollTipController@show');
+Route::post('/tips/{id}/update','PayrollTipController@update');
 //Payroll
 Route::get('/payroll','PayrollController@index');
 Route::get('/payroll/basic','PayrollController@basic');
+Route::get('/payroll/compute','PayrollController@compute');
+Route::post('/payroll/compute','PayrollController@computePayroll');
 Route::post('/payroll/fetch','PayrollController@fetch');
 Route::get('/payroll/employee/{employee}/{year}','PayrollController@employeeYear');
 Route::get('/payroll/employee','PayrollController@employee');
+Route::get('/payroll/{id}/destroy','PayrollController@destroy');
 //Sales
 Route::get('/sales','SaleController@index');
 

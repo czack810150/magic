@@ -11,6 +11,7 @@ use App\Location;
 use App\Datetime;
 use Carbon\Carbon;
 use App\Payroll_log;
+use App\Payroll_tip;
 
 define('YEAR',Carbon::now()->year);
 
@@ -90,6 +91,9 @@ class PayrollController extends Controller
      */
     public function destroy($id)
     {
+        $deletedRows = Payroll_log::where('startDate',$id)->delete();
+        return $deletedRows;
+
     }
      public function basic()
     {
@@ -100,12 +104,24 @@ class PayrollController extends Controller
         return view('payroll.basic.index',compact('locations','dates'));
     }
     public function fetch(Request $r){
+        $dt = Carbon::createFromFormat('Y-m-d',$r->startDate);
 
         $logs = Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->get();
-        
+        $config = DB::table('payroll_config')->where('year',$dt->year)->first();
+        $hourlyTip = Payroll_tip::where('start',$r->startDate)->where('location_id',$r->location)->first();
+        if($hourlyTip){
+            $hourlyTip = $hourlyTip->hourlyTip;
+        } else {
+            $hourlyTip = 0;
+        }
 
 
         $sum = array(
+            'startDate' => $r->startDate,
+            'nightRate' => $config->nightRate,
+            'basicRate' => $config->minimumPay/100,
+            'mealRate' => $config->mealRate,
+            'hourlyTip' => $hourlyTip,
             'regularHour' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('week1') + Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('week2'),
 
             'overtimeHour' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('ot1') +Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('ot2'),
@@ -148,5 +164,13 @@ class PayrollController extends Controller
     public function employee(){
          $locations = Location::Store()->pluck('name','id');
         return view('payroll.employee.index')->withLocations($locations);
+    }
+    public function compute(){
+        $dates = Datetime::periods(YEAR);
+        return view('payroll.compute.index')->withDates($dates);
+    }
+    public function computePayroll(Request $r){
+        return Payroll::payrollEngine($r->dateRange).' records has been saved to database.';
+        
     }
 }
