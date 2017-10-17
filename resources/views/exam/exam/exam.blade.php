@@ -12,7 +12,7 @@
 	<tr>
 		<td><a href="/question/{{ $q->question_id }}/show">{{ $q->question_id }}</a></td>
 		<td><a href="/question/{{ $q->question_id }}/show">{{ $q->question->body }}</a></td>
-		<td>{{ $q->question}}</td>
+		<td>{{ $q->question->answer()->correct()->first()->answer}}</td>
 		<td>{{ $q->answer }}</td>
 		<td>{{ $q->taken }}</td>
 

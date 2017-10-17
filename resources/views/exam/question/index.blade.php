@@ -11,7 +11,7 @@
 	@foreach($questions as $q)
 	<tr>
 		<td><a href="/question/{{ $q->id }}/show">{{ $q->id }}</a></td>
-		<td><a href="/question/{{ $q->id }}/show">{{ $q->body }}</a></td>
+		<td><a href="/question/{{ $q->id }}/show">{{ $q->body }}</a> ({{ $q->mc?'选择题':'简答题' }})</td>
 		<td><a href="/question_category/{{$q->question_category->id}}">{{ $q->question_category->name}}</a></td>
 		<td>{{ $q->difficulty }}</td>
 		<td>{{ $q->created_by }}</td>

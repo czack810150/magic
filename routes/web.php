@@ -90,3 +90,6 @@ Route::get('/exam/create','ExamController@create');
 Route::post('/exam/store','ExamController@store');
 Route::get('/exam/{exam}/delete','ExamController@destroy');
 Route::get('/exam/{exam}/show','ExamController@show');
+
+Route::get('/exam/{access}/take','ExamController@take');
+Route::post('/exam/attempt','ExamController@attempt');

@@ -3,9 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Carbon\Carbon;
 class Employee extends Model
 {
+
+    public function getHiredAttribute($value)
+    {
+        return Carbon::createFromFormat('Y-m-d',$value);
+        
+    }
     public function clock()
     {
     	return $this->hasMany('App\Clock');
@@ -45,6 +51,7 @@ class Employee extends Model
     {
         return $query->where('status','active');
     }
+
     
 
 

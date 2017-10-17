@@ -18,11 +18,18 @@ class Question extends Model
     {
     	return $this->belongsTo('App\Question_category');
     }
+    
     public function exam()
     {
     	return $this->belongsToMany('App\Exam');
     }
-    public static function correctAnswer($id){
-        return ;
-    } 
+    
+    public function scopeMc($query)
+    {
+        return $query->where('mc',true);
+    }
+    public function scopeSa($query)
+    {
+        return $query->where('mc',false);
+    }  
 }

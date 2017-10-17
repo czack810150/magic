@@ -8,6 +8,7 @@ use App\Location;
 use App\Question;
 use App\Exam;
 use App\Exam_question;
+use Faker\Generator as Faker;
 
 class ExamController extends Controller
 {
@@ -49,10 +50,12 @@ class ExamController extends Controller
     public function store(Request $request)
     {
         $json = json_decode(request('json'));
+   
 
         $exam = new Exam;
         $exam->employee_id = $json->employee;
         $exam->name = $json->name;
+        $exam->access = str_random(64);
         $exam->save();
 
         foreach($json->questions as $q){
@@ -108,4 +111,27 @@ class ExamController extends Controller
         Exam::destroy($id);
         return redirect('/exam/all');
     }
+    public function take($access)
+    {
+        if(strlen($access) == 64){
+          $exam = Exam::where('access',$access)->first();
+          if($exam){
+               return view('exam.take.index')->withExam($exam);
+          } else {
+             return 'Wrong KEY';
+         }
+        } else return 'wrong examination key';
+    }
+    public function attempt(Request $r)
+    {
+        if(strlen($r->key) == 64){
+          $exam = Exam::where('access',$r->key)->first();
+          if($exam){
+               return $r->key;
+          } else {
+             return 'Wrong KEY';
+         }
+        } else return 'wrong examination key';
+    }
+
 }
