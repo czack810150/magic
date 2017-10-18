@@ -6,9 +6,13 @@ use Illuminate\Http\Request;
 use App\Question_category;
 use App\Location;
 use App\Question;
+use App\Answer;
 use App\Exam;
 use App\Exam_question;
 use Faker\Generator as Faker;
+use Illuminate\Support\Facades\View;
+use Carbon\Carbon;
+
 
 class ExamController extends Controller
 {
@@ -116,22 +120,86 @@ class ExamController extends Controller
         if(strlen($access) == 64){
           $exam = Exam::where('access',$access)->first();
           if($exam){
-               return view('exam.take.index')->withExam($exam);
+                if($exam->finished){
+                    return 'exam has been taken.';
+                } else {
+                     return view('exam.take.index')->withExam($exam);
+                }
+              
           } else {
              return 'Wrong KEY';
          }
         } else return 'wrong examination key';
     }
     public function attempt(Request $r)
-    {
-        if(strlen($r->key) == 64){
-          $exam = Exam::where('access',$r->key)->first();
+    {   
+        $app = app();
+           
+         // $exam = Exam_question::where('exam_id',$r->key)->get();
+            $exam = Exam::find($r->key);
+            //return $exam->id;
           if($exam){
-               return $r->key;
+             $examContent = $app->make('stdClass');
+             $examContent->exam_id = $exam->id;
+             $examContent->employee_id = $exam->employee_id;
+              $examContent->questions = array();
+             foreach(Exam_question::where('exam_id',$r->key)->pluck('question_id') as $question ){
+                $examContent->questions[] = new QuestionContent($question);
+             } 
+            
+             $exam->taken_at = Carbon::now('America/Toronto');
+             $exam->save();
+             return json_encode($examContent);
           } else {
              return 'Wrong KEY';
-         }
-        } else return 'wrong examination key';
+            }      
     }
 
+    public function submitExam(Request $r)
+    {
+        $score = 0;
+        $exam_id = $r->exam['exam_id'];
+        $employee_id = $r->exam['employee_id'];
+        
+        foreach($r->exam['questions'] as $q){
+            if(!is_null($q['givenAnswer'])){
+                $examQuestion = Exam_question::where('exam_id',$exam_id)->where('question_id',$q['question_id'])->first();
+                if($q['question']['mc']){
+                  $examQuestion->answer_id = $q['givenAnswer'];
+                  $correctAnswer = Answer::where('question_id',$q['question_id'])->correct()->first();
+                  if($q['givenAnswer'] == $correctAnswer->id){
+                    $score += 1;
+                  }
+
+                } else {
+                  $examQuestion->short_answer = $q['givenAnswer'];  
+                } 
+                
+                $examQuestion->save();
+            }
+        }
+
+        $exam = Exam::find($exam_id);
+        $exam->finished = true;
+        $exam->score = $score;
+        $exam->save();
+
+        if(View::exists('exam.exam.finish')){
+            return View::make('exam.exam.finish')->render();
+        }
+    }
+
+}
+
+
+class QuestionContent {
+    public $question_id;
+    public $question;
+    public $answers = array();
+    public $givenAnswer;
+    function __construct($question_id){
+        $this->question_id = $question_id;
+        $this->question = Question::find($question_id);
+        $this->answers = Answer::where('question_id',$question_id)->select('id','answer')->inRandomOrder()->get();
+    }
 }

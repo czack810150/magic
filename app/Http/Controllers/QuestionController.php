@@ -147,4 +147,8 @@ class QuestionController extends Controller
     {
         return Question::where('question_category_id',request('category_id'))->get();
     }
+    public function get(Request $r)
+    {
+        return Question::find($r->id);
+    }
 }

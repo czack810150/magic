@@ -6,14 +6,18 @@
 @if(isset($exam))
 
 <table class="table table-sm">
-	<thead><tr><th>Qid</th><th>Question</th><th>Correct Answer</th><th>Given Answer</th><th>Taken at</th><th>Questions</th><th>created by</th><th>created at</th><th>delete</th></tr></thead>
+	<thead><tr><th>Qid</th><th>Question</th><th>Correct Answer</th><th>Given Answer</th><th>Taken at</th><th>Questions</th><th>created by</th><th>created at</th></tr></thead>
 	<tbody>
 	@foreach($exam->question as $q)
 	<tr>
 		<td><a href="/question/{{ $q->question_id }}/show">{{ $q->question_id }}</a></td>
 		<td><a href="/question/{{ $q->question_id }}/show">{{ $q->question->body }}</a></td>
 		<td>{{ $q->question->answer()->correct()->first()->answer}}</td>
-		<td>{{ $q->answer }}</td>
+		@if(isset($q->answer->answer))
+		<td>{{ $q->answer->answer }}</td>
+		@else 
+		<td></td>
+		@endif
 		<td>{{ $q->taken }}</td>
 
 	</tr>

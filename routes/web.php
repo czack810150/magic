@@ -93,3 +93,5 @@ Route::get('/exam/{exam}/show','ExamController@show');
 
 Route::get('/exam/{access}/take','ExamController@take');
 Route::post('/exam/attempt','ExamController@attempt');
+Route::post('/question/get','QuestionController@get');
+Route::post('/exam/submission','ExamController@submitExam');
