@@ -39,6 +39,8 @@
 <script src="{{URL::asset('js/bootstrap-editable.min.js')}}"></script>
 <script src="{{URL::asset('js/magic.js')}}"></script>
 
+ @yield('pageJS')
+
 
 
 </body>
