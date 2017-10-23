@@ -189,6 +189,16 @@ class ExamController extends Controller
         }
     }
 
+    function attemptedExams(){
+        $exams = Exam::finished()->get();
+        return view('exam.exam.attemptedExams',compact('exams'));
+
+    }
+    function mark($id){
+        $exam = Exam::find($id);
+        return view('exam.exam.mark',compact('exam'));
+    }
+
 }
 
 

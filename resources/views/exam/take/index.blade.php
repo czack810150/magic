@@ -44,7 +44,7 @@
   var numOfQ = 0;
   var examStartTime = moment();
   var examEndTime = moment();
-  var examTime = moment.duration(10,'seconds');
+  var examTime = moment.duration(1,'hours');
   console.log(examTime.asMinutes());
 
 
@@ -131,7 +131,7 @@ if(examTime.asSeconds() == 0){
         }
         
     } else {
-      html += '<textarea rows="10" cols="50" maxlength="400" id="sa' + currentQuestion + '" autofocus></textarea>';
+      html += '<textarea rows="10" cols="50" maxlength="400" id="sa' + currentQuestion + '" autofocus></textarea><br>';
        if(currentQuestion == exam.questions.length - 1){
           html += '<button class="btn btn-success" onclick="saveAndSubmitExam('+ currentQuestion +')">Submit Exam</button>';
         } else {

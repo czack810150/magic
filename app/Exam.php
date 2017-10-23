@@ -14,4 +14,8 @@ class Exam extends Model
     {
     	return $this->belongsTo('App\Employee');
     }
+    public function scopeFinished($query)
+    {
+    	return $query->where('finished',true);
+    }
 }

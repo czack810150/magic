@@ -27,6 +27,9 @@
 <a href="/exam/all" class="btn btn-secondary">All exams</a>
 </div>
 <div class="form-group">
+<a href="/exam/attemptedExams" class="btn btn-secondary">Attempted exams</a>
+</div>
+<div class="form-group">
 <a href="/exam/create" class="btn btn-secondary">Create an exam</a>
 </div>
 

@@ -51,6 +51,11 @@ Route::post('/employee/location','EmployeeController@employeesByLocation');
 Route::get('/shift','ShiftController@index');
 Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@getShift'));
 
+
+//Hours
+Route::get('/hours','HourController@index');
+Route::get('/hours/compute','HourController@compute');
+
 //Tips
 Route::get('/tips','TipController@index');
 Route::get('/tips/create','TipController@create');
@@ -95,3 +100,5 @@ Route::get('/exam/{access}/take','ExamController@take');
 Route::post('/exam/attempt','ExamController@attempt');
 Route::post('/question/get','QuestionController@get');
 Route::post('/exam/submission','ExamController@submitExam');
+Route::get('/exam/attemptedExams','ExamController@attemptedExams');
+Route::get('/exam/{id}/mark','ExamController@mark');
