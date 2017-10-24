@@ -153,6 +153,7 @@ class Hour extends Model
 
 	static function hoursEngine($startDate)
 	{
+		dd($startDate);
 		
     	$startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
     	$config = DB::table('payroll_config')->where('year',$startDate->year)->first();
@@ -179,7 +180,6 @@ class Hour extends Model
         	foreach($locations as $location)
         	{
         		$breakDown = New HourBreakDown;
-        		//$hours['employees']['scheduled'][] = self::scheduledHour($e->id,$location,$wk1Start,$wk1End);
         		$breakDown->location_id = $location;
         		$breakDown->wk1Scheduled = self::scheduledHour($e->id,$location,$wk1Start,$wk1End);
         		$breakDown->wk2Scheduled = self::scheduledHour($e->id,$location,$wk2Start,$wk2End);
@@ -223,7 +223,7 @@ class Hour extends Model
         	
         }
 
-        return $result;
+        return sizeof($result);
 	}
  	public static function overtime($hours,$overtimeHour){ // calculate overtime hours per week
     	

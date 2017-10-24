@@ -27,11 +27,13 @@ class HourController extends Controller
     }
     public function compute()
     {
-         $locations = Location::Store()->pluck('name','id');
         $dates = Datetime::periods(Carbon::now()->year);
-     
-       
-        return view('hour.index',compact('locations','dates'));
+        return view('hour.compute',compact('dates'));
+    }
+     public function computeEngine(Request $r)
+    {
+        dd($r);
+       return Hour::hoursEngine($r->startDate);
     }
 
     /**
