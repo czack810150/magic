@@ -111,4 +111,7 @@ class HourController extends Controller
     {
         //
     }
+    public function breakdown(Request $r){
+        return Hour::breakdown($r->employee,$r->location,$r->startDate);
+    }
 }

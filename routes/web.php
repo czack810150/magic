@@ -57,6 +57,7 @@ Route::get('/hours','HourController@index');
 Route::get('/hours/compute','HourController@compute');
 Route::post('/hours/computeEngine','HourController@computeEngine');
 Route::post('/hours','HourController@index');
+Route::post('/hours/breakdown','HourController@breakdown');
 //Tips
 Route::get('/tips','TipController@index');
 Route::get('/tips/create','TipController@create');

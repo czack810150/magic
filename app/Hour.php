@@ -237,7 +237,103 @@ class Hour extends Model
     	} else {
     		return 0;
     	}
-    }  
+    }
+
+    public static function breakdown($employee,$location,$startDate)
+    {
+    	//config
+    	$config = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
+    	$startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
+        $start =  $startDate->toDateString();
+        $end = $startDate->addDays(14)->toDateString();
+        $shifts = Shift::where('employee_id',$employee)->where('location_id',$location)->whereBetween('start',[$start,$end])->orderBy('start')->get();
+        $result = array();
+        foreach($shifts as $s)
+        {
+
+			$data['clockedDayTotal'] = 0;
+			$shiftStart = Carbon::createFromFormat('Y-m-d H:i:s',$s->start);
+			$shiftEnd = Carbon::createFromFormat('Y-m-d H:i:s',$s->end);
+			$data['shiftDate'] = $shiftStart->toDateString();
+			$data['scheduleIn'] = $shiftStart->format('H:i');
+			if( $shiftStart->toDateString() == $shiftEnd->toDateString() ){
+				$data['scheduleOut'] = $shiftEnd->format('H:i');
+			} else {
+				$data['scheduleOut'] = $shiftEnd->format('次日 H:i');
+			}
+			$data['scheduledHour'] = round($shiftStart->diffInSeconds($shiftEnd)/3600,2);
+
+			$data['clocks'] = self::clockHours($employee,$location,$s->start,$s->end);
+			$data['totalClock'] = 0;
+			foreach($data['clocks'] as $c){
+				$clockIn =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockIn);
+				$clockOut =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockOut);
+				$c->clockTime = round($clockIn->diffInSeconds($clockOut)/3600,2);
+				$data['totalClock'] += $c->clockTime;
+			}
+			$data['effectiveHours'] = self::effectiveShift($shiftStart,$shiftEnd,$data['clocks'],$config);
+
+			//$clocks = Shift::where('employee_id',$employee)->where('location_id',$location)->whereBetween('clockIn',[$start,$shift->])->get();
+
+			$result[] = $data;
+		}
+		return $result;	  
+    }
+    static function clockHours($employee,$location,$theDate,$endDate)
+    {
+    	$dt = Carbon::createFromFormat('Y-m-d H:i:s',$theDate);
+    	$end = Carbon::createFromFormat('Y-m-d H:i:s',$endDate);
+    	$previousDate = $dt->subHours(2)->toDateString();
+    	$clocks = Clock::where('employee_id',$employee)->where('location_id',$location)->whereBetween('clockIn',[$previousDate,$end->endOfDay()->toDateTimeString()])->get();
+    	return $clocks;
+    }
+    static function effectiveShift($planedStart,$planedEnd,$clocks,$config)
+    {
+    	$totalLateMinutes = 0;
+    	$totalSeconds = 0;
+    	foreach($clocks as $c)
+    	{
+    		$clockIn =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockIn);
+			$clockOut =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockOut);
+			// comming to work
+					// check if current clock in is later than the current shift off time
+					if(($clockIn > $planedEnd && $clockIn > $planedStart) || ($clockOut < $planedStart && $clockOut < $planedEnd) ){
+						continue;
+					} else {
+					if($clockIn > $planedStart) { // late for work
+						$aggregatedStart = $clockIn;
+						$lateBegin = $clockIn->diffInMinutes($planedStart);
+						if($lateBegin > $config->lateIn){ // late for work over defined late standard
+							$totalLateMinutes += $lateBegin;
+						}
+		// 					leaving
+							if($clockOut <= $planedEnd) { // left early
+								$aggregatedEnd = $clockOut;
+							} else {
+								$aggregatedEnd = $planedEnd;
+								// $aggregatedEnd = $this->smartOut($clockOut,$planedEnd,$aggregatedStart); // for now, left late, we use planed leave time
+								}
+					} else { // early for work
+						$aggregatedStart = $planedStart;
+						if($clockOut <= $planedEnd) { // left early
+							$aggregatedEnd = $clockOut;
+						}  else {
+								$aggregatedEnd = $planedEnd;
+								 // $aggregatedEnd = $this->smartOut($clockOut,$planedEnd,$aggregatedStart); // for now, left late, we use planed leave time
+								}
+						}
+			$totalSeconds += $aggregatedStart->diffInSeconds($aggregatedEnd);
+    		}
+    	}
+   				 $result = array(
+					'seconds' => $totalSeconds,
+					'hours' => round($totalSeconds/3600,2),
+					'late' => $totalLateMinutes,
+					);
+				return $result;
+
+    }
+   				
 
 }
 
