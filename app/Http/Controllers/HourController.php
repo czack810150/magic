@@ -17,13 +17,23 @@ class HourController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $r)
     {
         $locations = Location::Store()->pluck('name','id');
         $dates = Datetime::periods(Carbon::now()->year);
+
+       // dd($r);
+        $location = $r->location;
+        $date = $r->dateRange;
+       
+       if(!empty($location) && !empty($date)){
+            $hours = Hour::where('location_id',$location)->where('start',$date)->get();
+       } else {
+        $hours = [];
+       }
      
        
-        return view('hour.index',compact('locations','dates'));
+        return view('hour.index',compact('locations','dates','hours'));
     }
     public function compute()
     {

@@ -12,6 +12,10 @@ use Carbon\Carbon;
 
 class Hour extends Model
 {
+	public function employee()
+	{
+		return $this->belongsTo('App\Employee');
+	}
     
     public static function clockedShifts($employee,$location,$startDate,$endDate){
 		$preDate = date_create($startDate);
@@ -153,7 +157,6 @@ class Hour extends Model
 
 	static function hoursEngine($startDate)
 	{
-		dd($startDate);
 		
     	$startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
     	$config = DB::table('payroll_config')->where('year',$startDate->year)->first();
@@ -165,6 +168,8 @@ class Hour extends Model
         $result = array(
         	//'employees' => array(),
         );
+
+
         
         foreach($employees as $e)
         {
@@ -200,7 +205,7 @@ class Hour extends Model
         		{
         			$HOUR = new Hour;
         			$HOUR->start = $wk1Start;
-        			$HOUR->end = $wk1End;
+        			$HOUR->end = $wk2End;
         			$HOUR->employee_id = $e->id;
         			$HOUR->location_id = $location;
         			$HOUR->wk1Scheduled = $breakDown->wk1Scheduled;
