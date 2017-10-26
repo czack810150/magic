@@ -22,7 +22,6 @@ class HourController extends Controller
         $locations = Location::Store()->pluck('name','id');
         $dates = Datetime::periods(Carbon::now()->year);
 
-       // dd($r);
         $location = $r->location;
         $date = $r->dateRange;
        

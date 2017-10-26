@@ -152,12 +152,10 @@ class Hour extends Model
 		} else if($nightA < $start && $nightB >= $end){
 			return $end - $start;
 		}
-
 	}
 
 	static function hoursEngine($startDate)
 	{
-		
     	$startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
     	$config = DB::table('payroll_config')->where('year',$startDate->year)->first();
         $wk1Start =  $startDate->toDateString();
@@ -166,22 +164,13 @@ class Hour extends Model
         $wk2End = $startDate->addDays(6)->toDateString();
         $employees = Employee::whereBetween('termination',[$wk1Start,$wk2End])->orWhere('termination',null)->get();
         $result = array(
-        	//'employees' => array(),
         );
-
-
         
         foreach($employees as $e)
         {
-        	// $hours['employees']['employee_id'] = $e->id;
-        	// $hours['employees']['cName'] = $e->cName;
-        	// $hours['employees']['scheduled'] = array(); 
         	$hour = new HourObj($e->id,$e->cName,$e->employeeNumber,$wk1Start,$wk2End);
-
         	// get all locations that matter for this employee in period
         	$locations = array_unique(Shift::where('employee_id',$e->id)->whereBetween('start',[$wk1Start,$wk2End])->pluck('location_id')->toArray());
-
-
         	foreach($locations as $location)
         	{
         		$breakDown = New HourBreakDown;
@@ -199,7 +188,6 @@ class Hour extends Model
         		$breakDown->wk1Overtime = self::overtime($breakDown->wk1Effective,$config->overtime);
         		$breakDown->wk2Overtime = self::overtime($breakDown->wk2Effective,$config->overtime);
         		$hour->works[] = $breakDown;
-
         		//save to db
         		if($breakDown->wk1Scheduled > 0 ||$breakDown->wk2Scheduled > 0)
         		{
@@ -220,14 +208,9 @@ class Hour extends Model
         			$HOUR->wk2Overtime = $breakDown->wk2Overtime;
         			$HOUR->save();
         		}
-        		
-
-        		
         	}
         	$result[] = $hour;
-        	
         }
-
         return sizeof($result);
 	}
  	public static function overtime($hours,$overtimeHour){ // calculate overtime hours per week

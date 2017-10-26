@@ -7,7 +7,7 @@
 
 
 
-<form class="form-inline my-2" method="POST" action="/hours/">
+<form class="form-inline my-2" method="POST" action="/hours">
 
 	
 		<div class="form-group">
@@ -34,7 +34,11 @@
 <tbody>
 	@foreach($hours as $h)
 	<tr v-on:click="hoursBreakDown({{ $h->employee_id }})">
+		@if(isset($h->employee->cName))
 		<td>{{ $h->employee->cName }}</td>
+		@else
+		<td>{{ $h->employee_id }}</td>
+		@endif
 		<td>{{ $h->wk1Scheduled }}</td>
 		<td>{{ $h->wk2Scheduled }}</td>
 		<td>{{ round($h->wk1Clocked,2) }}</td>
@@ -133,10 +137,6 @@
 	});
 
 
-	// function hoursBreakDown(e)
-	// {
-	// 	alert('employee: '+e);
-	// }
 </script>
 
 

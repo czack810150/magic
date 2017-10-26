@@ -276,6 +276,193 @@ class Payroll extends Model
 
     	return $count;
     }
+
+     public static function payrollEngineX($startDate){
+        $startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
+        $periodStart =  $startDate->toDateString();
+        $config = DB::table('payroll_config')->where('year',$startDate->year)->first();
+        $basicRate = $config->minimumPay/100;
+
+        $employeeHours = Hour::where('start',$periodStart)->where('location_id',1)->get();
+        
+        $count = 0;
+        foreach($employeeHours as $e){
+         $hourlyTip = Payroll_tip::where('start',$periodStart)->where('location_id',$e->location_id)->first();
+            if($hourlyTip){
+                $hourlyTip = $hourlyTip->hourlyTip;
+            } else {
+                $hourlyTip = 0;
+            }
+            $e->effectiveHour = $e->wk1Effective + $e->wk2Effective; // effective hours
+            $e->nightHour = $e->wk1Night + $e->wk2Night; // night hours
+            //holidays
+     
+            $fourWeekHours = 0;
+            $premiumPay = 0;
+            $holidayPay = 0;
+            // foreach($e->wk1['holidays'] as $holiday){
+            //         $dt2 = Carbon::createFromFormat('Y-m-d',$holiday->date);
+            //         $fourWeekEnd = $dt2->startOfWeek()->subDay()->toDateString();
+            //         $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
+            //         $fourWeekHours += Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
+            //         if($fourWeekHours){
+            //             $premiumPay += Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+            //         }
+
+            //     }
+            // foreach($e->wk2['holidays'] as $holiday){
+            //         $dt2 = Carbon::createFromFormat('Y-m-d',$holiday->date);
+            //         $fourWeekEnd = $dt2->startOfWeek()->subDay()->toDateString();
+            //         $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
+            //         $fourWeekHours += Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
+            //         if($fourWeekHours){
+            //             $premiumPay += Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+            //         }
+
+            //     }   
+            // $holidayPay  = round($fourWeekHours * $basicRate * 1.04 / 20,2);
+            $e->magicNoodlePay = Payroll::magicNoodlePay($startDate->year,$e->wk1Effective,$e->wk2Effective,
+                                        $e->employee->job_location()->first()->job->rate/100,
+                                        $e->employee->job_location()->first()->job->tip,
+                                        $hourlyTip,
+                                        $e->nightHour,
+                                        1,
+                                        0,$holidayPay,
+                                        $premiumPay
+                                        );
+
+            // save to payroll log
+            if($e->effectiveHour){
+                // save to db
+                $log = new Payroll_log();
+                $log->startDate = $e->start;
+                $log->endDate = $e->end;
+                $log->location_id = $e->location_id;
+                $log->employee_id = $e->employee_id;
+                $log->rate = $e->magicNoodlePay->grossPay->basicRate*100;
+                $log->week1 = $e->magicNoodlePay->grossPay->week1Hour;
+                $log->week2 = $e->magicNoodlePay->grossPay->week2Hour;
+                $log->ot1 = $e->magicNoodlePay->grossPay->overtime1;
+                $log->ot2 = $e->magicNoodlePay->grossPay->overtime2;
+                $log->regularPay = $e->magicNoodlePay->grossPay->regularPay*100;
+                $log->overtimePay = $e->magicNoodlePay->grossPay->overtimePay*100;
+                $log->grossIncome = $e->magicNoodlePay->grossPay->total*100;
+                $log->EI = $e->magicNoodlePay->basicPay->EI *100;
+                $log->CPP = $e->magicNoodlePay->basicPay->CPP *100;
+                $log->federalTax = $e->magicNoodlePay->basicPay->federalTax *100;
+                $log->provincialTax = $e->magicNoodlePay->basicPay->provincialTax *100;
+                $log->cheque = $e->magicNoodlePay->basicPay->net *100;
+                $log->position_rate = $e->magicNoodlePay->variablePay->positionRate *100;
+                $log->tip = $e->magicNoodlePay->variablePay->tipRate;
+                $log->hourlyTip = $e->magicNoodlePay->variablePay->hourlyTip *100;
+                $log->mealRate = $e->magicNoodlePay->variablePay->mealRate *100;
+                $log->nightRate = $e->magicNoodlePay->variablePay->nightRate *100;
+                $log->nightHours = $e->magicNoodlePay->variablePay->nightHours;
+                $log->performance = $e->magicNoodlePay->variablePay->performanceIndex;
+                $log->bonus = $e->magicNoodlePay->variablePay->bonus *100;
+                $log->variablePay = $e->magicNoodlePay->variablePay->total *100;
+                $log->totalPay = $log->cheque*100 + $log->variablePay*100;
+                $log->holidayPay = $holidayPay*100;
+                $log->premiumPay = $premiumPay*100;
+                $log->save();
+                $count += 1;
+            }
+            dd($e);
+
+        }
+
+        
+        
+
+       
+        
+        foreach($employees as $e){
+           
+
+            $e->wk1 = Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$wk1Start,$wk1End);
+            $e->wk2 = Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$wk2Start,$wk2End);
+            $e->nightHour = $e->wk1['nightHours'] + $e->wk2['nightHours'];
+
+            //holidays
+     
+            $fourWeekHours = 0;
+            $premiumPay = 0;
+            foreach($e->wk1['holidays'] as $holiday){
+                    $dt2 = Carbon::createFromFormat('Y-m-d',$holiday->date);
+                    $fourWeekEnd = $dt2->startOfWeek()->subDay()->toDateString();
+                    $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
+                    $fourWeekHours += Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
+                    if($fourWeekHours){
+                        $premiumPay += Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+                    }
+
+                }
+            foreach($e->wk2['holidays'] as $holiday){
+                    $dt2 = Carbon::createFromFormat('Y-m-d',$holiday->date);
+                    $fourWeekEnd = $dt2->startOfWeek()->subDay()->toDateString();
+                    $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
+                    $fourWeekHours += Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
+                    if($fourWeekHours){
+                        $premiumPay += Hour::effectiveHour($e->id,$e->job_location()->first()->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+                    }
+
+                }   
+            $holidayPay  = round($fourWeekHours * $basicRate * 1.04 / 20,2);
+
+
+    
+            $e->magicNoodlePay = Payroll::magicNoodlePay($startDate->year,$e->wk1['hours'],$e->wk2['hours'],
+                                        $e->job_location()->first()->job->rate/100,
+                                        $e->job_location()->first()->job->tip,
+                                        $hourlyTip,
+                                        $e->nightHour,
+                                        1,
+                                        0,$holidayPay,
+                                        $premiumPay
+                                        );
+            if($e->job_location()->first()->job->hour){
+                // save to db
+                $log = new Payroll_log();
+                $log->startDate = $wk1Start;
+                $log->endDate = $wk2End;
+                $log->location_id = $e->job_location()->first()->location_id;
+                $log->employee_id = $e->id;
+                $log->rate = $e->magicNoodlePay->grossPay->basicRate*100;
+                $log->week1 = $e->magicNoodlePay->grossPay->week1Hour;
+                $log->week2 = $e->magicNoodlePay->grossPay->week2Hour;
+                $log->ot1 = $e->magicNoodlePay->grossPay->overtime1;
+                $log->ot2 = $e->magicNoodlePay->grossPay->overtime2;
+                $log->regularPay = $e->magicNoodlePay->grossPay->regularPay*100;
+                $log->overtimePay = $e->magicNoodlePay->grossPay->overtimePay*100;
+                $log->grossIncome = $e->magicNoodlePay->grossPay->total*100;
+                $log->EI = $e->magicNoodlePay->basicPay->EI *100;
+                $log->CPP = $e->magicNoodlePay->basicPay->CPP *100;
+                $log->federalTax = $e->magicNoodlePay->basicPay->federalTax *100;
+                $log->provincialTax = $e->magicNoodlePay->basicPay->provincialTax *100;
+                $log->cheque = $e->magicNoodlePay->basicPay->net *100;
+                $log->position_rate = $e->magicNoodlePay->variablePay->positionRate *100;
+                $log->tip = $e->magicNoodlePay->variablePay->tipRate;
+                $log->hourlyTip = $e->magicNoodlePay->variablePay->hourlyTip *100;
+                $log->mealRate = $e->magicNoodlePay->variablePay->mealRate *100;
+                $log->nightRate = $e->magicNoodlePay->variablePay->nightRate *100;
+                $log->nightHours = $e->magicNoodlePay->variablePay->nightHours;
+                $log->performance = $e->magicNoodlePay->variablePay->performanceIndex;
+                $log->bonus = $e->magicNoodlePay->variablePay->bonus *100;
+                $log->variablePay = $e->magicNoodlePay->variablePay->total *100;
+                $log->totalPay = $log->cheque*100 + $log->variablePay*100;
+                $log->holidayPay = $holidayPay*100;
+                $log->premiumPay = $premiumPay*100;
+                $log->save();
+                $count += 1;
+            }
+        }
+
+
+        return $count;
+    }
+
+
+
 }
 Class Week
 {
