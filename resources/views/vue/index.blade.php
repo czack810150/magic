@@ -1,42 +1,41 @@
 @extends('layouts.master')
 @section('content')
 <div class="container" id="app">
-<input type="text" v-model="message">
 
-<p v-on:click="pClick">@{{message}}</p>
+<ol>
+	<todo-item v-for="item in groceryList" v-bind:todo="item" v-bind:key="item.id"></todo-item>
 
+</ol>
 
-<ul v-for="name in names" v-text="name">
-</ul>
-
-<input type="text" v-model="newName">
-<button :class="success" @click="addName" v-bind:title="title">Add</button>
 
 </div>
 
 <script>
-	let app = new Vue({
+Vue.component('todo-item',{
+		props: ['todo'],
+		template: '<li>@{{ todo.text }}</li>'
+	})
+
+	var app = new Vue({
 		el: '#app',
 		data: {
-			newName: '',
-			message: 'Hello Vue!',
-			names: ['Ichiro','Hiro','Tom','Bob'],
-			title: 'Click to add name to list',
-			success: 'btn btn-danger',
+			groceryList: [
+				{ id: 0, text: 'Vegetables' },
+				{ id: 1, text: 'Cheese' },
+				{ id: 2, text: 'Whatever else humans are supposed to eat' },
+			]
 		},
-
-		methods: {
-			addName(){
-				this.names.push(this.newName);
-				this.newName = '';
-				this.success='btn btn-success';
-			},
-			pClick() {
-				alert('clicked');
-			},
-
+		beforeCreate: function(){
+			console.log('before create')
 		},
+		created: function(){
+			console.log(this.groceryList)
+		}
+
 	});
+
+	
+
 </script>
 
 @endsection

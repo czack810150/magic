@@ -116,7 +116,7 @@
 								for(j in data[i]['clocks']){
 									var clockIn = moment(data[i]['clocks'][j]['clockIn']);
 									var clockOut = moment(data[i]['clocks'][j]['clockOut']);
-									html += clockIn.format('h:mm:ss') + ' - ' + clockOut.format('h:mm:ss') + '<br>';
+									html += clockIn.format('H:mm:ss') + ' - ' + clockOut.format('H:mm:ss') + '<br>';
 								}
 
 								html += '</td></tr>';

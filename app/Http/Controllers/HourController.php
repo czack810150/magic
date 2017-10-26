@@ -40,10 +40,9 @@ class HourController extends Controller
         $dates = Datetime::periods(Carbon::now()->year);
         return view('hour.compute',compact('dates'));
     }
-     public function computeEngine(Request $r)
+    public function computeEngine(Request $r)
     {
-        dd($r);
-       return Hour::hoursEngine($r->startDate);
+     return Hour::hoursEngine($r->startDate);  
     }
 
     /**
