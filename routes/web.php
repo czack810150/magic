@@ -66,7 +66,7 @@ Route::get('/tips/{id}/delete','PayrollTipController@destroy');
 Route::get('/tips/{id}/update','PayrollTipController@show');
 Route::post('/tips/{id}/update','PayrollTipController@update');
 //Payroll
-Route::get('/payroll','PayrollController@index');
+Route::get('/payroll','PayrollController@index')->middleware('auth');
 Route::get('/payroll/basic','PayrollController@basic');
 Route::get('/payroll/compute','PayrollController@compute');
 Route::post('/payroll/compute','PayrollController@computePayroll');
