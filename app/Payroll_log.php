@@ -10,6 +10,9 @@ class Payroll_log extends Model
     public function employee(){
     	return $this->belongsTo('App\Employee');
     }
+    public function location(){
+        return $this->belongsTo('App\Location');
+    }
 
     public function getRegularPayAttribute($value)
     {

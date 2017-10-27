@@ -9,3 +9,6 @@
 <div class="form-group">
 <a href="/payroll/employee" class="btn btn-secondary">Employee</a>
 </div>
+<div class="form-group">
+<a href="/payroll/paystubs" class="btn btn-secondary">Pay Stubs</a>
+</div>

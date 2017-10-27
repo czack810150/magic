@@ -162,7 +162,7 @@ class Hour extends Model
         $wk1End = $startDate->addDays(6)->toDateString();
         $wk2Start = $startDate->addDay()->toDateString();
         $wk2End = $startDate->addDays(6)->toDateString();
-        $employees = Employee::whereBetween('termination',[$wk1Start,$wk2End])->orWhere('termination',null)->get();
+        $employees = Employee::whereBetween('termination',[$wk1Start,$wk2End])->orWhere('termination',null)->orderBy('location_id')->orderBy('job_id')->get();
         $result = array(
         );
         

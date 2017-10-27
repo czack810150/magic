@@ -74,6 +74,8 @@ Route::post('/payroll/fetch','PayrollController@fetch');
 Route::get('/payroll/employee/{employee}/{year}','PayrollController@employeeYear');
 Route::get('/payroll/employee','PayrollController@employee');
 Route::get('/payroll/{id}/destroy','PayrollController@destroy');
+Route::get('/payroll/paystubs','PayrollController@paystubs');
+Route::post('/payroll/paystubs','PayrollController@paystubsData');
 //Sales
 Route::get('/sales','SaleController@index');
 

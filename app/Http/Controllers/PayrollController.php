@@ -99,8 +99,6 @@ class PayrollController extends Controller
     {
         $locations = Location::Store()->pluck('name','id');
         $dates = Datetime::periods(YEAR);
-     
-       
         return view('payroll.basic.index',compact('locations','dates'));
     }
     public function fetch(Request $r){
@@ -135,6 +133,7 @@ class PayrollController extends Controller
             'bonus' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('bonus'),
             'variable' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('variablePay'),
             'total' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('totalPay'),
+            'employees' => sizeof($logs),
         );
         return view('payroll.basic.table',compact('logs','sum'));
     }
@@ -170,7 +169,27 @@ class PayrollController extends Controller
         return view('payroll.compute.index')->withDates($dates);
     }
     public function computePayroll(Request $r){
-        return Payroll::payrollEngine($r->dateRange).' records has been saved to database.';
+        return Payroll::payrollEngineX($r->dateRange).' records has been saved to database.';
+    }
+    public function paystubs(){
+        $locations = Location::Store()->pluck('name','id');
+        $dates = Datetime::periods(YEAR);
+        return view('payroll.paystubs.index',compact('locations','dates'));
+    }
+    public function paystubsData(Request $r){
+        $dt = Carbon::createFromFormat('Y-m-d',$r->startDate);
+
+        $logs = Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->get();
+        $config = DB::table('payroll_config')->where('year',$dt->year)->first();
+        $hourlyTip = Payroll_tip::where('start',$r->startDate)->where('location_id',$r->location)->first();
+        if($hourlyTip){
+            $hourlyTip = $hourlyTip->hourlyTip;
+        } else {
+            $hourlyTip = 0;
+        }
+
+
         
+        return view('payroll.paystubs.stubs',compact('logs'));
     }
 }
