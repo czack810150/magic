@@ -21,6 +21,27 @@ Route::get('/vue',function(){
 
 // end vue
 
+//EMPLOYEE
+
+//score
+Route::get('/score/category','ScoreCategoryController@index');
+Route::get('/score/category/create','ScoreCategoryController@create');
+Route::post('/score/category/create','ScoreCategoryController@store');
+Route::get('/score/category/{id}/show','ScoreCategoryController@show');
+Route::get('/score/category/{id}/delete','ScoreCategoryController@destroy');
+Route::get('/score/category/{id}/edit','ScoreCategoryController@edit');
+Route::post('/score/category/{id}/update','ScoreCategoryController@update');
+Route::get('/score/item','ScoreItemController@index');
+Route::get('/score/item/create','ScoreItemController@create');
+Route::post('/score/item/store','ScoreItemController@store');
+Route::get('/score/item/{id}/delete','ScoreItemController@destroy');
+Route::get('/score/item/{id}/edit','ScoreItemController@edit');
+Route::post('/score/item/{id}/update','ScoreItemController@update');
+// performance
+Route::get('/employee/performance','EmployeePerformanceController@index');
+Route::post('/employee/reviewable','EmployeePerformanceController@reviewable');
+
+
 
 
 Route::get('/api/newShift',function(){
