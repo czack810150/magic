@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Payroll_tip;
-use Carbon\Carbon;
+use App\Employee;
 
-class PayrollTipController extends Controller
+class EmployeeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,24 +35,7 @@ class PayrollTipController extends Controller
      */
     public function store(Request $request)
     {
-        $dt = Carbon::createFromFormat('Y-m-d',$request->startDate);
-
-        $already = Payroll_tip::where('start',$request->startDate)->where('location_id',$request->location)->first();
-     
-        if($already){
-            $already->hourlyTip = $request->tip * 100;
-            $already->save();
-        } else {
-
-        $t = new Payroll_tip;
-        $t->start = $request->startDate;
-        $t->end = $dt->addDays(13)->toDateString();
-        $t->location_id = $request->location;
-        $t->hourlyTip = $request->tip * 100;
-        $t->save();
-        }
-        return $request->tip;
-    
+        //
     }
 
     /**
@@ -64,8 +46,7 @@ class PayrollTipController extends Controller
      */
     public function show($id)
     {
-        $tip = Payroll_tip::findOrFail($id);
-        return view('store.tip.show',compact('tip'));
+        //
     }
 
     /**
@@ -88,12 +69,7 @@ class PayrollTipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $tip = Payroll_tip::findOrFail($id);
-        $tip->hourlyTip = $request->hourlyTip * 100;
-         $tip->tips = $request->tips * 100;
-          $tip->hours = $request->hours;
-        $tip->save();
-        return redirect('/tips');
+        //
     }
 
     /**
@@ -104,7 +80,16 @@ class PayrollTipController extends Controller
      */
     public function destroy($id)
     {
-        Payroll_tip::destroy($id);
-        return redirect('/tips');
+        //
+    }
+    public function employeesByLocation()
+    {
+        $location = request('location');
+        return Employee::where('location_id',$location)->get();
+    }
+    public function apiGet(Request $request, $id)
+    {
+        $employee = Employee::findOrFail($id);
+        return $employee;
     }
 }

@@ -90,8 +90,6 @@ class PayrollTipController extends Controller
     {
         $tip = Payroll_tip::findOrFail($id);
         $tip->hourlyTip = $request->hourlyTip * 100;
-         $tip->tips = $request->tips * 100;
-          $tip->hours = $request->hours;
         $tip->save();
         return redirect('/tips');
     }

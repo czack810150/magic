@@ -10,7 +10,7 @@ use App\Payroll_tip;
 
 class Tip extends Model
 {
-	protected $fillable = ['start','end','location_id','hours','tips','hourlyTip'];
+	
 
     public static function tipHours($startDate)
     {

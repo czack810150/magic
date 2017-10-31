@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Payroll_tip;
-use Carbon\Carbon;
+use App\Shift;
+use App\Location;
 
-class PayrollTipController extends Controller
+class ShiftController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,8 @@ class PayrollTipController extends Controller
      */
     public function index()
     {
-        //
+        $locations = Location::get();
+        return view('shift.shift.index',compact('locations'));
     }
 
     /**
@@ -36,24 +37,7 @@ class PayrollTipController extends Controller
      */
     public function store(Request $request)
     {
-        $dt = Carbon::createFromFormat('Y-m-d',$request->startDate);
-
-        $already = Payroll_tip::where('start',$request->startDate)->where('location_id',$request->location)->first();
-     
-        if($already){
-            $already->hourlyTip = $request->tip * 100;
-            $already->save();
-        } else {
-
-        $t = new Payroll_tip;
-        $t->start = $request->startDate;
-        $t->end = $dt->addDays(13)->toDateString();
-        $t->location_id = $request->location;
-        $t->hourlyTip = $request->tip * 100;
-        $t->save();
-        }
-        return $request->tip;
-    
+        //
     }
 
     /**
@@ -64,8 +48,7 @@ class PayrollTipController extends Controller
      */
     public function show($id)
     {
-        $tip = Payroll_tip::findOrFail($id);
-        return view('store.tip.show',compact('tip'));
+        //
     }
 
     /**
@@ -88,12 +71,7 @@ class PayrollTipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $tip = Payroll_tip::findOrFail($id);
-        $tip->hourlyTip = $request->hourlyTip * 100;
-         $tip->tips = $request->tips * 100;
-          $tip->hours = $request->hours;
-        $tip->save();
-        return redirect('/tips');
+        //
     }
 
     /**
@@ -104,7 +82,35 @@ class PayrollTipController extends Controller
      */
     public function destroy($id)
     {
-        Payroll_tip::destroy($id);
-        return redirect('/tips');
+        //
+    }
+    public function apiCreate(Request $request)
+    {
+       
+        $shift = new Shift;
+        $shift->location_id = $request->location;  
+        $shift->employee_id = $request->employee_id;
+        $shift->role_id = $request->role;
+         $shift->start = $request->start_time;
+        $shift->end = $request->end_time;        
+        // //$shift->start = '2017-09-27 11:00:00';
+        // $shift->end = '2017-09-25 12:25:00';     
+        $shift->published = 1;
+        $shift->comment = $request->note;
+     
+        $shift->created_by = 1;
+        $shift->save();      
+        return $shift->start;
+    }
+    public function getShift(Request $request)
+    {
+        $start = $request->input('start');
+        $end = $request->input('end');
+        $location = $request->input('location');
+        $shifts = Shift::where('location_id',$location)
+                    ->whereDate('start','>=',$start)
+                    ->whereDate('end','<',$end)
+                    ->get();
+        return view('shift/shift/shiftList',compact('shifts'));
     }
 }

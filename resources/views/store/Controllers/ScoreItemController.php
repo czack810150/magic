@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Payroll_tip;
-use Carbon\Carbon;
+use App\Score_category;
+use App\Score_item;
 
-class PayrollTipController extends Controller
+class ScoreItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,8 @@ class PayrollTipController extends Controller
      */
     public function index()
     {
-        //
+        $items = Score_item::orderBy('score_category_id')->orderBy('myOrder')->get();
+        return view('score.item.index',compact('items'));
     }
 
     /**
@@ -24,8 +25,9 @@ class PayrollTipController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        //
+    {   
+        $categories = Score_category::pluck('name','id');
+        return view('score.item.create',compact('categories'));
     }
 
     /**
@@ -36,24 +38,14 @@ class PayrollTipController extends Controller
      */
     public function store(Request $request)
     {
-        $dt = Carbon::createFromFormat('Y-m-d',$request->startDate);
-
-        $already = Payroll_tip::where('start',$request->startDate)->where('location_id',$request->location)->first();
-     
-        if($already){
-            $already->hourlyTip = $request->tip * 100;
-            $already->save();
-        } else {
-
-        $t = new Payroll_tip;
-        $t->start = $request->startDate;
-        $t->end = $dt->addDays(13)->toDateString();
-        $t->location_id = $request->location;
-        $t->hourlyTip = $request->tip * 100;
-        $t->save();
-        }
-        return $request->tip;
-    
+        $myOrder = Score_item::count();
+        $category = Score_item::create([
+            'score_category_id' => $request->category,
+            'name' => $request->item,
+            'value' => $request->value,
+            'myOrder' => $myOrder+1,
+        ]);
+        return redirect('/score/item');
     }
 
     /**
@@ -64,8 +56,7 @@ class PayrollTipController extends Controller
      */
     public function show($id)
     {
-        $tip = Payroll_tip::findOrFail($id);
-        return view('store.tip.show',compact('tip'));
+        //
     }
 
     /**
@@ -76,7 +67,9 @@ class PayrollTipController extends Controller
      */
     public function edit($id)
     {
-        //
+        $item = Score_item::find($id);
+        $categories = Score_category::pluck('name','id');
+        return view('score.item.edit',compact('categories','item'));
     }
 
     /**
@@ -88,12 +81,9 @@ class PayrollTipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $tip = Payroll_tip::findOrFail($id);
-        $tip->hourlyTip = $request->hourlyTip * 100;
-         $tip->tips = $request->tips * 100;
-          $tip->hours = $request->hours;
-        $tip->save();
-        return redirect('/tips');
+        $item = Score_item::find($id);
+        $item->update(['name' => $request->item,'score_category_id'=>$request->category,'value'=>$request->value]);
+        return redirect('/score/item');
     }
 
     /**
@@ -104,7 +94,12 @@ class PayrollTipController extends Controller
      */
     public function destroy($id)
     {
-        Payroll_tip::destroy($id);
-        return redirect('/tips');
+        Score_item::destroy($id);
+        return redirect('/score/item');
+    }
+    public function getItemsByCategory(Request $r)
+    {
+        $items = Score_item::where('score_category_id',$r->category)->get();
+        return $items;
     }
 }

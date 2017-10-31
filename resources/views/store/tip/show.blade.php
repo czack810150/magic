@@ -8,9 +8,17 @@
 <h4>{{$tip->location->name}}</h4>
 <p>{{ $tip->start }} ~ {{$tip->end}}</p>
 
-<form class="form-inline" method="POST" action="/tips/{{ $tip->id }}/update">
+<form class="form" method="POST" action="/tips/{{ $tip->id }}/update">
 
-	
+		<div class="form-group mx-sm-3">
+			{{ Form::label('tips','Total Tips',['class'=>'mx-sm-3']) }}
+			{{ Form::text('tips',$tip->tips*100) }}
+		</div>
+
+		<div class="form-group mx-sm-3">
+			{{ Form::label('hours','Tippable Hours',['class'=>'mx-sm-3']) }}
+			{{ Form::text('hours',$tip->hours) }}
+		</div>
 
 		<div class="form-group mx-sm-3">
 			{{ Form::label('hourlyTip','Hourly Tips',['class'=>'mx-sm-3']) }}

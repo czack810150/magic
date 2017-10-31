@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Payroll_tip;
-use Carbon\Carbon;
+use App\Score_category;
 
-class PayrollTipController extends Controller
+class ScoreCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +14,8 @@ class PayrollTipController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Score_category::get();
+        return view('score.category.index',compact('categories'));
     }
 
     /**
@@ -25,7 +25,7 @@ class PayrollTipController extends Controller
      */
     public function create()
     {
-        //
+        return view('score.category.create');
     }
 
     /**
@@ -36,24 +36,12 @@ class PayrollTipController extends Controller
      */
     public function store(Request $request)
     {
-        $dt = Carbon::createFromFormat('Y-m-d',$request->startDate);
-
-        $already = Payroll_tip::where('start',$request->startDate)->where('location_id',$request->location)->first();
-     
-        if($already){
-            $already->hourlyTip = $request->tip * 100;
-            $already->save();
-        } else {
-
-        $t = new Payroll_tip;
-        $t->start = $request->startDate;
-        $t->end = $dt->addDays(13)->toDateString();
-        $t->location_id = $request->location;
-        $t->hourlyTip = $request->tip * 100;
-        $t->save();
-        }
-        return $request->tip;
-    
+        $myOrder = Score_category::count();
+        $category = Score_category::create([
+            'name' => $request->category,
+            'myOrder' => $myOrder+1,
+        ]);
+        return redirect('/score/category');
     }
 
     /**
@@ -64,8 +52,8 @@ class PayrollTipController extends Controller
      */
     public function show($id)
     {
-        $tip = Payroll_tip::findOrFail($id);
-        return view('store.tip.show',compact('tip'));
+        $category = Score_category::find($id);
+        return view('score.category.show',compact('category'));
     }
 
     /**
@@ -76,7 +64,8 @@ class PayrollTipController extends Controller
      */
     public function edit($id)
     {
-        //
+        $category = Score_category::find($id);
+        return view('score.category.edit',compact('category'));
     }
 
     /**
@@ -88,12 +77,10 @@ class PayrollTipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $tip = Payroll_tip::findOrFail($id);
-        $tip->hourlyTip = $request->hourlyTip * 100;
-         $tip->tips = $request->tips * 100;
-          $tip->hours = $request->hours;
-        $tip->save();
-        return redirect('/tips');
+         $category = Score_category::find($id);
+         $category->update(['name' => $request->category]);
+
+         return redirect('/score/category');
     }
 
     /**
@@ -104,7 +91,7 @@ class PayrollTipController extends Controller
      */
     public function destroy($id)
     {
-        Payroll_tip::destroy($id);
-        return redirect('/tips');
+        Score_category::destroy($id);
+        return redirect('/score/category');
     }
 }
