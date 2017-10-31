@@ -2,35 +2,57 @@
 @section('content')
 <div class="container" id="app">
 
-<ol>
-	<todo-item v-for="item in groceryList" v-bind:todo="item" v-bind:key="item.id"></todo-item>
+<h3>All bikes</h3>
+<ul class="list-unstyled">
+	<bikes></bikes>
+</ul>
 
-</ol>
+<h3>Japanese bikes</h3>
+<ul class="list-unstyled">
+	<li v-for="bike in japBikes" v-text="bike.brand"></li>
+</ul>
+
 
 
 </div>
 
 <script>
-Vue.component('todo-item',{
-		props: ['todo'],
-		template: '<li>@{{ todo.text }}</li>'
-	})
+
+	Vue.component('bikes',{
+		template: '<div><bike-list v-for="bike in bikes">@{{ bike.brand }}</bike-list></div>',
+		data() {
+			return {bikes: [
+				{ brand: 'Honda', country: 'Japan'},
+				{ brand: 'Yamaha', country: 'Japan'},
+				{ brand: 'BMW', country: 'Germany'},
+			]
+			};
+		}
+	});
+
+	Vue.component('bike-list',{
+		template: '<li><span class="badge badge-success"><slot></slot><span></li>'
+	});
+
 
 	var app = new Vue({
 		el: '#app',
 		data: {
-			groceryList: [
-				{ id: 0, text: 'Vegetables' },
-				{ id: 1, text: 'Cheese' },
-				{ id: 2, text: 'Whatever else humans are supposed to eat' },
+			message: 'Hello World!',
+			bikes: [
+				{ brand: 'Honda', country: 'Japan'},
+				{ brand: 'Yamaha', country: 'Japan'},
+				{ brand: 'BMW', country: 'Germany'},
 			]
 		},
-		beforeCreate: function(){
-			console.log('before create')
-		},
-		created: function(){
-			console.log(this.groceryList)
+
+		computed: {
+			japBikes(){
+				return this.bikes.filter(bike => bike.country=='Japan');
+			}
 		}
+
+		
 
 	});
 

@@ -8,6 +8,7 @@ use App\Employee;
 use App\Hour;
 use App\Location;
 use App\Datetime;
+use App\Tip;
 use Carbon\Carbon;
 
 class HourController extends Controller
@@ -41,7 +42,9 @@ class HourController extends Controller
     }
     public function computeEngine(Request $r)
     {
-     return Hour::hoursEngine($r->startDate);  
+     $rows = Hour::hoursEngine($r->startDate);  
+     $tip = Tip::tipHours($r->startDate);
+     return $rows;
     }
 
     /**
