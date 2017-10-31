@@ -99,6 +99,7 @@ Route::get('/payroll/employee','PayrollController@employee');
 Route::get('/payroll/{id}/destroy','PayrollController@destroy');
 Route::get('/payroll/paystubs','PayrollController@paystubs');
 Route::post('/payroll/paystubs','PayrollController@paystubsData');
+Route::post('/payroll/chequeNumber','PayrollController@chequeNumber');
 //Sales
 Route::get('/sales','SaleController@index');
 

@@ -38,7 +38,7 @@
 <table class="table table-sm">
 	<thead>
 		<tr><th>card</th><th>name</th><th>legal</th><th>wk1</th><th>wk2</th><th>hours</th><th>regular</th><th>overtime</th><th>Premium</th><th>Holiday</th><th>gross</th>
-			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>Cheque</th>
+			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>Cheque</th><th>Cheque#</th>
 			<th>Position rate</th><th>Tip %</th><th>nightHrs</th><th>Meal</th>
 			<th>performance</th>
 			<th>Variable Pay</th><th>total</th>
@@ -69,6 +69,11 @@
 				<td>{{$e->provincialTax}}</td>
 				<td>{{$e->provincialTax +$e->federalTax }}</td>
 				<td>{{$e->cheque}}</td>
+				@if($e->chequeNumber)
+				<td>{{$e->chequeNumber}}</td>
+				@else
+				<td id="cheque{{$e->id}}"><button type="button" class="btn btn-sm btn-primary" onclick="addChequeNumber({{$e->id}})">Add</button></td>
+				@endif
 
 				<td>{{$e->position_rate}}</td>
 				<td>{{$e->tip}}</td>
@@ -87,3 +92,53 @@
 	</tbody>
 </table>
 @endif
+
+<!-- Modal -->
+<div class="modal fade" id="chequeModal" tabindex="-1" role="dialog" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chequeModalLabel">Cheque Number</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<label for="chequeNumberInput">Cheque Number</label>
+        <input type="text" id="chequeNumberInput" value="">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="saveChequeNumber()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var payrollID = '';
+function addChequeNumber(payId){
+	console.log('add cheque number for: '+ payId);
+	payrollID = payId;
+	$('#chequeModal').modal();
+	
+}
+
+function saveChequeNumber(){
+	$.post(
+		'/payroll/chequeNumber',
+		{
+			_token: '{{csrf_token()}}',
+			payrollLog: payrollID,
+			chequeNumber: $('#chequeNumberInput').val()
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#cheque'+payrollID).html($('#chequeNumberInput').val());
+			}
+		}
+		);
+	$('#chequeModal').modal('hide')
+}
+
+</script>
