@@ -7,6 +7,10 @@ use App\Location;
 use App\Datetime;
 use App\Employee;
 use App\Shift;
+use Illuminate\Support\Facades\View;
+use App\Score_category;
+use App\Score_item;
+use App\Score_log;
 use Carbon\Carbon;
 
 class EmployeePerformanceController extends Controller
@@ -41,7 +45,15 @@ class EmployeePerformanceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $item = Score_item::find($request->item);
+        $score_log = Score_log::create(['date'=>$request->reviewDate,
+            'location_id'=>$request->location,
+            'employee_id'=>$request->employee,
+            'score_item_id'=>$request->item,
+            'value'=>$item->value,                 
+        ]);
+        return $item;
+        
     }
 
     /**
@@ -91,9 +103,20 @@ class EmployeePerformanceController extends Controller
     public function reviewable(Request $r)
     {
         //dd($r);
-        $start = Carbon::createFromFormat('Y-m-d',$r->startDate);
+       $start = Carbon::createFromFormat('Y-m-d',$r->period);
         // $employees = Shift::select('employee_id')->where('location_id',$r->location)->whereBetween('start',[$start->toDateString(),$start->addDays(13)->toDateString()])->distinct()->get();
         $employees = Employee::where('location_id',$r->location)->orderBy('job_id')->get();
-        return view('employee/performance/reviewable')->with('employees',$employees);
+        foreach($employees as $e){
+
+            $e->score = Score_log::where('location_id',$r->location)->where('employee_id',$e->id)->
+                            whereBetween('date',[$start->toDateString(),$start->addDays(13)->toDateString()])->sum('value') + 100;
+            if($e->score > 110)
+                $e->score = 110;                
+        }
+        $categories = Score_category::all();
+        if(View::exists('employee.performance.reviewable')){
+            return View::make('employee.performance.reviewable',compact('employees','categories'))->render();
+        }
+       // return view('employee/performance/reviewable')->with('employees',$employees);
     }
 }

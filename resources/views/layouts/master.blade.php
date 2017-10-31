@@ -24,7 +24,7 @@
   <body>
 
  
- @yield('content')
+
 
 
 
@@ -38,7 +38,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{URL::asset('js/bootstrap-editable.min.js')}}"></script>
 <script src="{{URL::asset('js/magic.js')}}"></script>
-
+ @yield('content')
  @yield('pageJS')
 
 <script>

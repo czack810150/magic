@@ -37,10 +37,11 @@ Route::post('/score/item/store','ScoreItemController@store');
 Route::get('/score/item/{id}/delete','ScoreItemController@destroy');
 Route::get('/score/item/{id}/edit','ScoreItemController@edit');
 Route::post('/score/item/{id}/update','ScoreItemController@update');
+Route::post('/score/item/getItemsByCategory','ScoreItemController@getItemsByCategory');
 // performance
 Route::get('/employee/performance','EmployeePerformanceController@index');
 Route::post('/employee/reviewable','EmployeePerformanceController@reviewable');
-
+Route::post('/employee/performance/store','EmployeePerformanceController@store');
 
 
 
@@ -48,6 +49,7 @@ Route::get('/api/newShift',function(){
 	return 'API';
 });
 Route::post('/api/newShift','ShiftController@apiCreate');
+Route::post('/api/employee/{id}','EmployeeController@apiGet');
 
 
 Route::get('/timeclock','ClockController@index')->name('timeclock')->middleware('auth');

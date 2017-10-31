@@ -87,4 +87,9 @@ class EmployeeController extends Controller
         $location = request('location');
         return Employee::where('location_id',$location)->get();
     }
+    public function apiGet(Request $request, $id)
+    {
+        $employee = Employee::findOrFail($id);
+        return $employee;
+    }
 }

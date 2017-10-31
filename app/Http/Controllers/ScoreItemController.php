@@ -97,4 +97,9 @@ class ScoreItemController extends Controller
         Score_item::destroy($id);
         return redirect('/score/item');
     }
+    public function getItemsByCategory(Request $r)
+    {
+        $items = Score_item::where('score_category_id',$r->category)->get();
+        return $items;
+    }
 }
