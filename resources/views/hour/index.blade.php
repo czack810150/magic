@@ -29,7 +29,7 @@
 
 <table class="table table-sm table-hover">
 <thead>
-	<tr><th>employee</th><th>Scheduled</th><th>total</th><th>wk1Scheduled</th><th>wk2Scheduled</th><th>wk1Clocked</th><th>wk2Clocked</th><th>wk1Effective</th><th>wk2Effective</th><th>wk1Overtime</th><th>wk2Overtime</th><th>wk1Night</th><th>wk2Night</th></tr>
+	<tr><th>employee</th><th>Scheduled</th><th>Effective</th><th>wk1Scheduled</th><th>wk2Scheduled</th><th>wk1Clocked</th><th>wk2Clocked</th><th>wk1Effective</th><th>wk2Effective</th><th>wk1Overtime</th><th>wk2Overtime</th><th>wk1Night</th><th>wk2Night</th></tr>
 </thead>
 <tbody>
 	@foreach($hours as $h)
