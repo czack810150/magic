@@ -29,7 +29,7 @@
 
 <table class="table table-sm table-hover">
 <thead>
-	<tr><th>employee</th><th>wk1Scheduled</th><th>wk2Scheduled</th><th>wk1Clocked</th><th>wk2Clocked</th><th>wk1Effective</th><th>wk2Effective</th><th>total</th><th>wk1Overtime</th><th>wk2Overtime</th><th>wk1Night</th><th>wk2Night</th></tr>
+	<tr><th>employee</th><th>Scheduled</th><th>total</th><th>wk1Scheduled</th><th>wk2Scheduled</th><th>wk1Clocked</th><th>wk2Clocked</th><th>wk1Effective</th><th>wk2Effective</th><th>wk1Overtime</th><th>wk2Overtime</th><th>wk1Night</th><th>wk2Night</th></tr>
 </thead>
 <tbody>
 	@foreach($hours as $h)
@@ -39,13 +39,15 @@
 		@else
 		<td>{{ $h->employee_id }}</td>
 		@endif
+		<td class="alert alert-primary">{{ $h->wk1Scheduled +$h->wk2Scheduled  }}</td>
+		<td class="alert alert-success">{{ $h->wk1Effective +$h->wk2Effective  }}</td>
 		<td>{{ $h->wk1Scheduled }}</td>
 		<td>{{ $h->wk2Scheduled }}</td>
 		<td>{{ round($h->wk1Clocked,2) }}</td>
 		<td>{{ round($h->wk2Clocked,2) }}</td>
 		<td class="alert alert-primary">{{ $h->wk1Effective }}</td>
 		<td class="alert alert-primary">{{ $h->wk2Effective }}</td>
-		<td class="alert alert-success">{{ $h->wk1Effective +$h->wk2Effective  }}</td>
+		
 		<td class="alert alert-danger">{{ $h->wk1Overtime }}</td>
 		<td class="alert alert-danger">{{ $h->wk2Overtime }}</td>
 		<td class="alert alert-dark">{{ $h->wk1Night }}</td>
