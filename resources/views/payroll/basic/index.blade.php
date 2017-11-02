@@ -1,4 +1,4 @@
-@extends('layouts.timeclock.master')
+@extends('layouts.master')
 @section('content')
 <div class="container-fluid">
 <h1>Payroll</h1>

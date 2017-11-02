@@ -1,4 +1,4 @@
-@extends('layouts.timeclock.master')
+@extends('layouts.master')
 @section('content')
 <div class="container">
 <h1>Compute Payroll</h1>
@@ -17,9 +17,6 @@
 	</div>
 
 </form>
-
-
-@include('payroll.buttons')
 
 
 </div>

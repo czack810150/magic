@@ -1,44 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="">
+  @include('layouts.head')
 
-    <title>MagicShift</title>
+  <body class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default"  >
+ <!-- begin:: Page -->
+    <div class="m-grid m-grid--hor m-grid--root m-page">
+    @include('layouts.header')
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-        <!-- Custom styles for this template -->
- 
-    <link href="{{asset('css/timeclock.css')}}" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-    <link href="{{asset('css/bootstrap-editable.css')}}" rel="stylesheet">
-    <script src="https://use.fontawesome.com/52420008fb.js"></script>
-    <script src="{{URL::asset('js/vue.js')}}"></script>
-  </head>
+    <!-- begin::Body -->
+      <div class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
+    
+        
+@include('layouts.aside')
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+@include('layouts.subheader')
 
-  <body>
-
- 
+<div class="m-content">
+   @yield('content')
+  </div>
 
 
+ <!-- begin::Scroll Top -->
+    <div class="m-scroll-top m-scroll-top--skin-top" data-toggle="m-scroll-top" data-scroll-offset="500" data-scroll-speed="300">
+      <i class="la la-arrow-up"></i>
+    </div>
+    <!-- end::Scroll Top -->
+
+  @include('layouts.quickSideBar')
 
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-  <!-- Include Date Range Picker -->
-<script src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script src="{{URL::asset('js/bootstrap-editable.min.js')}}"></script>
-<script src="{{URL::asset('js/magic.js')}}"></script>
- @yield('content')
+</div>
+</div>
+</div>
+      <!-- end:: Body -->
+    @include('layouts.footer')
+  </div>
+  <!-- end:: Page -->
+
+@include('layouts.sticky')
+
+
+      <!--begin::Base Scripts -->
+    <script src="/assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
+    <script src="/assets/demo/default/base/scripts.bundle.js" type="text/javascript"></script>
+    <!--end::Base Scripts -->   
+        <!--begin::Page Vendors -->
+    <script src="/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js" type="text/javascript"></script>
+    <!--end::Page Vendors -->  
+        <!--begin::Page Snippets -->
+    <script src="/assets/app/js/dashboard.js" type="text/javascript"></script>
+    <!--end::Page Snippets -->
+
+
+
+
  @yield('pageJS')
 
 <script>
