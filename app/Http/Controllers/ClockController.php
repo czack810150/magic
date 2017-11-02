@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use App\Employee;
 use App\Shift;
 use App\Clock;
 use App\In;
+use App\Location;
+use App\Datetime;
 use Carbon\Carbon;
 date_default_timezone_set("America/Toronto");
 class ClockController extends Controller
@@ -130,6 +133,19 @@ class ClockController extends Controller
       $inShiftEmployees = Employee::has('shift')->get();
     
       return view('shift.timeclock.inShiftEmployees',compact('inShiftEmployees'));
+    }
+    public function shiftClocks()
+    {
+      $locations = Location::Store()->pluck('name','id');
+      $dates = Datetime::periods(Carbon::now()->year);
+      $subheader = 'Employee Clocks';
+      return view('clock.index',compact('subheader','dates','locations'));
+    }
+    public function clocksByLocationDate(Request $r)
+    {
+      $clocks = Clock::where('location_id',$r->location)->whereDate('clockIn',$r->date)->get();
+      return View::make('clock.clockTable',compact('clocks'))->render();
+
     }
 
 }

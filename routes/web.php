@@ -22,6 +22,7 @@ Route::get('/vue',function(){
 // end vue
 
 //EMPLOYEE
+Route::get('/employee','EmployeeController@index');
 
 //score
 Route::get('/score/category','ScoreCategoryController@index');
@@ -74,7 +75,9 @@ Route::post('/employee/location','EmployeeController@employeesByLocation');
 Route::get('/shift','ShiftController@index');
 Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@getShift'));
 
-
+//Clocks
+Route::get('/clocks','ClockController@shiftClocks');
+Route::post('/clock/clocksByLocationDate','ClockController@clocksByLocationDate');
 //Hours
 Route::get('/hours','HourController@index');
 Route::get('/hours/compute','HourController@compute');

@@ -34,6 +34,32 @@
 								</h4>
 								<i class="m-menu__section-icon flaticon-more-v3"></i>
 							</li>
+
+							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+								<a  href="#" class="m-menu__link m-menu__toggle">
+									<i class="m-menu__link-icon flaticon-users"></i>
+									<span class="m-menu__link-text">
+										People
+									</span>
+									<i class="m-menu__ver-arrow la la-angle-right"></i>
+								</a>
+								<div class="m-menu__submenu">
+									<span class="m-menu__arrow"></span>
+									<ul class="m-menu__subnav">
+										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="/employee" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													Employees
+												</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">
 									<i class="m-menu__link-icon flaticon-coins"></i>
@@ -45,13 +71,7 @@
 								<div class="m-menu__submenu">
 									<span class="m-menu__arrow"></span>
 									<ul class="m-menu__subnav">
-										<li class="m-menu__item  m-menu__item--parent" aria-haspopup="true" >
-											<a  href="#" class="m-menu__link ">
-												<span class="m-menu__link-text">
-													Base
-												</span>
-											</a>
-										</li>
+										
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/payroll" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -107,9 +127,9 @@
 							</li>
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">
-									<i class="m-menu__link-icon flaticon-share"></i>
+									<i class="m-menu__link-icon flaticon-time-1"></i>
 									<span class="m-menu__link-text">
-										Icons
+										Hours
 									</span>
 									<i class="m-menu__ver-arrow la la-angle-right"></i>
 								</a>
@@ -117,45 +137,69 @@
 									<span class="m-menu__arrow"></span>
 									<ul class="m-menu__subnav">
 										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="components/icons/flaticon.html" class="m-menu__link ">
+											<a  href="/hours" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>
 												<span class="m-menu__link-text">
-													Flaticon
+													View Hours
 												</span>
 											</a>
 										</li>
 										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="components/icons/fontawesome.html" class="m-menu__link ">
+											<a  href="/clocks" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>
 												<span class="m-menu__link-text">
-													Fontawesome
+													Clocks
 												</span>
 											</a>
 										</li>
 										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="components/icons/lineawesome.html" class="m-menu__link ">
+											<a  href="/hours/compute" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>
 												<span class="m-menu__link-text">
-													Lineawesome
+													Compute
+												</span>
+											</a>
+										</li>
+								
+									</ul>
+								</div>
+							</li>
+							<li class="m-menu__item m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+								<a href="#" class="m-menu__link m-menu__toggle">
+									<i class="m-menu__link-icon flaticon-clipboard"></i>
+									<span class="m-menu__link-text">Training</span>
+									<i class="m-menu__ver-arrow la la-angle-right"></i>
+								</a>
+									<div class="m-menu__submenu">
+									<span class="m-menu__arrow"></span>
+									<ul class="m-menu__subnav">
+										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="/exam" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													Exam
 												</span>
 											</a>
 										</li>
 										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="components/icons/socicons.html" class="m-menu__link ">
+											<a  href="/question" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>
 												<span class="m-menu__link-text">
-													Socicons
+													Question
 												</span>
 											</a>
 										</li>
+								
 									</ul>
 								</div>
 							</li>
