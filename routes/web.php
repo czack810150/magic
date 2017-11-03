@@ -138,3 +138,6 @@ Route::post('/question/get','QuestionController@get');
 Route::post('/exam/submission','ExamController@submitExam');
 Route::get('/exam/attemptedExams','ExamController@attemptedExams');
 Route::get('/exam/{id}/mark','ExamController@mark');
+
+//Jobs
+Route::get('/jobs','JobController@index');
