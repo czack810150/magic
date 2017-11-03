@@ -26,29 +26,35 @@
 						</div>
 					</div>
 					<div class="form-group m-form__group">
-						<label for="email">Email address</label>
-						<input type="email" class="form-control m-input" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+						<label for="username">User name</label>
+						<input type="text" class="form-control m-input" id="username" name="username" aria-describedby="emailHelp" placeholder="User name" required>
 						<span class="m-form__help">We'll never share this email with anyone else.</span>
 					</div>
 					<div class="form-group m-form__group">
-						<label for="password1">Password</label>
-						<input type="password" class="form-control m-input" id="password1" name="password1" placeholder="Password">
+						<label for="email">Email address</label>
+						<input type="email" class="form-control m-input" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+						<span class="m-form__help">We'll never share this email with anyone else.</span>
 					</div>
 					<div class="form-group m-form__group">
-						<label for="password2">Confirm password</label>
-						<input type="password" class="form-control m-input" id="password2" name="password2" placeholder="Password confirmation">
+						<label for="password">Password</label>
+						<input type="password" class="form-control m-input" id="password" name="password" placeholder="Password" required>
 					</div>
-					
 					<div class="form-group m-form__group">
-						<label for="locationSelect">Select a location</label>
-						{{ Form::select('locationSelect',$locations,9,['class'=>'form-control m-input','id'=>'locationSelect','onchange'=>'locationChange(this.value)']) }}
-					</div>
-					<div class="form-group m-form__group" id="employeeList">
+						<label for="password_confirmation">Confirm password</label>
+						<input type="password" class="form-control m-input" id="password_confirmation" name="password_confirmation" placeholder="Password confirmation" required>
 					</div>
 					<div class="form-group m-form__group">
 						<label for="typeSelect">Choose user authorization</label>
 						{{ Form::select('typeSelect',$types,null,['class'=>'form-control m-input','id'=>'typeSelect','placeholder'=>'select user type']) }}
 					</div>
+					<div class="form-group m-form__group">
+						<label for="locationSelect">Select a location</label>
+						{{ Form::select('locationSelect',$locations,9,['class'=>'form-control m-input','id'=>'locationSelect','onchange'=>'locationChange(this.value)']) }}
+					</div>
+
+					<div class="form-group m-form__group" id="employeeList">
+					</div>
+					
 				
 				</div>
 				<div class="m-portlet__foot m-portlet__foot--fit">
@@ -56,9 +62,13 @@
 						<button type="submit" class="btn btn-primary">Submit</button>
 						<button type="reset" class="btn btn-secondary">Cancel</button>
 					</div>
+					@include('layouts.errors')
+
 				</div>
 			</form>
-			<!--end::Form-->			
+			<!--end::Form-->	
+		
+
 		</div>
 		<!--end::Portlet-->
 	</div>
@@ -66,10 +76,10 @@
 
 <script>
 	function locationChange(value){
+		if($('#typeSelect').val() != 'location' ){
 		$.post(
 			'/api/employeeBylocation',
 			{
-				//_token: '{{ csrf_token() }}',
 				location: value,
 			},
 			function(data,status){
@@ -89,6 +99,7 @@
 			},
 				'json'
 			);
+		}
 	}
 </script>
 

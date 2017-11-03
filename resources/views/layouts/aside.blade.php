@@ -46,6 +46,7 @@
 								<div class="m-menu__submenu">
 									<span class="m-menu__arrow"></span>
 									<ul class="m-menu__subnav">
+										@if(Auth::user()->authorization->level == 99)
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/employee" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -56,6 +57,8 @@
 												</span>
 											</a>
 										</li>
+										@endif
+										@if(Auth::user()->authorization->level >= 20)
 										<li class="m-menu__item " aria-haspopup="true" >
 										<a  href="/employee/performance" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -66,10 +69,11 @@
 												</span>
 											</a>
 										</li>
+										@endif
 									</ul>
 								</div>
 							</li>
-
+							@if(Auth::user()->authorization->level >= 40)
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">
 									<i class="m-menu__link-icon flaticon-coins"></i>
@@ -112,6 +116,7 @@
 												</span>
 											</a>
 										</li>
+										@if(Auth::user()->authorization->level >= 99)
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/payroll/compute" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -122,6 +127,7 @@
 												</span>
 											</a>
 										</li>
+										@endif
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/payroll/employee" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -135,6 +141,7 @@
 									</ul>
 								</div>
 							</li>
+							@endif
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">
 									<i class="m-menu__link-icon flaticon-time-1"></i>
@@ -166,6 +173,7 @@
 												</span>
 											</a>
 										</li>
+										@if(Auth::user()->authorization->level >= 99)
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/hours/compute" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -176,10 +184,11 @@
 												</span>
 											</a>
 										</li>
-								
+										@endif
 									</ul>
 								</div>
 							</li>
+							@if(Auth::user()->authorization->level >= 30)
 							<li class="m-menu__item m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
 								<a href="#" class="m-menu__link m-menu__toggle">
 									<i class="m-menu__link-icon flaticon-clipboard"></i>
@@ -213,8 +222,10 @@
 									</ul>
 								</div>
 							</li>
+							@endif
 						
 							
+							@if( Auth::user()->authorization->type == 'admin' )
 							<li class="m-menu__section">
 								<h4 class="m-menu__section-text">
 									Admin
@@ -256,6 +267,7 @@
 									</ul>
 								</div>
 							</li>
+							@endif
 							
 						</ul>
 					</div>
