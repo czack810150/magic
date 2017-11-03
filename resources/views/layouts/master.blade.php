@@ -20,20 +20,20 @@
   </div>
 
 
+
+</div>
+</div>
+      <!-- end:: Body -->
+@include('layouts.footer')
+@include('layouts.quickSideBar')
  <!-- begin::Scroll Top -->
     <div class="m-scroll-top m-scroll-top--skin-top" data-toggle="m-scroll-top" data-scroll-offset="500" data-scroll-speed="300">
       <i class="la la-arrow-up"></i>
     </div>
     <!-- end::Scroll Top -->
 
-  @include('layouts.quickSideBar')
 
-
-</div>
-</div>
-</div>
-      <!-- end:: Body -->
-    @include('layouts.footer')
+   </div>
   </div>
   <!-- end:: Page -->
 
@@ -43,6 +43,7 @@
       <!--begin::Base Scripts -->
     <script src="{{asset('/assets/vendors/base/vendors.bundle.js')}}" type="text/javascript"></script>
     <script src="{{asset('/assets/demo/default/base/scripts.bundle.js')}}" type="text/javascript"></script>
+    <script src="{{asset('assets/demo/default/custom/components/forms/widgets/bootstrap-datepicker.js')}}"></script>
     <!--end::Base Scripts -->   
         <!--begin::Page Vendors -->
     <script src="{{asset('/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js')}}" type="text/javascript"></script>

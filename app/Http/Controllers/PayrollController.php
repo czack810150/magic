@@ -97,14 +97,15 @@ class PayrollController extends Controller
     }
      public function basic()
     {
+        $subheader = "Money";
         $locations = Location::Store()->pluck('name','id');
         $dates = Datetime::periods(YEAR);
-        return view('payroll.basic.index',compact('locations','dates'));
+        return view('payroll.basic.index',compact('locations','dates','subheader'));
     }
     public function fetch(Request $r){
         $dt = Carbon::createFromFormat('Y-m-d',$r->startDate);
-
         $logs = Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->get();
+        
         $config = DB::table('payroll_config')->where('year',$dt->year)->first();
         $hourlyTip = Payroll_tip::where('start',$r->startDate)->where('location_id',$r->location)->first();
         if($hourlyTip){
@@ -112,7 +113,6 @@ class PayrollController extends Controller
         } else {
             $hourlyTip = 0;
         }
-
 
         $sum = array(
             'startDate' => $r->startDate,
@@ -134,8 +134,10 @@ class PayrollController extends Controller
             'variable' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('variablePay'),
             'total' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('totalPay'),
             'employees' => sizeof($logs),
-        );
+            );
         return view('payroll.basic.table',compact('logs','sum'));
+      
+        
     }
 
     public function employeeYear(Request $request)

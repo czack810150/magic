@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\User;
+use App\Location;
 use Illuminate\Http\Request;
-use App\Employee;
 
-class EmployeeController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,9 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = Employee::get();
-        return view('employee.index',compact('employees'));
+        $subheader = 'User Admin';
+        $users = User::all();
+        return view('users.index',compact('users','subheader'));
     }
 
     /**
@@ -25,7 +26,23 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        $subheader = 'User Admin';
+        $locations = Location::pluck('name','id');
+
+      
+        $types = array(
+            'applicant' => 'Applicant',
+            'location' => 'Location',
+            'staff' => 'Staff',
+            'employee' => 'Employee',
+            'manager' => 'Manager',
+            'dm' => 'District Manager',
+            'accounting' => 'Accoutant',
+            'hr' => 'Human Resource',
+            'gm' => 'General Manager',
+            'admin' => 'Admin',
+        );
+        return view('users.create',compact('subheader','locations','types'));
     }
 
     /**
@@ -36,7 +53,7 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request);
     }
 
     /**
@@ -82,19 +99,5 @@ class EmployeeController extends Controller
     public function destroy($id)
     {
         //
-    }
-    public function employeesByLocation()
-    {
-        $location = request('location');
-        return Employee::where('location_id',$location)->get();
-    }
-    public function apiGet(Request $request, $id)
-    {
-        $employee = Employee::findOrFail($id);
-        return $employee;
-    }
-    public function location(Request $r){
-        $employees = Employee::where('location_id',$r->location)->pluck('cName','id');
-        return $employees;
     }
 }

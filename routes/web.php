@@ -51,6 +51,7 @@ Route::get('/api/newShift',function(){
 });
 Route::post('/api/newShift','ShiftController@apiCreate');
 Route::post('/api/employee/{id}','EmployeeController@apiGet');
+Route::post('/api/employeeBylocation','EmployeeController@location');
 
 
 Route::get('/timeclock','ClockController@index')->name('timeclock')->middleware('auth');
@@ -65,6 +66,10 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+//Users
+Route::get('/users','UserController@index');
+Route::get('/users/new','UserController@create');
+Route::post('/users/save','UserController@store');
 
 Route::get('/home', 'HomeController@index')->name('home');
 

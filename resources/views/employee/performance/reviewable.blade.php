@@ -1,8 +1,11 @@
-
-<h2>Reviewables</h2>
 <section id="app">
 <div class="row">
-<div class='col-sm-6'>
+<div class='col-12'>
+
+
+
+
+
 <table class="table table-hover" >
 <thead>
 	<tr>
@@ -29,7 +32,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="scoreModal" tabindex="-1" role="dialog" aria-labelledby="scoreModalTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="scoreModalTitle">Employee Review for @{{employeeName}} </h5>
@@ -41,7 +44,7 @@
       	<div id="result" class="mb-2"></div>
         <div class="form-group">
         	<label for="reviewDate">For Date</label>
-        	<input type="text" class="form-input" v-model="reviewDate" id="reviewDate">
+        	<input type="text" class="form-control" v-model="reviewDate">
         </div>
 
         <div class="row">
@@ -69,15 +72,11 @@
 </div>
 </section>
 
-
 <script>
-//$('#reviewDate').datepicker();
-
 var app = new Vue({
 	el: '#app',
 	data: {
 		token: '{{ csrf_token() }}',
-		message:'vue',
 		reviewDate:moment().format('YYYY-MM-DD'),
 		employeeName: 'employee',
 		employeeId: '',
@@ -114,9 +113,6 @@ html += '<li class="mb-1"><button onclick="scoreItem(\''+data[i].id+'\')" type="
 				'json'
 				);
 		},
-		
-
-
 	}
 });
 
@@ -125,16 +121,16 @@ function scoreItem(itemId){
 				'/employee/performance/store',
 				{
 					_token: app.token,
-					reviewDate: app.reviewDate,
 					employee: app.employeeId,
 					item: itemId,
 					location: app.locationId,
+					reviewDate: app.reviewDate,
 				},
 				function(data,status){
 					if(status == 'success'){
 						var html = '<div class="alert alert-success">'+ data.name+'</div>';
 						$('#result').html(html);
-						console.log(data.name);
+						console.log(data);
 					}
 				},'json'
 				);

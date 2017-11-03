@@ -64,7 +64,7 @@
 @endsection
 
 @section('pageJS')
-<script src="{{asset('assets/demo/default/custom/components/forms/widgets/bootstrap-datepicker.js')}}"></script>
+
 <script>
 
 var dateStringx = '';

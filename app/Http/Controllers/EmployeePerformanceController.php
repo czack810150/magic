@@ -22,9 +22,10 @@ class EmployeePerformanceController extends Controller
      */
     public function index()
     {
+        $subheader = 'Employee Performance Evalucation';
         $locations = Location::Store()->pluck('name','id');
         $dates = Datetime::periods(Carbon::now()->year);
-        return view('employee.performance.index',compact('locations','dates'));
+        return view('employee.performance.index',compact('locations','dates','subheader'));
     }
 
     /**
@@ -102,21 +103,20 @@ class EmployeePerformanceController extends Controller
     }
     public function reviewable(Request $r)
     {
-        //dd($r);
-       $start = Carbon::createFromFormat('Y-m-d',$r->period);
-        // $employees = Shift::select('employee_id')->where('location_id',$r->location)->whereBetween('start',[$start->toDateString(),$start->addDays(13)->toDateString()])->distinct()->get();
+        $periodStart = Carbon::createFromFormat('Y-m-d',$r->period);
+        $start = $periodStart->toDateString();
+        $end = $periodStart->addDays(13)->toDateString();
+        $categories = Score_category::all(); 
         $employees = Employee::where('location_id',$r->location)->orderBy('job_id')->get();
         foreach($employees as $e){
 
             $e->score = Score_log::where('location_id',$r->location)->where('employee_id',$e->id)->
-                            whereBetween('date',[$start->toDateString(),$start->addDays(13)->toDateString()])->sum('value') + 100;
-            if($e->score > 110)
+                            whereBetween('date',[$start,$end])->sum('value') + 100;
+            if($e->score > 110){
                 $e->score = 110;                
+            }
         }
-        $categories = Score_category::all();
-        if(View::exists('employee.performance.reviewable')){
+          
             return View::make('employee.performance.reviewable',compact('employees','categories'))->render();
-        }
-       // return view('employee/performance/reviewable')->with('employees',$employees);
     }
 }
