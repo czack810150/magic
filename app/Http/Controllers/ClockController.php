@@ -154,8 +154,18 @@ class ClockController extends Controller
     public function update(Request $r)
     {
       $clock = Clock::find($r->clockId);
-      $clock->clockIn = $r->clockIn;
-      $clock->clockOut = $r->clockOut;
+
+      if(strlen($r->clockIn) == 19){
+        $clock->clockIn = $r->clockIn;
+      } else {
+      $clock->clockIn = $r->clockIn.':00';
+      }
+      if(strlen($r->clockOut) == 19){
+         $clock->clockOut = $r->clockOut;
+      } else {
+         $clock->clockOut = $r->clockOut.':00';
+      }
+     
       $clock->comment = $r->comment;
       $clock->save();
       return 'success';
@@ -165,8 +175,8 @@ class ClockController extends Controller
       $clock = new Clock;
       $clock->location_id = $r->location;
       $clock->employee_id = $r->employee;
-      $clock->clockIn = $r->clockIn;
-      $clock->clockOut = $r->clockOut;
+      $clock->clockIn = $r->clockIn.':00';
+      $clock->clockOut = $r->clockOut.':00';
       $clock->comment = $r->comment;
       $clock->save();
       return 'success';

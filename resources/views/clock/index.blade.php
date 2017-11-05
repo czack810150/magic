@@ -89,13 +89,13 @@
 												<label for="clockInTime">
 													Clock-in Time
 												</label>
-												<input type="text" class="form-control m-input" id="clockInTime"" aria-describedby="clockInTime" value="">
+												<input type="text" class="form-control m-input datetimepicker" id="clockInTime"" aria-describedby="clockInTime" value="">
 											</div>
 											<div class="form-group m-form__group">
 												<label for="clockOutTime">
 													Clock-out Time
 												</label>
-												<input type="text" class="form-control m-input" id="clockOutTime"" aria-describedby="clockOutTime" value="">
+												<input type="text" class="form-control m-input  datetimepicker" id="clockOutTime"" aria-describedby="clockOutTime" value="">
 											</div>
 											
 											
@@ -162,13 +162,13 @@
 												<label for="missingClockInTime">
 													Clock-in Time
 												</label>
-												<input type="text" class="form-control m-input" id="missingClockInTime"" aria-describedby="missingClockInTime" value="">
+												<input type="text" class="form-control m-input datetimepicker" id="missingClockInTime"" aria-describedby="missingClockInTime" value="">
 											</div>
 											<div class="form-group m-form__group">
 												<label for="missingClockOutTime">
 													Clock-out Time
 												</label>
-												<input type="text" class="form-control m-input" id="missingClockOutTime"" aria-describedby="missingClockOutTime" value="">
+												<input type="text" class="form-control m-input datetimepicker" id="missingClockOutTime"" aria-describedby="missingClockOutTime" value="">
 											</div>
 											
 											
@@ -208,6 +208,14 @@ var dateStringx = '';
 
 	$('#clockDatePikcer').datepicker({
 		todayHighlight: true,
+		orientation: "bottom left",
+		 templates: {
+                leftArrow: '<i class="la la-angle-left"></i>',
+                rightArrow: '<i class="la la-angle-right"></i>'
+            }
+	});
+	$('.datetimepicker').datetimepicker({
+		todayHighlight: false,
 		orientation: "bottom left",
 		 templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
@@ -296,7 +304,6 @@ function addMissing(){
 	},
 	function(data,status){
 		if(status == 'success'){
-			console.log(data);
 			var html = '';
 			for(i in data){
 				html += '<option value="'+ i +'">' + data[i] + '</option>';
@@ -321,7 +328,6 @@ function saveMissing(){
 	},
 	function(data,status){
 		if(status == 'success'){
-			console.log(data);
 			$('#addModal').modal('hide');
 		}
 	}
