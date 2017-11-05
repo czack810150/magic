@@ -147,5 +147,18 @@ class ClockController extends Controller
       return View::make('clock.clockTable',compact('clocks'))->render();
 
     }
+    public function show(Request $r)
+    {
+      return Clock::find($r->clockId);
+    }
+    public function update(Request $r)
+    {
+      $clock = Clock::find($r->clockId);
+      $clock->clockIn = $r->clockIn;
+      $clock->clockOut = $r->clockOut;
+      $clock->comment = $r->comment;
+      $clock->save();
+      return 'success';
+    }
 
 }

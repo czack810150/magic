@@ -61,6 +61,70 @@
 </div>
 
 
+
+<!-- Modal -->
+<div class="modal fade" id="clockModal" tabindex="-1" role="dialog" aria-labelledby="clockModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clockModalLabel">Edit Clock Record</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+      	<!--begin::Portlet-->
+								<div class="m-portlet m-portlet--tab">
+					
+									<!--begin::Form-->
+									<form class="m-form m-form--fit m-form--label-align-right">
+										<div class="m-portlet__body">
+											<div class="form-group m-form__group m--margin-top-10">
+												<div class="alert m-alert m-alert--default" role="alert">
+													Be sure to leave a comment.
+												</div>
+											</div>
+											<div class="form-group m-form__group">
+												<label for="clockInTime">
+													Clock-in Time
+												</label>
+												<input type="text" class="form-control m-input" id="clockInTime"" aria-describedby="clockInTime" value="">
+											</div>
+											<div class="form-group m-form__group">
+												<label for="clockInTime">
+													Clock-out Time
+												</label>
+												<input type="text" class="form-control m-input" id="clockOutTime"" aria-describedby="clockOutTime" value="">
+											</div>
+											
+											
+											
+											<div class="form-group m-form__group">
+												<label for="comment">
+													Comment
+												</label>
+												<textarea class="form-control m-input" id="comment" rows="3"></textarea>
+											</div>
+										</div>
+										
+									</form>
+									<!--end::Form-->
+								</div>
+								<!--end::Portlet-->
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="updateClock()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 @endsection
 
 @section('pageJS')
@@ -111,6 +175,45 @@ function updateTable(){
 			},
 			
 			);
+}
+var clockID = 0;
+function editClock(clockId){
+	clockID = clockId;
+	$.post(
+		'/clock/edit',
+		{
+			_token:'{{ csrf_token() }}',
+			clockId: clockId,
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#clockInTime').val(data.clockIn);
+				$('#clockOutTime').val(data.clockOut);
+				$('#comment').val(data.comment);
+				
+			}
+		},
+		'json'
+		);
+	$('#clockModal').modal();
+}
+function updateClock(){
+	$.post(
+		'/clock/update',
+		{
+			_token:'{{ csrf_token() }}',
+			clockId: clockID,
+			clockIn: $('#clockInTime').val(),
+			clockOut: $('#clockOutTime').val(),
+			comment: $('#comment').val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#clockModal').modal('hide');
+				updateTable();
+			}
+		}
+		);
 }
 
 </script>
