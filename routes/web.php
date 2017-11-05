@@ -62,6 +62,7 @@ Route::post('/timeclock/out','ClockController@clockOut')->middleware('auth');
 Route::get('/inshift','ClockController@inShift');
 Route::post('/clock/edit','ClockController@show');
 Route::post('/clock/update','ClockController@update');
+Route::post('/clock/add','ClockController@store');
 Route::get('/', function () {
     return view('welcome');
 });

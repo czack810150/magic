@@ -160,5 +160,16 @@ class ClockController extends Controller
       $clock->save();
       return 'success';
     }
+    public function store(Request $r)
+    { 
+      $clock = new Clock;
+      $clock->location_id = $r->location;
+      $clock->employee_id = $r->employee;
+      $clock->clockIn = $r->clockIn;
+      $clock->clockOut = $r->clockOut;
+      $clock->comment = $r->comment;
+      $clock->save();
+      return 'success';
+    }
 
 }

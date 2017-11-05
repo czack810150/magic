@@ -44,12 +44,12 @@
 					</div>
 				</div>
 				<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-					<a href="#" class="btn btn-accent m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
+					<button type="button" class="btn btn-accent m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill" onclick="addMissing()">
 						<span>
 							<i class="la la-plus"></i>
 							<span>Missing Clock</span>
 						</span>
-					</a>					
+					</button>					
 					<div class="m-separator m-separator--dashed d-xl-none"></div>
 				</div>
 			</div>
@@ -62,7 +62,7 @@
 
 
 
-<!-- Modal -->
+<!-- Modal update -->
 <div class="modal fade" id="clockModal" tabindex="-1" role="dialog" aria-labelledby="clockModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -92,7 +92,7 @@
 												<input type="text" class="form-control m-input" id="clockInTime"" aria-describedby="clockInTime" value="">
 											</div>
 											<div class="form-group m-form__group">
-												<label for="clockInTime">
+												<label for="clockOutTime">
 													Clock-out Time
 												</label>
 												<input type="text" class="form-control m-input" id="clockOutTime"" aria-describedby="clockOutTime" value="">
@@ -118,6 +118,79 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" onclick="updateClock()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal add missing -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addModalLabel">Add Missing Clock Record</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+      	<!--begin::Portlet-->
+								<div class="m-portlet m-portlet--tab">
+					
+									<!--begin::Form-->
+									<form class="m-form m-form--fit m-form--label-align-right">
+										<div class="m-portlet__body">
+											<div class="form-group m-form__group m--margin-top-10">
+												<div class="alert m-alert m-alert--default" role="alert">
+													Make sure it is a valid clock time.
+												</div>
+											</div>
+
+
+											<div class="form-group m-form__group">
+												<labe for="missingEmployee">Employee:</label>
+						
+												<select class="form-control m-input" id="missingList">
+												
+												</select>
+											</div>
+
+								
+							<div class="d-md-none m--margin-bottom-10"></div>
+											<div class="form-group m-form__group">
+												<label for="missingClockInTime">
+													Clock-in Time
+												</label>
+												<input type="text" class="form-control m-input" id="missingClockInTime"" aria-describedby="missingClockInTime" value="">
+											</div>
+											<div class="form-group m-form__group">
+												<label for="missingClockOutTime">
+													Clock-out Time
+												</label>
+												<input type="text" class="form-control m-input" id="missingClockOutTime"" aria-describedby="missingClockOutTime" value="">
+											</div>
+											
+											
+											
+											<div class="form-group m-form__group">
+												<label for="missingComment">
+													Comment
+												</label>
+												<textarea class="form-control m-input" id="missingComment" rows="3"></textarea>
+											</div>
+										</div>
+										
+									</form>
+									<!--end::Form-->
+								</div>
+								<!--end::Portlet-->
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="saveMissing()">Save changes</button>
       </div>
     </div>
   </div>
@@ -214,6 +287,45 @@ function updateClock(){
 			}
 		}
 		);
+}
+function addMissing(){
+	$.post(
+	'/api/employeeBylocation',
+	{
+		location: $('#location').val()
+	},
+	function(data,status){
+		if(status == 'success'){
+			console.log(data);
+			var html = '';
+			for(i in data){
+				html += '<option value="'+ i +'">' + data[i] + '</option>';
+			}
+
+			$('#missingList').html(html);
+			$('#addModal').modal();
+		}
+	},'json'
+);	
+}
+function saveMissing(){
+	$.post(
+	'/clock/add',
+	{
+		location: $('#location').val(),
+		employee: $('#missingList').val(),
+		_token:'{{ csrf_token() }}',
+			clockIn: $('#missingClockInTime').val(),
+			clockOut: $('#missingClockOutTime').val(),
+			comment: $('#missingComment').val(),
+	},
+	function(data,status){
+		if(status == 'success'){
+			console.log(data);
+			$('#addModal').modal('hide');
+		}
+	}
+);
 }
 
 </script>
