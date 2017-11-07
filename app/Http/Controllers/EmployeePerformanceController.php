@@ -97,9 +97,9 @@ class EmployeePerformanceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $r)
     {
-        //
+        return Score_log::destroy($r->logId);
     }
     public function reviewable(Request $r)
     {
@@ -118,5 +118,21 @@ class EmployeePerformanceController extends Controller
         }
           
             return View::make('employee.performance.reviewable',compact('employees','categories'))->render();
+    }
+    public function employeePeriod(Request $r)
+    {
+        $periodStart = Carbon::createFromFormat('Y-m-d',$r->startDate);
+        $start = $periodStart->toDateString();
+        $end = $periodStart->addDays(13)->toDateString();
+        $scoreItems = Score_log::where('employee_id',$r->employee)->where('location_id',$r->location)->whereBetween('date',[$start,$end])->orderBy('date')->get();
+        $result = array();
+        foreach($scoreItems as $scoreItem){
+           $scoreItem->score_item;
+             $scoreItem->score_item->score_category;
+             $scoreItem->location;
+            // $scoreItem->location = $socreItem->location->name;
+            $result[] = $scoreItem;
+        }
+        return View::make('employee.performance.individual',compact('result'))->render();
     }
 }

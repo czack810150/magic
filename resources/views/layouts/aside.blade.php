@@ -53,7 +53,7 @@
 													<span></span>
 												</i>
 												<span class="m-menu__link-text">
-													Employees
+													Staff Directory
 												</span>
 											</a>
 										</li>
@@ -87,12 +87,12 @@
 									<ul class="m-menu__subnav">
 										
 										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="/payroll" class="m-menu__link ">
+											<a  href="/tips" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>
 												<span class="m-menu__link-text">
-													Payroll
+													Tips
 												</span>
 											</a>
 										</li>

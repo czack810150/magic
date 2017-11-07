@@ -1,22 +1,21 @@
-<section id="app">
+ 
 <div class="row">
 <div class='col-12'>
-
-
-
-
-
-<table class="table table-hover" >
+<table class="table table-hover" id="app">
 <thead>
 	<tr>
-		<th>Position</th><th>Employee</th><th>Card</th><th>Performance</th>
+		<th>Position</th><th>Employee</th><th>Actions</th><th>Card</th><th>Performance</th>
 	</tr>
 </thead>
 <tbody>
 	@foreach($employees as $e)
-	<tr v-on:click="scoreEmployee('{{ $e->id }}','{{ $e->cName }}')">
+	<tr>
 		<td>{{ $e->job->rank }}</td>
 		<td>{{ $e->cName }} {{ $e->firstName }},{{ $e->lastName }}</td>
+		<td>
+			<button class="btn btn-primary btn-sm m-btn m-btn--custom" type="button" v-on:click="scoreEmployee('{{ $e->id }}','{{ $e->cName }}')">Score</button> 
+			<button class="btn btn-info btn-sm m-btn m-btn--custom" type="button" v-on:click="viewScore('{{ $e->id }}')">View</button> 
+		</td>
 		<td>{{ $e->employeeNumber }}</td>
 		<td>{{ $e->score }}</td>
 		
@@ -35,7 +34,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="scoreModalTitle">Employee Review for @{{employeeName}} </h5>
+        <h5 class="modal-title" id="scoreModalTitle">Employee Review</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -44,10 +43,10 @@
       	<div id="result" class="mb-2"></div>
         <div class="form-group">
         	<label for="reviewDate">For Date</label>
-        	<input type="text" class="form-control" v-model="reviewDate">
+        	<input type="text" class="form-control" id="reviewDate">
         </div>
 
-        <div class="row">
+        <div class="row" id="app2">
         	<div class="col-4">
         	<ul class="nav flex-column">
         	@foreach($categories as $c)
@@ -70,14 +69,49 @@
     </div>
   </div>
 </div>
-</section>
+
+
+<!-- Modal view score -->
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewModalTitle">Employee Evaluation Records</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="viewResult">
+      	
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+     
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <script>
+	$('#reviewDate').val(moment().format('YYYY-MM-DD'));
+		$('#reviewDate').datepicker({
+		format:'yyyy-mm-dd',
+		todayHighlight: true,
+		orientation: "bottom left",
+		 templates: {
+                leftArrow: '<i class="la la-angle-left"></i>',
+                rightArrow: '<i class="la la-angle-right"></i>'
+            }
+	});
+
 var app = new Vue({
 	el: '#app',
 	data: {
 		token: '{{ csrf_token() }}',
-		reviewDate:moment().format('YYYY-MM-DD'),
 		employeeName: 'employee',
 		employeeId: '',
 		locationId: $("#location").val(),
@@ -88,11 +122,36 @@ var app = new Vue({
 			this.employeeId = employee_id;
 			$('#scoreModal').modal();
 		},
+		viewScore: function(employee_id){
+			//alert("view: "+ employee_id + " period: " + $("#period").val() );
+			$.post(
+				'/score/view/employeePeriod',
+				{
+					_token: app.token,
+					employee: employee_id,
+					startDate: $("#period").val(),
+					location: $("#location").val()
+				},
+				function(data,status){
+					if(status == 'success'){
+						$('#viewResult').html(data);
+						$('#viewModal').modal();
+					}
+				}
+				);
+		}
+		
+	}
+});
+
+var app2 = new Vue({
+	el:'#app2',
+	methods: {
 		showItems: function(categoryId){
 			$.post(
 				'/score/item/getItemsByCategory',
 				{
-					_token: this.token,
+					_token: app.token,
 					category: categoryId,
 				},
 				function(data,status){
@@ -124,7 +183,7 @@ function scoreItem(itemId){
 					employee: app.employeeId,
 					item: itemId,
 					location: app.locationId,
-					reviewDate: app.reviewDate,
+					reviewDate: $('#reviewDate').val()
 				},
 				function(data,status){
 					if(status == 'success'){

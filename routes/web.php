@@ -23,6 +23,7 @@ Route::get('/vue',function(){
 
 //EMPLOYEE
 Route::get('/employee','EmployeeController@index');
+Route::get('/staff/profile/{id}/show','EmployeeController@show');
 
 //score
 Route::get('/score/category','ScoreCategoryController@index');
@@ -39,12 +40,13 @@ Route::get('/score/item/{id}/delete','ScoreItemController@destroy');
 Route::get('/score/item/{id}/edit','ScoreItemController@edit');
 Route::post('/score/item/{id}/update','ScoreItemController@update');
 Route::post('/score/item/getItemsByCategory','ScoreItemController@getItemsByCategory');
+
 // performance
 Route::get('/employee/performance','EmployeePerformanceController@index');
 Route::post('/employee/reviewable','EmployeePerformanceController@reviewable');
 Route::post('/employee/performance/store','EmployeePerformanceController@store');
-
-
+Route::post('/score/view/employeePeriod','EmployeePerformanceController@employeePeriod');
+Route::post('/score/remove','EmployeePerformanceController@destroy');
 
 Route::get('/api/newShift',function(){
 	return 'API';

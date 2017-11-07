@@ -12,4 +12,5 @@ class Score_item extends Model
     {
     	return $this->belongsTo('App\Score_category');
     }
+   
 }

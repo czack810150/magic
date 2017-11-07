@@ -1,0 +1,140 @@
+.hr-header {
+	background: #2c2e3d;
+	height:150px;
+	color: white;
+	padding-top: 20px;
+}
+.hr-contact-list {
+padding-right:40px;
+padding-top:30px;
+text-align:right;
+}
+.avatar-wrapper {
+}
+.employee_name {
+	font-size:24px;
+	line-height:normal;
+
+	margin-bottom:0;
+	margin-top:10px;
+}
+.employee_title {
+	display:inline;
+	margin-top:3px;
+	font-size:16px;
+	line-height:100%;
+}
+.employee_control:hover {
+	color:#acb5c3;
+}
+.employee_control a {
+	color:#acb5c3;
+}
+div.user_pic {
+
+	width:250px;
+	min-height:250px;
+}
+div.info_box {
+	margin-top:10px;
+	padding:5px;
+	border-bottom:dotted 1px;
+}
+div.info_box p {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+div.info_box ul li {
+	margin-bottom:5px;
+}
+h5.sidebar-title{
+	margin-top:0;
+	margin-bottom:5px;
+}
+div.manager{
+	margin-top:10px;	
+	font-size:12px;
+	margin-bottom:10px;
+}
+#hr-tabs {
+	padding-top:5px;
+	
+}
+#hr-tabs ul li  {
+	margin-right:5%;
+	
+}
+#user-info  {
+	
+}
+#user-info hr {
+	margin-top:0px;
+}
+#user-info label{
+	color:#95a5a6;
+}
+div.train-item {
+	width:200px;
+	margin-left:15px;
+	margin-top:20px;
+	border:1px solid grey;
+}
+p.time-info {
+	
+	font-size:10px;
+}
+.dashboard-bg {
+	background-color:#3d3d3d;
+	min-height:500px;
+
+	padding:0 5px;
+}
+
+
+div.hr-box {
+	margin-top:10px;
+	margin-left:5px;
+	padding:5px;
+	background-color:#303030;
+	min-height:100px;
+	max-height:400px;
+	
+}
+.position-breakdown {
+	overflow-y:scroll;
+}
+div.headcount{
+	text-align:center;
+	color:#f3d14d;
+	font-size:42px;
+	padding:0;
+}
+.bottom-name {
+	text-align:center;
+	vertical-align: bottom;
+	color:#f3d14d;
+}
+.movement {
+	text-align:center;
+	font-size:32px;
+}
+/* Use this selector to override bar styles on bar charts. Bars are also strokes so you have maximum freedom in styling them. */
+.ct-series-a .ct-bar {
+  /* Colour of your bars */
+  stroke: #4d76bc!important;
+
+
+}
+.store-manager:hover{
+	border-left:5px solid #0cc874;
+}
+ul.stats_list {
+	list-style-type:none;
+}
+ul.stats_list li {
+	float:left;
+	width:100px;
+	margin:0 auto;
+	font-size:18px;
+}
+

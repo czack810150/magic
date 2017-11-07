@@ -30,5 +30,6 @@
         <!-- Custom styles for this template -->
  
     <link href="{{asset('css/timeclock.css')}}" rel="stylesheet">
+    <link href="{{asset('css/hr.css')}}" rel="stylesheet">
     <script src="{{URL::asset('js/vue.js')}}"></script>
   </head>

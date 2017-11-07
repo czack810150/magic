@@ -48,6 +48,7 @@
 @endsection
 @section('pageJS')
 <script>
+
 //var list = $('#location');
     let transition = '<div class="row"><div class="col-md-4 offset-md-5"><h1><i class="fa fa-spinner fa-pulse fa-3x"></i></h1></div></div>';
 
@@ -73,6 +74,7 @@
 		}
 		
 	}
+
 </script>
 
 

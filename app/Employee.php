@@ -7,6 +7,15 @@ use Carbon\Carbon;
 class Employee extends Model
 {
 
+    public function employee_profile()
+    {
+        return $this->hasOne('App\employee_profile');
+    }
+    public function employee_background()
+    {
+        return $this->hasOne('App\employee_background');
+    }
+
     public function getHiredAttribute($value)
     {
         return Carbon::createFromFormat('Y-m-d',$value);
@@ -19,7 +28,8 @@ class Employee extends Model
 
     public function location()
     {
-    	return $this->belongsToMany('App\Location');
+        return $this->belongsTo('App\Location');
+    	//return $this->belongsToMany('App\Location');
     }
 
      public function shift()
@@ -45,6 +55,10 @@ class Employee extends Model
     public function job()
     {
         return $this->belongsTo('App\Job');
+    }
+    public function authorization()
+    {
+        return $this->hasOne('App\Authorization');
     }
     // scopes
     public function scopeActiveEmployee($query)

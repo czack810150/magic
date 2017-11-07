@@ -14,8 +14,9 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+        $subheader = 'Staff Directory';
         $employees = Employee::get();
-        return view('employee.index',compact('employees'));
+        return view('employee.index',compact('employees','subheader'));
     }
 
     /**
@@ -46,8 +47,10 @@ class EmployeeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
+    {   
+        $subheader = 'Staff Profile';
+        $staff = Employee::findOrFail($id);
+        return view('employee/profile/index',compact('staff','subheader'));
     }
 
     /**
