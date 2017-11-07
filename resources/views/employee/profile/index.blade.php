@@ -5,8 +5,10 @@
 <div class="row">
 <div class="col-12 col-md-2">
 <div class="avatar-wrapper ml-3">
+	@if(isset($staff->employee_profile))
 	<img class="img-fluid" 
 	src="{{asset('/img/'.$staff->employee_profile->img)}}" alt="{{$staff->firstName}}" height="200" width="200">
+	@endif
 </div>
 </div>
 <div class="col-12 col-md-3">
