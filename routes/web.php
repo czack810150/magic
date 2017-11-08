@@ -22,9 +22,12 @@ Route::get('/vue',function(){
 // end vue
 
 //EMPLOYEE
+Route::post('/filter/employee/list','EmployeeController@filterEmployees');
 Route::get('/employee','EmployeeController@index');
 Route::get('/staff/profile/{id}/show','EmployeeController@show');
-
+Route::post('/employee/edit/personal','EmployeeController@editPersonal');
+Route::post('/employee/edit/personal/cancel','EmployeeController@cancelPersonal');
+Route::post('/employee/edit/personal/update','EmployeeController@updatePersonal');
 //score
 Route::get('/score/category','ScoreCategoryController@index');
 Route::get('/score/category/create','ScoreCategoryController@create');

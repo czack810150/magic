@@ -23,7 +23,42 @@
 											</ul>
 										</div>
 									</div>
-									<div class="m-portlet__body">
+
+<!--begin::Form-->
+									<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
+										<div class="m-portlet__body">
+											<div class="form-group m-form__group row">
+												<div class="col-lg-4">
+													
+													{{ Form::select('location',$locations,-1,['class'=>'form-control m-input','id'=>'locationSelect'])}}
+													
+												</div>
+												<div class="col-lg-4">
+													
+													{{ Form::select('status',$status,'active',['class'=>'form-control m-input','id'=>'statusSelect'])}}
+													
+												</div>
+												<div class="col-lg-4">
+													
+													<div class="input-group m-input-group m-input-group--square">
+														<span class="input-group-addon">
+															<i class="la la-user"></i>
+														</span>
+														<input type="text" class="form-control m-input" placeholder="">
+													</div>
+												
+												</div>
+											</div>
+											
+										</div>
+										
+									</form>
+									<!--end::Form-->
+
+<div class="m-portlet__body" id="staffList">
+
+
+
 <table class="table table-hover">
 	<thead>
 		<tr>
@@ -77,9 +112,35 @@
     </div>
   </div>
 </div>		
+						
+@endsection
+@section('pageJS')
+
 <script>
-	function viewEmployee(employee){
+		function viewEmployee(employee){
 		window.location.href='/staff/profile/' + employee + '/show';
 	}
-</script>						
+	$('#locationSelect').on('change',function(){
+		filterEmployees();
+	});
+	$('#statusSelect').on('change',function(){
+		filterEmployees();
+	});
+
+function filterEmployees(){
+	$.post(
+			'/filter/employee/list',
+			{
+				_token: '{{ csrf_token() }}',
+				location: $('#locationSelect').val(),
+				status: $('#statusSelect').val(),
+			},
+			function(data,status){
+				if(status == 'success'){
+					$('#staffList').html(data);
+				}
+			}
+			);
+}
+</script>
 @endsection

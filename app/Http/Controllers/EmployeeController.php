@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use App\Employee;
+use App\Employee_profile;
+
+use App\Location;
 
 class EmployeeController extends Controller
 {
@@ -16,7 +20,25 @@ class EmployeeController extends Controller
     {
         $subheader = 'Staff Directory';
         $employees = Employee::get();
-        return view('employee.index',compact('employees','subheader'));
+        $locations = Location::pluck('name','id');
+        $locations[-1] = 'All Locations';
+        $status = array(
+            'active' => 'Active staffs only',
+            'vacation' => 'On vacation only',
+            'terminated' => 'Terminated staffs',
+        ); 
+        return view('employee.index',compact('employees','subheader','locations','status'));
+    }
+     public function filterEmployees(Request $r)
+    {
+
+        if($r->location != -1){
+            $employees = Employee::where('location_id',$r->location)->where('status',$r->status)->get();
+        } else {
+             $employees = Employee::where('status',$r->status)->get();
+        }
+        
+        return View::make('employee.list',compact('employees'))->render();
     }
 
     /**
@@ -99,5 +121,29 @@ class EmployeeController extends Controller
     public function location(Request $r){
         $employees = Employee::where('location_id',$r->location)->pluck('cName','id');
         return $employees;
+    }
+    public function editPersonal(Request $r)
+    {
+        $staff = Employee::find($r->employee);
+        return view('employee.edit.personal',compact('staff'));
+    }
+    public function cancelPersonal(Request $r)
+    {
+        $staff = Employee::find($r->employee);
+        return view('employee.edit.cancel_personal',compact('staff'));
+    }
+    public function updatePersonal(Request $r)
+    {   
+        $profile = Employee_profile::where('employee_id',$r->employee)->first();
+        $profile->sex = $r->gender;
+        return $profile->sex; // below dont work;
+        $profile->save();
+        $employee = Employee::find($r->employee);
+        $employee->firstName = $r->firstName;
+        $employee->lastName = $r->lastName;
+        $employee->cName = $r->cName;
+       
+        $employee->save();
+        return 'success';
     }
 }

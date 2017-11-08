@@ -36,8 +36,6 @@ class Employee extends Model
     {
         return $this->hasOne('App\In');
     }
-
-    
    
     public function exam()
     {
