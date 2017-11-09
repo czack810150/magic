@@ -28,6 +28,13 @@ Route::get('/staff/profile/{id}/show','EmployeeController@show');
 Route::post('/employee/edit/personal','EmployeeController@editPersonal');
 Route::post('/employee/edit/personal/cancel','EmployeeController@cancelPersonal');
 Route::post('/employee/edit/personal/update','EmployeeController@updatePersonal');
+Route::post('/employee/edit/contact','EmployeeController@editContact');
+Route::post('/employee/edit/contact/cancel','EmployeeController@cancelContact');
+Route::post('/employee/edit/contact/update','EmployeeController@updateContact');
+Route::post('/employee/edit/address','EmployeeController@editAddress');
+Route::post('/employee/edit/address/cancel','EmployeeController@cancelAddress');
+Route::post('/employee/edit/address/update','EmployeeController@updateAddress');
+
 //score
 Route::get('/score/category','ScoreCategoryController@index');
 Route::get('/score/category/create','ScoreCategoryController@create');

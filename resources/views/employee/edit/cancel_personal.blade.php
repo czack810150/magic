@@ -40,7 +40,7 @@
 <div class="info-box pl-3">
 <small>Gender</small>
 @if(!empty($staff->employee_profile->sex))
-<p>{{ $staff->employee_profile->sex?'Male':'Female' }}</p>
+<p>{{ $staff->employee_profile->sex }}</p>
 @else
 <p>-</p>
 @endif

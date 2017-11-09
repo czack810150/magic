@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Employee;
 use App\Employee_profile;
+use App\Employee_background;
 
 use App\Location;
 
@@ -135,15 +136,136 @@ class EmployeeController extends Controller
     public function updatePersonal(Request $r)
     {   
         $profile = Employee_profile::where('employee_id',$r->employee)->first();
-        $profile->sex = $r->gender;
-        return $profile->sex; // below dont work;
-        $profile->save();
+        if(is_null($profile)){
+
+            try {
+            $profile = new Employee_profile;
+            $profile->employee_id = $r->employee;
+            $profile->sex = $r->gender;
+            $profile->dob = $r->dob;
+            $profile->married = $r->married;
+            $profile->save(); 
+            }
+            catch (\Exception $e) {
+                return $e->getMessage();
+            }
+        } else {
+                $profile->sex = $r->gender;
+                $profile->dob = $r->dob;
+                $profile->married = $r->married;
+                $profile->save();
+        }
+
+        $background = Employee_background::where('employee_id',$r->employee)->first();
+        if(is_null($background)){
+            try {
+                $background = new Employee_background;
+                $background->employee_id = $r->employee;
+                $background->hometown = $r->hometown;
+                $background->canada_status = $r->canada_status;
+                $background->save();
+            }
+            catch (\Exception $e) {
+                return $e->getMessage();
+            }
+        } else {
+            $background->hometown = $r->hometown;
+            $background->canada_status = $r->canada_status;
+            $background->save();
+        }
+      
         $employee = Employee::find($r->employee);
         $employee->firstName = $r->firstName;
         $employee->lastName = $r->lastName;
         $employee->cName = $r->cName;
-       
+        $employee->email = $r->email;
         $employee->save();
-        return 'success';
+        return 1;
+    }
+     public function editContact(Request $r)
+    {
+        $staff = Employee::find($r->employee);
+        return view('employee.edit.contact',compact('staff'));
+    }
+    public function cancelContact(Request $r)
+    {
+        $staff = Employee::find($r->employee);
+        return view('employee.edit.contactCancel',compact('staff'));
+    }
+    public function updateContact(Request $r)
+    {   
+        $profile = Employee_profile::where('employee_id',$r->employee)->first();
+        if(is_null($profile)){
+
+            try {
+            $profile = new Employee_profile;
+            $profile->employee_id = $r->employee;
+            $profile->phone = $r->phone;
+            $profile->save(); 
+            }
+            catch (\Exception $e) {
+                return $e->getMessage();
+            }
+        } else {
+            $profile->phone = $r->phone;
+            $profile->save();
+        }
+
+        $background = Employee_background::where('employee_id',$r->employee)->first();
+        if(is_null($background)){
+            try {
+                $background = new Employee_background;
+                $background->employee_id = $r->employee;
+                $background->emergency_person = $r->emergency_person;
+                $background->emergency_phone = $r->emergency_phone;
+                $background->emergency_relation = $r->emergency_relation;
+                $background->save();
+            }
+            catch (\Exception $e) {
+                return $e->getMessage();
+            }
+        } else {
+                $background->emergency_person = $r->emergency_person;
+                $background->emergency_phone = $r->emergency_phone;
+                $background->emergency_relation = $r->emergency_relation;
+                $background->save();
+        }
+        return 1;
+    }
+      public function editAddress(Request $r)
+    {
+        $staff = Employee::find($r->employee);
+        return view('employee.edit.address',compact('staff'));
+    }
+    public function cancelAddress(Request $r)
+    {
+        $staff = Employee::find($r->employee);
+        return view('employee.edit.addressCancel',compact('staff'));
+    }
+      public function updateAddress(Request $r)
+    {   
+        $profile = Employee_profile::where('employee_id',$r->employee)->first();
+        if(is_null($profile)){
+
+            try {
+            $profile = new Employee_profile;
+            $profile->employee_id = $r->employee;
+            $profile->address = $r->address;
+            $profile->city = $r->city;
+            $profile->state = $r->state;
+            $profile->zip = $r->zip;
+            $profile->save(); 
+            }
+            catch (\Exception $e) {
+                return $e->getMessage();
+            }
+        } else {
+            $profile->address = $r->address;
+            $profile->city = $r->city;
+            $profile->state = $r->state;
+            $profile->zip = $r->zip;
+            $profile->save();
+        }
+        return 1;
     }
 }

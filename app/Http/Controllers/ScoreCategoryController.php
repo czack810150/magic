@@ -14,8 +14,9 @@ class ScoreCategoryController extends Controller
      */
     public function index()
     {
+        $subheader = "Score Settings";
         $categories = Score_category::get();
-        return view('score.category.index',compact('categories'));
+        return view('score.category.index',compact('categories','subheader'));
     }
 
     /**
@@ -25,7 +26,8 @@ class ScoreCategoryController extends Controller
      */
     public function create()
     {
-        return view('score.category.create');
+        $subheader = "Score Settings";
+        return view('score.category.create',compact('subheader'));
     }
 
     /**

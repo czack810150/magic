@@ -75,8 +75,8 @@
 <div class="col-3">
 <div class="info-box pl-3">
 <small>Gender</small>
-@if(!empty($staff->employee_profile->sex))
-<p>{{ $staff->employee_profile->sex?'Male':'Female' }}</p>
+@if(!is_null($staff->employee_profile))
+<p>{{ $staff->employee_profile->sex }}</p>
 @else
 <p>-</p>
 @endif
@@ -133,6 +133,8 @@
 
 </div>
 </div><!-- end of personal detailes -->									
+<!-- begin of contact details -->
+<div id="contactDetails">
 									<div class="m-portlet__head">
 										<div class="m-portlet__head-caption">
 											<div class="m-portlet__head-title">
@@ -145,16 +147,69 @@
 										<div class="m-portlet__head-tools">
 											<ul class="m-portlet__nav">
 												<li class="m-portlet__nav-item">
-													<a href="" class="m-portlet__nav-link m-portlet__nav-link--icon">
-														<i class="la la-close"></i>
+													<a href="javascript:editContact({{ $staff->id }})" class="m-portlet__nav-link m-portlet__nav-link--icon">
+														<i class="la la-edit"></i>
 													</a>
 												</li>
 											</ul>
 										</div>
 									</div>
-									<div class="m-portlet__body">
-										Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.
-									</div>
+<div class="m-portlet__body">
+
+<div class="row">
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Phone</small>
+@if($staff->employee_profile)
+<p>{{ $staff->employee_profile->phone }}</p>
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Emergency Contact</small>
+@if( $staff->employee_background )
+<p>{{ $staff->employee_background->emergency_person }}</p>
+@else
+<p>-</p>
+@endif
+
+</div>
+</div>
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Emergency Phone</small>
+@if( $staff->employee_background )
+<p>{{ $staff->employee_background->emergency_phone }}</p>
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Emergency Relation</small>
+@if(!is_null($staff->employee_background))
+<p>{{ $staff->employee_background->emergency_relation }}</p>
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div><!-- end of contact detailes -->									
+<!-- begin of address details -->
+<div id="addressDetails">
 									<div class="m-portlet__head">
 										<div class="m-portlet__head-caption">
 											<div class="m-portlet__head-title">
@@ -167,16 +222,69 @@
 										<div class="m-portlet__head-tools">
 											<ul class="m-portlet__nav">
 												<li class="m-portlet__nav-item">
-													<a href="" class="m-portlet__nav-link m-portlet__nav-link--icon">
-														<i class="la la-close"></i>
+													<a href="javascript:editAddress({{ $staff->id }})" class="m-portlet__nav-link m-portlet__nav-link--icon">
+														<i class="la la-edit"></i>
 													</a>
 												</li>
 											</ul>
 										</div>
 									</div>
-									<div class="m-portlet__body">
-										Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.
-									</div>
+<div class="m-portlet__body">
+
+<div class="row">
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Address</small>
+@if(isset($staff->employee_profile->address))
+<p>{{ $staff->employee_profile->address }}</p>
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>City</small>
+@if( isset($staff->employee_profile->city) )
+<p>{{ $staff->employee_profile->city }}</p>
+@else
+<p>-</p>
+@endif
+
+</div>
+</div>
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>State/Province</small>
+@if( isset($staff->employee_profile->state) )
+<p>{{ $staff->employee_profile->state }}</p>
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Postal Code</small>
+@if( isset($staff->employee_profile->zip) )
+<p>{{ $staff->employee_profile->zip }}</p>
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+
+</div>
+
+
+
+</div>
+</div><!-- end of adress detailes -->	
+
+
+
 								</div>
 								<!--end::Portlet-->
 {{ csrf_field() }}			

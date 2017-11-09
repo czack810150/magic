@@ -9,11 +9,11 @@ class Employee extends Model
 
     public function employee_profile()
     {
-        return $this->hasOne('App\employee_profile');
+        return $this->hasOne('App\Employee_profile');
     }
     public function employee_background()
     {
-        return $this->hasOne('App\employee_background');
+        return $this->hasOne('App\Employee_background');
     }
 
     public function getHiredAttribute($value)

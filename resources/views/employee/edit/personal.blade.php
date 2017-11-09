@@ -65,7 +65,7 @@
 <div class="info-box pl-3">
 <small>Email</small>
 <div class="input-group m-input-group m-input-group--square">
-<input type="text" class="form-control m-input form-control-sm" value="
+<input type="email" class="form-control m-input form-control-sm" value="
 @if(!empty($staff->email))
 {{$staff->email}}
 @endif" id="email">
@@ -76,10 +76,10 @@
 <div class="info-box pl-3">
 <small>Gender</small>
 @if(!empty($staff->employee_profile->sex))
-{{ Form::select('gender',['0'=>'Female','1'=>'Male'],$staff->employee_profile->sex,['id'=>'gender',
+{{ Form::select('gender',['female'=>'Female','male'=>'Male','non-binary'=>'Non-binary'],$staff->employee_profile->sex,['id'=>'gender',
 'class'=>'form-control m-input form-control-sm']) }}
 @else
-{{ Form::select('gender',['0'=>'Female','1'=>'Male'],null,['id'=>'gender','placeholder'=>'choose',
+{{ Form::select('gender',['female'=>'Female','male'=>'Male','non-binary'=>'Non-binary'],null,['id'=>'gender','placeholder'=>'Choose a gender',
 'class'=>'form-control m-input form-control-sm']) }}
 @endif
 </div>
@@ -119,20 +119,20 @@
 @if(!empty($staff->employee_background->canada_status))
 {{ Form::select('canada_status',
 [
-'0' => 'Visitor',
-'1' => 'Study Permit',
-'2' => 'Work Permit',
-'3' => 'Permanent Resident',
-'4' => 'Canadian Citizen'
+'visitor' => 'Visitor',
+'study_permit' => 'Study Permit',
+'work_permit' => 'Work Permit',
+'pr' => 'Permanent Resident',
+'citizen' => 'Canadian Citizen'
 ],$staff->employee_background->canada_status,['id'=>'canada_status',
 'class'=>'form-control m-input form-control-sm']) }}
 @else
 {{ Form::select('canada_status',[
-'0' => 'Visitor',
-'1' => 'Study Permit',
-'2' => 'Work Permit',
-'3' => 'Permanent Resident',
-'4' => 'Canadian Citizen'
+'visitor' => 'Visitor',
+'study_permit' => 'Study Permit',
+'work_permit' => 'Work Permit',
+'pr' => 'Permanent Resident',
+'citizen' => 'Canadian Citizen'
 ],null,['id'=>'canada_status','placeholder'=>'Immigration status',
 'class'=>'form-control m-input form-control-sm']) }}
 @endif

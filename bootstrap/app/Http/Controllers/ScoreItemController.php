@@ -15,8 +15,9 @@ class ScoreItemController extends Controller
      */
     public function index()
     {
+        $subheader = "Score Settings";
         $items = Score_item::orderBy('score_category_id')->orderBy('myOrder')->get();
-        return view('score.item.index',compact('items'));
+        return view('score.item.index',compact('items','subheader'));
     }
 
     /**
@@ -26,8 +27,9 @@ class ScoreItemController extends Controller
      */
     public function create()
     {   
+        $subheader = "Score Settings";
         $categories = Score_category::pluck('name','id');
-        return view('score.item.create',compact('categories'));
+        return view('score.item.create',compact('categories','subheader'));
     }
 
     /**
