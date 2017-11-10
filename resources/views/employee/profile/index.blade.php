@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @section('content')
 
-<section class="hr-header mb-5">
+<section class="hr-header">
 <div class="row">
 <div class="col-12 col-md-2">
 <div class="avatar-wrapper ml-3">
@@ -28,6 +28,35 @@
 </div>
 
 </div>
+
+<div class="row">
+<div class="col-md-12">
+<ul class="nav justify-content-center">
+  <li class="nav-item">
+    <a class="nav-link" href="/staff/profile/{{ $staff->id }}/show">Profile</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Employment</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Training</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Time off</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Account</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Compensation</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Notes</a>
+  </li>
+</ul>
+</div>
+</div>
+
 </section>
 
 

@@ -28,14 +28,14 @@ class Hour extends Model
     	return DB::table('shifts')->select(DB::raw('sum(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 as total'))
         ->where('location_id',$location)
         ->where('employee_id',$employee)
-        ->where('start','>',$start)->whereDate('start','<=',$end)
+        ->where('start','>=',$start)->whereDate('start','<=',$end)
         ->first()->total;
     }
     public static function clockedHour($employee,$location,$start,$end){
     	return DB::table('clocks')->select(DB::raw('sum(UNIX_TIMESTAMP(clockOut)-UNIX_TIMESTAMP(clockIn))/3600 as total'))
         ->where('location_id',$location)
         ->where('employee_id',$employee)
-        ->where('clockIn','>',$start)->whereDate('clockIn','<=',$end)
+        ->where('clockIn','>=',$start)->whereDate('clockIn','<=',$end)
         ->first()->total;
     }
 
@@ -162,6 +162,7 @@ class Hour extends Model
         $wk1End = $startDate->addDays(6)->toDateString();
         $wk2Start = $startDate->addDay()->toDateString();
         $wk2End = $startDate->addDays(6)->toDateString();
+        $wk2EndPlusOne = $startDate->addDay()->toDateString();
         $employees = Employee::whereBetween('termination',[$wk1Start,$wk2End])->orWhere('termination',null)->orderBy('location_id')->orderBy('job_id')->get();
         $result = array(
         );
@@ -170,7 +171,7 @@ class Hour extends Model
         {
         	$hour = new HourObj($e->id,$e->cName,$e->employeeNumber,$wk1Start,$wk2End);
         	// get all locations that matter for this employee in period
-        	$locations = array_unique(Shift::where('employee_id',$e->id)->whereBetween('start',[$wk1Start,$wk2End])->pluck('location_id')->toArray());
+        	$locations = array_unique(Shift::where('employee_id',$e->id)->whereBetween('start',[$wk1Start,$wk2EndPlusOne])->pluck('location_id')->toArray());
         	foreach($locations as $location)
         	{
         		$breakDown = New HourBreakDown;
@@ -189,7 +190,7 @@ class Hour extends Model
         		$breakDown->wk2Overtime = self::overtime($breakDown->wk2Effective,$config->overtime);
         		$hour->works[] = $breakDown;
         		//save to db
-        		if($breakDown->wk1Scheduled > 0 ||$breakDown->wk2Scheduled > 0)
+        		if(!is_null($breakDown->wk1Scheduled) || !is_null($breakDown->wk2Scheduled) )
         		{
         			$HOUR = new Hour;
         			$HOUR->start = $wk1Start;

@@ -38,10 +38,10 @@
 <table class="table table-sm">
 	<thead>
 		<tr><th>card</th><th>name</th><th>legal</th><th>wk1</th><th>wk2</th><th>hours</th><th>regular</th><th>overtime</th><th>Premium</th><th>Holiday</th><th>gross</th>
-			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>Cheque</th><th>Cheque#</th>
+			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>Cheque</th>
 			<th>Position rate</th><th>Tip %</th><th>nightHrs</th><th>Meal</th>
-			<th>performance</th>
-			<th>Variable Pay</th><th>total</th>
+			<th>P</th>
+			<th>Variable Pay</th><th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -51,7 +51,7 @@
 				
 				<td>{{$e->employee->employeeNumber}}</td>
 				<td>{{$e->employee->cName}}</td>
-				<td>{{$e->employee->firstName.','.$e->employee->lastName}}</td>
+				<td>{{$e->employee->firstName.' '.$e->employee->lastName}}</td>
 				<td>{{$e->week1}}</td>
 				<td>{{$e->week2}}</td>
 				<td>{{$e->week1 + $e->week2}}</td>
@@ -69,11 +69,7 @@
 				<td>{{$e->provincialTax}}</td>
 				<td>{{$e->provincialTax +$e->federalTax }}</td>
 				<td>{{$e->cheque}}</td>
-				@if($e->chequeNumber)
-				<td>{{$e->chequeNumber}}</td>
-				@else
-				<td id="cheque{{$e->id}}"><button type="button" class="btn btn-sm btn-primary" onclick="addChequeNumber({{$e->id}})">Add</button></td>
-				@endif
+			
 
 				<td>{{$e->position_rate}}</td>
 				<td>{{$e->tip}}</td>

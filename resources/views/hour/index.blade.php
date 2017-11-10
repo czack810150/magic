@@ -5,8 +5,6 @@
 <div class="container-fluid" id="hours">
 
 
-
-
 <form class="form-inline my-2" method="POST" action="/hours">
 
 	
@@ -25,7 +23,7 @@
 </form>
 @if($hours)
 <main >
-<h2>hours</h2>
+{{ Form::button('Download CSV',['class'=>'btn btn-warning','onclick'=>'exportTableToCSV("hours.csv")']) }}
 
 <table class="table table-sm table-hover">
 <thead>

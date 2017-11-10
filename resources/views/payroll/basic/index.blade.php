@@ -27,10 +27,16 @@
 														{{ Form::button('View',['class'=>'btn btn-primary','onclick'=>'viewLocationData()']) }}
 												
 												</li>
+												<li class="m-portlet__nav-item">
+												
+														{{ Form::button('Download CSV',['class'=>'btn btn-warning','onclick'=>'exportTableToCSV("payroll.csv")']) }}
+												
+												</li>
 											</ul>
 										</div>
 									</div>
 									<div class="m-portlet__body">
+										
 										<main id="payroll"></main>
 									</div>
 								</div>

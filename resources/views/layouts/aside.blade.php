@@ -46,7 +46,7 @@
 								<div class="m-menu__submenu">
 									<span class="m-menu__arrow"></span>
 									<ul class="m-menu__subnav">
-										@if(Auth::user()->authorization->level == 99)
+										@if(Auth::user()->authorization->level >=30 )
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/employee" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
