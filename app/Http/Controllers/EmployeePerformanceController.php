@@ -15,6 +15,10 @@ use Carbon\Carbon;
 
 class EmployeePerformanceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -105,18 +109,20 @@ class EmployeePerformanceController extends Controller
     {
         $periodStart = Carbon::createFromFormat('Y-m-d',$r->period);
         $start = $periodStart->toDateString();
-        $end = $periodStart->addDays(13)->toDateString();
+        $end = $periodStart->addDays(14)->toDateString();
         $categories = Score_category::all(); 
-        $employees = Employee::where('location_id',$r->location)->orderBy('job_id')->get();
+        //$employees = Employee::where('location_id',$r->location)->orderBy('job_id')->get();
+        $employees = Shift::select('employee_id')->whereBetween('start',[ $start, $end])->where('location_id',$r->location)->distinct()->get();
+
         foreach($employees as $e){
 
-            $e->score = Score_log::where('location_id',$r->location)->where('employee_id',$e->id)->
-                            whereBetween('date',[$start,$end])->sum('value') + 100;
+            $e->score = Score_log::where('location_id',$r->location)->where('employee_id',$e->employee_id)->
+                            whereBetween('date',[$start,$end])->sum('value') + 100;                
             if($e->score > 110){
                 $e->score = 110;                
             }
         }
-          
+        // dd($employees); 
             return View::make('employee.performance.reviewable',compact('employees','categories'))->render();
     }
     public function employeePeriod(Request $r)

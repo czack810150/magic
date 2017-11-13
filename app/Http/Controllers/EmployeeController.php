@@ -7,16 +7,17 @@ use Illuminate\Support\Facades\View;
 use App\Employee;
 use App\Employee_profile;
 use App\Employee_background;
-
+use Illuminate\Support\Facades\Auth;
 use App\Location;
+use App\Job;
 
 class EmployeeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
         $subheader = 'Staff Directory';
@@ -232,7 +233,7 @@ class EmployeeController extends Controller
         }
         return 1;
     }
-      public function editAddress(Request $r)
+    public function editAddress(Request $r)
     {
         $staff = Employee::find($r->employee);
         return view('employee.edit.address',compact('staff'));
@@ -266,6 +267,79 @@ class EmployeeController extends Controller
             $profile->zip = $r->zip;
             $profile->save();
         }
+        return 1;
+    }
+
+    public function employment(Request $r)
+    {    
+        $user = Auth::user();
+        $employee = Employee::findOrFail($r->employee);
+        return View::make('employee.profile.employment.index',compact('employee','user'))->render();
+    }
+    public function editEmployment(Request $r)
+    {   
+        $user = Auth::user();
+        $employee = Employee::find($r->employee);
+        $jobs = Job::pluck('rank','id');
+        $locations = Location::pluck('name','id');
+
+        if( in_array($user->authorization->type,['dm','hr','admin']) ) {
+            $types = ['admin' => 'Admin',
+        'staff' => 'Staff',
+        'manager' => 'Manager',
+        'employee'=>'Employee',
+        'applicant' => 'Applicant',
+        'gm' => 'General Mananger',
+        'dm' => 'District Manager',
+        'hr' => 'Human Resoureces',
+        'accounting' => 'Accountant'];
+        } else {
+        $types = [
+        'staff' => 'Staff',
+        'manager' => 'Manager',
+        'employee'=>'Employee',
+        ];
+        }
+        return view('employee.profile.employment.edit',compact('employee','user','jobs','types','locations'));
+    }
+    public function updateEmployment(Request $r)
+    {
+      
+        // $profile = Employee_profile::where('employee_id',$r->employee)->first();
+        // if(is_null($profile)){
+
+        //     try {
+        //     $profile = new Employee_profile;
+        //     $profile->employee_id = $r->employee;
+        //     $profile->address = $r->address;
+        //     $profile->city = $r->city;
+        //     $profile->state = $r->state;
+        //     $profile->zip = $r->zip;
+        //     $profile->save(); 
+        //     }
+        //     catch (\Exception $e) {
+        //         return $e->getMessage();
+        //     }
+        // } else {
+        //     $profile->address = $r->address;
+        //     $profile->city = $r->city;
+        //     $profile->state = $r->state;
+        //     $profile->zip = $r->zip;
+        //     $profile->save();
+        // }
+       
+        $employee = Employee::find($r->employee);
+        $employee->job_id = $r->job;
+        $employee->employeeNumber = $r->employeeNumber;
+        $employee->hired = $r->hired;
+        // if(!empty($r->termination)){
+        //     $employee->termination = $r->termination;
+        // } else {
+        //     $employee->termination = 'NULL';
+        // }
+        $employee->termination = null;
+        $employee->location_id = $r->location;
+        $employee->save();
         return 1;
     }
 }

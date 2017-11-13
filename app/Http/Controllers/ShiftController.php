@@ -8,6 +8,7 @@ use App\Location;
 
 class ShiftController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *

@@ -1,4 +1,21 @@
+function notify(message,type){
+	$.notify({
+					message:message
+				},
+				{
+					type:type,
+					placement:{
+						from:'top',
+						align:'center',
+					},
+					animate: {
+					enter: 'animated bounce',
+					exit: 'animated fadeOutUp'
+				},
 
+				}
+				);
+}
 
 //hr
 function editPersonal(employee) {
@@ -149,21 +166,57 @@ function updateAddress(employee){
 		);
 }
 
-function notify(message,type){
-	$.notify({
-					message:message
-				},
-				{
-					type:type,
-					placement:{
-						from:'top',
-						align:'center',
-					},
-					animate: {
-					enter: 'animated bounce',
-					exit: 'animated fadeOutUp'
-				},
 
-				}
-				);
+
+function employment(employee)
+{
+	$.post(
+		'/employee/employment',
+		{
+			_token: $("input[name=_token]").val(),
+			employee: employee
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);	
+}
+function editEmployment(employee) {
+	$.post(
+		'/employee/employment/edit',
+		{
+			_token: $("input[name=_token]").val(),
+			employee: employee
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employmentDetails').html(data);
+			}
+		}
+		);
+}
+function updateEmployment(employee){
+	$.post(
+		'/employee/employment/update',
+		{
+			_token: $("input[name=_token]").val(),
+			employee: employee,
+			job: $('select[name=job]').val(),
+			employeeNumber: $('input[name=employeeNumber]').val(),
+			hired: $('input[name=hired]').val(),
+			termination: $('input[name=termination]').val(),
+			type: $('select[name=type]').val(),
+			location: $('select[name=location]').val(),
+			sin: $('input[name=sin]').val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				console.log(data);
+				notify('Employment details have been saved!','primary');
+				employment(employee);
+			}
+		}
+		);
 }

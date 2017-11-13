@@ -119,6 +119,7 @@
 @if(!empty($staff->employee_background->canada_status))
 {{ Form::select('canada_status',
 [
+'unknown' => 'Unknown',
 'visitor' => 'Visitor',
 'study_permit' => 'Study Permit',
 'work_permit' => 'Work Permit',
@@ -128,6 +129,7 @@
 'class'=>'form-control m-input form-control-sm']) }}
 @else
 {{ Form::select('canada_status',[
+'unknown' => 'Unknown',
 'visitor' => 'Visitor',
 'study_permit' => 'Study Permit',
 'work_permit' => 'Work Permit',

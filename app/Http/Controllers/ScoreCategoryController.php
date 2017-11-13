@@ -7,6 +7,10 @@ use App\Score_category;
 
 class ScoreCategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *

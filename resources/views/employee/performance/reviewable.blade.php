@@ -10,13 +10,13 @@
 <tbody>
 	@foreach($employees as $e)
 	<tr>
-		<td>{{ $e->job->rank }}</td>
-		<td>{{ $e->cName }} {{ $e->firstName }},{{ $e->lastName }}</td>
+		<td>{{ $e->employee->job->rank }}</td>
+		<td>{{ $e->employee->cName }} {{ $e->employee->firstName }},{{ $e->employee->lastName }}</td>
 		<td>
-			<button class="btn btn-primary btn-sm m-btn m-btn--custom" type="button" v-on:click="scoreEmployee('{{ $e->id }}','{{ $e->cName }}')">Score</button> 
-			<button class="btn btn-info btn-sm m-btn m-btn--custom" type="button" v-on:click="viewScore('{{ $e->id }}')">View</button> 
+			<button class="btn btn-primary btn-sm m-btn m-btn--custom" type="button" v-on:click="scoreEmployee('{{ $e->employee_id }}','{{ $e->employee->cName }}')">Score</button> 
+			<button class="btn btn-info btn-sm m-btn m-btn--custom" type="button" v-on:click="viewScore('{{ $e->employee_id }}')">View</button> 
 		</td>
-		<td>{{ $e->employeeNumber }}</td>
+		<td>{{ $e->employee->employeeNumber }}</td>
 		<td>{{ $e->score }}</td>
 		
 	</tr>

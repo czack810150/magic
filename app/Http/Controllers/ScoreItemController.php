@@ -8,6 +8,10 @@ use App\Score_item;
 
 class ScoreItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *

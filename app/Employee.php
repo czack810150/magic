@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 class Employee extends Model
 {
-
+    public function user()
+    {
+        return $this->hasOne('App\Authorization');
+    }
     public function employee_profile()
     {
         return $this->hasOne('App\Employee_profile');
@@ -18,8 +21,11 @@ class Employee extends Model
 
     public function getHiredAttribute($value)
     {
+        return Carbon::createFromFormat('Y-m-d',$value);    
+    }
+    public function getTerminationAttribute($value)
+    {
         return Carbon::createFromFormat('Y-m-d',$value);
-        
     }
     public function clock()
     {

@@ -36,7 +36,7 @@
     <a class="nav-link" href="/staff/profile/{{ $staff->id }}/show">Profile</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Employment</a>
+    <a class="nav-link" href="javascript:employment('{{ $staff->id }}')">Employment</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#">Training</a>
@@ -59,7 +59,7 @@
 
 </section>
 
-
+<main id="employee">
 <!--begin::Portlet-->
 <div class="m-portlet">
 <div id="personalDetails">
@@ -316,5 +316,6 @@
 
 								</div>
 								<!--end::Portlet-->
+</main>
 {{ csrf_field() }}			
 @endsection

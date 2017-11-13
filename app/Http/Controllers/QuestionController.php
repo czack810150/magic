@@ -9,6 +9,10 @@ use App\Question_category;
 use App\Answer;
 class QuestionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
