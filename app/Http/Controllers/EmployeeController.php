@@ -10,6 +10,7 @@ use App\Employee_background;
 use Illuminate\Support\Facades\Auth;
 use App\Location;
 use App\Job;
+use App\Authorization;
 
 class EmployeeController extends Controller
 {
@@ -295,8 +296,6 @@ class EmployeeController extends Controller
         'accounting' => 'Accountant'];
         } else {
         $types = [
-        'staff' => 'Staff',
-        'manager' => 'Manager',
         'employee'=>'Employee',
         ];
         }
@@ -305,39 +304,37 @@ class EmployeeController extends Controller
     public function updateEmployment(Request $r)
     {
       
-        // $profile = Employee_profile::where('employee_id',$r->employee)->first();
-        // if(is_null($profile)){
+        $profile = Employee_profile::where('employee_id',$r->employee)->first();
+        if(is_null($profile)){
 
-        //     try {
-        //     $profile = new Employee_profile;
-        //     $profile->employee_id = $r->employee;
-        //     $profile->address = $r->address;
-        //     $profile->city = $r->city;
-        //     $profile->state = $r->state;
-        //     $profile->zip = $r->zip;
-        //     $profile->save(); 
-        //     }
-        //     catch (\Exception $e) {
-        //         return $e->getMessage();
-        //     }
-        // } else {
-        //     $profile->address = $r->address;
-        //     $profile->city = $r->city;
-        //     $profile->state = $r->state;
-        //     $profile->zip = $r->zip;
-        //     $profile->save();
-        // }
+            try {
+            $profile = new Employee_profile;
+            $profile->employee_id = $r->employee;
+            $profile->sin = $r->sin;
+            $profile->save(); 
+            }
+            catch (\Exception $e) {
+                return $e->getMessage();
+            }
+        } else {
+            $profile->sin = $r->sin;
+            $profile->save();
+        }
+        $userAuth = Authorization::where('employee_id',$r->employee)->first();
+        if(!is_null($userAuth)){
+            $userAuth->type = $r->type;
+            $userAuth->save();
+        }
        
         $employee = Employee::find($r->employee);
         $employee->job_id = $r->job;
         $employee->employeeNumber = $r->employeeNumber;
         $employee->hired = $r->hired;
-        // if(!empty($r->termination)){
-        //     $employee->termination = $r->termination;
-        // } else {
-        //     $employee->termination = 'NULL';
-        // }
-        $employee->termination = null;
+        if(!empty($r->termination)){
+            $employee->termination = $r->termination;
+        } else {
+            $employee->termination = null;
+        }
         $employee->location_id = $r->location;
         $employee->save();
         return 1;

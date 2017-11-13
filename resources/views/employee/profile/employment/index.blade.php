@@ -54,7 +54,7 @@
 <div class="col-3">
 <div class="info-box pl-3">
 <small>Termination Date</small>
-@if($employee->termination)
+@if(!empty($employee->termination) )
 <p>{{ $employee->termination->toFormattedDateString() }}</p>
 @else
 <p>-</p>
@@ -64,6 +64,7 @@
 
 </div> <!-- end of row -->
 
+@if($employee->user)
 <div class="row">
 <div class="col-3">
 <div class="info-box pl-3">
@@ -77,8 +78,8 @@
 <p>{{ $employee->location->name }} </p>
 </div>
 </div>
-
 </div> <!-- end of row -->
+@endif
 
 @if( in_array($user->authorization->type,['accounting','hr','admin']) )
 <div class="row">

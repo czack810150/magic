@@ -81,6 +81,8 @@
 </div> <!-- end of row -->
 
 <div class="form-group m-form__group row">
+@if($employee->user)
+
 <div class="col-3">
 <div class="info-box pl-3">
 <small>User Type</small>
@@ -89,6 +91,7 @@
 </div>
 </div>
 </div>
+@endif
 
 
 <div class="col-3">
@@ -114,7 +117,7 @@
 <small>SIN</small>
 
 <div class="input-group m-input-group m-input-group--square">
-@if($employee->employee_profile->sin))
+@if($employee->employee_profile->sin)
 <input type="text" class="form-control m-input form-control-sm" value="{{$employee->employee_profile->sin}}" id="sin" name="sin">
 @else
 <input type="text" class="form-control m-input form-control-sm" value="" id="sin" name="sin">

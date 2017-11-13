@@ -21,11 +21,17 @@ class Employee extends Model
 
     public function getHiredAttribute($value)
     {
-        return Carbon::createFromFormat('Y-m-d',$value);    
+        if(!is_null($value))
+            return Carbon::createFromFormat('Y-m-d',$value);
+        else
+            return null;    
     }
     public function getTerminationAttribute($value)
     {
-        return Carbon::createFromFormat('Y-m-d',$value);
+        if(!is_null($value))
+            return Carbon::createFromFormat('Y-m-d',$value);
+        else
+            return null;
     }
     public function clock()
     {
