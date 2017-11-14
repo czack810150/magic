@@ -6,7 +6,7 @@
 						<div class="m-stack__item m-brand  m-brand--skin-dark ">
 							<div class="m-stack m-stack--ver m-stack--general">
 								<div class="m-stack__item m-stack__item--middle m-brand__logo">
-									<a href="javascript:;" class="m-brand__logo-wrapper">
+									<a href="/home" class="m-brand__logo-wrapper">
 										<img alt="magic noodle logo" src="/img/brandLogo.png" height="41" width="108" />
 									</a>
 								</div>
@@ -931,7 +931,7 @@
 										<li class="m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light" data-dropdown-toggle="click">
 											<a href="#" class="m-nav__link m-dropdown__toggle">
 												<span class="m-topbar__userpic">
-													<img src="/assets/app/media/img/users/user4.jpg" class="m--img-rounded m--marginless m--img-centered" alt=""/>
+													<img src="{{asset('/img/'.Auth::user()->authorization->employee->employee_profile->img)}}" class="m--img-rounded m--marginless m--img-centered" alt="user-pic"/>
 												</span>
 												<span class="m-topbar__username m--hide">
 													Nick
@@ -943,7 +943,7 @@
 													<div class="m-dropdown__header m--align-center" style="background: url(/assets/app/media/img/misc/user_profile_bg.jpg); background-size: cover;">
 														<div class="m-card-user m-card-user--skin-dark">
 															<div class="m-card-user__pic">
-																<img src="/assets/app/media/img/users/user4.jpg" class="m--img-rounded m--marginless" alt=""/>
+																<img src="{{asset('/img/'.Auth::user()->authorization->employee->employee_profile->img)}}" class="m--img-rounded m--marginless" alt=""/>
 															</div>
 															<div class="m-card-user__details">
 																<span class="m-card-user__name m--font-weight-500">
@@ -964,7 +964,7 @@
 																	</span>
 																</li>
 																<li class="m-nav__item">
-																	<a href="header/profile.html" class="m-nav__link">
+																	<a href="/staff/profile/{{ Auth::user()->authorization->employee_id }}/show" class="m-nav__link">
 																		<i class="m-nav__link-icon flaticon-profile-1"></i>
 																		<span class="m-nav__link-title">
 																			<span class="m-nav__link-wrap">

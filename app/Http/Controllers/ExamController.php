@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Question_category;
 use App\Location;
 use App\Question;
@@ -197,6 +198,11 @@ class ExamController extends Controller
     function mark($id){
         $exam = Exam::find($id);
         return view('exam.exam.mark',compact('exam'));
+    }
+    function my(){
+        $subheader = 'My Exams';
+        $exam = Exam::where('employee_id',Auth::user()->authorization->employee_id)->where('taken_at',null)->first();
+        return view('exam.exam.my_exam',compact('exam','subheader'));
     }
 
 }
