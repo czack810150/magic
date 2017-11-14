@@ -38,6 +38,12 @@ Route::post('/employee/edit/address/update','EmployeeController@updateAddress');
 Route::post('/employee/employment','EmployeeController@employment');
 Route::post('/employee/employment/edit','EmployeeController@editEmployment');
 Route::post('/employee/employment/update','EmployeeController@updateEmployment');
+// employee note
+Route::post('/employee/note','EmployeeNoteController@index');
+Route::post('/employee/note/save','EmployeeNoteController@store');
+Route::post('/employee/note/{id}/edit','EmployeeNoteController@edit');
+Route::post('/employee/note/{id}/update','EmployeeNoteController@update');
+Route::post('/employee/note/{id}/delete','EmployeeNoteController@destroy');
 //score
 Route::get('/score/category','ScoreCategoryController@index');
 Route::get('/score/category/create','ScoreCategoryController@create');

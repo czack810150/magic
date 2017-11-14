@@ -11,13 +11,13 @@
 	@endif
 </div>
 </div>
-<div class="col-12 col-md-3">
+<div class="col-12 col-md-6">
 	<h2>{{ $staff->firstName }} {{ $staff->lastName }} {{ $staff->cName }}</h2>
 	<div>{{ $staff->job->rank }} | {{ $staff->location->name }} </div>
 	<div>Joined since {{ $staff->hired->toFormattedDateString() }}   ({{ $staff->hired->diffForHumans() }})</div>
 </div>
 
-<div class="hr-contact-list col-md-7">
+<div class="hr-contact-list col-md-4">
 
 @if(isset($staff->employee_profile))
 <div><i class="fa fa-phone"></i> <span class="text-white">{{ $staff->employee_profile->phone }}</span></div>
@@ -27,8 +27,8 @@
 @endif
 </div>
 
-</div>
 
+<nav class="profile-category mx-auto">
 <div class="row">
 <div class="col-md-12">
 <ul class="nav justify-content-center">
@@ -51,11 +51,14 @@
     <a class="nav-link" href="#">Compensation</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Notes</a>
+    <a class="nav-link" href="javascript:employeeNote('{{ $staff->id }}')">Notes</a>
   </li>
 </ul>
 </div>
 </div>
+</nav>
+</div>
+
 
 </section>
 

@@ -220,3 +220,92 @@ function updateEmployment(employee){
 		}
 		);
 }
+function employeeNote(employee)
+{
+	$.post(
+		'/employee/note',
+		{
+			_token: $("input[name=_token]").val(),
+			employee: employee,
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);
+}
+function saveNote(employee)
+{
+	$.post(
+		'/employee/note/save',
+		{
+			_token: $("input[name=_token]").val(),
+			employee: employee,
+			note: $("textarea[name=note]").val(),
+			visibility: $("input[name=visibility]:checked").val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('.modal-backdrop').remove();
+				employeeNote(data);
+			}
+		}
+		);
+}
+function editNote(noteId)
+{
+	$.post(
+		'/employee/note/'+noteId+'/edit',
+		{
+			_token: $("input[name=_token]").val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#editNote').val(data.note);
+				$('#editNoteModal').modal('show');
+			}
+		},
+		'json'
+		);
+}
+function updateNote(noteId)
+{
+	$.post(
+		'/employee/note/'+noteId+'/update',
+		{
+			_token: $("input[name=_token]").val(),
+			note: $("textarea[name=editNote]").val(),
+			visibility: $("input[name=editVisibility]:checked").val()
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#editNoteModal').modal('hide');
+				$('.modal-backdrop').remove();
+				employeeNote(data);
+
+			}
+		}
+		);
+}
+var noteID = 0;
+function tryRemoveNote(noteId){
+	noteID = noteId;
+	$('#removeNoteConfirmationModal').modal();
+}
+function deleteNote(){
+	$.post(
+		'/employee/note/'+noteID+'/delete',
+		{
+			_token: $("input[name=_token]").val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#removeNoteConfirmationModal').modal('hide');
+				$('.modal-backdrop').remove();
+				employeeNote(data);
+
+			}
+		}
+		);
+}

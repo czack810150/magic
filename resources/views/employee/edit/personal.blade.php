@@ -27,6 +27,7 @@
 <div class="m-portlet__body">
 									
 <div class="form-group m-form__group row">
+
 <div class="col-md-2">
 <div class="info-box pl-3">
 <small>First</small>
@@ -38,6 +39,7 @@
 </div>
 </div>
 </div>
+
 <div class="col-md-2">
 <div class="info-box pl-3">
 <small>Last</small>

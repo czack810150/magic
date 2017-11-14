@@ -1,6 +1,6 @@
 .hr-header {
   background: #2c2e3d;
-  height: 150px;
+  min-height: 150px;
   color: white;
   padding-top: 20px;
 }
@@ -9,6 +9,14 @@
   padding-right: 40px;
   padding-top: 30px;
   text-align: right;
+}
+
+nav.profile-category a {
+  color: white;
+}
+
+nav.profile-category a:hover {
+  color: #7267c7;
 }
 
 .info-box {

@@ -39,7 +39,7 @@ class ExamController extends Controller
      */
     public function create()
     {
-        $locations = Location::store()->get();
+        $locations = Location::get();
         $categories = Question_category::get();
         $questions = Question::where('Question_category_id',1)->get();
         return view('exam.exam.create',compact('categories','locations','questions'));

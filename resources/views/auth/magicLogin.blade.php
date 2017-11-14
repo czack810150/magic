@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8" />
         
-        <title>Metronic | Login Page - 2</title>
+        <title>Magic Noodle</title>
         <meta name="description" content="Latest updates and statistic charts"> 
 
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
