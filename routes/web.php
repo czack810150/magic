@@ -44,6 +44,15 @@ Route::post('/employee/note/save','EmployeeNoteController@store');
 Route::post('/employee/note/{id}/edit','EmployeeNoteController@edit');
 Route::post('/employee/note/{id}/update','EmployeeNoteController@update');
 Route::post('/employee/note/{id}/delete','EmployeeNoteController@destroy');
+
+// performance
+Route::get('/employee/performance','EmployeePerformanceController@index');
+Route::post('/employee/reviewable','EmployeePerformanceController@reviewable');
+Route::post('/employee/performance/store','EmployeePerformanceController@store');
+Route::post('/score/view/employeePeriod','EmployeePerformanceController@employeePeriod');
+Route::post('/score/remove','EmployeePerformanceController@destroy');
+Route::post('/employee/performance','EmployeePerformanceController@employee');
+
 //score
 Route::get('/score/category','ScoreCategoryController@index');
 Route::get('/score/category/create','ScoreCategoryController@create');
@@ -59,14 +68,6 @@ Route::get('/score/item/{id}/delete','ScoreItemController@destroy');
 Route::get('/score/item/{id}/edit','ScoreItemController@edit');
 Route::post('/score/item/{id}/update','ScoreItemController@update');
 Route::post('/score/item/getItemsByCategory','ScoreItemController@getItemsByCategory');
-
-// performance
-Route::get('/employee/performance','EmployeePerformanceController@index');
-Route::post('/employee/reviewable','EmployeePerformanceController@reviewable');
-Route::post('/employee/performance/store','EmployeePerformanceController@store');
-Route::post('/score/view/employeePeriod','EmployeePerformanceController@employeePeriod');
-Route::post('/score/remove','EmployeePerformanceController@destroy');
-
 Route::get('/api/newShift',function(){
 	return 'API';
 });

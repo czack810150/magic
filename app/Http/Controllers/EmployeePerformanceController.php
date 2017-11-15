@@ -141,4 +141,13 @@ class EmployeePerformanceController extends Controller
         }
         return View::make('employee.performance.individual',compact('result'))->render();
     }
+    public function employee(Request $r)
+    {
+        $logs = Score_log::where('employee_id',$r->employee)->get();
+        foreach($logs as $log){
+            $log->location_name = $log->location->name;
+            $log->event = $log->score_item->name;
+        }
+        return view('employee.profile.performance.index',compact('logs'));
+    }
 }
