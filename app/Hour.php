@@ -50,8 +50,7 @@ class Hour extends Model
 		$totalNightSeconds = 0;
 		$holidays = Holiday::whereDate('date','>=',$start)->whereDate('date','<',$end)->get();
 
-		$shifts = Shift::where('employee_id',$employee)->where('location_id',$location)->where('start','>=',$start)->whereDate('start','<=',$end)->
-    						orderBy('start')->get();
+		$shifts = Shift::where('employee_id',$employee)->where('location_id',$location)->where('start','>=',$start)->whereDate('start','<=',$end)->orderBy('start')->get();
 
 	    
     	if(count($shifts)){
@@ -60,8 +59,9 @@ class Hour extends Model
 					$planedEnd = date_create($s->end);
 
 					$shiftDate = date_format($planedStart,'Y-m-d');
+					$nextDay = Carbon::createFromFormat('Y-m-d',$shiftDate)->addDay()->toDateString();
 					
-					$clockedHours = self::clockedShifts($employee,$location,$shiftDate,$shiftDate);	
+					$clockedHours = self::clockedShifts($employee,$location,$shiftDate,$nextDay);	
 
 					if(count($clockedHours)){
 				foreach($clockedHours as $c){

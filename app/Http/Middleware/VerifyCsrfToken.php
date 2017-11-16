@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
        'api/*',
+       'integration/*'
        //'hours/computeEngine',
     ];
 }
