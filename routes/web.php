@@ -166,6 +166,9 @@ Route::get('/my_exam','ExamController@my');
 
 //Jobs
 Route::get('/jobs','JobController@index');
+// My voice
+route::get('/message/management','MessageToManagementController@index');
+
 // Integration
 Route::get('/integration/importClocks','IntegrationController@importClocks');
 Route::get('/integration/shiftAutoPull','IntegrationController@shiftAutoPull');
