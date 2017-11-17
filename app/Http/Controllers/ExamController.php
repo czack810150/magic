@@ -24,7 +24,8 @@ class ExamController extends Controller
      */
     public function index()
     {
-        return view('exam.exam.index');
+        $subheader = 'Employee Training'
+        return view('exam.exam.index',compact('subheader'));
     }
     public function all()
     {
