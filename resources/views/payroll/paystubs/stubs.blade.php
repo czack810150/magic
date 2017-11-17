@@ -1,9 +1,24 @@
+<style>
+div.paystubs {
+  	 page-break-inside: avoid;
+}
+.table {
+	font-size:10px;
+}
+p
+{
+	font-size:12px;
+}
+</style>
 
-
+<div class="paystubs">
 
 @if($logs)
 
 @foreach($logs as $e)
+
+<div class="paystubs">
+
 @if($e->totalPay)
 <div class="row">
 <div class=" col-sm-12">
@@ -11,6 +26,7 @@
 {{ $e->location->name  }}, {{ $e->location->address }}, {{ $e->location->city }},  
 {{ \Carbon\Carbon::createFromFormat('Y-m-d',$e->startDate)->format('M j') }} - {{ \Carbon\Carbon::createFromFormat('Y-m-d',$e->endDate)->format('M j, Y') }}
 </p>
+
 <table class="table table-sm">
 	<thead>
 		<tr><th>Rate</th><th>Gross Income</th><th>EI</th><th>CPP</th><th>Federal Tax</th><th>Ontario Tax</th><th>Total Tax</th><th>Total Deductable</th><th>Cheque Amt.</th><th>Cheque #</th>
@@ -74,8 +90,11 @@
 		
 	</tbody>
 </table>
+
+
 	</div>
 </div>
 	@endif
+	</div>
 		@endforeach
 @endif

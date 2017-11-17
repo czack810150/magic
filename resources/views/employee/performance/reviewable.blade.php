@@ -10,14 +10,27 @@
 <tbody>
 	@foreach($employees as $e)
 	<tr>
+		@if( !is_null($e->employee) )
 		<td>{{ $e->employee->job->rank }}</td>
+		@else
+		<td></td>
+		@endif
+		@if( !is_null($e->employee) )
 		<td>{{ $e->employee->cName }} {{ $e->employee->firstName }},{{ $e->employee->lastName }}</td>
+		@else
+		<td>Shared Employee: {{ $e->employee_id }}</td>
+		@endif
 		<td>
-			<button class="btn btn-primary btn-sm m-btn m-btn--custom" type="button" v-on:click="scoreEmployee('{{ $e->employee_id }}','{{ $e->employee->cName }}')">Score</button> 
+			<button class="btn btn-primary btn-sm m-btn m-btn--custom" type="button" v-on:click="scoreEmployee('{{ $e->employee_id }}','')">Score</button> 
 			<button class="btn btn-info btn-sm m-btn m-btn--custom" type="button" v-on:click="viewScore('{{ $e->employee_id }}')">View</button> 
 		</td>
+		@if( !is_null($e->employee) )
 		<td>{{ $e->employee->employeeNumber }}</td>
+		@else
+		<td>Shared Employee</td>
+		@endif
 		<td>{{ $e->score }}</td>
+		
 		
 	</tr>
 	@endforeach

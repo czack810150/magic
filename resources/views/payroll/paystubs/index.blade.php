@@ -23,9 +23,9 @@
 
 </main>
 
-
+<div class="hidden-print">
 @include('payroll.buttons')
-
+</div>
 
 </div>
 

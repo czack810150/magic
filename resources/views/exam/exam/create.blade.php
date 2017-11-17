@@ -1,5 +1,6 @@
-@extends('layouts.timeclock.master')
+@extends('layouts.master')
 @section('content')
+<script src="{{URL::asset('js/magic.js')}}"></script>
 <div class="container">
 	<h1>Create a new exam</h1>
 <div class="row">

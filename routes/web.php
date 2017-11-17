@@ -169,3 +169,5 @@ Route::get('/jobs','JobController@index');
 // Integration
 Route::get('/integration/importClocks','IntegrationController@importClocks');
 Route::get('/integration/shiftAutoPull','IntegrationController@shiftAutoPull');
+// Scripts
+Route::get('/api/fixShared','ScriptController@fixShared');

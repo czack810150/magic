@@ -1,4 +1,4 @@
-@extends('layouts.timeclock.master')
+@extends('layouts.master')
 @section('content')
 <div class="container">
 <h1>Create a new question</h1>
@@ -6,8 +6,8 @@
 
 <div class="form-group">
 <a href="/question" class="btn btn-secondary">View All questions</a>
-<a href="#mc" class="btn btn-secondary btn-success" data-toggle="collapse" aria-expanded="false" aria-controls="collapseMC">Multiple choice</a>
-<a href="#sa" class="btn btn-secondary btn-info" data-toggle="collapse" aria-expanded="false" aria-controls="collapseSA">Short answer</a>
+<a href="#mc" class="btn btn-success" data-toggle="collapse" aria-expanded="false" aria-controls="collapseMC">Multiple choice</a>
+<a href="#sa" class="btn btn-info" data-toggle="collapse" aria-expanded="false" aria-controls="collapseSA">Short answer</a>
 </div>
 
 <form  method="POST" action="/question/create" id="mc" class="collapse">

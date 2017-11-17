@@ -24,14 +24,14 @@ class ExamController extends Controller
      */
     public function index()
     {
-        $subheader = 'Employee Training'
+        $subheader = 'Employee Training';
         return view('exam.exam.index',compact('subheader'));
     }
     public function all()
     {
         $exams = Exam::get();
-
-        return view('exam.exam.all',compact('exams'));
+        $subheader = 'Employee Training';
+        return view('exam.exam.all',compact('exams','subheader'));
     }
 
     /**
@@ -41,10 +41,11 @@ class ExamController extends Controller
      */
     public function create()
     {
+        $subheader = 'Employee Training';
         $locations = Location::get();
         $categories = Question_category::get();
         $questions = Question::where('Question_category_id',1)->get();
-        return view('exam.exam.create',compact('categories','locations','questions'));
+        return view('exam.exam.create',compact('categories','locations','questions','subheader'));
     }
 
     /**
@@ -192,8 +193,9 @@ class ExamController extends Controller
     }
 
     function attemptedExams(){
+        $subheader = 'Employee Training';
         $exams = Exam::finished()->get();
-        return view('exam.exam.attemptedExams',compact('exams'));
+        return view('exam.exam.attemptedExams',compact('exams','subheader'));
 
     }
     function mark($id){

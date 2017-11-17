@@ -20,8 +20,9 @@ class QuestionController extends Controller
      */
     public function index()
     {
+        $subheader = 'Employee Training';
         $questions = Question::get();
-        return view('exam.question.index',compact('questions'));
+        return view('exam.question.index',compact('questions','subheader'));
     }
 
     /**
@@ -31,8 +32,9 @@ class QuestionController extends Controller
      */
     public function create()
     {   
+        $subheader = 'Employee Training';
         $categories = Question_category::get();
-        return view('exam.question.create',compact('categories'));
+        return view('exam.question.create',compact('categories','subheader'));
     }
 
     /**
@@ -89,8 +91,9 @@ class QuestionController extends Controller
      */
     public function show($id)
     {
+        $subheader = 'Exmployee Training';
         $question = Question::find($id);
-        return view('exam.question.question',compact('question'));
+        return view('exam.question.question',compact('question','subheader'));
     }
 
     /**
@@ -133,8 +136,9 @@ class QuestionController extends Controller
         return view('exam.question.index',compact('questions'));
     }
     public function newCategory(){
+        $subheader = 'Employee Training';
         $categories = Question_category::get();
-        return view('exam.question.newCategory',compact('categories'));
+        return view('exam.question.newCategory',compact('categories','subheader'));
     }
     public function saveCategory()
     {
