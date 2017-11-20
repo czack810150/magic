@@ -10,6 +10,7 @@ class ScriptController extends Controller
     public function fixShared()
     {
     	$employees = [
+            347 => 30,
     		627 => 30,
     		669 => 371,
     		600 => 159,
@@ -17,6 +18,7 @@ class ScriptController extends Controller
     		515 => 107,
     		555 => 282,
     		670 => 245,
+            546 => 577,
     	];
     	$fixed = array();
     	foreach($employees as $old => $new)
