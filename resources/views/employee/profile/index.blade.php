@@ -50,7 +50,7 @@
     <a class="nav-link" href="#">Account</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Compensation</a>
+    <a class="nav-link" href="javascript:employeeCompensation('{{ $staff->id }}')">Compensation</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="javascript:employeeNote('{{ $staff->id }}')">Notes</a>

@@ -39,7 +39,7 @@
 	<thead>
 		<tr><th>card</th><th>name</th><th>legal</th><th>wk1</th><th>wk2</th><th>hours</th><th>regular</th><th>overtime</th><th>Premium</th><th>Holiday</th><th>gross</th>
 			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>Cheque</th>
-			<th>Position rate</th><th>Tip %</th><th>nightHrs</th><th>Meal</th>
+			<th>Position rate</th><th>Tips/Hr</th><th>nightHrs</th><th>Meal</th>
 			<th>P</th>
 			<th>Variable Pay</th><th>Total</th>
 		</tr>
@@ -72,7 +72,7 @@
 			
 
 				<td>{{$e->position_rate}}</td>
-				<td>{{$e->tip}}</td>
+				<td>{{ round($e->tip * $e->hourlyTip,2)}}</td>
 				
 				<td>{{$e->nightHours}}</td>
 				<td>{{ round($e->mealRate * ($e->week1 + $e->week2),2) }}</td>

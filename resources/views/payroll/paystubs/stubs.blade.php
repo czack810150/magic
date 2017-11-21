@@ -29,7 +29,7 @@ p
 
 <table class="table table-sm">
 	<thead>
-		<tr><th>Rate</th><th>Gross Income</th><th>EI</th><th>CPP</th><th>Federal Tax</th><th>Ontario Tax</th><th>Total Tax</th><th>Total Deductable</th><th>Cheque Amt.</th><th>Cheque #</th>
+		<tr><th>Rate</th><th>Gross Income</th><th>EI</th><th>CPP</th><th>Fed. Tax</th><th>Prov. Tax</th><th>Total Tax</th><th>Total Deductable</th><th>Cheque Amt.</th><th>Cheque #</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -77,11 +77,11 @@ p
 			
 
 				<td>{{round($e->position_rate * ($e->week1 + $e->week2),2)}}</td>
-				<td>{{round($e->tip * $e->hourlyTip * ($e->week1 + $e->week2),2)}}</td>
+				<td>{{round(round($e->tip * $e->hourlyTip,2) * ($e->week1 + $e->week2),2)}}</td>
 				
 				<td>{{round($e->nightHours * $e->nightRate,2)}}</td>
 				<td>{{ round($e->mealRate * ($e->week1 + $e->week2),2) }}</td>
-				<td>{{number_format($e->performance,2)}}</td>
+				<td>{{$e->performance*100}}%</td>
 				<td>{{$e->variablePay}}</td>
 			
 

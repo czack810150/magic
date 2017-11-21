@@ -53,6 +53,10 @@ Route::post('/score/view/employeePeriod','EmployeePerformanceController@employee
 Route::post('/score/remove','EmployeePerformanceController@destroy');
 Route::post('/employee/performance','EmployeePerformanceController@employee');
 
+// compensation
+Route::post('/employee/compensation','EmployeeController@compensation');
+
+
 //score
 Route::get('/score/category','ScoreCategoryController@index');
 Route::get('/score/category/create','ScoreCategoryController@create');

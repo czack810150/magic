@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Employee;
@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Location;
 use App\Job;
 use App\Authorization;
+use Carbon\Carbon;
+
 
 class EmployeeController extends Controller
 {
@@ -338,5 +340,11 @@ class EmployeeController extends Controller
         $employee->location_id = $r->location;
         $employee->save();
         return 1;
+    }
+    public function compensation(Request $r)
+    {
+        $basicRate = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
+        $employee = Employee::find($r->employee);
+        return view('employee.profile.compensation.index',compact('basicRate','employee'));
     }
 }
