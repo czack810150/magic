@@ -10,6 +10,15 @@
 												</h3>
 											</div>
 										</div>
+										<div class="m-portlet__head-tools">
+											<ul class="m-portlet__nav">
+												<li class="m-portlet__nav-item">
+													<a href="javascript:editEmployeeAccount({{ $employee->id }})" class="m-portlet__nav-link m-portlet__nav-link--icon">
+														<i class="la la-edit"></i>
+													</a>
+												</li>
+											</ul>
+										</div>
 										
 									</div>
 <!--begin::Form-->

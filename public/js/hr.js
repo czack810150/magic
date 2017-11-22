@@ -355,3 +355,17 @@ function employeeAccount(employee)
 		}
 		);
 }
+function editEmployeeAccount(employee)
+{
+	$.post(
+		'/employee/account/'+employee+'/edit',
+		{
+			_token: $("input[name=_token]").val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);
+}

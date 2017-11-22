@@ -349,8 +349,20 @@ class EmployeeController extends Controller
     }
     public function account(Request $r)
     {
-        
+        $employee = Employee::find($r->employee);
         $authorization = Authorization::where('employee_id',$r->employee)->first();
-        return view('employee.profile.account.index',compact('authorization'));
+        return view('employee.profile.account.index',compact('authorization','employee'));
     }
+
+     public function editAccount($id)
+     {
+       
+        $employee = Employee::find($id);
+        $authorization = Authorization::where('employee_id',$id)->first();
+        $types = array(
+            'Employee' => 2,
+            'Manager' => 20
+        );
+        return view('employee.profile.account.edit',compact('employee','authorization','types'));
+     }
 }
