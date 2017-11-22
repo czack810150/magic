@@ -55,7 +55,8 @@ Route::post('/employee/performance','EmployeePerformanceController@employee');
 
 // compensation
 Route::post('/employee/compensation','EmployeeController@compensation');
-
+// Account
+Route::post('/employee/account','EmployeeController@account');
 
 //score
 Route::get('/score/category','ScoreCategoryController@index');

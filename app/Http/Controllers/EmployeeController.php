@@ -347,4 +347,10 @@ class EmployeeController extends Controller
         $employee = Employee::find($r->employee);
         return view('employee.profile.compensation.index',compact('basicRate','employee'));
     }
+    public function account(Request $r)
+    {
+        
+        $authorization = Authorization::where('employee_id',$r->employee)->first();
+        return view('employee.profile.account.index',compact('authorization'));
+    }
 }

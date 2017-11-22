@@ -340,3 +340,18 @@ function employeeCompensation(employee)
 		}
 		);
 }
+function employeeAccount(employee)
+{
+	$.post(
+		'/employee/account',
+		{
+			_token: $("input[name=_token]").val(),
+			employee: employee,
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);
+}

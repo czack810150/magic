@@ -47,7 +47,7 @@
     <a class="nav-link" href="#">Time off</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Account</a>
+    <a class="nav-link" href="javascript:employeeAccount('{{ $staff->id }}')">Account</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="javascript:employeeCompensation('{{ $staff->id }}')">Compensation</a>
