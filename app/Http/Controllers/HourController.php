@@ -48,6 +48,7 @@ class HourController extends Controller
     public function computeEngine(Request $r)
     {
         if(Gate::allows('calculate-hours')){
+            Hour::where('start',$r->startDate)->delete();
             $rows = Hour::hoursEngine($r->startDate);  
             $tip = Tip::tipHours($r->startDate);
             return $rows;

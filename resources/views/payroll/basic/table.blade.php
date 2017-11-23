@@ -2,7 +2,7 @@
 @if($sum)
 <table class="table table-sm">
 	<thead>
-		<tr><th>regular hrs</th><th>overtime hrs</th><th>gross</th>
+		<tr><th>Total hrs</th><th>Overtime hrs</th><th>Gross</th>
 			<th>EI</th><th>EI Company</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Cheque</th>
 			<th>nightHrs</th>
 			<th>bonus</th>
@@ -11,7 +11,7 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td>{{ round($sum['regularHour'],2) }}</td>
+			<td>{{ round($sum['totalHour'],2) }}</td>
 			<td>{{ round($sum['overtimeHour'],2) }}</td>
 			<td>{{ $sum['gross']/100 }}</td>
 			<td>{{ $sum['EI']/100 }}</td>

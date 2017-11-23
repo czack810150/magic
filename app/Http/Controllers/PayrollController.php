@@ -123,7 +123,7 @@ class PayrollController extends Controller
             'basicRate' => $config->minimumPay/100,
             'mealRate' => $config->mealRate,
             'hourlyTip' => $hourlyTip,
-            'regularHour' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('week1') + Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('week2'),
+            'totalHour' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('week1') + Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('week2'),
 
             'overtimeHour' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('ot1') +Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('ot2'),
             'gross' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('grossIncome'),
