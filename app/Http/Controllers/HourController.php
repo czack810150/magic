@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use App\Payroll;
 use App\Employee;
 use App\Hour;
@@ -46,9 +47,14 @@ class HourController extends Controller
     }
     public function computeEngine(Request $r)
     {
-     $rows = Hour::hoursEngine($r->startDate);  
-     $tip = Tip::tipHours($r->startDate);
-     return $rows;
+        if(Gate::allows('calculate-hours')){
+            $rows = Hour::hoursEngine($r->startDate);  
+            $tip = Tip::tipHours($r->startDate);
+            return $rows;
+        } else {
+            return 'Operation not allowed';
+        }
+     
     }
 
     /**

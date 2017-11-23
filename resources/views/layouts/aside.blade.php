@@ -58,7 +58,7 @@
 											</a>
 										</li>
 										@endif
-										@if(Auth::user()->authorization->level >= 20)
+										@can('score-employee')
 										<li class="m-menu__item " aria-haspopup="true" >
 										<a  href="/employee/performance" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -69,7 +69,7 @@
 												</span>
 											</a>
 										</li>
-										@endif
+										@endcan
 									</ul>
 								</div>
 							</li>
@@ -116,7 +116,7 @@
 												</span>
 											</a>
 										</li>
-										@if(Auth::user()->authorization->level >= 99)
+										@can('calculate-payroll')
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/payroll/compute" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -127,7 +127,7 @@
 												</span>
 											</a>
 										</li>
-										@endif
+										@endcan
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/payroll/employee" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -173,7 +173,7 @@
 												</span>
 											</a>
 										</li>
-										@if(Auth::user()->authorization->level >= 99)
+										@can('calculate-hours')
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/hours/compute" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -184,7 +184,7 @@
 												</span>
 											</a>
 										</li>
-										@endif
+										@endcan
 									</ul>
 								</div>
 							</li>
