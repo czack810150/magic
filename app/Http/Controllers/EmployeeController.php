@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use App\Employee;
 use App\Employee_profile;
 use App\Employee_background;
+use App\Employee_location;
 use Illuminate\Support\Facades\Auth;
 use App\Location;
 use App\Job;
@@ -200,7 +201,6 @@ class EmployeeController extends Controller
     {   
         $profile = Employee_profile::where('employee_id',$r->employee)->first();
         if(is_null($profile)){
-
             try {
             $profile = new Employee_profile;
             $profile->employee_id = $r->employee;
@@ -339,6 +339,14 @@ class EmployeeController extends Controller
         }
         $employee->location_id = $r->location;
         $employee->save();
+
+        $job_location = Employee_location::create([
+            'employee_id' => $r->employee,
+            'location_id' => $r->location,
+            'job_id' => $r->job,
+            'start' => Carbon::now()->toDateString(),
+        ]);
+
         return 1;
     }
     public function compensation(Request $r)

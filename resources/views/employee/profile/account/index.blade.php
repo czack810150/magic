@@ -27,7 +27,7 @@
 									
 <div class="form-group m-form__group row">
 
-<div class="col-md-2">
+<div class="col-3">
 <div class="info-box pl-3">
 <small>Username</small>
 @if($authorization)
@@ -38,7 +38,7 @@
 </div>
 </div>
 
-<div class="col-md-2">
+<div class="col-3">
 <div class="info-box pl-3">
 <small>Password</small>
 @if($authorization)
@@ -49,7 +49,7 @@
 </div>
 </div>
 
-<div class="col-md-2">
+<div class="col-3">
 <div class="info-box pl-3">
 <small>Type</small>
 @if($authorization)
@@ -60,7 +60,7 @@
 </div>
 </div>
 
-<div class="col-md-2">
+<div class="col-3">
 <div class="info-box pl-3">
 <small>Last Login</small>
 @if($authorization)

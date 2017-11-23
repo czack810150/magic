@@ -245,8 +245,8 @@ class Payroll extends Model
             $bonus = 0;
             $holidayPay  = round($fourWeekHours * $basicRate * 1.04 / 20,2);
             $e->magicNoodlePay = Payroll::magicNoodlePay(Carbon::now()->year,$e->wk1Effective,$e->wk2Effective,
-                                        $e->employee->job_location()->first()->job->rate/100,
-                                        $e->employee->job_location()->first()->job->tip,
+                                        $e->employee->job->rate/100,
+                                        $e->employee->job->tip,
                                         $hourlyTip,
                                         $e->nightHour,
                                         $performance,
