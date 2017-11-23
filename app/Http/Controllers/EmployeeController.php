@@ -340,7 +340,10 @@ class EmployeeController extends Controller
         $employee->location_id = $r->location;
         $employee->save();
 
-        $job_location = Employee_location::create([
+        $employee_location_old = Employee_location::where('employee_id',$r->employee)->latest()->first();
+        $employee_location_old->end = Carbon::now()->toDateString();
+        $employee_location_old->save();
+        Employee_location::create([
             'employee_id' => $r->employee,
             'location_id' => $r->location,
             'job_id' => $r->job,
@@ -372,5 +375,19 @@ class EmployeeController extends Controller
             'Manager' => 20
         );
         return view('employee.profile.account.edit',compact('employee','authorization','types'));
+     }
+     public function updateAccount($id, Request $r)
+     {
+
+        $user = User::where('email',$r->username)->first();
+        if(!is_null($user) & isset($r->password) & isset($r->password_confirmation)){
+            //update
+            if($r->password == $r->password_confirmation){
+                
+            }
+        }
+
+        
+        return ($r->password_confirmation);
      }
 }

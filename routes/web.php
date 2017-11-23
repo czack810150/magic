@@ -58,6 +58,7 @@ Route::post('/employee/compensation','EmployeeController@compensation');
 // Account
 Route::post('/employee/account','EmployeeController@account');
 Route::post('/employee/account/{id}/edit','EmployeeController@editAccount');
+Route::post('/employee/account/{id}/update','EmployeeController@updateAccount');
 
 //score
 Route::get('/score/category','ScoreCategoryController@index');

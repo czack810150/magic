@@ -369,3 +369,21 @@ function editEmployeeAccount(employee)
 		}
 		);
 }
+function updateEmployeeAccount(employee){
+	$.post(
+		'/employee/account/' + employee + '/update',
+		{
+			_token: $("input[name=_token]").val(),
+			username: $('input[name=username]').val(),
+			password: $('input[name=password]').val(),
+			password_confirmation: $('input[name=password_confirmation]').val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				console.log(data);
+				notify('New account details have been saved!','success');
+				employeeAccount(employee);
+			}
+		}
+		);
+}
