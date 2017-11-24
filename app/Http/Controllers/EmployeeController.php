@@ -29,13 +29,15 @@ class EmployeeController extends Controller
         $subheader = 'Staff Directory';
         $employees = Employee::get();
         $locations = Location::pluck('name','id');
+        $employeeLocations = Location::pluck('name','id');
         $locations[-1] = 'All Locations';
         $status = array(
             'active' => 'Active staffs only',
             'vacation' => 'On vacation only',
             'terminated' => 'Terminated staffs',
         ); 
-        return view('employee.index',compact('employees','subheader','locations','status'));
+        $jobs = Job::where('trial',1)->pluck('rank','id');
+        return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations'));
     }
      public function filterEmployees(Request $r)
     {

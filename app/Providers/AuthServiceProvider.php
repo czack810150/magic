@@ -36,5 +36,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('score-employee',function($user){
             return in_array($user->authorization->type,['admin','manager','dm']);
         });
+
+        Gate::define('create-employee',function($user){
+            return in_array($user->authorization->type,['admin','hr']);
+        });
     }
 }
