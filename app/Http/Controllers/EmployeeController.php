@@ -8,11 +8,13 @@ use App\Employee;
 use App\Employee_profile;
 use App\Employee_background;
 use App\Employee_location;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use App\Location;
 use App\Job;
 use App\Authorization;
 use Carbon\Carbon;
+
 
 
 class EmployeeController extends Controller
@@ -378,16 +380,59 @@ class EmployeeController extends Controller
      }
      public function updateAccount($id, Request $r)
      {
-
-        $user = User::where('email',$r->username)->first();
-        if(!is_null($user) & isset($r->password) & isset($r->password_confirmation)){
-            //update
-            if($r->password == $r->password_confirmation){
-                
-            }
-        }
-
+        $authorization = Authorization::where('employee_id',$id)->first();
         
-        return ($r->password_confirmation);
+        if( !is_null($authorization) ){
+            $user = $authorization->user;
+
+            if($user->email == $r->email){
+                $validatedData = $r->validate([
+                     'password' => 'required|string|min:6|confirmed', 
+                ]);
+            } else {
+                $validatedData = $r->validate([
+                  'email' => 'required|string|email|max:255|unique:users',
+                  'password' => 'required|string|min:6|confirmed', 
+                ]);
+                $user->email = $r->email;
+            }
+            $username = strstr($r->username,'@',true);
+            $user->name = $username;
+            $user->password = bcrypt($r->password);
+            $user->save();
+                return 'updated';
+            
+        } else {
+           return $this->createAccount($id,$r);
+        }  
      }
+
+     private function createAccount($id, Request $r){
+            $validatedData = $r->validate([
+                  'email' => 'required|string|email|max:255|unique:users',
+                  'password' => 'required|string|min:6|confirmed', 
+                ]);
+            $employee = Employee::find($id);
+
+
+            $username = strstr($r->username,'@',true);
+            $newUser = User::create([
+            'name' => $username,
+            'email' => $r->email,
+            'password' => bcrypt($r->password),
+        ]);
+        $newAuthorization = new Authorization;
+        $newAuthorization->employee_id= $id;
+        $newAuthorization->location_id = $employee->location_id;
+        $newAuthorization->user_id = $newUser->id;
+        $newAuthorization->type = 'employee';
+        $newAuthorization->level = 2;
+        $newAuthorization->save();
+            return 'created';
+
+     }      
+
+      
+
+
 }

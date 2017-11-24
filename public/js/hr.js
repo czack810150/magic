@@ -375,15 +375,36 @@ function updateEmployeeAccount(employee){
 		{
 			_token: $("input[name=_token]").val(),
 			username: $('input[name=username]').val(),
+			email: $('input[name=username]').val(),
 			password: $('input[name=password]').val(),
 			password_confirmation: $('input[name=password_confirmation]').val(),
 		},
 		function(data,status){
 			if(status == 'success'){
-				console.log(data);
-				notify('New account details have been saved!','success');
-				employeeAccount(employee);
-			}
+				if(data == 'updated'){
+					notify('New account details have been saved!','success');
+					employeeAccount(employee);
+				} else if (data == 'created') {
+					notify('New account has been created!','success');
+					employeeAccount(employee);
+				}
+				
+			} 
 		}
-		);
+		).fail(function(response){
+			if(response.status == 422){
+				var errors = '';
+				if(response.responseJSON.errors.email != null){
+					errors += '<p>' + response.responseJSON.errors.email + '</p>';
+				}
+				
+				for(e in response.responseJSON.errors.password){
+					errors += '<p>' + response.responseJSON.errors.password[e] + '</p>';
+				}
+				notify(errors,'danger');
+				
+			} else {
+				console.log(response);
+			}
+		});
 }
