@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 class Employee extends Model
 {
+    protected $fillable = ['newbie','employeeNumber','email','firstName','lastName','cName','location_id','hired','termination','status','job_id'];
     public function user()
     {
         return $this->hasOne('App\Authorization');

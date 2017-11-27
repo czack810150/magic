@@ -69,7 +69,34 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+                  'email' => 'required|string|email|max:255|unique:users',
+                  'firstName' => 'required|string|max:64',
+                  'lastName' =>'required|string|max:64',
+                  'cName' => 'string|max:32',
+                  'job' => 'required|numeric',
+                  'employeeLocation' => 'required|numeric',
+                  'employeeRole' => 'required|numeric',
+                  'employeeNumber' => 'required|string|max:32|unique:employees',
+                  'hireDate' => 'required|date_format:Y-m-d'
+                ]);
+       $employee = Employee::create([
+            'employeeNumber' => $request->employeeNumber,
+            'email' => $request->email,
+            'firstName' => $request->firstName,
+            'lastName' => $request->lastName,
+            'cName' => $request->cName,
+            'location_id' => $request->employeeLocation,
+            'job_id' => 10,
+            'hired' => $request->hireDate,
+       ]);
+       $employee_location = Employee_location::create([
+        'employee_id' => $employee->id,
+        'location_id' => $request->employeeLocation,
+        'job_id' => $employee->job_id,
+        'start' => $request->hireDate,
+       ]);
+        return redirect('/staff/profile/'.$employee->id.'/show');
     }
 
     /**

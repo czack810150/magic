@@ -59,7 +59,7 @@
 
 <div class="m-portlet__body" id="staffList">
 
-
+@include('layouts.errors')
 
 <table class="table table-hover">
 	<thead>
@@ -104,11 +104,14 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
+      <!--begin::Form-->
+			<form class="m-form m-form--fit m-form--label-align-right" method="POST" action="/employee/store">
+				{{ csrf_field() }}
       <div class="modal-body">	
 
 			
-			<!--begin::Form-->
-			<form class="m-form m-form--fit m-form--label-align-right">
+			
 				<div class="m-portlet__body">
 					<div class="form-group m-form__group row">
 						<label for="employeeLocation" class="col-4 col-form-label">Location</label>
@@ -141,7 +144,7 @@
 					<div class="form-group m-form__group row">
 						<label for="cName" class="col-4 col-form-label">中文名</label>
 						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="Chinese Name" ="" id="cName" name="cName" required>
+							<input class="form-control m-input" type="text" placeholder="Chinese Name" ="" id="cName" name="cName">
 						</div>
 					</div>
 					<div class="form-group m-form__group row">
@@ -159,7 +162,7 @@
 					<div class="form-group m-form__group row">
 						<label for="hireDate" class="col-4 col-form-label">Date Hired</label>
 						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="Pick a Date" id="hireDate" required>
+							<input class="form-control m-input" type="text" placeholder="Pick a Date" id="hireDate" name="hireDate" required>
 						</div>
 					</div>
 					<div class="form-group m-form__group row">
@@ -171,13 +174,13 @@
 					</div>
 					
 				</div>
-				
-			</form>
+			
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
@@ -187,6 +190,11 @@
 @section('pageJS')
 
 <script>
+
+	$('#hireDate').datepicker({
+		format:'yyyy-mm-dd',
+	});
+
 		function viewEmployee(employee){
 		window.location.href='/staff/profile/' + employee + '/show';
 	}

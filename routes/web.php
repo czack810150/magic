@@ -22,6 +22,7 @@ Route::get('/vue',function(){
 // end vue
 
 //EMPLOYEE
+Route::post('/employee/store','EmployeeController@store');
 Route::post('/filter/employee/list','EmployeeController@filterEmployees');
 Route::get('/employee','EmployeeController@index');
 Route::get('/staff/profile/{id}/show','EmployeeController@show');
