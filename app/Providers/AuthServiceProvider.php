@@ -40,5 +40,13 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('create-employee',function($user){
             return in_array($user->authorization->type,['admin','hr']);
         });
+
+        Gate::define('view-employee',function($user,$employee){
+            if( $user->authorization->type == 'employee' ){
+                return $user->authorization->employee_id == $employee->id;
+            } else {
+                return true;
+            }
+        });
     }
 }

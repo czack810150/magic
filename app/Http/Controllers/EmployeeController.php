@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 use App\Employee;
 use App\Employee_profile;
 use App\Employee_background;
 use App\Employee_location;
 use App\User;
-use Illuminate\Support\Facades\Auth;
+
 use App\Location;
 use App\Job;
 use App\Authorization;
@@ -109,7 +111,12 @@ class EmployeeController extends Controller
     {   
         $subheader = 'Staff Profile';
         $staff = Employee::findOrFail($id);
-        return view('employee/profile/index',compact('staff','subheader'));
+        if(Gate::allows('view-employee',$staff)){
+            return view('employee/profile/index',compact('staff','subheader'));
+        } else {
+            return 'Not authorized';
+        }
+        
     }
 
     /**

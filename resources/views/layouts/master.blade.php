@@ -5,13 +5,21 @@
   <body class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default"  >
  <!-- begin:: Page -->
     <div class="m-grid m-grid--hor m-grid--root m-page">
+ @if(Auth::user()->authorization->type != 'employee')      
     @include('layouts.header')
+ @else
+    @include('layouts.employee.header')
+ @endif   
 
     <!-- begin::Body -->
       <div class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
     
-        
+@if(Auth::user()->authorization->type != 'employee')        
 @include('layouts.aside')
+@else
+@include('layouts.employee.aside')
+@endif
+
 <div class="m-grid__item m-grid__item--fluid m-wrapper">
 @include('layouts.subheader')
 
@@ -25,7 +33,11 @@
 </div>
       <!-- end:: Body -->
 @include('layouts.footer')
-@include('layouts.quickSideBar')
+
+ @if(Auth::user()->authorization->type != 'employee')      
+    @include('layouts.quickSideBar')
+ @else
+ @endif  
  <!-- begin::Scroll Top -->
     <div class="m-scroll-top m-scroll-top--skin-top" data-toggle="m-scroll-top" data-scroll-offset="500" data-scroll-speed="300">
       <i class="la la-arrow-up"></i>
@@ -36,8 +48,11 @@
    </div>
   </div>
   <!-- end:: Page -->
+ @if(Auth::user()->authorization->type != 'employee')      
+    @include('layouts.sticky')
+ @else
+ @endif  
 
-@include('layouts.sticky')
 
 
       <!--begin::Base Scripts -->
