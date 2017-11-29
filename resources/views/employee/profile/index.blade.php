@@ -52,9 +52,11 @@
   <li class="nav-item">
     <a class="nav-link" href="javascript:employeeCompensation('{{ $staff->id }}')">Compensation</a>
   </li>
+  @can('note-employee')
   <li class="nav-item">
     <a class="nav-link" href="javascript:employeeNote('{{ $staff->id }}')">Notes</a>
   </li>
+  @endcan
 </ul>
 </div>
 </div>
@@ -142,7 +144,7 @@
 </div>
 <div class="col-3">
 <div class="info-box pl-3">
-<small>Status</small>
+<small>Immigration Status</small>
 @if(!empty($staff->employee_background->canada_status))
 <p>{{ $staff->employee_background->canada_status }}</p>
 @else

@@ -69,16 +69,7 @@
 												</span>
 											</a>
 										</li>
-										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="/payroll/paystubs/my" class="m-menu__link ">
-												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
-													<span></span>
-												</i>
-												<span class="m-menu__link-text">
-													Paystubs
-												</span>
-											</a>
-										</li>
+		
 									
 									</ul>
 								</div>
@@ -106,7 +97,7 @@
 											</a>
 										</li>
 										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="/clocks" class="m-menu__link ">
+											<a  href="/clocks/my" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>
@@ -138,7 +129,17 @@
 													Pending Exam
 												</span>
 											</a>
-										</li》	
+											<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="/training/my" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													培训记录
+												</span>
+											</a>
+										</li>
+										</li>	
 									</ul>
 								</div>
 							</li>

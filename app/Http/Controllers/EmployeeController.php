@@ -319,6 +319,7 @@ class EmployeeController extends Controller
     }
     public function editEmployment(Request $r)
     {   
+        if(Gate::allows('update-employment')){
         $user = Auth::user();
         $employee = Employee::find($r->employee);
         $jobs = Job::pluck('rank','id');
@@ -340,6 +341,9 @@ class EmployeeController extends Controller
         ];
         }
         return view('employee.profile.employment.edit',compact('employee','user','jobs','types','locations'));
+        } else {
+            return 'No authorization!';
+        }
     }
     public function updateEmployment(Request $r)
     {

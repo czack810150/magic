@@ -50,7 +50,10 @@
 							<div id="m_header_topbar" class="m-topbar  m-stack m-stack--ver m-stack--general">
 								<div class="m-stack__item m-topbar__nav-wrapper">
 									<ul class="m-topbar__nav m-nav m-nav--inline">
-										
+										<li class="m-nav__item m-dropdown">
+{{ Auth::user()->authorization->employee->cName }} - Logged in as <strong>{{ Auth::user()->authorization->type }}</strong>  
+{{\Carbon\Carbon::now()->format('l jS \\of F Y')}}
+										</li>
 										
 										
 										<li class="m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light" data-dropdown-toggle="click">
@@ -59,7 +62,7 @@
 													<img src="{{asset('/img/'.Auth::user()->authorization->employee->employee_profile->img)}}" class="m--img-rounded m--marginless m--img-centered" alt="user-pic"/>
 												</span>
 												<span class="m-topbar__username m--hide">
-													Nick
+													{{ Auth::user()->authorization->employee->cName }}
 												</span>
 											</a>
 											<div class="m-dropdown__wrapper">

@@ -116,7 +116,7 @@
 </div>
 <div class="col-3">
 <div class="info-box pl-3">
-<small>Status</small>
+<small>Immigration Status</small>
 
 @if(!empty($staff->employee_background->canada_status))
 {{ Form::select('canada_status',

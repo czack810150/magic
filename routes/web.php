@@ -62,6 +62,15 @@ Route::post('/employee/account/{id}/edit','EmployeeController@editAccount');
 Route::post('/employee/account/{id}/update','EmployeeController@updateAccount');
 // Employee Trainning
 Route::post('/employee/training','EmployeeController@training');
+// user employee
+Route::get('/payroll/my','EmployeeUserController@payroll');
+Route::post('/payroll/employee/year','EmployeeUserController@payrollYear');
+Route::get('/hours/my','EmployeeUserController@hour');
+Route::post('/hours/employee/year','EmployeeUserController@hourYear');
+Route::get('/clocks/my','EmployeeUserController@clock');
+Route::post('/clocks/employee/year','EmployeeUserController@clockYear');
+Route::get('/training/my','EmployeeUserController@training');
+
 
 //score
 Route::get('/score/category','ScoreCategoryController@index');
