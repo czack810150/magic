@@ -1,11 +1,12 @@
 @if(count($logs))
 <table class="table table-sm table-hover">
 <thead>
-	<tr><th>Start</th><th>End</th><th>排班</th><th>有效</th><th>第一周排班</th><th>第二周排班</th><th>第一周打卡</th><th>第二周打卡</th><th>第一周有效</th><th>第二周有效</th><th>第一周超时</th><th>第二周超时</th><th>第一周夜班</th><th>第二周夜班</th></tr>
+	<tr><th>Location</th><th>Start</th><th>End</th><th>排班</th><th>有效</th><th>第一周排班</th><th>第二周排班</th><th>第一周打卡</th><th>第二周打卡</th><th>第一周有效</th><th>第二周有效</th><th>第一周超时</th><th>第二周超时</th><th>第一周夜班</th><th>第二周夜班</th></tr>
 </thead>
 <tbody>
 	@foreach($logs as $h)
 	<tr>
+		<td>{{  $h->location->name }}</td>
 		<td>{{ $h->start }}</td>
 		<td>{{ $h->end }}</td>
 		<td class="alert alert-primary">{{ $h->wk1Scheduled +$h->wk2Scheduled  }}</td>

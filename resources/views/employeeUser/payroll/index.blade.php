@@ -31,7 +31,7 @@
 @if(count($logs))
 <table class="table table-sm table-striped">
 	<thead>
-		<tr><th>期首</th><th>期末</th><th>工时</th><th>基本工资</th><th>超时工资</th><th>Premium</th><th>Holiday</th><th>税前收入</th>
+		<tr><th>门店</th><th>期首</th><th>期末</th><th>工时</th><th>基本工资</th><th>超时工资</th><th>Premium</th><th>Holiday</th><th>税前收入</th>
 			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>支票</th>
 			<th>岗位津贴</th><th>小时小费</th><th>夜班时间</th>
 			<th>表现</th><th>餐补</th>
@@ -42,7 +42,7 @@
 		@foreach($logs as $e)
 		 @if($e->totalPay)
 			<tr>
-
+				<td>{{  $e->location->name }}</td>
 				<td>{{$e->startDate}}</td>
 				<td>{{$e->endDate}}</td>
 				<td>{{$e->week1 + $e->week2}}</td>

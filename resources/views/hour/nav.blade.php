@@ -9,9 +9,11 @@
       <li class="nav-item">
         <a class="nav-link" href="/hours">Home</span></a>
       </li>
+      @can('calculate-hours')
       <li class="nav-item">
         <a class="nav-link" href="/hours/compute">Compute</a>
       </li>
+      @endcan
     
      
     </ul>
