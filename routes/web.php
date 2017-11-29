@@ -25,7 +25,7 @@ Route::get('/vue',function(){
 Route::post('/employee/store','EmployeeController@store');
 Route::post('/filter/employee/list','EmployeeController@filterEmployees');
 Route::get('/employee','EmployeeController@index');
-Route::get('/staff/profile/{id}/show','EmployeeController@show');
+Route::get('/staff/profile/{id}/show','EmployeeController@show')->where('id','[0-9]+');
 Route::post('/employee/edit/personal','EmployeeController@editPersonal');
 Route::post('/employee/edit/personal/cancel','EmployeeController@cancelPersonal');
 Route::post('/employee/edit/personal/update','EmployeeController@updatePersonal');
@@ -95,7 +95,7 @@ Route::post('/clock/update','ClockController@update');
 Route::post('/clock/add','ClockController@store');
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Auth::routes();
 //Users
