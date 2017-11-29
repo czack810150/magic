@@ -408,3 +408,18 @@ function updateEmployeeAccount(employee){
 			}
 		});
 }
+function employeeTraining(employee)
+{
+	$.post(
+		'/employee/training',
+		{
+			_token: $("input[name=_token]").val(),
+			employee: employee,
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);
+}

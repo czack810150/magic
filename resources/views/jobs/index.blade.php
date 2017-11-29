@@ -13,55 +13,28 @@
 	
 	</div>
 	<div class="m-portlet__body">
-		<!--begin: Search Form -->
-		<div class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
-			<div class="row align-items-center">
-				<div class="col-xl-8 order-2 order-xl-1">
-					<div class="form-group m-form__group row align-items-center">
-						<div class="col-md-4">
-							<div class="m-input-icon m-input-icon--left">
-								<input type="text" class="form-control m-input m-input--solid" placeholder="Search..." id="generalSearch">
-								<span class="m-input-icon__icon m-input-icon__icon--left">
-									<span><i class="la la-search"></i></span>
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-					<a href="/users/new" class="btn btn-accent m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
-						<span>
-							<i class="la la-plus"></i>
-							<span>New Position</span>
-						</span>
-					</a>
-					<div class="m-separator m-separator--dashed d-xl-none"></div>
-				</div>
-			</div>
-		</div>
-		<!--end: Search Form -->
+	
 
 		<!--begin: Datatable -->
 		<table class="table table-hover"  width="100%">
 			<thead>
 			<tr>
-				<th >Position ID</th>
+			
 				<th>Salary</th>
 				<th >Type</th>
-				<th >Name</th>
-				<th>Short</th>
-				<th>In use</th>
-				<th >Rate</th>
+				<th >职位名称</th>
+				<th>简称</th>
+				<th>基本工资</th>
+				<th>岗位津贴</th>
 				<th >Tip</th>
+				<th>餐饮补助</th>
+				<th>夜班补助</th>
 			
-				<th >Created at</th>
-				<th >Updated at</th>
 			</tr>
 			</thead>
 			<tbody>
 				@foreach($jobs as $j)
 			<tr>
-				<td>{{ $j->id }}</td>
 				@if($j->hour)
 				<td>Hourly</td>
 				@else
@@ -69,21 +42,34 @@
 				@endif
 
 				<td>{{ $j->type }}</td>
-				
-		
 				<td>{{ $j->rank }}</td>
-
 				<td>{{ $j->short }}</td>
-				@if($j->valid)
-				<td>In service</td>
+
+				@if($j->rate > 1000)
+				<td>${{ $j->rate/100 }} / hr</td>
 				@else
-				<td>Not in service</td>
+				<td>$12 / hr</td>
+				@endif
+				
+
+				@if($j->rate > 0 && $j->rate < 1000)
+				<td>${{ $j->rate/100 }} / hr</td>
+				@else
+				<td></td>
+				@endif
+				
+				@if($j->tip)
+				<td>{{ $j->tip*100 }}%</td>
+				@else
+				<td></td>
 				@endif
 
-				<td>{{ $j->rate/100 }}</td>
-				<td>{{ $j->tip }}</td>
-				<td>{{ $j->created_at }}</td>
-				<td>{{ $j->updated_at }}</td>
+				@if(in_array($j->type,['server','cook','noodle','dish']))
+				<td>$0.8 / hr</td>
+				<td>$3 / hr</td>
+				@else
+				<td></td><td></td>
+				@endif
 			</tr>
 			@endforeach
 			</tbody>

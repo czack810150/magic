@@ -55,6 +55,11 @@ class Employee extends Model
         return $this->hasMany('App\Exam');
     }
 
+    public function training()
+    {
+        return $this->hasMany('App\Training_log');
+    }
+
     public function schedule(){
         return $this->hasMany('App\Shift');
     }

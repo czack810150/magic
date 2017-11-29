@@ -19,6 +19,7 @@ class ScriptController extends Controller
     		555 => 282,
     		670 => 245,
             546 => 577,
+            689 => 96,
     	];
     	$fixed = array();
     	foreach($employees as $old => $new)

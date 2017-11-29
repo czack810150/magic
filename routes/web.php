@@ -60,6 +60,8 @@ Route::post('/employee/compensation','EmployeeController@compensation');
 Route::post('/employee/account','EmployeeController@account');
 Route::post('/employee/account/{id}/edit','EmployeeController@editAccount');
 Route::post('/employee/account/{id}/update','EmployeeController@updateAccount');
+// Employee Trainning
+Route::post('/employee/training','EmployeeController@training');
 
 //score
 Route::get('/score/category','ScoreCategoryController@index');
@@ -89,7 +91,7 @@ Route::get('/timeclock/in','ClockController@in')->middleware('auth');
 Route::get('/timeclock/out','ClockController@out')->middleware('auth');
 Route::post('/timeclock/in','ClockController@clockIn')->middleware('auth');
 Route::post('/timeclock/out','ClockController@clockOut')->middleware('auth');
-Route::get('/inshift','ClockController@inShift');
+Route::get('/timeclock/inshift','ClockController@inShift');
 Route::post('/clock/edit','ClockController@show');
 Route::post('/clock/update','ClockController@update');
 Route::post('/clock/add','ClockController@store');

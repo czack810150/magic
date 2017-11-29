@@ -130,9 +130,10 @@ class ClockController extends Controller
     }
 
     public function inShift(){
+      $subheader = "Who's In";
       $inShiftEmployees = Employee::has('shift')->get();
-    
-      return view('shift.timeclock.inShiftEmployees',compact('inShiftEmployees'));
+      $locations = Location::all();
+      return view('shift.timeclock.inShiftEmployees',compact('locations','inShiftEmployees','subheader'));
     }
     public function shiftClocks()
     {

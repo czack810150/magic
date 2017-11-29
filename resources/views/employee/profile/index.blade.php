@@ -41,7 +41,7 @@
   	 <li class="nav-item">
     <a class="nav-link" href="javascript:employeePerformance('{{ $staff->id }}')">Performance</a>
   <li class="nav-item">
-    <a class="nav-link" href="#">Training</a>
+    <a class="nav-link" href="javascript:employeeTraining('{{ $staff->id }}')">Training</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#">Time off</a>

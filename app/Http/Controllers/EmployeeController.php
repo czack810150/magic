@@ -466,6 +466,27 @@ class EmployeeController extends Controller
         $newAuthorization->save();
             return 'created';
 
+     }
+     public function training(Request $r)
+     {
+        $employee = Employee::find($r->employee);
+        $authorization = Authorization::where('employee_id',$r->employee)->first();
+
+        $logs = $employee->training;
+        foreach($logs as $log){
+            $log->trainer_name = $log->trainer->cName;
+            $log->stage = $log->item->stage;
+            $log->itemName = $log->item->name;
+            switch($log->item->sub_category){
+                case 1: $log->category = '前厅';break;
+                case 2: $log->category = '后厨';break;
+                case 3: $log->category = '洗碗';break;
+            }
+           
+        }
+
+
+        return view('employee.profile.training.index',compact('authorization','employee','logs'));
      }      
 
       
