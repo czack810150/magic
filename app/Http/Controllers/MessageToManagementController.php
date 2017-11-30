@@ -24,7 +24,8 @@ class MessageToManagementController extends Controller
      */
     public function create()
     {
-        //
+        $subheader = "I have something to say..";
+        return view('employeeUser.message.write',compact('subheader'));
     }
 
     /**
@@ -35,7 +36,8 @@ class MessageToManagementController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        return url("/message/management/sent");
     }
 
     /**
@@ -81,5 +83,10 @@ class MessageToManagementController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function sent()
+    {
+        $subheader = "I have something to say..";
+        return view('employeeUser.message.sent',compact('subheader'));
     }
 }
