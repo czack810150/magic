@@ -72,6 +72,7 @@ Route::post('/clocks/employee/year','EmployeeUserController@clockYear');
 Route::get('/training/my','EmployeeUserController@training');
 
 
+
 //score
 Route::get('/score/category','ScoreCategoryController@index');
 Route::get('/score/category/create','ScoreCategoryController@create');

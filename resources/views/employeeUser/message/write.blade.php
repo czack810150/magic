@@ -15,6 +15,13 @@
 	<!--begin::Form-->
 	<form class="m-form m-form--fit m-form--label-align-right">
 		<div class="m-portlet__body">
+
+			<div class="form-group m-form__group col-lg-9 col-md-9 col-sm-12">
+						<label for="subject">Subject 标题</label>
+						<input type="text" class="form-control m-input" id="subject" name="subject" placeholder="">
+					</div>
+
+
 			<div class="form-group m-form__group row">
 				
 				<div class="col-lg-9 col-md-9 col-sm-12">
@@ -85,6 +92,10 @@ function submitMessage(){
 		if($('input[name=dm]').is(':checked')){
 			dm = true;
 		}
+		if(gm == false && dm == false){
+			alert('请至少选则一个收件人.');
+			return 1;
+		}
 		
 		$.post(
 			'/message/management/send',
@@ -93,6 +104,7 @@ function submitMessage(){
 				message: markupStr,
 				gm: gm,
 				dm: dm,
+				subject: $("#subject").val(),
 			},
 			function(data,status){
 				if(status == 'success'){

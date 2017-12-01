@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Gate;
 use App\Employee;
 use App\Shift;
 use App\Clock;
@@ -17,14 +18,27 @@ class ClockController extends Controller
 {
 
     public function index(){
-   
-        return view('shift.timeclock.inout'); 	
+        if(Gate::allows('can-clockin')){
+          return view('shift.timeclock.inout'); 
+        } else {
+          return 'Not Authorized';
+        }
     }
     public function in(){
-    	return view('shift.timeclock.clockin');
+        if(Gate::allows('can-clockin')){
+          return view('shift.timeclock.clockin'); 
+        } else {
+          return 'Not Authorized';
+        }
+    	
     }
     public function out(){
-    	return view('shift.timeclock.clockout');
+      if(Gate::allows('can-clockin')){
+          return view('shift.timeclock.clockout'); 
+        } else {
+          return 'Not Authorized';
+        }
+    	
     }
     public function clockIn()
     {
@@ -32,7 +46,7 @@ class ClockController extends Controller
       if($auth->type === 'location'){
         $location = $auth->location->id;
       } else {
-
+        return 'Not Authorized';
       }
 
     	$this->validate(request(),[

@@ -81,7 +81,10 @@ class Employee extends Model
     {
         return $query->where('status','active');
     }
-
+    public function message()
+    {
+        return $this->hasMany('App\Message_to');
+    }
     
 
 

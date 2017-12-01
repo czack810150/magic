@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Message;
+use App\Message_to;
+use App\Employee;
 
 class MessageToManagementController extends Controller
 {
@@ -36,7 +40,25 @@ class MessageToManagementController extends Controller
      */
     public function store(Request $request)
     {
-
+        $message = Message::create([
+            'employee_id' => Auth::user()->authorization->employee_id,
+            'subject' => $request->subject,
+            'body' => $request->message
+        ]);
+        if($request->gm != 'false'){
+            $gm = Employee::where('job_id',103)->first();
+            Message_to::create([
+                'employee_id' => $gm->id,
+                'message_id' => $message->id
+            ]);
+        }
+        if($request->dm != 'false'){
+            $dm = Employee::where('job_id',112)->first();
+            Message_to::create([
+                'employee_id' => $dm->id,
+                'message_id' => $message->id
+            ]);
+        }
         return url("/message/management/sent");
     }
 

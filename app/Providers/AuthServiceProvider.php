@@ -54,6 +54,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('update-employment',function($user){
              return in_array($user->authorization->type,['admin','hr','dm','accounting']);
         });
+        Gate::define('can-clockin',function($user){
+            return $user->authorization->type == 'location';
+        });
         
     }
 }
