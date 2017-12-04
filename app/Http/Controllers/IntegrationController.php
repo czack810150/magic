@@ -64,9 +64,9 @@ class IntegrationController extends Controller
 				$return['Processed up to'] = $data['transNo'];
 				$return['Attendence Import'] = $status;
 				} else {
-				$return['Processed up to'] = $data['transNo'];
+				$return['Processed up to'] = $r->TransNo;
 				$return['No employee found for '] = $r->EmployeeRemark;
-				$return['Attendence Import'] = $status;
+				$return['Attendence Import'] = 'not imported';
 				}
 				
 				

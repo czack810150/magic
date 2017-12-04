@@ -111,4 +111,15 @@ class MessageToManagementController extends Controller
         $subheader = "I have something to say..";
         return view('employeeUser.message.sent',compact('subheader'));
     }
+    public function inbox()
+    {
+        $subheader = 'Inbox';
+        $employee = Auth::user()->authorization->employee;
+        return view('employeeUser.message.inbox',compact('employee','subheader'));
+    }
+    public function showMessage(Message $message)
+    {
+       return $message;
+        return Message::find($message)->subject;
+    }
 }

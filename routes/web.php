@@ -187,9 +187,11 @@ Route::get('/my_exam','ExamController@my');
 //Jobs
 Route::get('/jobs','JobController@index');
 // My voice
-route::get('/message/management','MessageToManagementController@create');
-route::post('/message/management/send','MessageToManagementController@store');
-route::get('/message/management/sent','MessageToManagementController@sent')->name('messageSuccess');
+Route::get('/message/management','MessageToManagementController@create');
+Route::post('/message/management/send','MessageToManagementController@store');
+Route::get('/message/management/sent','MessageToManagementController@sent')->name('messageSuccess');
+Route::get('/message/management/inbox','MessageToManagementController@inbox')->name('inbox');
+Route::post('/message/management/message/{message}/show','MessageToManagementController@showMessage');
 
 // Integration
 Route::get('/integration/importClocks','IntegrationController@importClocks');
