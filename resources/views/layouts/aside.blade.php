@@ -314,7 +314,18 @@
 								<a href="#" class="m-menu__link m-menu__toggle">
 									<i class="m-menu__link-icon flaticon-paper-plane"></i>
 									<span class="m-menu__link-text">My Voice</span>
+
+									@if(Auth::user()->authorization->employee->message->where('read',false)->count())
+									<span class="m-menu__link-badge">
+												<span class="m-badge m-badge--danger">
+													{{ Auth::user()->authorization->employee->message->where('read',false)->count() }}
+												</span>
+											</span>
+
 									<i class="m-menu__ver-arrow la la-angle-right"></i>
+									@else
+									<i class="m-menu__ver-arrow la la-angle-right"></i>
+									@endif
 								</a>
 									<div class="m-menu__submenu">
 									<span class="m-menu__arrow"></span>
@@ -337,6 +348,7 @@
 												<span class="m-menu__link-text">
 													Inbox
 												</span>
+
 											</a>
 										</li>
 										

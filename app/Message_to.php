@@ -15,5 +15,9 @@ class Message_to extends Model
     {
     	return $this->belongsTo('App\Message');
     }
+    public function scopeUnreadMessages($query)
+    {
+    	return $query->where('read',false);
+    }
 
 }

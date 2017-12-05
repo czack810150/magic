@@ -192,7 +192,7 @@ Route::post('/message/management/send','MessageToManagementController@store');
 Route::get('/message/management/sent','MessageToManagementController@sent')->name('messageSuccess');
 Route::get('/message/management/inbox','MessageToManagementController@inbox')->name('inbox');
 Route::post('/message/management/message/{message}/show','MessageToManagementController@showMessage');
-
+Route::post('/message/management/message/{message_to}/read','MessageToManagementController@markRead');
 // Integration
 Route::get('/integration/importClocks','IntegrationController@importClocks');
 Route::get('/integration/shiftAutoPull','IntegrationController@shiftAutoPull');

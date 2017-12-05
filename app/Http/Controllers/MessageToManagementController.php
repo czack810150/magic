@@ -119,7 +119,15 @@ class MessageToManagementController extends Controller
     }
     public function showMessage(Message $message)
     {
+       $message->employee; 
        return $message;
-        return Message::find($message)->subject;
+    }
+    public function markRead($id)
+    {
+
+        $message = Message_to::find($id);
+        $message->read = true;
+        $message->save();
+        return 'read';
     }
 }

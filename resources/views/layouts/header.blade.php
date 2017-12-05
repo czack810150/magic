@@ -339,8 +339,9 @@
 															<i class="m-menu__ver-arrow la la-angle-right"></i>
 														</h3>
 														<ul class="m-menu__inner">
+															@if(Auth::user()->authorization->level >=30 )
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
+																<a  href="/employee" class="m-menu__link ">
 																	<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 																		<span></span>
 																	</i>
@@ -349,6 +350,7 @@
 																	</span>
 																</a>
 															</li>
+															@endif
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
 																<a  href="header/actions.html" class="m-menu__link ">
 																	<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -359,8 +361,9 @@
 																	</span>
 																</a>
 															</li>
+															@if(Auth::user()->authorization->level >= 40)
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
+																<a  href="/payroll/basic" class="m-menu__link ">
 																	<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 																		<span></span>
 																	</i>
@@ -369,8 +372,9 @@
 																	</span>
 																</a>
 															</li>
+
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
+																<a  href="/payroll/paystubs" class="m-menu__link ">
 																	<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 																		<span></span>
 																	</i>
@@ -379,6 +383,7 @@
 																	</span>
 																</a>
 															</li>
+															@endif
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
 																<a  href="header/actions.html" class="m-menu__link ">
 																	<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -663,20 +668,23 @@
 											</div>
 										</li>
 										<li class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center 	m-dropdown--mobile-full-width" data-dropdown-toggle="click" data-dropdown-persistent="true">
-											<a href="#" class="m-nav__link m-dropdown__toggle" id="m_topbar_notification_icon">
+											<a href="#" class="m-nav__link m-dropdown__toggle" id="m_topbar_notification_iconX">
+												@if(Auth::user()->authorization->employee->message->where('read',false)->count())
 												<span class="m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger"></span>
+												@endif
 												<span class="m-nav__link-icon">
 													<i class="flaticon-music-2"></i>
 												</span>
+										
 											</a>
 											<div class="m-dropdown__wrapper">
 												<span class="m-dropdown__arrow m-dropdown__arrow--center"></span>
 												<div class="m-dropdown__inner">
-													<div class="m-dropdown__header m--align-center" style="background: url(/assets/app/media/img/misc/notification_bg.jpg); background-size: cover;">
-														<span class="m-dropdown__header-title">
-															9 New
+													<div class="m-dropdown__header m--align-left" style="background: url(/assets/app/media/img/misc/notification_bg.jpg); background-size: cover;">
+														<span class="m-dropdown__header-title " >
+															{{ Auth::user()->authorization->employee->message->where('read',false)->count() }} New
 														</span>
-														<span class="m-dropdown__header-subtitle">
+														<span class="m-dropdown__header-subtitle ">
 															User Notifications
 														</span>
 													</div>
@@ -704,90 +712,25 @@
 																	<div class="m-scrollable" data-scrollable="true" data-max-height="250" data-mobile-max-height="200">
 																		<div class="m-list-timeline m-list-timeline--skin-light">
 																			<div class="m-list-timeline__items">
+
+																			@if(Auth::user()->authorization->employee->message->where('read',false)->count())
+																				@foreach(Auth::user()->authorization->employee->message->where('read',false) as $m)
 																				<div class="m-list-timeline__item">
 																					<span class="m-list-timeline__badge -m-list-timeline__badge--state-success"></span>
 																					<span class="m-list-timeline__text">
-																						12 new users registered
-																					</span>
-																					<span class="m-list-timeline__time">
-																						Just now
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						System shutdown
-																						<span class="m-badge m-badge--success m-badge--wide">
-																							pending
-																						</span>
-																					</span>
-																					<span class="m-list-timeline__time">
-																						14 mins
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						New invoice received
-																					</span>
-																					<span class="m-list-timeline__time">
-																						20 mins
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						DB overloaded 80%
+																						一封来自<strong>{{ $m->message->employee->cName }}</strong>的员工信
 																						<span class="m-badge m-badge--info m-badge--wide">
-																							settled
+																							未读
 																						</span>
 																					</span>
 																					<span class="m-list-timeline__time">
-																						1 hr
+																						{{ $m->created_at->diffForHumans() }}
 																					</span>
 																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						System error -
-																						<a href="#" class="m-link">
-																							Check
-																						</a>
-																					</span>
-																					<span class="m-list-timeline__time">
-																						2 hrs
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item m-list-timeline__item--read">
-																					<span class="m-list-timeline__badge"></span>
-																					<span href="" class="m-list-timeline__text">
-																						New order received
-																						<span class="m-badge m-badge--danger m-badge--wide">
-																							urgent
-																						</span>
-																					</span>
-																					<span class="m-list-timeline__time">
-																						7 hrs
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item m-list-timeline__item--read">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						Production server down
-																					</span>
-																					<span class="m-list-timeline__time">
-																						3 hrs
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						Production server up
-																					</span>
-																					<span class="m-list-timeline__time">
-																						5 hrs
-																					</span>
-																				</div>
+																				@endforeach
+																			@endif
+
+																				
 																			</div>
 																		</div>
 																	</div>
@@ -989,10 +932,21 @@
 																	</a>
 																</li>
 																<li class="m-nav__item">
-																	<a href="header/profile.html" class="m-nav__link">
+																	<a href="/message/management/inbox" class="m-nav__link">
 																		<i class="m-nav__link-icon flaticon-chat-1"></i>
-																		<span class="m-nav__link-text">
-																			Messages
+																		<span class="m-nav__link-title">
+																			<span class="m-nav__link-wrap">
+																				<span class="m-nav__link-text">
+																				Messages
+																				</span>
+																		@if(Auth::user()->authorization->employee->message->where('read',false)->count())
+																				<span class="m-nav__link-badge">
+																					<span class="m-badge m-badge--success">
+																			{{ Auth::user()->authorization->employee->message->where('read',false)->count() }}
+																					</span>
+																				</span>
+																		@endif
+																			</span>
 																		</span>
 																	</a>
 																</li>

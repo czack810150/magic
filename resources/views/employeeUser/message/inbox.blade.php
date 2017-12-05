@@ -21,7 +21,7 @@
 				<tbody>
 					@foreach($employee->message as $m)
 					
-					<tr onclick="viewMessage('{{ $m->message_id }}')">
+					<tr onclick="viewMessage('{{ $m->message_id }}',{{ $m->id }})">
 						<td>{{ $m->message->employee->location->name }}</td>
 						<td>{{ $m->message->employee->job->rank }}</td>
 						<td>{{ $m->message->employee->cName }}</td>
@@ -63,14 +63,19 @@
         </button>
       </div>
       <div class="modal-body">
-       	
+       	<div class="row">
+       		<div class="col-12">
+       			<p>by <span id="author"></span>, <span id="sendDate"></span></p>
+       			<input type="text" id="mail_id" hidden>
+       		</div>
+       	</div>
        	<div id="messageBody">
        	</div>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Mark as Read</button>
+        <button type="button" class="btn btn-primary" onclick="markRead()">Mark as Read</button>
       </div>
     </div>
   </div>
@@ -78,7 +83,7 @@
 
 
 <script>
-function viewMessage(message){
+function viewMessage(message,mail_id){
 	
 	$.post(
 		'/message/management/message/'+ message + '/show',
@@ -88,13 +93,33 @@ function viewMessage(message){
 		},
 		function(data,status){
 			if(status == 'success'){
+				$('#mail_id').val(mail_id);
 				$('#messageModalLabel').html(data.subject);
+				$('#author').html(data.employee.cName);
+				$('#sendDate').html(data.updated_at);
 				$('#messageBody').html(data.body);
-				console.log(data);
 				$('#messageModal').modal();
 			}
 		},'json'
 		);
+}
+
+function markRead(){
+ 	const mail_id = $('#mail_id').val();
+ 	$.post(
+ 		'/message/management/message/' + mail_id + '/read',
+ 		{
+ 			_token: '{{ csrf_token() }}',
+ 		},
+ 		function(data,status){
+ 			if(status == 'success'){
+ 				$('#messageModal').modal('hide');
+ 				if(data == 'read'){
+ 					location.reload();
+ 				}
+ 			}
+ 		}
+ 		);
 }
 </script>
 @endsection
