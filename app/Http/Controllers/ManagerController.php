@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Employee;
+use App\Location;
+use Carbon\Carbon;
 
 class ManagerController extends Controller
 {
@@ -87,8 +89,14 @@ class ManagerController extends Controller
     {
         if(Gate::allows('manage-managers')){
             $subheader = 'Managers\' Attendance';
+            $currentWeek = Carbon::now();
+
             $managers = Employee::where('job_id',100)->orWhere('job_id',102)->get();
-            return view('manager.attendance.index',compact('subheader','managers'));
+            foreach($managers as $m){
+                $m->total = 12;
+            }
+            $locations = Location::store()->get();
+            return view('manager.attendance.index',compact('subheader','managers','locations','currentWeek'));
         } else {
             return 'Not authorized';
         }

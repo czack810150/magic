@@ -24,4 +24,8 @@ class Location extends Model
     {
         return $this->hasMany('App\Payroll_tip');
     }
+    public function manager()
+    {
+        return $this->belongsTo('App\Employee');
+    }
 }
