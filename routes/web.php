@@ -198,3 +198,5 @@ Route::get('/integration/importClocks','IntegrationController@importClocks');
 Route::get('/integration/shiftAutoPull','IntegrationController@shiftAutoPull');
 // Scripts
 Route::get('/api/fixShared','ScriptController@fixShared');
+// Managers
+Route::get('/manager/attendance','ManagerController@attendance');

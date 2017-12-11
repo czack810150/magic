@@ -339,6 +339,18 @@
 															<i class="m-menu__ver-arrow la la-angle-right"></i>
 														</h3>
 														<ul class="m-menu__inner">
+															@can('manage-managers' )
+															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
+																<a  href="/manager/attendance" class="m-menu__link ">
+																	<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+																		<span></span>
+																	</i>
+																	<span class="m-menu__link-text">
+																		店长考勤
+																	</span>
+																</a>
+															</li>
+															@endcan
 															@if(Auth::user()->authorization->level >=30 )
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
 																<a  href="/employee" class="m-menu__link ">
