@@ -40,11 +40,15 @@
 
 					<div class="row">
 					<div class="col-12">
-					<p>总计时间 <span>{{ $currentWeek }}</span></p>
-					<p>开早 <span>{{ $location->manager->id }}</span></p>
-					<p>收夜 <span></span></p>
-					<p>午餐高峰 <span></span></p>
-					<p>晚餐高峰 <span></span></p>
+					<p><span>{{ $periodStart->toDateString() }} ~ {{ $periodEnd->toDateString()}}</span></p>
+					<p>总计时间 <span>{{ round($location->manager->totalClocked,2) }}</span></p>
+					<p>开早 <span>{{ substr($location->openMorning,0,5) }} ~ {{ substr($location->endMorning,0,5) }}</span><span class="float-right">{{ $location->manager->attendance['openings'] }} 次</span></p>
+					<p>收夜 <span>{{ substr($location->endClose,0,5) }} </span><span class="float-right">{{ $location->manager->attendance['endClose'] }} 次</span></p>
+					<p>午餐高峰 <span>{{ substr($location->lunchStart,0,5) }} ~ {{ substr($location->lunchEnd,0,5) }}</span><span class="float-right">{{ $location->manager->attendance['lunch'] }} 次</span></p>
+					<p>晚餐高峰 <span>{{ substr($location->dinnerStart,0,5) }} ~ {{ substr($location->dinnerEnd,0,5) }}</span><span class="float-right">{{ $location->manager->attendance['dinner'] }} 次</span></p>
+					@if(!is_null($location->nightStart))
+					<p>夜餐期 <span>{{ substr($location->nightStart,0,5) }} ~ {{ substr($location->nightEnd,0,5) }}</span><span class="float-right">{{ $location->manager->attendance['night'] }} 次</span></p>
+					@endif
 					</div>
 					</div>
 
