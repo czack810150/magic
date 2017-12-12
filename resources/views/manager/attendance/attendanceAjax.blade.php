@@ -1,13 +1,4 @@
 
-
-
-@extends('layouts.master')
-@section('content')
-
-<div class="row" id="stores">
-
-
-
 		@foreach($locations as $location)
 		<div class="col-lg-3">
 		<!--begin::Portlet-->
@@ -40,7 +31,7 @@
 
 					<div class="row">
 					<div class="col-12">
-					<p><span>{{ $periodStart->toDateString() }} ~ {{ $periodEnd->toDateString()}}</span></p>
+					<p><span>{{ $periodStart }} ~ {{ $periodEnd}}</span></p>
 					<p>总计时间 <span>{{ round($location->manager->totalClocked,2) }}</span></p>
 					<p>开早 <span>{{ substr($location->openMorning,0,5) }} ~ {{ substr($location->endMorning,0,5) }}</span><span class="float-right">{{ $location->manager->attendance['openings'] }} 次</span></p>
 					<p>收夜 <span>{{ substr($location->endClose,0,5) }} </span><span class="float-right">{{ $location->manager->attendance['endClose'] }} 次</span></p>
@@ -65,34 +56,5 @@
 		<!--end::Portlet-->
 		</div>
 		@endforeach
-</div> <!-- end of row -->
-
-@endsection
-@section('pageJS')
-<script>
-
-function managerAttendance(from,to){
-	console.log('from: '+ from + ' to: '+ to);
-	$.post(
-		'/manager/attendance',
-		{
-			_token: '{{ csrf_token() }}',
-			from: from,
-			to: to
-		},
-		function(data,status){
-			if(status == 'success'){
-				$('#stores').html(data);
-			}
-		}
-		);
-}
 
 
-
-$('#m_dashboard_daterangepicker').on('apply.daterangepicker',function(ev,picker){
-	managerAttendance(picker.startDate.format('YYYY-MM-DD'),picker.endDate.format('YYYY-MM-DD'));
-});
-
-</script>
-@endsection

@@ -104,7 +104,27 @@ class ManagerController extends Controller
                 $location->manager->attendance = Hour::openings($location->manager->id,$location->id,$start,$end);
             }
 
-            return view('manager.attendance.index',compact('subheader','managers','locations','currentWeek','periodStart','periodEnd'));
+            return view('manager.attendance.index',compact('subheader','locations','currentWeek','periodStart','periodEnd'));
+        } else {
+            return 'Not authorized';
+        }
+    }
+
+    public function attendanceByDateRange(Request $r)
+    {
+        if(Gate::allows('manage-managers')){
+    
+
+            $periodStart = $r->from;
+            $periodEnd = $r->to;
+
+            $locations = Location::store()->get();
+            foreach($locations as $location){
+                $location->manager->totalClocked = Hour::clockedHour($location->manager->id,$location->id,$periodStart,$periodEnd);
+                $location->manager->attendance = Hour::openings($location->manager->id,$location->id,$periodStart,$periodEnd);
+            }
+
+            return view('manager.attendance.attendanceAjax',compact('locations','periodStart','periodEnd'));
         } else {
             return 'Not authorized';
         }
