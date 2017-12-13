@@ -32,7 +32,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('calculate-payroll',function($user){
             return $user->authorization->type == 'admin';
         });
-
+        Gate::define('workon-tips',function($user){
+            return in_array($user->authorization->type,['admin','accounting']);
+        });
         Gate::define('score-employee',function($user){
             return in_array($user->authorization->type,['admin','manager','dm']);
         });
