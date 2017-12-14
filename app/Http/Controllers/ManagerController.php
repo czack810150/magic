@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Employee;
 use App\Location;
 use App\Hour;
+use App\Clock;
 use Carbon\Carbon;
 
 class ManagerController extends Controller
@@ -125,6 +126,15 @@ class ManagerController extends Controller
             }
 
             return view('manager.attendance.attendanceAjax',compact('locations','periodStart','periodEnd'));
+        } else {
+            return 'Not authorized';
+        }
+    }
+    public function attendanceDetail(Request $r){
+         if(Gate::allows('manage-managers')){
+            
+            $clocks = Clock::where('employee_id',$r->employee)->whereDate('clockIn','>=',$r->from)->whereDate('clockIn','<=',$r->to)->orderBy('clockIn')->get();
+            return view('manager.attendance.detail',compact('clocks'));
         } else {
             return 'Not authorized';
         }

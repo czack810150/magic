@@ -22,10 +22,6 @@
 				</div>
 			</div>
 			<div class="m-portlet__body">	
-				
-				
-					
-				
 					
 					<div class="row mb-3">
 					<div class="col-7 col-sm-7">
@@ -50,6 +46,14 @@
 					<p>夜餐期 <span>{{ substr($location->nightStart,0,5) }} ~ {{ substr($location->nightEnd,0,5) }}</span><span class="float-right">{{ $location->manager->attendance['night'] }} 次</span></p>
 					@endif
 					</div>
+
+					<div class="form-group">
+					<button type="button" class="btn btn-secondary btn-sm detail-button" 
+					from="{{ $periodStart->toDateString() }}"
+					to="{{ $periodEnd->toDateString() }}"
+					manager="{{ $location->manager->id }}">Details</button>
+					</div>
+
 					</div>
 
 
@@ -66,6 +70,28 @@
 		</div>
 		@endforeach
 </div> <!-- end of row -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailModalLabel">Manager Attendance Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <section id="modal-body"></section>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 @endsection
 @section('pageJS')
@@ -88,10 +114,32 @@ function managerAttendance(from,to){
 		);
 }
 
+function managerAttendanceDetails(e){
+
+	$.post(
+		'/manager/attendance/detail',
+		{
+			_token: '{{ csrf_token() }}',
+			employee: e.target.attributes.manager.value,
+			from: e.target.attributes.from.value,
+			to: e.target.attributes.to.value,
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#modal-body').html(data);
+				$('#detailModal').modal();
+			}
+		}
+		);
+}
 
 
 $('#m_dashboard_daterangepicker').on('apply.daterangepicker',function(ev,picker){
 	managerAttendance(picker.startDate.format('YYYY-MM-DD'),picker.endDate.format('YYYY-MM-DD'));
+});
+
+$('.detail-button').on('click',function(e){
+	managerAttendanceDetails(e);
 });
 
 </script>
