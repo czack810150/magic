@@ -55,6 +55,7 @@ function updatePersonal(employee){
 			firstName: $('#firstName').val(),
 			lastName: $('#lastName').val(),
 			cName: $('#cName').val(),
+			alias: $('#alias').val(),
 			email: $('#email').val(),
 			gender: $('#gender').val(),
 			dob: $('#dob').val(),

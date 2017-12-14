@@ -63,7 +63,19 @@
 </div>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-2">
+<div class="info-box pl-3">
+<small>Nickname</small>
+<div class="input-group m-input-group m-input-group--square">
+<input type="text" class="form-control m-input form-control-sm" value="
+@if(!empty($staff->employee_profile->alias))
+{{$staff->employee_profile->alias}}
+@endif" id="alias">
+</div>
+</div>
+</div>
+
+<div class="col-md-2">
 <div class="info-box pl-3">
 <small>Email</small>
 <div class="input-group m-input-group m-input-group--square">
@@ -123,8 +135,8 @@
 [
 'unknown' => 'Unknown',
 'visitor' => 'Visitor',
-'study_permit' => 'Study Permit',
-'work_permit' => 'Work Permit',
+'study permit' => 'Study Permit',
+'work permit' => 'Work Permit',
 'pr' => 'Permanent Resident',
 'citizen' => 'Canadian Citizen'
 ],$staff->employee_background->canada_status,['id'=>'canada_status',

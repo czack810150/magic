@@ -26,6 +26,18 @@
 <p>{{ $staff->firstName }} {{ $staff->lastName }} {{ $staff->cName }}</p>
 </div>
 </div>
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Nickname</small>
+@if(!empty($staff->employee_profile->alias))
+<p>{{ $staff->employee_profile->alias }}</p>
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+
 <div class="col-3">
 <div class="info-box pl-3">
 <small>Email</small>
@@ -36,6 +48,9 @@
 @endif
 </div>
 </div>
+
+
+
 <div class="col-3">
 <div class="info-box pl-3">
 <small>Gender</small>
@@ -85,7 +100,7 @@
 	<div class="col-3">
 <div class="info-box pl-3">
 <small>Marital Status</small>
-@if(!empty($staff->employee_profile->married))
+@if(!is_null($staff->employee_profile->married))
 <p>{{ $staff->employee_profile->married?'Married':'Unmarried' }}</p>
 @else
 <p>-</p>

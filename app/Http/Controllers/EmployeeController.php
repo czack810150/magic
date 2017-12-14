@@ -187,12 +187,14 @@ class EmployeeController extends Controller
             $profile->sex = $r->gender;
             $profile->dob = $r->dob;
             $profile->married = $r->married;
+            $profile->alias = $r->alias;
             $profile->save(); 
             }
             catch (\Exception $e) {
                 return $e->getMessage();
             }
         } else {
+                $profile->alias = $r->alias;
                 $profile->sex = $r->gender;
                 $profile->dob = $r->dob;
                 $profile->married = $r->married;
