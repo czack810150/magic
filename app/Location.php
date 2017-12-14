@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 
+
 class Location extends Model
 {
     public function employee()
@@ -28,4 +29,6 @@ class Location extends Model
     {
         return $this->belongsTo('App\Employee');
     }
+
+
 }

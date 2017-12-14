@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Employee;
 use App\Location;
+use App\Hour;
 use Carbon\Carbon;
 
 class ManagerController extends Controller
@@ -90,13 +91,40 @@ class ManagerController extends Controller
         if(Gate::allows('manage-managers')){
             $subheader = 'Managers\' Attendance';
             $currentWeek = Carbon::now();
+            $start = $currentWeek->startOfWeek()->toDateString();
+            $end = $currentWeek->endOfWeek()->toDateString();
 
-            $managers = Employee::where('job_id',100)->orWhere('job_id',102)->get();
-            foreach($managers as $m){
-                $m->total = 12;
-            }
+            $periodStart = Carbon::createFromFormat('Y-m-d',$start);
+            $periodEnd = Carbon::createFromFormat('Y-m-d',$end);
+            //dd($start);
+
             $locations = Location::store()->get();
-            return view('manager.attendance.index',compact('subheader','managers','locations','currentWeek'));
+            foreach($locations as $location){
+                $location->manager->totalClocked = Hour::clockedHour($location->manager->id,$location->id,$start,$end);
+                $location->manager->attendance = Hour::openings($location->manager->id,$location->id,$start,$end);
+            }
+
+            return view('manager.attendance.index',compact('subheader','locations','currentWeek','periodStart','periodEnd'));
+        } else {
+            return 'Not authorized';
+        }
+    }
+
+    public function attendanceByDateRange(Request $r)
+    {
+        if(Gate::allows('manage-managers')){
+    
+
+            $periodStart = $r->from;
+            $periodEnd = $r->to;
+
+            $locations = Location::store()->get();
+            foreach($locations as $location){
+                $location->manager->totalClocked = Hour::clockedHour($location->manager->id,$location->id,$periodStart,$periodEnd);
+                $location->manager->attendance = Hour::openings($location->manager->id,$location->id,$periodStart,$periodEnd);
+            }
+
+            return view('manager.attendance.attendanceAjax',compact('locations','periodStart','periodEnd'));
         } else {
             return 'Not authorized';
         }

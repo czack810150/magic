@@ -200,3 +200,4 @@ Route::get('/integration/shiftAutoPull','IntegrationController@shiftAutoPull');
 Route::get('/api/fixShared','ScriptController@fixShared');
 // Managers
 Route::get('/manager/attendance','ManagerController@attendance');
+Route::post('/manager/attendance','ManagerController@attendanceByDateRange');

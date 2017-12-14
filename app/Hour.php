@@ -8,6 +8,7 @@ use App\Clock;
 use App\Shift;
 use App\Employee;
 use App\Holiday;
+use App\Location;
 use Carbon\Carbon;
 
 class Hour extends Model
@@ -320,6 +321,44 @@ class Hour extends Model
 					);
 				return $result;
 
+    }
+
+    static function openings($employee,$location,$start,$end)
+    {
+    	$location = Location::find($location);
+ 
+    	$data['openings'] = 0;
+    	$data['endClose'] = 0;
+    	$data['lunch'] = 0;
+    	$data['dinner'] = 0;
+    	$data['night'] = 0;
+    	$clockedShifts = Clock::where('location_id',$location->id)->where('employee_id',$employee)->whereDate('clockIn','>=',$start)->whereDate('clockOut','<=',$end)->get();
+    	foreach($clockedShifts as $c)
+    	{
+    		$cIn = Carbon::createFromFormat('Y-m-d H:i:s',$c->clockIn);
+    		$cOut = Carbon::createFromFormat('Y-m-d H:i:s',$c->clockOut);
+ 
+    		if($cIn->toTimeString() >= $location->openMorning && $cOut->toTimeString() <= $location->endMorning ){
+    			$data['openings'] += 1;
+    		}
+    		if($cIn->toTimeString() <= $location->endClose && $cOut->toTimeString() >= $location->endClose ){
+    			$data['endClose'] += 1;
+    		}
+    		if($cIn->toTimeString() >= $location->lunchStart && $cOut->toTimeString() <= $location->lunchEnd ){
+    			$data['lunch'] += 1;
+    		}
+    		if($cIn->toTimeString() >= $location->dinnerStart && $cOut->toTimeString() <= $location->dinnerEnd ){
+    			$data['dinner'] += 1;
+    		}
+    		if(!is_null($location->nightStart)){
+    			if($cIn->toTimeString() >= $location->nightStart && $cOut->toTimeString() <= $location->nightEnd ){
+    			$data['night'] += 1;
+    		}
+    		}
+
+    	}
+
+    	return $data;
     }
    				
 
