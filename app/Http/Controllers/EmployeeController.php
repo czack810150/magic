@@ -208,6 +208,11 @@ class EmployeeController extends Controller
                 $background->employee_id = $r->employee;
                 $background->hometown = $r->hometown;
                 $background->canada_status = $r->canada_status;
+                $background->status_expiry = $r->status_expiry;
+                $background->english = $r->english;
+                $background->chinese = $r->chinese;
+                $background->cantonese = $r->cantonese;
+                $background->french = $r->french;
                 $background->save();
             }
             catch (\Exception $e) {
@@ -216,6 +221,11 @@ class EmployeeController extends Controller
         } else {
             $background->hometown = $r->hometown;
             $background->canada_status = $r->canada_status;
+            $background->status_expiry = $r->status_expiry;
+            $background->english = $r->english;
+            $background->chinese = $r->chinese;
+            $background->cantonese = $r->cantonese;
+            $background->french = $r->french;
             $background->save();
         }
       
@@ -493,8 +503,91 @@ class EmployeeController extends Controller
 
 
         return view('employee.profile.training.index',compact('authorization','employee','logs'));
-     }      
+     }
 
+     public function background($id)
+     {
+        $employee = Employee::find($id);
+        return view('employee.profile.background.index',compact('employee'));
+     }
+     public function editEducation($id)
+     {
+        $employee = Employee::find($id);
+        $educations = array(
+            'below highschoo' => 'Below Highschool',
+            'highschool' => 'Highschool',
+            'college' => 'College',
+            'university' => 'University',
+            'graduate' => 'Graduate Degrees',
+        );
+        return view('employee.profile.background.editEducation',compact('employee','educations'));
+     }
+     public function updateEducation($id, Request $r)
+     {
+         $background = Employee_background::where('employee_id',$id)->first();
+        if(is_null($background)){
+            try {
+                $background = new Employee_background;
+                $background->employee_id = $id;
+                $background->education = $r->education;
+                $background->school = $r->school;
+                $background->major = $r->major;
+                $background->save();
+            }
+            catch (\Exception $e) {
+                return $e->getMessage();
+            }
+        } else {
+                $background->employee_id = $id;
+                $background->education = $r->education;
+                $background->school = $r->school;
+                $background->major = $r->major;
+                $background->save();
+        }
+        return 'updated';  
+     }
+     public function editWorkHistory($id)
+     {
+        $employee = Employee::find($id);
+        return view('employee.profile.background.editWorkHistory',compact('employee'));
+     }      
+      public function updateWorkHistory($id, Request $r)
+     {
+         $background = Employee_background::where('employee_id',$id)->first();
+        if(is_null($background)){
+            try {
+                $background = new Employee_background;
+                $background->employee_id = $id;
+                $background->company_job = $r->job;
+                $background->company = $r->company;
+                $background->company_city = $r->location;
+                $background->company_start = $r->start;
+                $background->company_end = $r->end;
+                $background->company_quit = $r->quit_reason;
+                $background->company_supervisor = $r->supervisor;
+                $background->company_contact = $r->contact;
+                $background->company_check = $r->check;
+                $background->check_reason = $r->check_reason;
+                $background->save();
+            }
+            catch (\Exception $e) {
+                return $e->getMessage();
+            }
+        } else {
+                $background->company_job = $r->job;
+                $background->company = $r->company;
+                $background->company_city = $r->location;
+                $background->company_start = $r->start;
+                $background->company_end = $r->end;
+                $background->company_quit = $r->quit_reason;
+                $background->company_supervisor = $r->supervisor;
+                $background->company_contact = $r->contact;
+                $background->company_check = $r->check;
+                $background->check_reason = $r->check_reason;
+                $background->save();
+        }
+        return 'updated';  
+     }
       
 
 

@@ -35,6 +35,12 @@ Route::post('/employee/edit/contact/update','EmployeeController@updateContact');
 Route::post('/employee/edit/address','EmployeeController@editAddress');
 Route::post('/employee/edit/address/cancel','EmployeeController@cancelAddress');
 Route::post('/employee/edit/address/update','EmployeeController@updateAddress');
+// Employee background
+Route::post('/employee/background/{id}/show','EmployeeController@background');
+Route::post('/employee/education/{id}/edit','EmployeeController@editEducation');
+Route::post('/employee/education/{id}/update','EmployeeController@updateEducation');
+Route::post('/employee/workhistory/{id}/edit','EmployeeController@editWorkHistory');
+Route::post('/employee/workhistory/{id}/update','EmployeeController@updateWorkHistory');
 //employement tab
 Route::post('/employee/employment','EmployeeController@employment');
 Route::post('/employee/employment/edit','EmployeeController@editEmployment');

@@ -20,7 +20,9 @@
 <div class="hr-contact-list col-md-4">
 
 @if(isset($staff->employee_profile))
+	@if(!empty($staff->employee_profile->phone))
 <div><i class="fa fa-phone"></i> <span class="text-white">{{ $staff->employee_profile->phone }}</span></div>
+	@endif
 @endif
 @if(!empty($staff->email))
 <div><i class="fa fa-envelope"></i> <a href="mailto:{{ $staff->email }}"><span class="text-white">{{ $staff->email }}</span></a></div>
@@ -34,6 +36,9 @@
 <ul class="nav justify-content-center">
   <li class="nav-item">
     <a class="nav-link" href="/staff/profile/{{ $staff->id }}/show">Profile</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="javascript:employeeBackground('{{ $staff->id }}')">Background</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="javascript:employment('{{ $staff->id }}')">Employment</a>
@@ -152,6 +157,7 @@
 @endif
 </div>
 </div>
+
 <div class="col-3">
 <div class="info-box pl-3">
 <small>Immigration Status</small>
@@ -162,18 +168,62 @@
 @endif
 </div>
 </div>
-</div>
-<div class="row">
-	<div class="col-3">
+
+<div class="col-3">
 <div class="info-box pl-3">
-<small>Marital Status</small>
-@if(!is_null($staff->employee_profile->married))
-<p>{{ $staff->employee_profile->married?'Married':'Unmarried' }}</p>
+<small>Status Expiry</small>
+@if(!empty($staff->employee_background->status_expiry))
+<p>{{ $staff->employee_background->status_expiry }}</p>
 @else
 <p>-</p>
 @endif
 </div>
 </div>
+
+
+</div>
+<div class="row">
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Marital Status</small>
+@if(!empty($staff->employee_profile))
+	@if(!is_null($staff->employee_profile->married))
+		<p>{{ $staff->employee_profile->married?'Married':'Unmarried' }}</p>
+	@else
+		<p>-</p>
+	@endif
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Language</small>
+<p>
+@if(!empty($staff->employee_background))
+	@if($staff->employee_background->english)
+		<span>English</span>
+	@endif
+	@if($staff->employee_background->chinese)
+		<span>国语</span>
+	@endif
+	@if($staff->employee_background->cantonese)
+		<span>Cantonese</span>
+	@endif
+	@if($staff->employee_background->french)
+		<span>French</span>
+	@endif
+@else
+-
+@endif
+</p>
+</div>
+</div>
+
+
 </div>
 
 

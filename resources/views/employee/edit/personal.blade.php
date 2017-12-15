@@ -117,10 +117,13 @@
 <div class="col-3">
 <div class="info-box pl-3">
 <small>Home town</small>
-@if(!empty($staff->employee_background->hometown))
+@if($staff->employee_background)
+	@if(!empty($staff->employee_background->hometown))
 <div class="input-group m-input-group m-input-group--square">
 <input type="text" class="form-control m-input form-control-sm" value="{{$staff->employee_background->hometown}}" id="hometown">
 </div>
+
+	@endif
 @else
 <input type="text" class="form-control m-input form-control-sm" value="" id="hometown">
 @endif
@@ -129,8 +132,8 @@
 <div class="col-3">
 <div class="info-box pl-3">
 <small>Immigration Status</small>
-
-@if(!empty($staff->employee_background->canada_status))
+@if($staff->employee_background)
+	@if(!empty($staff->employee_background->canada_status))
 {{ Form::select('canada_status',
 [
 'unknown' => 'Unknown',
@@ -141,6 +144,8 @@
 'citizen' => 'Canadian Citizen'
 ],$staff->employee_background->canada_status,['id'=>'canada_status',
 'class'=>'form-control m-input form-control-sm']) }}
+
+	@endif
 @else
 {{ Form::select('canada_status',[
 'unknown' => 'Unknown',
@@ -154,13 +159,35 @@
 @endif
 </div>
 </div>
+
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Status Expiry</small>
+
+@if($staff->employee_background)
+	@if(!empty($staff->employee_background->status_expiry))
+<div class="input-group m-input-group m-input-group--square">
+<input type="text" class="form-control m-input form-control-sm" value="{{$staff->employee_background->status_expiry}}" id="status_expiry">
+</div>
+
+	@endif
+@else
+<input type="text" class="form-control m-input form-control-sm" value="" id="status_expiry">
+@endif
+
+</div>
+</div>
+
+
+
 </div>
 <div class="form-group m-form__group row">
 	<div class="col-3">
 <div class="info-box pl-3">
 <small>Marital Status</small>
 
-@if(!empty($staff->employee_profile->married))
+@if(isset($staff->employee_profile->married))
 {{ Form::select('married',['0'=>'Unmarried','1'=>'Married'],$staff->employee_profile->married,['id'=>'married',
 'class'=>'form-control m-input form-control-sm']) }}
 @else
@@ -169,6 +196,33 @@
 @endif
 </div>
 </div>
+
+<div class="col-9">
+<div class="info-box pl-3">
+<small>Language</small>
+@if($staff->employee_background)
+<div class="m-checkbox-inline">
+	<label class="m-checkbox"><input type="checkbox" id="english" {{ $staff->employee_background->english?'checked':'' }}>English<span></span></label>
+
+	<label class="m-checkbox"><input type="checkbox" id="chinese" {{ $staff->employee_background->chinese?'checked':'' }}>国语<span></span></label>
+
+	<label class="m-checkbox"><input type="checkbox" id="cantonese" {{ $staff->employee_background->cantonese?'checked':'' }}>Cantonese<span></span></label>
+	<label class="m-checkbox"><input type="checkbox" id="french" {{ $staff->employee_background->french?'checked':'' }}>French<span></span></label>
+</div>
+@else
+<div class="m-checkbox-inline">
+	<label class="m-checkbox"><input type="checkbox" id="english" >English<span></span></label>
+
+	<label class="m-checkbox"><input type="checkbox" id="chinese" >国语<span></span></label>
+
+	<label class="m-checkbox"><input type="checkbox" id="cantonese" >Cantonese<span></span></label>
+	<label class="m-checkbox"><input type="checkbox" id="french" >French<span></span></label>
+</div>
+@endif
+
+</div>
+</div>
+
 </div>
 
 
@@ -180,6 +234,13 @@
 			format:'yyyy-mm-dd',
 			@if(!empty($staff->employee_profile->dob))
 			defaultViewDate: '{{ $staff->employee_profile->dob }}'
+			@endif
+	}
+		);
+	$('#status_expiry').datepicker({
+			format:'yyyy-mm-dd',
+			@if(!empty($staff->employee_background->status_expiry))
+			defaultViewDate: '{{ $staff->employee_background->status_expiry }}'
 			@endif
 	}
 		);

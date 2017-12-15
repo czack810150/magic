@@ -95,6 +95,18 @@
 @endif
 </div>
 </div>
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Status Expiry</small>
+@if(!empty($staff->employee_background->status_expiry))
+<p>{{ $staff->employee_background->status_expiry }}</p>
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+
 </div>
 <div class="row">
 	<div class="col-3">
@@ -107,6 +119,31 @@
 @endif
 </div>
 </div>
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Language</small>
+<p>
+@if(!empty($staff->employee_background))
+	@if($staff->employee_background->english)
+		<span>English</span>
+	@endif
+	@if($staff->employee_background->chinese)
+		<span>国语</span>
+	@endif
+	@if($staff->employee_background->cantonese)
+		<span>Cantonese</span>
+	@endif
+	@if($staff->employee_background->french)
+		<span>French</span>
+	@endif
+@else
+-
+@endif
+</p>
+</div>
+</div>
+
 </div>
 
 

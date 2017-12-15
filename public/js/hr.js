@@ -47,6 +47,29 @@ function cancelPersonal(employee){
 		);
 }
 function updatePersonal(employee){
+	
+	var english,chinese,cantonese,french;
+	if($('#english').is(':checked')){
+		english = 1;
+	} else {
+		english = 0;
+	}
+	if($('#chinese').is(':checked')){
+		chinese = 1;
+	} else {
+		chinese = 0;
+	}
+	if($('#cantonese').is(':checked')){
+		cantonese = 1;
+	} else {
+		cantonese = 0;
+	}
+	if($('#french').is(':checked')){
+		french = 1;
+	} else {
+		french = 0;
+	}
+
 	$.post(
 		'/employee/edit/personal/update',
 		{
@@ -61,7 +84,12 @@ function updatePersonal(employee){
 			dob: $('#dob').val(),
 			hometown: $('#hometown').val(),
 			canada_status: $('#canada_status').val(),
-			married: $('#married').val()
+			status_expiry: $('#status_expiry').val(),
+			married: $('#married').val(),
+			english: english,
+			chinese: chinese,
+			cantonese: cantonese,
+			french: french,
 		},
 		function(data,status){
 			if(status == 'success'){
@@ -421,6 +449,100 @@ function employeeTraining(employee)
 			if(status == 'success'){
 				$('#employee').html(data);
 			}
+		}
+		);
+}
+function employeeBackground(employee)
+{
+	$.post(
+		'/employee/background/'+ employee + '/show',
+		{
+			_token: $("input[name=_token]").val(),
+			employee: employee,
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);
+}
+function editEducation(employee)
+{
+	$.post(
+		'/employee/education/'+employee+'/edit',
+		{
+			_token: $("input[name=_token]").val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#educationDetails').html(data);
+			}
+		}
+		);
+}
+function updateEducation(employee){
+	$.post(
+		'/employee/education/' + employee + '/update',
+		{
+			_token: $("input[name=_token]").val(),
+			education: $('#education').val(),
+			school: $('input[name=school]').val(),
+			major: $('input[name=major]').val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				if(data == 'updated'){
+					notify('Education details have been saved!','success');
+					employeeBackground(employee);
+				} 
+			} 
+		}
+		);
+	}
+function editWorkHistory(employee)
+{
+	$.post(
+		'/employee/workhistory/'+employee+'/edit',
+		{
+			_token: $("input[name=_token]").val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#previousWorkDetails').html(data);
+			}
+		}
+		);
+}
+function updateWorkHistory(employee){
+	var check;
+	if($('#check').is(':checked')){
+		check = 1;
+	} else {
+		check = 0;
+	}
+	$.post(
+		'/employee/workhistory/' + employee + '/update',
+		{
+			_token: $("input[name=_token]").val(),
+			job: $('#job').val(),
+			company: $('input[name=company]').val(),
+			location: $('input[name=location]').val(),
+			start: $('input[name=start]').val(),
+			end: $('input[name=end]').val(),
+			quit_reason: $('input[name=quit_reason]').val(),
+			supervisor: $('input[name=supervisor]').val(),
+			contact: $('input[name=contact]').val(),
+			check: check,
+			check_reason: $('input[name=check_reason]').val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				if(data == 'updated'){
+					notify('Work history have been saved!','success');
+					employeeBackground(employee);
+				} 
+			} 
 		}
 		);
 }
