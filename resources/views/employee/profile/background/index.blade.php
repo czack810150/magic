@@ -53,9 +53,31 @@
 </div>
 </div>
 
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Currentlly Enrolled</small>
+@if(!empty($employee->employee_background->student))
+<p><span class="m--font-success">Yes</span></p>
+@else
+<p>No</p>
+@endif
+</div>
+</div>
+
 
 </div> <!-- end of row -->
-
+<div class="row">
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Interests</small>
+@if(!empty($employee->employee_background->interest))
+<p>{{ $employee->employee_background->interest }}</p>
+@else
+<p>-</p>
+@endif
+</div>
+</div>
+</div> <!-- end of row -->
 
 </div><!-- m-portlet__body -->
 

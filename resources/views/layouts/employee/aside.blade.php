@@ -19,7 +19,7 @@
 								<i class="m-menu__section-icon flaticon-more-v3"></i>
 							</li>
 
-							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+							<!-- <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">
 									<i class="m-menu__link-icon flaticon-calendar-2"></i>
 									<span class="m-menu__link-text">
@@ -44,7 +44,7 @@
 										
 									</ul>
 								</div>
-							</li>
+							</li> -->
 
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">

@@ -532,6 +532,8 @@ class EmployeeController extends Controller
                 $background->education = $r->education;
                 $background->school = $r->school;
                 $background->major = $r->major;
+                $background->student = $r->student;
+                $background->interest = $r->interest;
                 $background->save();
             }
             catch (\Exception $e) {
@@ -542,6 +544,8 @@ class EmployeeController extends Controller
                 $background->education = $r->education;
                 $background->school = $r->school;
                 $background->major = $r->major;
+                $background->student = $r->student;
+                $background->interest = $r->interest;
                 $background->save();
         }
         return 'updated';  

@@ -68,8 +68,44 @@
 </div>
 </div>
 
+<div class="col-md-3">
+<div class="info-box pl-3">
+<small>Currentlly Enrolled</small>
+<div class=" m-checkbox-list">
+<label class="m-checkbox">
+<input type="checkbox" class="form-control m-input form-control-sm" 
+@if($employee->employee_background->student )
+checked
+@endif
+ id="student" name="student">
+ <span></span>
+</label>
+</div>
+</div>
+</div>
+
+
 </div> <!-- end of row -->
 
+<div class="form-group m-form__group row">
+
+
+
+<div class="col-md-3">
+<div class="info-box pl-3">
+<small>Interests</small>
+<div class="input-group m-input-group m-input-group--square">
+<input type="text" class="form-control m-input form-control-sm" value="
+@if($employee->employee_background->interest )
+{{ $employee->employee_background->interest }}
+@endif" id="interest" name="interest">
+</div>
+</div>
+</div>
+
+
+
+</div> <!-- end of row -->
 
 
 

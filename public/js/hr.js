@@ -482,6 +482,12 @@ function editEducation(employee)
 		);
 }
 function updateEducation(employee){
+	var student;
+	if($('#student').is(':checked')){
+		student = 1;
+	} else {
+		student = 0;
+	}
 	$.post(
 		'/employee/education/' + employee + '/update',
 		{
@@ -489,6 +495,8 @@ function updateEducation(employee){
 			education: $('#education').val(),
 			school: $('input[name=school]').val(),
 			major: $('input[name=major]').val(),
+			student: student,
+			interest: $('input[name=interest]').val(),
 		},
 		function(data,status){
 			if(status == 'success'){
