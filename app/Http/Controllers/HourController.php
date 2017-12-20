@@ -10,6 +10,7 @@ use App\Hour;
 use App\Location;
 use App\Datetime;
 use App\Tip;
+use App\Shift;
 use Carbon\Carbon;
 
 class HourController extends Controller
@@ -25,20 +26,30 @@ class HourController extends Controller
      */
     public function index(Request $r)
     {
+        $subheader = "Hours";
         $locations = Location::Store()->pluck('name','id');
         $dates = Datetime::periods(Carbon::now()->year);
 
         $location = $r->location;
         $date = $r->dateRange;
-       
+        $stats = ['scheduled' => 0, 'effective' => 0];
+
        if(!empty($location) && !empty($date)){
             $hours = Hour::where('location_id',$location)->where('start',$date)->get();
+            $scheduledEmployees = Shift::select('employee_id')->where('location_id',$location)->where('start','>=',$date)->whereDate('start','<=',$hours[0]->end)->distinct()->get();
+
+            $stats['effective'] = Hour::where('location_id',$location)->where('start',$date)->sum('wk1Effective');
+            $stats['effective'] += Hour::where('location_id',$location)->where('start',$date)->sum('wk2Effective');
+            $stats['scheduled'] = Hour::where('location_id',$location)->where('start',$date)->sum('wk1Scheduled');
+            $stats['scheduled'] += Hour::where('location_id',$location)->where('start',$date)->sum('wk2Scheduled');
+
        } else {
         $hours = [];
+        $scheduledEmployees = 0;
        }
      
        
-        return view('hour.index',compact('locations','dates','hours'));
+        return view('hour.index',compact('locations','dates','hours','scheduledEmployees','stats','subheader'));
     }
     public function compute()
     {

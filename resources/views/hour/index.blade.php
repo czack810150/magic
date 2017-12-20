@@ -23,6 +23,47 @@
 </form>
 @if($hours)
 <main >
+<div class="row">
+   	<div class="col-lg-8 col-md-12">	
+		<!--begin::Portlet-->
+		<div class="m-portlet">
+			<div class="m-portlet__head">
+				<div class="m-portlet__head-caption">
+					<div class="m-portlet__head-title">
+						<span class="m-portlet__head-icon">
+							<i class="flaticon-list"></i>
+						</span>
+						<h3 class="m-portlet__head-text">
+							Store Statistics
+						</h3>
+					</div>			
+				</div>
+			</div>
+			<div class="m-portlet__body">
+<table class="table table-sm table-hover">
+<thead>
+	<tr><th>排班人数</th><th>工时人数</th><th>排班工时</th><th>有效工时</th></tr>
+</thead>
+<tbody>
+	
+	<tr>
+		<th>{{ count($scheduledEmployees) }}</th>
+		<th>{{ count($hours) }}</th>
+		<th>{{ round($stats['scheduled'],2) }}</th>
+		<th>{{ round($stats['effective'],2) }}</th>
+		
+	</tr>
+	
+</tbody>
+</table>
+			</div>
+		</div>	
+		<!--end::Portlet-->
+	</div>
+</div>
+
+
+
 {{ Form::button('Download CSV',['class'=>'btn btn-warning','onclick'=>'exportTableToCSV("hours.csv")']) }}
 
 <table class="table table-sm table-hover">

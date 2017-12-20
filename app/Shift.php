@@ -26,6 +26,7 @@ class Shift extends Model
                     ->get();
     }
 
+
     public static function scheduledShifts($employee,$location,$start,$end){
         $shifts = Shift::where('employee_id',$employee)->where('location_id',$location)->where('start','>=',$start)->whereDate('end','<=',$end)->
                             orderBy('start')->get();
