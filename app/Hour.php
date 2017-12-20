@@ -341,9 +341,7 @@ class Hour extends Model
     		if($cIn->toTimeString() <= $location->openMorning && $cOut->toTimeString() >= $location->endMorning ){
     			$data['openings'] += 1;
     		}
-    		if($cIn->toTimeString() <= $location->endClose && $cOut->toTimeString() >= $location->endClose ){
-    			$data['endClose'] += 1;
-    		}
+    		
     		if($cIn->toTimeString() <= $location->lunchStart && $cOut->toTimeString() >= $location->lunchEnd ){
     			$data['lunch'] += 1;
     		}
@@ -355,7 +353,17 @@ class Hour extends Model
     			$data['night'] += 1;
     		}
     		}
-
+    		// night close
+    		if($cIn->toDateString() == $cOut->toDateString()){  // night close at the same calendar date
+    			if($cIn->toTimeString() <= $location->endClose && $cOut->toTimeString() >= $location->endClose ){
+    				$data['endClose'] += 1;
+    			}
+    		} else {  // night close at differnt calendar dates
+    			if( $cOut->toTimeString() >= $location->endClose ){
+    				$data['endClose'] += 1;
+    			}
+    		}
+    		
     	}
 
     	return $data;
