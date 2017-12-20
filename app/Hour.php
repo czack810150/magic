@@ -338,24 +338,32 @@ class Hour extends Model
     		$cIn = Carbon::createFromFormat('Y-m-d H:i:s',$c->clockIn);
     		$cOut = Carbon::createFromFormat('Y-m-d H:i:s',$c->clockOut);
  
-    		if($cIn->toTimeString() >= $location->openMorning && $cOut->toTimeString() <= $location->endMorning ){
+    		if($cIn->toTimeString() <= $location->openMorning && $cOut->toTimeString() >= $location->endMorning ){
     			$data['openings'] += 1;
     		}
-    		if($cIn->toTimeString() <= $location->endClose && $cOut->toTimeString() >= $location->endClose ){
-    			$data['endClose'] += 1;
-    		}
-    		if($cIn->toTimeString() >= $location->lunchStart && $cOut->toTimeString() <= $location->lunchEnd ){
+    		
+    		if($cIn->toTimeString() <= $location->lunchStart && $cOut->toTimeString() >= $location->lunchEnd ){
     			$data['lunch'] += 1;
     		}
-    		if($cIn->toTimeString() >= $location->dinnerStart && $cOut->toTimeString() <= $location->dinnerEnd ){
+    		if($cIn->toTimeString() <= $location->dinnerStart && $cOut->toTimeString() >= $location->dinnerEnd ){
     			$data['dinner'] += 1;
     		}
     		if(!is_null($location->nightStart)){
-    			if($cIn->toTimeString() >= $location->nightStart && $cOut->toTimeString() <= $location->nightEnd ){
+    			if($cIn->toTimeString() <= $location->nightStart && $cOut->toTimeString() >= $location->nightEnd ){
     			$data['night'] += 1;
     		}
     		}
-
+    		// night close
+    		if($cIn->toDateString() == $cOut->toDateString()){  // night close at the same calendar date
+    			if($cIn->toTimeString() <= $location->endClose && $cOut->toTimeString() >= $location->endClose ){
+    				$data['endClose'] += 1;
+    			}
+    		} else {  // night close at differnt calendar dates
+    			if( $cOut->toTimeString() >= $location->endClose ){
+    				$data['endClose'] += 1;
+    			}
+    		}
+    		
     	}
 
     	return $data;
