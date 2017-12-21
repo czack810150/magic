@@ -208,3 +208,6 @@ Route::get('/api/fixShared','ScriptController@fixShared');
 Route::get('/manager/attendance','ManagerController@attendance');
 Route::post('/manager/attendance','ManagerController@attendanceByDateRange');
 Route::post('/manager/attendance/detail','ManagerController@attendanceDetail');
+// Store Reports
+Route::get('/store/report/performance','EmployeePerformanceController@overview');
+Route::post('/store/report/performance','EmployeePerformanceController@getStorePerformance');

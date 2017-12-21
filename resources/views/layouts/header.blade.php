@@ -211,126 +211,39 @@
 											<span class="m-menu__arrow m-menu__arrow--adjust"></span>
 											<div class="m-menu__subnav">
 												<ul class="m-menu__content">
+
 													<li class="m-menu__item">
 														<h3 class="m-menu__heading m-menu__toggle">
 															<span class="m-menu__link-text">
-																Finance Reports
+																Store Reports
 															</span>
 															<i class="m-menu__ver-arrow la la-angle-right"></i>
 														</h3>
 														<ul class="m-menu__inner">
+															@can('manage-managers' )
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-icon flaticon-map"></i>
+																<a  href="/manager/attendance" class="m-menu__link ">
+																	<i class="m-menu__link-icon flaticon-users"></i>
 																	<span class="m-menu__link-text">
-																		Annual Reports
+																		店长考勤
 																	</span>
 																</a>
 															</li>
+															@endcan
+															
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-icon flaticon-user"></i>
-																	<span class="m-menu__link-text">
-																		HR Reports
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
+																<a  href="/store/report/performance" class="m-menu__link ">
 																	<i class="m-menu__link-icon flaticon-clipboard"></i>
 																	<span class="m-menu__link-text">
-																		IPO Reports
+																		Performance Report
 																	</span>
 																</a>
 															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-icon flaticon-graphic-1"></i>
-																	<span class="m-menu__link-text">
-																		Finance Margins
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-icon flaticon-graphic-2"></i>
-																	<span class="m-menu__link-text">
-																		Revenue Reports
-																	</span>
-																</a>
-															</li>
+															
+															
 														</ul>
 													</li>
-													<li class="m-menu__item">
-														<h3 class="m-menu__heading m-menu__toggle">
-															<span class="m-menu__link-text">
-																Project Reports
-															</span>
-															<i class="m-menu__ver-arrow la la-angle-right"></i>
-														</h3>
-														<ul class="m-menu__inner">
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-bullet m-menu__link-bullet--line">
-																		<span></span>
-																	</i>
-																	<span class="m-menu__link-text">
-																		Coca Cola CRM
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-bullet m-menu__link-bullet--line">
-																		<span></span>
-																	</i>
-																	<span class="m-menu__link-text">
-																		Delta Airlines Booking Site
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-bullet m-menu__link-bullet--line">
-																		<span></span>
-																	</i>
-																	<span class="m-menu__link-text">
-																		Malibu Accounting
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-bullet m-menu__link-bullet--line">
-																		<span></span>
-																	</i>
-																	<span class="m-menu__link-text">
-																		Vineseed Website Rewamp
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-bullet m-menu__link-bullet--line">
-																		<span></span>
-																	</i>
-																	<span class="m-menu__link-text">
-																		Zircon Mobile App
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<i class="m-menu__link-bullet m-menu__link-bullet--line">
-																		<span></span>
-																	</i>
-																	<span class="m-menu__link-text">
-																		Mercury CMS
-																	</span>
-																</a>
-															</li>
-														</ul>
-													</li>
+													
 													<li class="m-menu__item">
 														<h3 class="m-menu__heading m-menu__toggle">
 															<span class="m-menu__link-text">
@@ -339,18 +252,7 @@
 															<i class="m-menu__ver-arrow la la-angle-right"></i>
 														</h3>
 														<ul class="m-menu__inner">
-															@can('manage-managers' )
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="/manager/attendance" class="m-menu__link ">
-																	<i class="m-menu__link-bullet m-menu__link-bullet--dot">
-																		<span></span>
-																	</i>
-																	<span class="m-menu__link-text">
-																		店长考勤
-																	</span>
-																</a>
-															</li>
-															@endcan
+															
 															@if(Auth::user()->authorization->level >=30 )
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
 																<a  href="/employee" class="m-menu__link ">
@@ -418,58 +320,7 @@
 															</li>
 														</ul>
 													</li>
-													<li class="m-menu__item">
-														<h3 class="m-menu__heading m-menu__toggle">
-															<span class="m-menu__link-text">
-																Reporting Apps
-															</span>
-															<i class="m-menu__ver-arrow la la-angle-right"></i>
-														</h3>
-														<ul class="m-menu__inner">
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<span class="m-menu__link-text">
-																		Report Adjusments
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<span class="m-menu__link-text">
-																		Sources & Mediums
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<span class="m-menu__link-text">
-																		Reporting Settings
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<span class="m-menu__link-text">
-																		Conversions
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<span class="m-menu__link-text">
-																		Report Flows
-																	</span>
-																</a>
-															</li>
-															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
-																	<span class="m-menu__link-text">
-																		Audit & Logs
-																	</span>
-																</a>
-															</li>
-														</ul>
-													</li>
+													
 												</ul>
 											</div>
 										</div>

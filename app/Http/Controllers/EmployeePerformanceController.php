@@ -150,4 +150,17 @@ class EmployeePerformanceController extends Controller
         }
         return view('employee.profile.performance.index',compact('logs'));
     }
+    public function overview()
+    {
+        $subheader = 'Performance Report';
+        $locations = Location::Store()->pluck('name','id');
+        $dates = Datetime::periods(Carbon::now()->year);
+        return view('report.store.performance.index',compact('locations','dates','subheader'));
+    }
+    public function getStorePerformance(Request $r)
+    {
+        $endDate = Carbon::createFromFormat('Y-m-d',$r->startDate)->addDays(13)->toDateString();
+        $logs = Score_log::where('date','>=',$r->startDate)->where('date','<=',$endDate)->where('location_id',$r->location)->orderBy('employee_id','date')->get();
+        return view('report.store.performance.table',compact('logs'));
+    }
 }

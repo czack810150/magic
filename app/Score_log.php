@@ -12,8 +12,12 @@ class Score_log extends Model
     {
     	return $this->belongsTo('App\Score_item');
     }
-     public function location()
+    public function location()
     {
     	return $this->belongsTo('App\Location');
+    }
+    public function employee()
+    {
+    	return $this->belongsTo('App\Employee');
     }
 }
