@@ -122,7 +122,8 @@
 <div class="input-group m-input-group m-input-group--square">
 <input type="text" class="form-control m-input form-control-sm" value="{{$staff->employee_background->hometown}}" id="hometown">
 </div>
-
+	@else
+	<input type="text" class="form-control m-input form-control-sm" value="" id="hometown">
 	@endif
 @else
 <input type="text" class="form-control m-input form-control-sm" value="" id="hometown">

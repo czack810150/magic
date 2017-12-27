@@ -98,6 +98,9 @@ class EmployeeController extends Controller
         'job_id' => $employee->job_id,
         'start' => $request->hireDate,
        ]);
+       $employee_background = Employee_background::create([
+        'employee_id' => $employee->id,
+       ]);
         return redirect('/staff/profile/'.$employee->id.'/show');
     }
 
