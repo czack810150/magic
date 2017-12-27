@@ -10,12 +10,9 @@ class ScriptController extends Controller
     public function fixShared()
     {
     	$employees = [
-            347 => 30,
-            525 => 30,
-            593 => 30,
-    		627 => 30,
-            702 => 30,
-            705 => 30,
+            347 => 30, //赵少斌 4
+    		627 => 30, // 1
+            702 => 30, // 2
     		669 => 371,
     		600 => 159,//魏朝北
             636 => 43,
