@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Employee;
+use App\Employee_trace;
+use App\Location;
 
 class HomeController extends Controller
 {
@@ -25,6 +28,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        if(Gate::allows('is-management')){
+
+            
+            $locations = Location::store()->get();
+
+            return view('dashboard.management.home',compact('locations'));
+        } else {
+            return view('home');
+        }
+        
     }
 }

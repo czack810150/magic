@@ -65,6 +65,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manage-managers',function($user){
             return in_array($user->authorization->type,['admin','dm','gm','accounting']);
         });
+        Gate::define('is-management',function($user){
+            return in_array($user->authorization->type,['admin','manager','dm','gm','accounting']);
+        });
         
     }
 }

@@ -171,7 +171,8 @@
 <div class="input-group m-input-group m-input-group--square">
 <input type="text" class="form-control m-input form-control-sm" value="{{$staff->employee_background->status_expiry}}" id="status_expiry">
 </div>
-
+	@else
+<input type="text" class="form-control m-input form-control-sm" value="" id="status_expiry">
 	@endif
 @else
 <input type="text" class="form-control m-input form-control-sm" value="" id="status_expiry">

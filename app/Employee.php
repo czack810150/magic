@@ -19,6 +19,10 @@ class Employee extends Model
     {
         return $this->hasOne('App\Employee_background');
     }
+    public function employee_trace()
+    {
+        return $this->hasOne('App\Employee_trace');
+    }
 
     public function getHiredAttribute($value)
     {
