@@ -19,7 +19,7 @@
              
             <div class="row">
               @foreach($locations as $location)
-        <div class="col-lg-3">
+        <div class="col-md-6 col-lg-3">
         <!--begin::Portlet-->
         <div class="m-portlet m-portlet--mobile">
             <div class="m-portlet__head">
@@ -52,14 +52,17 @@
                             <br>
                             <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->interview)->diffForHumans() }}</span>
                             @if($e->employee_trace->enlist)
+                            <br>
                             <span class="m--font-info">门店报到</span>
                             <br>
                             <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->enlist)->diffForHumans() }}</span>
 
                                 @if($e->employee_trace->pass_training)
+                                <br>
                                 <span class="m--font-primary">培训结束</span>
                                 <br>
                                  <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->pass_training)->diffForHumans() }}</span>
+                                 <br>
                                  @switch($e->employee_trace->result)
                                     @case('qualified')
                                         <span class="m--font-success">完成</span>
@@ -74,6 +77,7 @@
                                 @endif
 
                         @else
+                            <br>
                             <span class="m--font-warning">等待报到</span>
                         @endif
 

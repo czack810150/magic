@@ -30,8 +30,12 @@ class HomeController extends Controller
     {
         if(Gate::allows('is-management')){
 
+            if(Auth::user()->authorization->type == 'manager'){
+                $locations = Location::where('manager_id',Auth::user()->authorization->employee_id)->get();
+            } else { 
+                $locations = Location::store()->get();
+            }            
             
-            $locations = Location::store()->get();
 
             return view('dashboard.management.home',compact('locations'));
         } else {
