@@ -202,10 +202,10 @@ class Payroll extends Model
             $e->nightHour = $e->wk1Night + $e->wk2Night; // night hours
             //holidays
         
-            $fourWeekHours = 0;
+            
             $premiumPay = 0;
             $holidayPay = 0;
-            $e->wk1Holidays = Holiday::whereBetween('date',[$wk1Start,$wk2End])->get();
+            $e->wk1Holidays = Holiday::whereBetween('date',[$wk1Start,$wk1End])->get();
             $e->wk2Holidays = Holiday::whereBetween('date',[$wk2Start,$wk2End])->get();
             if(sizeof($e->wk1Holidays)){
             foreach($e->wk1Holidays as $holiday){
@@ -214,8 +214,8 @@ class Payroll extends Model
                     $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
                     $e->wk1Holidays->start =  $fourWeekStart;
                     $e->wk1Holidays->end =  $fourWeekEnd;
-                    $fourWeekHours += Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
-                    
+                    $fourWeekHours = Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
+                    $holidayPay  += round($fourWeekHours * $basicRate * 1.00 / 20,2);
                     if($fourWeekHours){
                         $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
                     }
@@ -229,13 +229,15 @@ class Payroll extends Model
                     $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
                      $e->wk2Holidays->start =  $fourWeekStart;
                     $e->wk2Holidays->end =  $fourWeekEnd;
-                    $fourWeekHours += Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
+                    $fourWeekHours = Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
+                    $holidayPay  += round($fourWeekHours * $basicRate * 1.00 / 20,2);
                     if($fourWeekHours){
                         $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
                     }
 
                 }} 
-
+            //$holidayPay  = round($fourWeekHours * $basicRate * 1.04 / 20,2);
+            // Performance index
             $performance = Score_log::where('location_id',$e->location_id)->where('employee_id',$e->employee_id)->
                             whereBetween('date',[$periodStart,$wk2End])->sum('value') + 100;
             if($performance > 110)
@@ -243,7 +245,7 @@ class Payroll extends Model
 
             $performance /= 100;
             $bonus = 0;
-            $holidayPay  = round($fourWeekHours * $basicRate * 1.04 / 20,2);
+            
             $e->magicNoodlePay = Payroll::magicNoodlePay(Carbon::now()->year,$e->wk1Effective,$e->wk2Effective,
                                         $e->employee->job->rate/100,
                                         $e->employee->job->tip,

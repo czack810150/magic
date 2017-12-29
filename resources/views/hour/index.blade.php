@@ -21,7 +21,7 @@
 		{{csrf_field()}}
 
 </form>
-@if($hours)
+@if(count($hours))
 <main >
 <div class="row">
    	<div class="col-lg-8 col-md-12">	
