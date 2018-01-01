@@ -139,7 +139,6 @@
 		},
 		methods: {
 			hoursBreakDown: function(e) {
-
 				$.post(
 					'/hours/breakdown',
 					{

@@ -231,7 +231,8 @@ class Hour extends Model
     public static function breakdown($employee,$location,$startDate)
     {
     	//config
-    	$config = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
+    	$config = DB::table('payroll_config')->where('year',2017)->first(); // for year to year change
+    	//$config = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
     	$startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
         $start =  $startDate->toDateString();
         $end = $startDate->addDays(14)->toDateString();
