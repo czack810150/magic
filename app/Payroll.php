@@ -216,9 +216,10 @@ class Payroll extends Model
                     $e->wk1Holidays->end =  $fourWeekEnd;
                     $fourWeekHours = Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
                     $holidayPay  += round($fourWeekHours * $basicRate * 1.00 / 20,2);
-                    if($fourWeekHours){
-                        $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
-                    }
+                    // remove premium pay for now
+                    // if($fourWeekHours){
+                    //     $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+                    // }
 
                 }}
 
@@ -231,12 +232,13 @@ class Payroll extends Model
                     $e->wk2Holidays->end =  $fourWeekEnd;
                     $fourWeekHours = Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
                     $holidayPay  += round($fourWeekHours * $basicRate * 1.00 / 20,2);
-                    if($fourWeekHours){
-                        $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
-                    }
+                    // remove ppremium pay for now 2018-01-02
+                    // if($fourWeekHours){
+                    //     $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+                    // }
 
                 }} 
-            //$holidayPay  = round($fourWeekHours * $basicRate * 1.04 / 20,2);
+           // $holidayPay  = round($fourWeekHours * $basicRate * 1.04 / 20,2);
             // Performance index
             $performance = Score_log::where('location_id',$e->location_id)->where('employee_id',$e->employee_id)->
                             whereBetween('date',[$periodStart,$wk2End])->sum('value') + 100;
@@ -246,7 +248,7 @@ class Payroll extends Model
             $performance /= 100;
             $bonus = 0;
             
-            $e->magicNoodlePay = Payroll::magicNoodlePay(Carbon::now()->year,$e->wk1Effective,$e->wk2Effective,
+            $e->magicNoodlePay = self::magicNoodlePay(2017,$e->wk1Effective,$e->wk2Effective,
                                         $e->employee->job->rate/100,
                                         $e->employee->job->tip,
                                         $hourlyTip,
