@@ -70,7 +70,12 @@ class EmployeeTraceController extends Controller
      */
     public function update(Request $r)
     {
-        return $r->enlist;
+        $trace = Employee_trace::where('employee_id',$r->employee)->first();
+        $trace->enlist = $r->enlist;
+        $trace->pass_training = $r->pass_training;
+        $trace->result = $r->result;
+        $trace->save();
+        return 1;
     }
 
     /**

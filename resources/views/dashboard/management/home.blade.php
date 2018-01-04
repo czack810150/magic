@@ -34,9 +34,10 @@
             <div class="m-portlet__body">   
                 <div class="m-widget4 m-widget4--progress">
                 @foreach($location->employee as $e)
-                    @if($e->employee_trace)
+                    @if($e->employee_trace && $e->employee_trace->pass_interview == true
+                    && (Carbon\Carbon::now()->diffInDays(Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->interview))<=30 || is_null($e->employee_trace->pass_training) )  )
 
-                    <div class="m-widget4__item" onclick="employeeTrace('{{ $e->id }}')">
+                    <div class="m-widget4__item employee-trace" onclick="employeeTrace('{{ $e->id }}')">
                         <div class="m-widget4__img m-widget4__img--pic">
                             @if($e->employee_profile)
                             <img src="/img/{{ $e->employee_profile->img }}" alt="employee avatar">
@@ -68,13 +69,13 @@
                                  <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->pass_training)->diffForHumans() }}</span>
                                  <br>
                                  @switch($e->employee_trace->result)
-                                    @case('qualified')
+                                    @case('pass')
                                         <span class="m--font-success">完成</span>
                                     @break
-                                    @case('unqualified')
+                                    @case('nopass')
                                         <span class="m--font-danger">不合格</span>
                                     @break
-                                    @case('personal')
+                                    @case('quit')
                                         <span class="m--font-danger">本人退出</span>
                                     @break
                                 @endswitch    
@@ -167,6 +168,14 @@
                             <input class="form-control m-input" type="text" value="" id="finishTrainingDate">
                         </div>
                     </div>
+
+                     <div class="form-group m-form__group row">
+                        <label for="example-search-input" class="col-6 col-form-label">培训结果</label>
+                        <div class="col-6" id="training">
+{{ Form::select('trainingResult',['before'=>'未开始','ip'=>'培训中' ,'pass'=>'合格','nopass'=>'不合格','quit'=>'本人退出'],null,['class'=>'form-control','id'=>'trainingResult','placeholder'=>'请选择']) }}
+                          
+                        </div>
+                    </div>
                   
                    
                    
@@ -219,14 +228,15 @@
                         format: 'yyyy-mm-dd',
                         defaultViewDate: data.employee_trace.enlist,
                     });
-                    // $('#enlistDate').datepicker().on('changeDate',function(e){
-                    //     validateEnlistDate(e,data.employee_trace.enlist);
-                    // });
+                    $('#enlistDate').datepicker().on('changeDate',function(e){
+                        validateEnlistDate(e,data.employee_trace.enlist);
+                    });
 
                     $('#finishTrainingDate').datepicker({
                         format: 'yyyy-mm-dd',
                         defaultViewDate: data.employee_trace.pass_training,
                     });
+                    $('#trainingResult').val(data.employee_trace.result);
                 }
             },
             'json'
@@ -258,17 +268,26 @@ function submitTrace(){
             _token:'{{csrf_token()}}',
             employee: $('#submitBtn').val(),
             enlist: $('#enlistDate').val(),
-            pass_training: $('#finishTrainingDate').val()
+            pass_training: $('#finishTrainingDate').val(),
+            result: $('#trainingResult').val(),
 
         },
         function(data,status){
             if( status == 'success'){
-                alert(data);
+                $('#traceModal').modal('hide');
+                clearEmployeeTraceData();
+                location.reload(true);
             }
         }
 
         );
 }
 
+function clearEmployeeTraceData(){
+            $('#submitBtn').val('');
+            $('#enlistDate').val('');
+            $('#finishTrainingDate').val('');
+            $('#trainingResult').val('');
+}
 </script>
 @endsection

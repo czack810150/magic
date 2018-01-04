@@ -161,4 +161,6 @@ ul.stats_list li {
   margin: 0 auto;
   font-size: 18px;
 }
-
+.employee-trace:hover {
+  background-color:#f0f0f0;
+}
