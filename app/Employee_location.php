@@ -14,4 +14,8 @@ class Employee_location extends Model
     public function location(){
     	return $this->belongsTo('App\Location');
     }
+    public function employee()
+    {
+    	return $this->belongsTo('App\Employee');
+    }
 }

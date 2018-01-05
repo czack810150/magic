@@ -10,6 +10,7 @@ use App\Employee;
 use App\Employee_profile;
 use App\Employee_background;
 use App\Employee_location;
+use App\Employee_trace;
 use App\User;
 
 use App\Location;
@@ -98,8 +99,17 @@ class EmployeeController extends Controller
         'job_id' => $employee->job_id,
         'start' => $request->hireDate,
        ]);
+       $employee_profile = Employee_profile::create([
+        'employee_id' => $employee->id,
+       ]);
        $employee_background = Employee_background::create([
         'employee_id' => $employee->id,
+       ]);
+       $employee_trace = Employee_trace::create([
+        'employee_id' => $employee->id,
+        'interview' => $request->hireDate,
+        'pass_interview' => true,
+        'result' => 'before'
        ]);
         return redirect('/staff/profile/'.$employee->id.'/show');
     }
@@ -391,6 +401,7 @@ class EmployeeController extends Controller
         $employee->hired = $r->hired;
         if(!empty($r->termination)){
             $employee->termination = $r->termination;
+            $employee->status = 'terminated';
         } else {
             $employee->termination = null;
         }
