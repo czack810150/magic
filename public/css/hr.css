@@ -164,3 +164,41 @@ ul.stats_list li {
 .employee-trace:hover {
   background-color:#f0f0f0;
 }
+
+.avatar-wrapper {
+  min-height:100px;
+  min-width:100px;
+  position:relative;
+}
+.avatar-wrapper img{
+  display:block;
+}
+.avatar-wrapper:hover .overlay{
+  opacity:0.5;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: #000000;
+  text-align:center;
+}
+.updatePictureText {
+  color: white;
+  font-weight: bold;
+  font-size: 1vw;
+  width:90%;
+  margin-top: 70%;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+ 
+  text-align: center;
+}

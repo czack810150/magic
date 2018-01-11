@@ -29,7 +29,7 @@ p
 
 <table class="table table-sm">
 	<thead>
-		<tr><th>Rate</th><th>Gross Income</th><th>EI</th><th>CPP</th><th>Fed. Tax</th><th>Prov. Tax</th><th>Total Tax</th><th>Total Deductable</th><th>Cheque Amt.</th><th>Cheque #</th>
+		<tr><th>Rate</th><th>Gross Income</th><th>Vacation Pay</th><th>EI</th><th>CPP</th><th>Fed. Tax</th><th>Prov. Tax</th><th>Total Tax</th><th>Total Deductable</th><th>Cheque Amt.</th><th>Cheque #</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -37,7 +37,7 @@ p
 			<tr>
 				<td>{{ $e->rate/100}}</td>
 				<td>{{$e->grossIncome}}</td>
-				
+				<td>{{  $e->vacationPay }}</td>
 				<td>{{$e->EI}}</td>
 				<td>{{$e->CPP}}</td>
 				<td>{{$e->federalTax}}</td>

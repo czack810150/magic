@@ -26,6 +26,10 @@ class Payroll_log extends Model
     {
     	return $value/100;
     }
+    public function getVacationPayAttribute($value)
+    {
+        return $value/100;
+    }
     public function getEIAttribute($value)
     {
     	return $value/100;
