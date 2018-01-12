@@ -7,7 +7,7 @@
 <div class="avatar-wrapper ml-3">
 	@if(isset($staff->employee_profile))
 	<img class="img-fluid" 
-	src="{{asset('/img/'.$staff->employee_profile->img)}}" alt="{{$staff->firstName}}" >
+	src="{{asset('/storage/'.$staff->employee_profile->img)}}" alt="{{$staff->firstName}}" >
 	<div class="overlay" data-toggle="modal" data-target="#pictureModal">
 		<div class="updatePictureText">Update profile picture</div>
 	</div>
@@ -408,17 +408,19 @@
 		</div>
 	</div>
 	<!--begin::Form-->
-	<form class="m-form m-form--fit m-form--label-align-right">
+	<form class="m-form m-form--fit m-form--label-align-right" method="post" action="/file/employee/{{ $staff->id }}/picture" enctype="multipart/form-data">
+		{{ csrf_field() }}
 		<div class="m-portlet__body">
 			<div class="form-group m-form__group row">
 				
 				<div class="col-12">
-					<div class="m-dropzone dropzone" action="/file/employee/picture" id="m-dropzone-one">
+					<input type="file" name="file">
+					<!-- <div class="m-dropzone dropzone"  id="m-dropzone-one">
 						<div class="m-dropzone__msg dz-message needsclick">
 						    <h3 class="m-dropzone__msg-title">Drop your picture file here or click to upload.</h3>
 						    <span class="m-dropzone__msg-desc">jpeg file is supported with max size of 2MB.</span>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			

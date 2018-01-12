@@ -27,14 +27,14 @@ class HourController extends Controller
     public function index(Request $r)
     {
         $subheader = "Hours";
-        $locations = Location::Store()->pluck('name','id');
+        $locations = Location::NonOffice()->pluck('name','id');
         $dates = Datetime::periods(Carbon::now()->year);
-
+       // $dates = Datetime::periods(2017);
         $location = $r->location;
         $date = $r->dateRange;
         $stats = ['scheduled' => 0, 'effective' => 0];
 
-       if(!empty($location) && !empty($date)){
+       if(isset($location) && isset($date)){
             $hours = Hour::where('location_id',$location)->where('start',$date)->get();
             $scheduledEmployees = Shift::select('employee_id')->where('location_id',$location)->where('start','>=',$date)->whereDate('start','<=',$hours[0]->end)->distinct()->get();
 

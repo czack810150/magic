@@ -77,7 +77,7 @@ Route::get('/clocks/my','EmployeeUserController@clock');
 Route::post('/clocks/employee/year','EmployeeUserController@clockYear');
 Route::get('/training/my','EmployeeUserController@training');
 //file upload
-Route::post('/file/employee/picture','UploadController@upload');
+Route::post('/file/employee/{id}/picture','FileUploadController@upload');
 
 // HR
 Route::post('/hr/employee/trace','EmployeeTraceController@trace');
