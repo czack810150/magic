@@ -76,8 +76,12 @@ Route::post('/hours/employee/year','EmployeeUserController@hourYear');
 Route::get('/clocks/my','EmployeeUserController@clock');
 Route::post('/clocks/employee/year','EmployeeUserController@clockYear');
 Route::get('/training/my','EmployeeUserController@training');
+//file upload
+Route::post('/file/employee/{id}/picture','FileUploadController@upload');
 
-
+// HR
+Route::post('/hr/employee/trace','EmployeeTraceController@trace');
+Route::post('/hr/employee/trace/update','EmployeeTraceController@update');
 
 //score
 Route::get('/score/category','ScoreCategoryController@index');

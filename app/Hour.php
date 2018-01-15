@@ -202,6 +202,8 @@ class Hour extends Model
         			$HOUR->end = $wk2End;
         			$HOUR->employee_id = $e->id;
         			$HOUR->location_id = $location;
+        			//new, get the days worked for the peirod( scheduled days )
+        			$HOUR->days = count(Shift::select(DB::raw('DATE(start)'))->where('employee_id',$e->id)->where('location_id',$location)->whereBetween('start',[$wk1Start,$wk2End.' 23:59:59'])->distinct()->get());
         			$HOUR->wk1Scheduled = $breakDown->wk1Scheduled;
         			$HOUR->wk2Scheduled = $breakDown->wk2Scheduled;
         			$HOUR->wk1Clocked = $breakDown->wk1Clocked;

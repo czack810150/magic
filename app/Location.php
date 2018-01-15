@@ -17,6 +17,10 @@ class Location extends Model
     {
     	return $query->where('type','store');
     }
+    public function scopeNonOffice($query)
+    {
+        return $query->where('type','!=','office');
+    }
     public function employee_location(){
     	return $this->hasMany('App\Employee_location');
     }

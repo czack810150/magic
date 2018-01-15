@@ -101,7 +101,8 @@ class Payroll extends Model
 
     	$hours = $wk1Hr + $wk2Hr;
     	$twoWeekGrossPay = self::twoWeekGrossPay($wk1Hr,$wk2Hr,$year,$holidayPay,$premiumPay);
-    	$basicPay = Cra::payStub($twoWeekGrossPay->total,null,null,26,$year,'ON',1);
+        $grossPayWithVacationPay = $twoWeekGrossPay->total * 1.04; // vacation pay included for calculating deductibles
+    	$basicPay = Cra::payStub($grossPayWithVacationPay,null,null,26,$year,'ON',1);
     	$variablePay = self::variablePay($hours,$positionRate,$tipRate,$hourlyTip,$mealRate,$nightRate,$nightHours,$performanceIndex,$bonus);
     	$magicPay = new MagicNoodlePay($twoWeekGrossPay,$basicPay,$variablePay);
     	return $magicPay;
@@ -200,43 +201,70 @@ class Payroll extends Model
             }
             $e->effectiveHour = $e->wk1Effective + $e->wk2Effective; // effective hours
             $e->nightHour = $e->wk1Night + $e->wk2Night; // night hours
-            //holidays
-        
             
+            //holidays
             $premiumPay = 0;
             $holidayPay = 0;
-            $e->wk1Holidays = Holiday::whereBetween('date',[$wk1Start,$wk1End])->get();
-            $e->wk2Holidays = Holiday::whereBetween('date',[$wk2Start,$wk2End])->get();
-            if(sizeof($e->wk1Holidays)){
-            foreach($e->wk1Holidays as $holiday){
-                    $dt2 = Carbon::createFromFormat('Y-m-d',$holiday->date);
-                    $fourWeekEnd = $dt2->startOfWeek()->subDay()->toDateString();
-                    $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
-                    $e->wk1Holidays->start =  $fourWeekStart;
-                    $e->wk1Holidays->end =  $fourWeekEnd;
-                    $fourWeekHours = Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
-                    $holidayPay  += round($fourWeekHours * $basicRate * 1.00 / 20,2);
-                    if($fourWeekHours){
-                        $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+            $holidays = Holiday::whereBetween('date',[$wk1Start,$wk2End])->get();
+            if(count($holidays)){
+                $previousPayPeriodStartDate = Carbon::createFromFormat('Y-m-d',$wk1Start)->startOfDay()->subDays(14)->toDateString();
+                foreach($holidays as $holiday){
+
+                    $previousPayPeriodDaysWorked = Hour::where('start',$previousPayPeriodStartDate)->
+                    where('location_id',$e->location_id)->
+                    where('employee_id',$e->employee_id)->
+                    first();
+                    if($previousPayPeriodDaysWorked){
+                        $days = $previousPayPeriodDaysWorked->days;
                     }
-
-                }}
-
-             if(sizeof($e->wk2Holidays)){
-             foreach($e->wk2Holidays as $holiday){
-                    $dt2 = Carbon::createFromFormat('Y-m-d',$holiday->date);
-                    $fourWeekEnd = $dt2->startOfWeek()->subDay()->toDateString();
-                    $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
-                     $e->wk2Holidays->start =  $fourWeekStart;
-                    $e->wk2Holidays->end =  $fourWeekEnd;
-                    $fourWeekHours = Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
-                    $holidayPay  += round($fourWeekHours * $basicRate * 1.00 / 20,2);
-                    if($fourWeekHours){
-                        $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+                    $previousPayPeriodRegularIncome = Payroll_log::where('startDate',$previousPayPeriodStartDate)->
+                    where('location_id',$e->location_id)->
+                    where('employee_id',$e->employee_id)->
+                    first();
+                    if($previousPayPeriodRegularIncome){
+                        $regularPay = $previousPayPeriodRegularIncome->regularPay;
                     }
+                    if($days > 0 && $regularPay > 0){
+                        $holidayPay += $regularPay / $days;
+                    }
+                    
+                }
+            } 
 
-                }} 
-            //$holidayPay  = round($fourWeekHours * $basicRate * 1.04 / 20,2);
+            // $e->wk1Holidays = Holiday::whereBetween('date',[$wk1Start,$wk1End])->get();
+            // $e->wk2Holidays = Holiday::whereBetween('date',[$wk2Start,$wk2End])->get();
+            // if(sizeof($e->wk1Holidays)){
+            // foreach($e->wk1Holidays as $holiday){
+            //         $dt2 = Carbon::createFromFormat('Y-m-d',$holiday->date);
+            //         $fourWeekEnd = $dt2->startOfWeek()->subDay()->toDateString();
+            //         $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
+            //         $e->wk1Holidays->start =  $fourWeekStart;
+            //         $e->wk1Holidays->end =  $fourWeekEnd;
+            //         $fourWeekHours = Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
+            //         $holidayPay  += round($fourWeekHours * $basicRate * 1.00 / 20,2);
+            //         // remove premium pay for now
+            //         // if($fourWeekHours){
+            //         //     $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+            //         // }
+
+            //     }}
+
+             // if(sizeof($e->wk2Holidays)){
+             // foreach($e->wk2Holidays as $holiday){
+             //        $dt2 = Carbon::createFromFormat('Y-m-d',$holiday->date);
+             //        $fourWeekEnd = $dt2->startOfWeek()->subDay()->toDateString();
+             //        $fourWeekStart = $dt2->subWeeks(4)->addDay()->toDateString();
+             //         $e->wk2Holidays->start =  $fourWeekStart;
+             //        $e->wk2Holidays->end =  $fourWeekEnd;
+             //        $fourWeekHours = Hour::effectiveHour($e->employee_id,$e->location_id,$fourWeekStart,$fourWeekEnd)['hours'];
+             //        $holidayPay  += round($fourWeekHours * $basicRate * 1.00 / 20,2);
+             //        // remove ppremium pay for now 2018-01-02
+             //        // if($fourWeekHours){
+             //        //     $premiumPay += Hour::effectiveHour($e->employee_id,$e->location_id,$holiday->date,$holiday->date)['hours'] * $basicRate * .5;
+             //        // }
+
+             //    }} 
+           // $holidayPay  = round($fourWeekHours * $basicRate * 1.04 / 20,2);
             // Performance index
             $performance = Score_log::where('location_id',$e->location_id)->where('employee_id',$e->employee_id)->
                             whereBetween('date',[$periodStart,$wk2End])->sum('value') + 100;
@@ -246,7 +274,7 @@ class Payroll extends Model
             $performance /= 100;
             $bonus = 0;
             
-            $e->magicNoodlePay = Payroll::magicNoodlePay(Carbon::now()->year,$e->wk1Effective,$e->wk2Effective,
+            $e->magicNoodlePay = self::magicNoodlePay(Carbon::now()->year,$e->wk1Effective,$e->wk2Effective,
                                         $e->employee->job->rate/100,
                                         $e->employee->job->tip,
                                         $hourlyTip,
@@ -272,6 +300,7 @@ class Payroll extends Model
                 $log->regularPay = $e->magicNoodlePay->grossPay->regularPay*100;
                 $log->overtimePay = $e->magicNoodlePay->grossPay->overtimePay*100;
                 $log->grossIncome = $e->magicNoodlePay->grossPay->total*100;
+                $log->vacationPay = $e->magicNoodlePay->grossPay->total * 0.04 * 100;
                 $log->EI = $e->magicNoodlePay->basicPay->EI *100;
                 $log->CPP = $e->magicNoodlePay->basicPay->CPP *100;
                 $log->federalTax = $e->magicNoodlePay->basicPay->federalTax *100;
@@ -292,14 +321,9 @@ class Payroll extends Model
                 $log->save();
                 $count += 1;
             }
-          //$ dd($e);
-
         }
-       // dd($employeeHours);
         return $count;
     }
-
-
 
 }
 Class Week

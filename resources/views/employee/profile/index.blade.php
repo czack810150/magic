@@ -3,16 +3,23 @@
 
 <section class="hr-header">
 <div class="row">
-<div class="col-12 col-md-2">
+<div class="col-2 col-md-2 mr-3">
 <div class="avatar-wrapper ml-3">
 	@if(isset($staff->employee_profile))
 	<img class="img-fluid" 
-	src="{{asset('/img/'.$staff->employee_profile->img)}}" alt="{{$staff->firstName}}" height="200" width="200">
+	src="{{asset('/storage/'.$staff->employee_profile->img)}}" alt="{{$staff->firstName}}" >
+	<div class="overlay" data-toggle="modal" data-target="#pictureModal">
+		<div class="updatePictureText">Update profile picture</div>
+	</div>
 	@endif
 </div>
 </div>
-<div class="col-12 col-md-6">
-	<h2>{{ $staff->firstName }} {{ $staff->lastName }} {{ $staff->cName }}</h2>
+<div class="col-7 col-md-5 ml-3">
+	<h2>{{ $staff->firstName }} {{ $staff->lastName }} {{ $staff->cName }}  
+		@if($staff->status == 'terminated')
+		<span class="m--font-danger">Terminated</span> 
+		@endif
+	</h2>
 	<div>{{ $staff->job->rank }} | {{ $staff->location->name }} </div>
 	<div>Joined since {{ $staff->hired->toFormattedDateString() }}   ({{ $staff->hired->diffForHumans() }})</div>
 </div>
@@ -384,5 +391,62 @@
 								</div>
 								<!--end::Portlet-->
 </main>
+
+<!-- Modal -->
+<div class="modal fade" id="pictureModal" tabindex="-1" role="dialog" aria-labelledby="pictureModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+<!--begin::Portlet-->
+<div class="m-portlet">
+	<div class="m-portlet__head">
+		<div class="m-portlet__head-caption">
+			<div class="m-portlet__head-title">
+				<h3 class="m-portlet__head-text">
+					Upload profile picture
+				</h3>
+			</div>
+		</div>
+	</div>
+	<!--begin::Form-->
+	<form class="m-form m-form--fit m-form--label-align-right" method="post" action="/file/employee/{{ $staff->id }}/picture" enctype="multipart/form-data">
+		{{ csrf_field() }}
+		<div class="m-portlet__body">
+			<div class="form-group m-form__group row">
+				
+				<div class="col-12">
+					<input type="file" name="file">
+					<!-- <div class="m-dropzone dropzone"  id="m-dropzone-one">
+						<div class="m-dropzone__msg dz-message needsclick">
+						    <h3 class="m-dropzone__msg-title">Drop your picture file here or click to upload.</h3>
+						    <span class="m-dropzone__msg-desc">jpeg file is supported with max size of 2MB.</span>
+						</div>
+					</div> -->
+				</div>
+			</div>
+			
+			
+		</div>
+		<div class="m-portlet__foot m-portlet__foot--fit">
+			<div class="m-form__actions m-form__actions">
+				<div class="row">
+					<div class="col-lg-9 ml-lg-auto">
+						<button type="submit" class="btn btn-brand">Submit</button>
+						<button type="reset" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!--end::Form-->
+</div>
+<!--end::Portlet-->
+  
+      
+    </div>
+  </div>
+</div>
+
 {{ csrf_field() }}			
 @endsection
+
+
