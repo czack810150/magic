@@ -1,6 +1,23 @@
 @extends('layouts.master')
 @section('content')
 
+@if(session('status'))
+<div class="row">
+<div class="col-12">
+	@if(session('statusCode'))
+<div class="alert alert-success" role="alert">
+{{ session('status') }}
+</div>
+	@else
+	<div class="alert alert-danger" role="alert">
+{{ session('status') }}
+</div>
+	@endif
+</div>
+</div>
+@endif
+
+
 <section class="hr-header">
 <div class="row">
 <div class="col-2 col-md-2 mr-3">
@@ -8,9 +25,11 @@
 	@if(isset($staff->employee_profile))
 	<img class="img-fluid" 
 	src="{{asset('/storage/'.$staff->employee_profile->img)}}" alt="{{$staff->firstName}}" >
+	@can('update-profile-picture',$staff->id)
 	<div class="overlay" data-toggle="modal" data-target="#pictureModal">
 		<div class="updatePictureText">Update profile picture</div>
 	</div>
+	@endcan
 	@endif
 </div>
 </div>

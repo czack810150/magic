@@ -57,7 +57,7 @@ class AuthServiceProvider extends ServiceProvider
              return in_array($user->authorization->type,['admin','hr','dm','accounting']);
         });
         Gate::define('update-background',function($user,$employee){
-             return in_array($user->authorization->type,['admin','hr','dm','accounting']) || $user->authorization->employee_id == $employee->id;;
+             return in_array($user->authorization->type,['admin','hr','dm','accounting']) || $user->authorization->employee_id == $employee->id;
         });
         Gate::define('can-clockin',function($user){
             return $user->authorization->type == 'location';
@@ -68,6 +68,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('is-management',function($user){
             return in_array($user->authorization->type,['admin','manager','dm','gm','accounting']);
         });
-        
+        Gate::define('update-profile-picture',function($user,$employee){
+            return in_array($user->authorization->type,['admin','hr','dm','manager']) || $user->authorization->employee_id == $employee;
+        });
     }
 }

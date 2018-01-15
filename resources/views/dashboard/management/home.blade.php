@@ -40,9 +40,9 @@
                     <div class="m-widget4__item employee-trace" onclick="employeeTrace('{{ $e->id }}')">
                         <div class="m-widget4__img m-widget4__img--pic">
                             @if($e->employee_profile)
-                            <img src="/img/{{ $e->employee_profile->img }}" alt="employee avatar">
+                            <img src="/storage/{{ $e->employee_profile->img }}" alt="employee avatar">
                             @else
-                            <img src="/img/system/avatar.png" alt="employee avatar">
+                            <img src="/storage/employee/avatar.png" alt="employee avatar">
                             @endif
                         </div>
                         <div class="m-widget4__info">
