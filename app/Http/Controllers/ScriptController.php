@@ -29,7 +29,6 @@ class ScriptController extends Controller
     		670 => 245,
             546 => 577, //张圣宇
             133 => 577,
-            546 => 577,
             730 => 577,
             689 => 96, // 姜超迪
             706 => 96,
