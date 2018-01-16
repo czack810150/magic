@@ -34,9 +34,9 @@ class Cra extends Model
     	$rate = $cra->EI;
 		$max = $cra->Max_EI;
 		if(($max - $YTD) > $IE * $rate ){
-			return number_format($IE * $rate,2);
+			return round($IE * $rate,2);
 		} else {
-			return number_format($max - $YTD,2);
+			return round($max - $YTD,2);
 		}
     }
     public static function CPP($PI,$P,$YTD,$year,$jurisdiction)
@@ -47,9 +47,9 @@ class Cra extends Model
 		$CPP1 = $rate * ($PI - $cra->CPP_EXP / $P);
 		$CPP2 = $max - $YTD;
 		if(($CPP2 > $CPP1) && $CPP1 >= 0){
-			return number_format($CPP1,2,'.','');
+			return round($CPP1,2);
 		} else if(($CPP2 < $CPP1) && $CPP2 >= 0){
-			return number_format($CPP2,2,'.','');
+			return round($CPP2,2);
 		} else {
 			return 0;
 		}
@@ -78,7 +78,7 @@ class Cra extends Model
 		$T3 = $R * $A - $K - $k1 - $k2 - $k3 - $k4;
 		$T1 = self::federalTaxDeduction($T3);
 		if($T1>0){
-			return number_format($T1/$P,2,'.','');
+			return round($T1/$P,2);
 		} else return 0;
 
     }
@@ -98,7 +98,9 @@ class Cra extends Model
     }
     private static function canadaEmploymentCredit($A)
     {
-    	$A>1178? $k4 = 0.15 * 1178 : $k4 = 0.15 * $A;
+    	// 2017 $A>1178? $k4 = 0.15 * 1178 : $k4 = 0.15 * $A;
+    	// 2018
+    	$A > 1195 ? $k4 = 0.15 * 1195 : $k4 = 0.15 * $A;
 		return $k4;
     }
     private static function federalTaxDeduction($t3){
@@ -119,23 +121,32 @@ class Cra extends Model
 		$k3p = 0;
 		
 		$T4 = $V * $A - $KP - $k1p - $k2p - $k3p;
-		$T4 = $T4 < 0?0:number_format($T4,2,'.','');
+		$T4 = $T4 < 0?0:round($T4,2);
 		$V1 = self::ontarioSurtax($T4);
 		$V2 = self::additionalTax($A); 
 		$S = self::provincialReduction($T4,$V1,0);
 		$LCP = 0;
 		$T2 = $T4 + $V1 + $V2 - $S - $LCP;
 		$T2 = $T2 < 0?0:$T2; 
-		return number_format($T2/$P,2,'.','');  
+		return round($T2/$P,2);  
 	}
 	private static function ontarioSurtax($T4) // for ontario surtax V1
 	{
-		if($T4 <= 4556){
+		// 2017
+		// if($T4 <= 4556){
+		// 	return 0;
+		// } else if($T4 > 4556 && $T4 <= 5831){
+		// 	return 0.2 * ($T4 - 4556);
+		// } else if($T4 > 5831)
+		// 	return 0.2 * ($T4 - 4556) + 0.36 * ($T4 - 5831);
+
+		//2018
+		if($T4 <= 4638){
 			return 0;
-		} else if($T4 > 4556 && $T4 <= 5831){
-			return 0.2 * ($T4 - 4556);
-		} else if($T4 > 5831)
-			return 0.2 * ($T4 - 4556) + 0.36 * ($T4 - 5831);
+		} else if($T4 > 4638 && $T4 <= 5936){
+			return 0.2 * ($T4 - 4638);
+		} else if($T4 > 5936)
+			return 0.2 * ($T4 - 4638) + 0.36 * ($T4 - 5936);
 	}
 	private static function additionalTax($A){ // for ontario surtax V1
 		if($A <= 20000){
@@ -168,12 +179,26 @@ class Cra extends Model
 		}
 	}
 	private static function provincialReduction($t4,$v1,$num_dependant){
-		$Y = 434 * $num_dependant;
-		if(($t4 + $v1) > (2*(235 + $Y) - ($t4 + $v1)) ){
-			if( (2*(235 + $Y) - ($t4 + $v1)) < 0){
+		// 2017
+		// $Y = 434 * $num_dependant;
+		// if(($t4 + $v1) > (2*(235 + $Y) - ($t4 + $v1)) ){
+		// 	if( (2*(235 + $Y) - ($t4 + $v1)) < 0){
+		// 		return 0;
+		// 	} else {
+		// 		return (2*(235 + $Y) - ($t4 + $v1));
+		// 	}
+			
+		// } else {
+		// 	return ($t4 + $v1);
+		// }
+
+		// 2018
+		$Y = 442 * $num_dependant;
+		if(($t4 + $v1) > (2*(239 + $Y) - ($t4 + $v1)) ){
+			if( (2*(239 + $Y) - ($t4 + $v1)) < 0){
 				return 0;
 			} else {
-				return (2*(235 + $Y) - ($t4 + $v1));
+				return (2*(239 + $Y) - ($t4 + $v1));
 			}
 			
 		} else {

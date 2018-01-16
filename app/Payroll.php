@@ -20,14 +20,14 @@ class Payroll extends Model
     
 	public static function twoWeekGrossPay($wk1Hr,$wk2Hr,$year,$holidayPay = 0,$premiumPay = 0){
 		$config = DB::table('payroll_config')->where('year',$year)->first();
-		$regular = 0;
+		$regular = 0; // regular hours worked
 		$overtime1 = self::overtime($wk1Hr,$year);
 		$overtime2 = self::overtime($wk2Hr,$year);
 		$regular += $wk1Hr - $overtime1;
 		$regular += $wk2Hr - $overtime2;
-		$rp = $regular * $config->minimumPay/100;
-		$op =  ($overtime1 + $overtime2) * $config->minimumPay/100 * $config->overtime_pay;
-		$total = $regular * $config->minimumPay/100 + ($overtime1 + $overtime2) * $config->minimumPay/100 * $config->overtime_pay + $holidayPay + $premiumPay;
+		$rp = round($regular * $config->minimumPay/100,2); // pay for regular hours
+		$op =  round(($overtime1 + $overtime2) * $config->minimumPay/100 * $config->overtime_pay,2); // pay for overtime hours
+		$total = $rp + $op + $holidayPay + $premiumPay;
 
 		$grossIncome = new GrossIncome($wk1Hr,$wk2Hr,$config->minimumPay/100,$overtime1,$overtime2,$rp,$op,$total,$holidayPay);
 		return  $grossIncome;
@@ -98,10 +98,12 @@ class Payroll extends Model
     	$config = DB::table('payroll_config')->where('year',$year)->first();
     	$mealRate = $config->mealRate;
     	$nightRate = $config->nightRate;
+        $vacationPayRate = $config->vacation_pay;
 
     	$hours = $wk1Hr + $wk2Hr;
     	$twoWeekGrossPay = self::twoWeekGrossPay($wk1Hr,$wk2Hr,$year,$holidayPay,$premiumPay);
-        $grossPayWithVacationPay = $twoWeekGrossPay->total * 1.04; // vacation pay included for calculating deductibles
+        $vacationPay = round($twoWeekGrossPay->total * $vacationPayRate,2);
+        $grossPayWithVacationPay = $twoWeekGrossPay->total + $vacationPay ; // vacation pay included for calculating deductibles
     	$basicPay = Cra::payStub($grossPayWithVacationPay,null,null,26,$year,'ON',1);
     	$variablePay = self::variablePay($hours,$positionRate,$tipRate,$hourlyTip,$mealRate,$nightRate,$nightHours,$performanceIndex,$bonus);
     	$magicPay = new MagicNoodlePay($twoWeekGrossPay,$basicPay,$variablePay);
@@ -349,10 +351,11 @@ Class GrossIncome
 	public $overtime2;
 	public $regularPay;
 	public $overtimePay;
+    public $holidayPay;
 	public $total;
-	public $previousFourWeekHours;
-	public $fourWeekHoursPay;
-	public $holidayPay;
+	//public $previousFourWeekHours;
+	//public $fourWeekHoursPay;
+	
 
 	function __construct($wk1Hr,$wk2Hr,$rate,$ot1,$ot2,$rp,$op,$total,$holidayPay = 0){
 		$this->week1Hour = $wk1Hr;
