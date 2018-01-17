@@ -10,7 +10,12 @@ class Datetime extends Model
     
     public static function periods($year)
     {
-    	$periods = DB::table('payroll_period')->where('year',$year)->get();
+    	if(!empty($year)){
+			$periods = DB::table('payroll_period')->where('year',$year)->get();
+    	} else {
+    		$periods = DB::table('payroll_period')->get();
+    	}
+    	
     	$periodOptions = array();
     	foreach($periods as $p){
     		$periodOptions[$p->start] = $p->start.' - '.$p->end;

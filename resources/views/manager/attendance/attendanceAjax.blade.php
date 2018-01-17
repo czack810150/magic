@@ -20,7 +20,7 @@
 					
 					<div class="row mb-3">
 					<div class="col-7 col-sm-7">
-					<img src="/img/{{ $location->manager->employee_profile->img }}" alt="manager picture" class="img-fluid">
+					<img src="/storage/{{ $location->manager->employee_profile->img }}" alt="manager picture" class="img-fluid">
 					</div>
 
 					<div class="col-5 col-sm-5">
