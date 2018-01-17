@@ -71,5 +71,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('update-profile-picture',function($user,$employee){
             return in_array($user->authorization->type,['admin','hr','dm','manager']) || $user->authorization->employee_id == $employee;
         });
+        Gate::define('assign-skill',function($user){
+            return true;
+        });
     }
 }

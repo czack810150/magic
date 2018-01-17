@@ -12,6 +12,7 @@ use App\Employee_background;
 use App\Employee_location;
 use App\Employee_trace;
 use App\User;
+use App\Training_category;
 
 use App\Location;
 use App\Job;
@@ -500,7 +501,12 @@ class EmployeeController extends Controller
      public function training(Request $r)
      {
         $employee = Employee::find($r->employee);
+
+        $locationEmployees = $employee->location->employee->pluck('cName','id');
+        $categories = Training_category::pluck('name','id');
+
         $authorization = Authorization::where('employee_id',$r->employee)->first();
+
 
         $logs = $employee->training;
         foreach($logs as $log){
@@ -516,7 +522,7 @@ class EmployeeController extends Controller
         }
 
 
-        return view('employee.profile.training.index',compact('authorization','employee','logs'));
+        return view('employee.profile.training.index',compact('authorization','employee','logs','locationEmployees','categories'));
      }
 
      public function background($id)

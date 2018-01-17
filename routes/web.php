@@ -68,6 +68,9 @@ Route::post('/employee/account/{id}/edit','EmployeeController@editAccount');
 Route::post('/employee/account/{id}/update','EmployeeController@updateAccount');
 // Employee Trainning
 Route::post('/employee/training','EmployeeController@training');
+Route::post('/skill/category/{id}/get','SkillController@getSkillByCategory');
+
+
 // user employee
 Route::get('/payroll/my','EmployeeUserController@payroll');
 Route::post('/payroll/employee/year','EmployeeUserController@payrollYear');

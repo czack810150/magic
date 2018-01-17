@@ -1,0 +1,1 @@
+{{ Form::select('skillList',$skills,null,['class'=>'form-control','id'=>'skillList','placeholder'=>'Pick a skill']) }}

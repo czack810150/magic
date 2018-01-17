@@ -116,11 +116,8 @@
 <!-- Modal -->
 <div class="modal fade" id="traceModal" tabindex="-1" role="dialog" aria-labelledby="traceModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
-    
-      
         <!--begin::Portlet-->
-        <div class="m-portlet m-portlet--tab">
+        <div class="m-portlet m-portlet--tab modal-content">
             <div class="m-portlet__head">
                 <div class="m-portlet__head-caption">
                     <div class="m-portlet__head-title">
@@ -196,9 +193,6 @@
         </div>
         <!--end::Portlet-->
 
-
-    
-    </div>
   </div>
 </div>
 
