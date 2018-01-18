@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Training_log extends Model
 {
+    protected $fillable = ['employee_id','trainer_id','item_id','date_trained'];
+
     public function item()
     {
     	return $this->belongsTo('App\Training_item');

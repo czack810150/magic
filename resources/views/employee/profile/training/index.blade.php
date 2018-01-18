@@ -210,9 +210,61 @@ function updateSkillList(){
     );
 }
 
+function assignSkillValidation(){
+    if( $('#category').val() == ''){
+        alert('Please select a category');
+        return 0;
+    } 
+
+    if( $('#skillList').val() == '' ) {
+         alert('Please select a skill');
+         return 0;
+    }
+
+    if( $('#finishDate').val() == '' ) {
+         alert('Please provide training date!');
+         return 0;
+    }
+    return true;
+}
+
+function assignSkill(){
+    
+    if( assignSkillValidation() ){
+        
+        $.post(
+            '/skill/assign',
+            {
+                _token: '{{ csrf_token() }}',
+                employee : '{{ $employee->id }}',
+                category : $('#category').val(),
+                skill : $('#skillList').val(),
+                date : $('#finishDate').val(),
+                trainer : $('#trainer').val()
+            },
+            function(data,status){
+                if(status == 'success'){
+                    
+                    $('#skillModal').modal('hide');
+                    
+                    notify('New skill ' + data.item.name + ' have been saved!','success');
+                } 
+                if(status == 'error'){
+                    console.log('assign failed');
+                }
+            },
+            'json'
+            );
+    }    
+}
+
     var category = document.getElementById('category');
     category.addEventListener('change',function(){
       updateSkillList();
-    });
+    },false);
+    var submitBtn = document.getElementById('submitBtn');
+    submitBtn.addEventListener('click',function(){
+        assignSkill();
+    },false);
     $('#finishDate').datetimepicker();
 </script>

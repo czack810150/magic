@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Training_item;
+use App\Training_log;
 
 class SkillController extends Controller
 {
@@ -86,5 +87,17 @@ class SkillController extends Controller
     {
         $skills = Training_item::where('sub_category',$id)->pluck('name','id');
         return view('training.skills.list',compact('skills'));
+    }
+    public function assignSkill(Request $r)
+    {
+
+        $skill = Training_log::create([
+            'employee_id' => $r->employee,
+            'trainer_id' => $r->trainer,
+            'item_id' => $r->skill,
+            'date_trained' => $r->date,
+        ]);
+        $skill->item;
+        return $skill;
     }
 }
