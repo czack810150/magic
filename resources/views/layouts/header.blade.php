@@ -239,6 +239,15 @@
 																	</span>
 																</a>
 															</li>
+
+															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
+																<a  href="/store/report/schedule" class="m-menu__link ">
+																	<i class="m-menu__link-icon flaticon-calendar"></i>
+																	<span class="m-menu__link-text">
+																		Schedule Report
+																	</span>
+																</a>
+															</li>
 															
 															
 														</ul>

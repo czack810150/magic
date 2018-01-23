@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 use App\Payroll;
 use App\Employee;
 use App\Hour;
@@ -69,11 +70,7 @@ class HourController extends Controller
      
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function create()
     {
         //
@@ -136,5 +133,83 @@ class HourController extends Controller
     }
     public function breakdown(Request $r){
         return Hour::breakdown($r->employee,$r->location,$r->startDate);
+    }
+    public function scheduledHourReport(){
+        $subheader = 'Schedule Report';
+        $locations = Location::NonOffice()->pluck('name','id');
+        $dates = Datetime::pastYears(2);
+        $frequencies = Datetime::payFrequency();
+       // // $dates = Datetime::periods(2017);
+       //  $location = $r->location;
+       //  $date = $r->dateRange;
+       //  $stats = ['scheduled' => 0, 'effective' => 0];
+
+      
+     
+       
+        return view('report.store.schedule.index',compact('locations','dates','subheader','frequencies'));
+    }
+    public function scheduledHourReportData(Request $r){
+        $location = Location::find($r->location);
+        switch($r->frequency){
+            case 'week': $frequency = 'Weekly'; break;
+            case 'bi': $frequency = 'Biweekly'; break;
+            case 'm': $frequency = 'Monthly'; break;
+            default: $frequency = 'Biweekly'; break;
+        }
+        $result = array();
+
+        if(isset($location) && isset($r->year)){
+           // $result = 
+        
+
+            $periods = DB::table('payroll_period')->where('year',$r->year)->get();
+
+            foreach($periods as $p)
+            {
+                $p->frontCount = 0;
+                $p->frontHour = 0;
+                $p->backCount = 0;
+                $p->backHour = 0;
+                $p->noodleCount = 0;
+                $p->noodleHour = 0;
+
+                $hours = Hour::where('location_id',$r->location)->where('start',$p->start)->where('end',$p->end)->get();
+                foreach($hours as $h)
+                {
+                    if($h->employee){
+                        switch($h->employee->job->type){
+                        case 'server':
+                        $p->frontHour += $h->wk1Scheduled + $h->wk2Scheduled;
+                        $p->frontCount += 1;
+                        break;
+                        case 'cook':
+                        $p->backHour += $h->wk1Scheduled + $h->wk2Scheduled;
+                        $p->backCount += 1;
+                            break;
+                         case 'pantry':
+                        $p->backHour += $h->wk1Scheduled + $h->wk2Scheduled;
+                        $p->backCount += 1;
+                            break;
+                         case 'chef':
+                        $p->backHour += $h->wk1Scheduled + $h->wk2Scheduled;
+                        $p->backCount += 1;
+                            break;
+                        case 'noodle':
+                        $p->noodleHour += $h->wk1Scheduled + $h->wk2Scheduled;
+                        $p->noodleCount += 1;
+                            break;
+                        }
+                    }
+                    
+                }
+
+            }
+
+       }
+
+
+
+        return view('report.store.schedule.data',compact('location','frequency','periods'));
     }
 }

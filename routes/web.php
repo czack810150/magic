@@ -219,3 +219,5 @@ Route::post('/manager/attendance/detail','ManagerController@attendanceDetail');
 // Store Reports
 Route::get('/store/report/performance','EmployeePerformanceController@overview');
 Route::post('/store/report/performance','EmployeePerformanceController@getStorePerformance');
+Route::get('/store/report/schedule','HourController@scheduledHourReport');
+Route::post('/store/report/schedule','HourController@scheduledHourReportData');
