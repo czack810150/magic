@@ -40,7 +40,7 @@
 <h4>Education</h4>
 <ul class="list-unstyled">
 	<li>Level: {{ $applicant->education->education}}</li>
-	<li>Program / Major: {{ $applicant->education->major?$applicant->major:'' }}</li>
+	<li>Program / Major: {{ $applicant->education->major }}</li>
 	<li>School / Institution: {{ $applicant->education->school }}</li>
 	<li>Personal Interest: {{ $applicant->education->interest }}</li>
 </ul>
