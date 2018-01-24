@@ -46,6 +46,17 @@
 								<div class="m-menu__submenu">
 									<span class="m-menu__arrow"></span>
 									<ul class="m-menu__subnav">
+										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="/applicant" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													Job Applicants
+												</span>
+											</a>
+										</li>
+
 										@if(Auth::user()->authorization->level >=30 )
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/employee" class="m-menu__link ">

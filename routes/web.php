@@ -20,6 +20,10 @@ Route::get('/vue',function(){
 });
 
 // end vue
+// APPLICANTS
+Route::get('/applicant','ApplicantController@index');
+Route::get('/applicant/{id}/view','ApplicantController@show');
+
 
 //EMPLOYEE
 Route::post('/employee/store','EmployeeController@store');
