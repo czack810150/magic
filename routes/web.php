@@ -14,9 +14,20 @@
 // 	App::setLocale($locale);
 // });
 
+
+Route::get('/qr',function(){
+	return  QRCode::text('Laravel QR Code Generator!')->svg();    
+});
+
 //vue
 Route::get('/vue',function(){
 	return view('vue.index');
+});
+
+//Log out
+Route::get('/logout',function(){
+	auth()->logout();
+	return redirect('/');
 });
 
 // end vue

@@ -26,9 +26,23 @@
 	<li>EMail: {{ $applicant->email}}</li>
 	<li>Phone: {{ $applicant->phone}}</li>
 	<li>Date of Birth: {{ $applicant->dob}}</li>
-	<li>Status: {{ $applicant->status}} {{ !is_null($applicant->expiry)?'Expiry Date: $applicant->expiry':'' }}</li>
+	<li>Status: {{ $applicant->status}} {{ !is_null($applicant->expiry)?"Expiry Date: $applicant->expiry":'' }}</li>
 	<li>Hometown: {{ $applicant->hometown}}</li>
 	<li>Living in Canada Since: {{ $applicant->canada_entry}}</li>
+
+</ul>
+<h4>Availability</h4>
+<ul class="list-unstyled">
+	<li>Mon: {{ $applicant->availability->monFrom}} - {{ $applicant->availability->monTo}}</li>
+	<li>Tue: {{ $applicant->availability->tueFrom}} - {{ $applicant->availability->tueTo}}</li>
+	<li>Wed: {{ $applicant->availability->wedFrom}} - {{ $applicant->availability->wedTo}}</li>
+	<li>Thu: {{ $applicant->availability->thuFrom}} - {{ $applicant->availability->thuTo}}</li>
+	<li>Fri: {{ $applicant->availability->friFrom}} - {{ $applicant->availability->friTo}}</li>
+	<li>Sat: {{ $applicant->availability->satFrom}} - {{ $applicant->availability->satTo}}</li>
+	<li>Sun: {{ $applicant->availability->sunFrom}} - {{ $applicant->availability->sunTo}}</li>
+	
+	<li>Work up to  {{ $applicant->availability->hours}} hours per week</li>
+	<li>Work on holidays: {{ $applicant->availability->holiday?'Yes':'No'}}</li>
 
 </ul>
 <h4>Emergency Contact</h4>

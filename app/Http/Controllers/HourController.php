@@ -173,15 +173,21 @@ class HourController extends Controller
                 $p->backHour = 0;
                 $p->noodleCount = 0;
                 $p->noodleHour = 0;
+                $p->totalEffective = 0;
 
                 $hours = Hour::where('location_id',$r->location)->where('start',$p->start)->where('end',$p->end)->get();
                 foreach($hours as $h)
                 {
+                   
                     if($h->employee){
+                        
+                        $p->totalEffective += $h->wk1Effective + $h->wk2Effective;
+
                         switch($h->employee->job->type){
                         case 'server':
                         $p->frontHour += $h->wk1Scheduled + $h->wk2Scheduled;
                         $p->frontCount += 1;
+
                         break;
                         case 'cook':
                         $p->backHour += $h->wk1Scheduled + $h->wk2Scheduled;

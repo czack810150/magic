@@ -56,6 +56,7 @@ class ApplicantController extends Controller
         $applicant = DB::connection('applicants')->table('applicants')->where('id',$id)->first();
         $applicant->education = DB::connection('applicants')->table('schools')->where('applicant_id',$id)->first();
         $applicant->pastwork = DB::connection('applicants')->table('pastworks')->where('applicant_id',$id)->first();
+        $applicant->availability = DB::connection('applicants')->table('availabilities')->where('applicant_id',$id)->first();
         $applicant->location = Location::find($applicant->location);
         $applicant->job = Job::find($applicant->role);
         return view('hr/applicants/applicant',compact('applicant')); 

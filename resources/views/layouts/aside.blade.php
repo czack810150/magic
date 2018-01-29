@@ -36,6 +36,21 @@
 							</li>
 
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+								<a  href="http://www.magicnoodle.ca/magicshift/magicshift" class="m-menu__link ">
+									<i class="m-menu__link-icon flaticon-squares-1"></i>
+									<span class="m-menu__link-title">
+										<span class="m-menu__link-wrap">
+											<span class="m-menu__link-text">
+												MagicShift
+											</span>
+											
+										</span>
+									</span>
+								</a>
+							</li>
+
+
+							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">
 									<i class="m-menu__link-icon flaticon-users"></i>
 									<span class="m-menu__link-text">

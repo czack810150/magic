@@ -3,7 +3,7 @@
 @if(count($periods))
 <table class="table">
 <thead>
-<tr><th>Period</th><th>前厅</th><th>人数</th><th>厨工</th><th>人数</th><th>拉面师</th><th>人数</th></tr>
+<tr><th>Period</th><th>前厅</th><th>人数</th><th>厨工</th><th>人数</th><th>拉面师</th><th>人数</th><th>后厨Total</th><th>Store Total</th><th>Effective</th></tr>
 </thead>
 <tbody>
 	@foreach($periods as $p)
@@ -15,6 +15,10 @@
 	<td>{{$p->backCount}}</td>
 	<td>{{round($p->noodleHour,2)}}</td>
 	<td>{{$p->noodleCount}}</td>
+	<td>{{ round($p->backHour+$p->noodleHour) }}</td>
+	<td>{{ round($p->frontHour + $p->backHour + $p->noodleHour) }}</td>
+	<td>{{ round($p->totalEffective) }}</td>
+
 </tr>
 	@endforeach
 
