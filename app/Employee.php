@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use DB;
 class Employee extends Model
 {
     protected $fillable = ['newbie','employeeNumber','email','firstName','lastName','cName','location_id','hired','termination','status','job_id'];
@@ -80,10 +81,25 @@ class Employee extends Model
     {
         return $this->hasOne('App\Authorization');
     }
+
+    public static function jobBreakdown($location)
+    {
+        if(is_null($location)){
+            return DB::table('employees')->join('jobs','jobs.id','=','employees.job_id')->select(DB::raw('count(*) as count,jobs.rank'))->where('employees.status','active')->groupBy('jobs.id')->orderBy('jobs.id')->get();
+        } else {
+            return DB::table('employees')->join('jobs','jobs.id','=','employees.job_id')->select(DB::raw('count(*) as count,jobs.rank'))->where('employees.status','active')->where('location_id',$location)->groupBy('jobs.id')->orderBy('jobs.id')->get();
+        }
+        
+    }
+
     // scopes
     public function scopeActiveEmployee($query)
     {
         return $query->where('status','active');
+    }
+    public function scopeTerminatedEmployees($query)
+    {
+        return $query->where('termination','!=',null);
     }
     public function message()
     {

@@ -99,6 +99,7 @@ Route::get('/training/my','EmployeeUserController@training');
 Route::post('/file/employee/{id}/picture','FileUploadController@profilePictureUpload');
 
 // HR
+Route::get('/hr','HrController@index');
 Route::post('/hr/employee/trace','EmployeeTraceController@trace');
 Route::post('/hr/employee/trace/update','EmployeeTraceController@update');
 

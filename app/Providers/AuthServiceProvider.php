@@ -74,5 +74,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('assign-skill',function($user){
             return true;
         });
+        Gate::define('view-hr',function($user){
+            return in_array($user->authorization->type,['hr','dm','manager','accounting','gm','admin']);
+        });
     }
 }
