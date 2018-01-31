@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Location;
 use DB;
 class Employee extends Model
 {
@@ -85,13 +86,32 @@ class Employee extends Model
     public static function jobBreakdown($location)
     {
         if(is_null($location)){
-            return DB::table('employees')->join('jobs','jobs.id','=','employees.job_id')->select(DB::raw('count(*) as count,jobs.rank'))->where('employees.status','active')->groupBy('jobs.id')->orderBy('jobs.id')->get();
+            return DB::table('employees')->join('jobs','jobs.id','=','employees.job_id')->select(DB::raw('count(*) as count,jobs.rank,jobs.type'))->where('employees.status','active')->groupBy('jobs.id')->orderBy('jobs.id')->get();
         } else {
-            return DB::table('employees')->join('jobs','jobs.id','=','employees.job_id')->select(DB::raw('count(*) as count,jobs.rank'))->where('employees.status','active')->where('location_id',$location)->groupBy('jobs.id')->orderBy('jobs.id')->get();
+            return DB::table('employees')->join('jobs','jobs.id','=','employees.job_id')->select(DB::raw('count(*) as count,jobs.rank,jobs.type'))->where('employees.status','active')->where('location_id',$location)->groupBy('jobs.id')->orderBy('jobs.id')->get();
         }
         
     }
-
+    public static function locationEmployeesCount(){
+        $locations = Location::get();
+        $result = array();
+        foreach($locations as $l){
+            $result[$l->name]['totalHeadCount'] = $l->employee->count();
+            $result[$l->name]['totalActive'] = $l->employee->where('status','active')->count();
+            $result[$l->name]['activeRate'] = $result[$l->name]['totalActive']/$result[$l->name]['totalHeadCount'];
+        }
+        return $result;
+    }
+    public static function typesCount(){
+        $locations = Location::get();
+        $result = array();
+        // foreach($locations as $l){
+        //     $result[$l->name]['totalHeadCount'] = $l->employee->count();
+        //     $result[$l->name]['totalActive'] = $l->employee->where('status','active')->count();
+        //     $result[$l->name]['activeRate'] = $result[$l->name]['totalActive']/$result[$l->name]['totalHeadCount'];
+        // }
+        return $result;
+    }
     // scopes
     public function scopeActiveEmployee($query)
     {
@@ -101,6 +121,11 @@ class Employee extends Model
     {
         return $query->where('termination','!=',null);
     }
+    public function scopeActiveAndVacationEmployees($query)
+    {
+        return $query->where('status','active')->orWhere('status','vacation');
+    }
+
     public function message()
     {
         return $this->hasMany('App\Message_to');

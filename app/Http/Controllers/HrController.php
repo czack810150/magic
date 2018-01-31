@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Location;
 use App\Employee;
+use App\Job;
 use Gate;
 
 class HrController extends Controller
@@ -19,11 +20,19 @@ class HrController extends Controller
         $subheader = 'Human Resources';
         if(Gate::allows('view-hr')){
             $locations = Location::pluck('name','id');
+            $locations['999'] = 'All';
             $data['activeEmployees'] = Employee::activeEmployee()->count();
             $data['terminatedEmployees'] = Employee::terminatedEmployees()->count();
             $data['positionBreakdown'] = Employee::jobBreakdown(null);
+            $data['totalEmployees'] = Employee::activeAndVacationEmployees()->count();
+            $data['locationEmployees'] = Employee::locationEmployeesCount();
 
-
+            $data['types']['server'] = Job::typeCount('server',null);
+            $data['types']['cook'] = Job::typeCount('cook',null);
+            $data['types']['noodle'] = Job::typeCount('noodle',null);
+            $data['types']['manager'] = Job::typeCount('management',null);
+            $data['types']['kitchen'] = Job::typeCount('pantry',null) + Job::typeCount('chef',null) + Job::typeCount('driver',null);
+            $data['types']['office'] = Job::typeCount('office',null) + Job::typeCount('hq',null);
             return view('hr.index',compact('data','locations','subheader'));
         } else {
             return view('system.deny',compact('subheader'));

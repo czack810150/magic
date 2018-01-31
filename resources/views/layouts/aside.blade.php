@@ -84,7 +84,7 @@
 											</a>
 										</li>
 
-										@if(Auth::user()->authorization->level >=30 )
+										@if(Auth::user()->authorization->level >= 20 )
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/employee" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
