@@ -54,7 +54,7 @@ class AuthServiceProvider extends ServiceProvider
              return in_array($user->authorization->type,['admin','manager','dm','gm','accounting']);
         });
         Gate::define('update-employment',function($user){
-             return in_array($user->authorization->type,['admin','hr','dm','accounting']);
+             return in_array($user->authorization->type,['admin','hr','dm','manager','accounting']);
         });
         Gate::define('update-background',function($user,$employee){
              return in_array($user->authorization->type,['admin','hr','dm','accounting']) || $user->authorization->employee_id == $employee->id;
