@@ -34,6 +34,7 @@ Route::get('/logout',function(){
 // APPLICANTS
 Route::get('/applicant','ApplicantController@index');
 Route::get('/applicant/{id}/view','ApplicantController@show');
+Route::post('/applicant/{id}/get','ApplicantController@fetch');
 
 
 //EMPLOYEE

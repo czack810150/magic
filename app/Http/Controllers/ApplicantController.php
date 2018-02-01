@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Location;
 use App\Job;
 use DB;
+use Carbon\Carbon;
 class ApplicantController extends Controller
 {
     public function __construct()
@@ -16,12 +17,16 @@ class ApplicantController extends Controller
     public function index()
     {
         $subheader = 'Human Resources';
+        $employeeLocations = Location::pluck('name','id');
+        $jobs = Job::where('trial',1)->pluck('rank','id');
+
+
         $applicants = DB::connection('applicants')->table('applicants')->get();
         foreach($applicants as $a){
             $a->location = Location::where('id',$a->location)->first()->name;
             $a->job = Job::where('id',$a->role)->first()->rank;
         }
-        return view('hr.applicants.index',compact('applicants','subheader'));
+        return view('hr.applicants.index',compact('applicants','subheader','employeeLocations','jobs'));
     }
 
     /**
@@ -61,6 +66,17 @@ class ApplicantController extends Controller
         $applicant->job = Job::find($applicant->role);
         return view('hr/applicants/applicant',compact('applicant')); 
     }
+      public function fetch($id)
+    {
+        $applicant =  DB::connection('applicants')->table('applicants')->where('id',$id)->first();
+        $result['id'] = $applicant->id;
+        $result['location'] = $applicant->location;
+        $result['role'] = $applicant->role;
+        $result['cName'] = $applicant->cName;   
+        $result['hireDate'] = Carbon::now()->toDateString();
+        return $result;
+    }
+
 
     /**
      * Show the form for editing the specified resource.
