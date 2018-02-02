@@ -1,0 +1,83 @@
+# ************************************************************
+# Sequel Pro SQL dump
+# Version 4541
+#
+# http://www.sequelpro.com/
+# https://github.com/sequelpro/sequelpro
+#
+# Host: 107.180.51.37 (MySQL 5.6.36-cll-lve)
+# Database: magic_applicant
+# Generation Time: 2018-02-02 22:01:39 +0000
+# ************************************************************
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+# Dump of table availabilities
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `availabilities`;
+
+CREATE TABLE `availabilities` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `applicant_id` int(10) unsigned NOT NULL,
+  `monFrom` time DEFAULT NULL,
+  `monTo` time DEFAULT NULL,
+  `tueFrom` time DEFAULT NULL,
+  `tueTo` time DEFAULT NULL,
+  `wedFrom` time DEFAULT NULL,
+  `wedTo` time DEFAULT NULL,
+  `thuFrom` time DEFAULT NULL,
+  `thuTo` time DEFAULT NULL,
+  `friFrom` time DEFAULT NULL,
+  `friTo` time DEFAULT NULL,
+  `satFrom` time DEFAULT NULL,
+  `satTo` time DEFAULT NULL,
+  `sunFrom` time DEFAULT NULL,
+  `sunTo` time DEFAULT NULL,
+  `hours` enum('10','20','44','44+') COLLATE utf8mb4_unicode_ci DEFAULT '44',
+  `holiday` tinyint(1) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `availabilities` WRITE;
+/*!40000 ALTER TABLE `availabilities` DISABLE KEYS */;
+
+INSERT INTO `availabilities` (`id`, `applicant_id`, `monFrom`, `monTo`, `tueFrom`, `tueTo`, `wedFrom`, `wedTo`, `thuFrom`, `thuTo`, `friFrom`, `friTo`, `satFrom`, `satTo`, `sunFrom`, `sunTo`, `hours`, `holiday`, `created_at`, `updated_at`)
+VALUES
+	(1,1,'00:00:00','02:00:00','02:00:00','02:30:00','02:00:00','02:30:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'44+',1,'2018-01-26 21:00:48','2018-01-26 21:00:48'),
+	(2,2,'00:00:00','05:30:00','00:00:00','05:30:00','00:00:00','05:30:00',NULL,NULL,NULL,NULL,'00:00:00','04:30:00',NULL,NULL,'20',1,'2018-01-26 21:20:28','2018-01-26 21:20:28'),
+	(3,3,'07:00:00','21:00:00','07:00:00','21:00:00','07:00:00','21:00:00','07:00:00','21:00:00','07:00:00','21:00:00',NULL,NULL,'11:00:00','21:00:00','44+',1,'2018-01-29 19:18:54','2018-01-29 19:18:54'),
+	(4,4,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'44',NULL,'2018-01-30 19:14:27','2018-01-30 19:14:27'),
+	(5,5,'09:00:00','05:00:00','09:00:00','05:00:00','09:00:00','05:00:00','09:00:00','05:00:00','09:00:00','04:00:00',NULL,NULL,NULL,NULL,'44',1,'2018-01-31 17:20:10','2018-01-31 17:20:10'),
+	(6,6,'00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','00:00:00','20',1,'2018-01-31 19:13:43','2018-01-31 19:13:43'),
+	(7,7,'07:30:00','06:00:00','07:30:00','06:00:00','07:30:00','06:00:00','07:30:00','06:00:00','07:30:00','06:00:00',NULL,NULL,NULL,NULL,'44',NULL,'2018-01-31 22:10:10','2018-01-31 22:10:10'),
+	(8,8,'00:00:00','24:00:00','00:00:00','24:00:00','00:00:00','24:00:00','00:00:00','24:00:00','00:00:00','24:00:00','00:00:00','24:00:00','00:00:00','24:00:00','44+',1,'2018-02-01 14:55:20','2018-02-01 14:55:20'),
+	(9,9,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'44',1,'2018-02-01 18:25:05','2018-02-01 18:25:05'),
+	(10,10,'05:00:00','07:00:00','02:30:00','07:00:00','06:00:00','08:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'20',1,'2018-02-01 21:19:37','2018-02-01 21:19:37'),
+	(11,11,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2018-02-01 21:22:58','2018-02-01 21:22:58'),
+	(12,12,'06:00:00','22:00:00','06:00:00','22:00:00',NULL,NULL,'06:00:00','22:00:00','06:00:00','22:00:00','06:00:00','15:00:00','06:00:00','15:00:00','44+',1,'2018-02-01 22:50:16','2018-02-01 22:50:16'),
+	(13,13,'07:00:00','22:00:00','07:00:00','22:00:00',NULL,NULL,'07:00:00','22:00:00','07:00:00','22:00:00','07:00:00','15:00:00','09:00:00','15:00:00','44+',1,'2018-02-01 23:22:12','2018-02-01 23:22:12'),
+	(14,14,'08:00:00','22:00:00','08:00:00','22:00:00','08:00:00','22:00:00','08:00:00','22:00:00','08:00:00','22:00:00','08:00:00','22:00:00','08:00:00','20:00:00','44+',1,'2018-02-02 15:38:27','2018-02-02 15:38:27'),
+	(15,15,'08:00:00','20:00:00','08:00:00','20:00:00','08:00:00','20:00:00','08:00:00','20:00:00','08:00:00','20:00:00','08:00:00','20:00:00','08:00:00','20:00:00','44',1,'2018-02-02 21:19:31','2018-02-02 21:19:31');
+
+/*!40000 ALTER TABLE `availabilities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

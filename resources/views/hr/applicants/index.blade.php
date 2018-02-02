@@ -38,6 +38,7 @@
       <!--begin::Form-->
             <form class="m-form m-form--fit m-form--label-align-right" method="POST" action="/employee/hireApplicant">
                 {{ csrf_field() }}
+                <input type="text" name="applicantId" id="applicantId" value="" hidden>
       <div class="modal-body">  
 
             
@@ -236,6 +237,7 @@ function getApplicant(applicant){
                     $('#employeeLocation').val(data.location);
                     $('#job').val(data.role);
                     $('#hireDate').val(data.hireDate);
+                    $('#applicantId').val(applicant);
                     $('#hire-applicant').modal();
                 }
             },

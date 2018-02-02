@@ -130,6 +130,11 @@ class Employee extends Model
     {
         return $this->hasMany('App\Message_to');
     }
+
+    public function availability()
+    {
+        return $this->hasOne('App\Availability');
+    }
     
 
 

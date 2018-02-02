@@ -13,7 +13,7 @@ use App\Employee_location;
 use App\Employee_trace;
 use App\User;
 use App\Training_category;
-
+use App\Availability;
 use App\Location;
 use App\Job;
 use App\Authorization;
@@ -91,7 +91,7 @@ class EmployeeController extends Controller
             'lastName' => $request->lastName,
             'cName' => $request->cName,
             'location_id' => $request->employeeLocation,
-            'job_id' => 10,
+            'job_id' => $request->job,
             'hired' => $request->hireDate,
        ]);
        $employee_location = Employee_location::create([
@@ -613,6 +613,122 @@ class EmployeeController extends Controller
         return 'updated';  
      }
       
+     public function hireApplicant(Request $r)
+     {
+    
+        $applicant = DB::connection('applicants')->table('applicants')->where('id',$r->applicantId)->first();
+        $applicant->education = DB::connection('applicants')->table('schools')->where('applicant_id',$r->applicantId)->first();
+        $applicant->pastwork = DB::connection('applicants')->table('pastworks')->where('applicant_id',$r->applicantId)->first();
+        $applicant->availability = DB::connection('applicants')->table('availabilities')->where('applicant_id',$r->applicantId)->first();
+      
+        $validatedData = $r->validate([
+                  'cName' => 'string|max:32',
+                  'job' => 'required|numeric',
+                  'employeeLocation' => 'required|numeric',
+                  'employeeRole' => 'required|numeric',
+                  'employeeNumber' => 'required|string|max:32|unique:employees',
+                  'hireDate' => 'required|date_format:Y-m-d'
+                ]);
+       $employee = Employee::create([
+            'employeeNumber' => $r->employeeNumber,
+            'email' => $applicant->email,
+            'firstName' => $applicant->firstName,
+            'lastName' => $applicant->lastName,
+            'cName' => $r->cName,
+            'location_id' => $r->employeeLocation,
+            'job_id' => $r->job,
+            'hired' => $r->hireDate,
+       ]);
+       $employee_location = Employee_location::create([
+        'employee_id' => $employee->id,
+        'location_id' => $r->employeeLocation,
+        'job_id' => $employee->job_id,
+        'start' => $r->hireDate,
+       ]);
+       switch($applicant->gender){
+        case 0:
+            $sex = 'female';break;
+        case 1:
+            $sex = 'male';break;
+        case 2: 
+            $sex = 'non-binary';break;
+        default: 
+            $sex = null;
+       }
+       $employee_profile = Employee_profile::create([
+        'employee_id' => $employee->id,
+        'phone' => $applicant->phone,
+        'address' => $applicant->address,
+        'city' => $applicant->city,
+        'state' => $applicant->province,
+        'zip' => $applicant->postalCode,
+        'sex' => $sex,
+        'dob' => $applicant->dob,
+       ]);
+       switch($applicant->status){
+        case 'student':
+            $canada_status = 'study permit'; break;
+        case 'worker':
+            $canada_status = 'work permit';break;
+        default:
+            $canada_status = $applicant->status;
+       }
+       $employee_background = Employee_background::create([
+        'employee_id' => $employee->id,
+        'education' => $applicant->education->education,
+        'major' => $applicant->education->major,
+        'school' => $applicant->education->school,
+        'student' => $applicant->education->enrolled,
+        'hometown' => $applicant->hometown,
+        'canada_status' => $canada_status,
+        'status_expiry' => $applicant->expiry,
+        'interest' => $applicant->education->interest,
+        'emergency_person' => $applicant->emergency_person,
+        'emergency_phone' => $applicant->emergency_phone,
+        'emergency_relation' => $applicant->emergency_relation,
+        'english' => $applicant->english,
+        'chinese' => $applicant->chinese,
+        'cantonese' => $applicant->cantonese,
+        'french' => $applicant->french,
+        'company' => $applicant->pastwork->company,
+        'company_city' => $applicant->pastwork->city,
+        'company_job' => $applicant->pastwork->position,
+        'company_supervisor' => $applicant->pastwork->supervisor,
+        'company_contact' => $applicant->pastwork->phone,
+        'company_start' => $applicant->pastwork->from,
+        'company_end' => $applicant->pastwork->to,
+        'company_check' => $applicant->pastwork->verify,
+        'check_reason' => $applicant->pastwork->noVerifyReason,
+        'company_quit' => $applicant->pastwork->quitReason,
 
+       ]);
+       $employee_trace = Employee_trace::create([
+        'employee_id' => $employee->id,
+        'interview' => $r->hireDate,
+        'pass_interview' => true,
+        'result' => 'before'
+       ]);
+       $availability = Availability::create([
+        'employee_id' => $employee->id,
+        'monFrom' => $applicant->availability->monFrom,
+            'tueFrom' => $applicant->availability->tueFrom,
+            'wedFrom' => $applicant->availability->wedFrom,
+            'thuFrom' => $applicant->availability->thuFrom,
+            'friFrom' => $applicant->availability->friFrom,
+            'satFrom' => $applicant->availability->satFrom,
+            'sunFrom' => $applicant->availability->sunFrom, 
+            'monTo' => $applicant->availability->monTo,
+            'tueTo' => $applicant->availability->tueTo,
+            'wedTo' => $applicant->availability->wedTo,
+            'thuTo' => $applicant->availability->thuTo,
+            'friTo' => $applicant->availability->friTo,
+            'satTo' => $applicant->availability->satTo,
+            'sunTo' => $applicant->availability->sunTo,
+            'hours' => $applicant->availability->hours,
+            'holiday' => $applicant->availability->holiday,
+       ]);
+       DB::connection('applicants')->table('applicants')->where('id',$r->applicantId)->update(['applicant_status'=>'hired']);
+       return redirect('/staff/profile/'.$employee->id.'/show');
+     }
 
 }

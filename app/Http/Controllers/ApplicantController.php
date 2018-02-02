@@ -21,7 +21,7 @@ class ApplicantController extends Controller
         $jobs = Job::where('trial',1)->pluck('rank','id');
 
 
-        $applicants = DB::connection('applicants')->table('applicants')->get();
+        $applicants = DB::connection('applicants')->table('applicants')->where('applicant_status','<>','hired')->get();
         foreach($applicants as $a){
             $a->location = Location::where('id',$a->location)->first()->name;
             $a->job = Job::where('id',$a->role)->first()->rank;
