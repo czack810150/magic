@@ -22,7 +22,15 @@ class QuestionController extends Controller
     {
         $subheader = 'Employee Training';
         $questions = Question::orderBy('question_category_id','asc')->orderBy('difficulty')->get();
-        return view('exam.question.index',compact('questions','subheader'));
+        $stats['total'] = Question::count();
+        $stats['mc'] = Question::where('mc',true)->count();
+        $stats['sa'] = Question::where('mc',false)->count();
+        $categories = Question_category::get();
+        foreach($categories as $c){
+            $stats['categories'][$c->name] = $c->question->count();
+        }
+        
+        return view('exam.question.index',compact('questions','subheader','stats'));
     }
 
     /**
