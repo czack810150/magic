@@ -195,6 +195,8 @@ Route::get('/question_category/{id}','QuestionController@showCategoryQuestions')
 
 Route::get('/question','QuestionController@index');
 Route::get('/question/{question}/show','QuestionController@show');
+Route::get('/question/{question}/edit','QuestionController@edit');
+Route::post('/question/{question}/update','QuestionController@update');
 Route::get('/question/{question}/delete','QuestionController@destroy');
 Route::get('/question/create','QuestionController@create');
 Route::post('/question/create','QuestionController@store');

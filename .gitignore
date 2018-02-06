@@ -12,3 +12,6 @@ yarn-error.log
 .env
 .DS_Store
 magic-2017-12-18-107.180.51.37
+.DS_Store
+*.sql
+.DS_Store

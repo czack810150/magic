@@ -21,7 +21,7 @@ class QuestionController extends Controller
     public function index()
     {
         $subheader = 'Employee Training';
-        $questions = Question::get();
+        $questions = Question::orderBy('question_category_id','asc')->orderBy('difficulty')->get();
         return view('exam.question.index',compact('questions','subheader'));
     }
 
@@ -96,27 +96,37 @@ class QuestionController extends Controller
         return view('exam.question.question',compact('question','subheader'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+  
     public function edit($id)
     {
-        //
+        $subheader = 'Exmployee Training';
+        $question = Question::find($id);
+        $categories = Question_category::pluck('name','id');
+        return view('exam.question.edit',compact('question','subheader','categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+
+        $subheader = 'Exmployee Training';
+        $question = Question::find($id);
+        $question->body = $request->question;
+        $question->difficulty = $request->difficulty;
+        $question->question_category_id = $request->category;
+        $answers = Answer::where('question_id',$question->id)->get();
+        if(count($answers)){
+        $answers[0]->answer = $request->correct;
+        $answers[0]->save();
+        $answers[1]->answer = $request->answer1;
+        $answers[1]->save();
+        $answers[2]->answer = $request->answer2;
+        $answers[2]->save();
+        $answers[3]->answer = $request->answer3;
+        $answers[3]->save();
+        }
+        $question->save();
+        
+        return redirect("/question/$id/show");
     }
 
     /**
