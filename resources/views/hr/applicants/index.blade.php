@@ -139,6 +139,40 @@
         		selector: false,
         		taxtAlign: 'center'
         	},
+            {
+                field: "applicant_status",
+                title: "Status",
+                width: 100,
+                sortable:false,
+                overflow:'visible',
+                template: function(row){
+                    var selection = '';
+                    switch(row.applicant_status){
+                        case 'applied':
+                             selection = '<span class="m-badge m-badge--info m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                            break;
+                        case 'reviewed':
+                             selection = '<span class="m-badge m-badge--primary m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                            break;
+                        case 'phoned':
+                             selection = '<span class="m-badge m-badge--accent m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                            break;
+                        case 'interviewed':
+                             selection = '<span class="m-badge m-badge--warning m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                            break;
+                        case 'offered':
+                             selection = '<span class="m-badge m-badge--success m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                            break;
+                        case 'rejected':
+                             selection = '<span class="m-badge m-badge--danger m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                            break;
+                        default:
+                            selection = '<span class="m-badge m-badge--brand m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                    }        
+                    return selection;
+                }
+            },
+
         	{
         		field: "cName",
         		title: "Chinese",
@@ -198,7 +232,7 @@
         	},
         	{
         		field: "status",
-        		title: "Status",
+        		title: "Immigration",
         		width: 100,
         		sortable: true,
         		selector: false,
