@@ -65,6 +65,7 @@
     <!--end::Page Vendors -->  
         <!--begin::Page Snippets -->
     <script src="{{asset('/assets/app/js/dashboard.js')}}" type="text/javascript"></script>
+    <script src="{{ asset('/assets/demo/default/custom/components/base/sweetalert2.js') }}"></script>
     <script src="/js/datatable.js"></script>
     <!--end::Page Snippets -->
     <script src="{{asset('/js/hr.js')}}" type="text/javascript"></script>

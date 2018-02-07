@@ -26,7 +26,7 @@ class ApplicantController extends Controller
             'interviewed' => 'Interviewed',
             'offered' => 'Job Offered',
             'rejected' => 'Rejected',
-            'hired' => 'Hired'
+           // 'hired' => 'Hired'
         ];
 
         $applicants = DB::connection('applicants')->table('applicants')->where('applicant_status','<>','hired')->latest()->get();
@@ -107,9 +107,16 @@ class ApplicantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        
+        $status = DB::connection('applicants')->table('applicants')->where('id',$request->applicant)->update(['applicant_status'=>$request->applicantStatus]);
+        if($status){
+            return 'success';
+        } else {
+            return 'failed';
+        }
+        
     }
 
     /**

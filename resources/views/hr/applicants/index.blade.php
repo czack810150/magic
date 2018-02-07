@@ -16,7 +16,39 @@
 				
 			</div>
 			<div class="m-portlet__body">
-				<div id="applicantList"></div>
+				<div id="applicantList">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th><th>Status</th><th>Chinese</th><th>Last Name</th><th>First Name</th><th>Location</th><th>Job</th><th>City</th><th>Phone</th><th>Immigratin</th><th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($applicants as $a)
+                            <tr>
+                                <td>{{ $a->created_at }}</td>
+                                <td>
+                                    {{ Form::select("status$a->id",$status,$a->applicant_status,["class" => "form-control m-input", "onchange" => "updateApplicantStatus($a->id)","id" => "status$a->id"]) }}
+                                    
+                                </td>
+                                <td>{{ $a->cName }}</td>
+                                <td>{{ $a->lastName }}</td>
+                                <td>{{ $a->firstName }}</td>
+                                <td>{{ $a->location }}</td>
+                                <td>{{ $a->job }}</td>
+                                <td>{{ $a->city }}</td>
+                                <td>{{ $a->phone }}</td>
+                                <td>{{ $a->status }}</td>
+                                <td><a class="btn btn-sm btn-primary applicantDetails" href="/applicant/{{$a->id}}/view">Details</a>
+                                    
+                    <button type="button" class="btn btn-sm btn-success" onclick="hire('{{$a->id}}')">Hire</button></td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+
+                </div>
 			</div>
 		</div>	
 		<!--end::Portlet-->
@@ -147,7 +179,8 @@
                 overflow:'visible',
                 template: function(row){
                     var selection = '';
-                    selection = '{{ Form::select("status",$status,' + row.applicant_status + ',["class" => "form-control m-input"]) }}';
+                    selection = '{{ Form::select("status",$status,' + row.applicant_status + ',["class" => "form-control m-input", "onchange" => "updateApplicantStatus('+a+')"]) }}';
+
                     // switch(row.applicant_status){
                     //     case 'applied':
                     //          selection = '<span class="m-badge m-badge--info m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
@@ -253,7 +286,7 @@
         	}
         ]
 	}	
-	$('#applicantList').mDatatable(options);
+	//$('#applicantList').mDatatable(options);
 
 function hire(applicant){
     
@@ -280,5 +313,34 @@ function getApplicant(applicant){
             );
 
 }
-    </script>
+function updateApplicantStatus(applicant)
+{
+    let applicantStatus = $('#status'+applicant).val();
+    $.post(
+        '/applicant/updateStatus',
+        {
+            _token: '{{ csrf_token() }}',
+            applicant: applicant,
+            applicantStatus: applicantStatus
+        },
+        function(data,status){
+             if(status == 'success'){
+                if(data == 'success'){
+
+                    swal('Update Success!',
+                            'Applicant status changed!',
+                         'success'
+                        );
+                } else {
+                    swal('Something went wrong!',
+                            'Contact Hiro',
+                         'danger'
+                        );
+                }
+  
+            }
+        },
+        );
+}
+ </script>
 @endsection
