@@ -147,28 +147,29 @@
                 overflow:'visible',
                 template: function(row){
                     var selection = '';
-                    switch(row.applicant_status){
-                        case 'applied':
-                             selection = '<span class="m-badge m-badge--info m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                            break;
-                        case 'reviewed':
-                             selection = '<span class="m-badge m-badge--primary m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                            break;
-                        case 'phoned':
-                             selection = '<span class="m-badge m-badge--accent m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                            break;
-                        case 'interviewed':
-                             selection = '<span class="m-badge m-badge--warning m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                            break;
-                        case 'offered':
-                             selection = '<span class="m-badge m-badge--success m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                            break;
-                        case 'rejected':
-                             selection = '<span class="m-badge m-badge--danger m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                            break;
-                        default:
-                            selection = '<span class="m-badge m-badge--brand m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                    }        
+                    selection = '{{ Form::select("status",$status,' + row.applicant_status + ',["class" => "form-control m-input"]) }}';
+                    // switch(row.applicant_status){
+                    //     case 'applied':
+                    //          selection = '<span class="m-badge m-badge--info m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                    //         break;
+                    //     case 'reviewed':
+                    //          selection = '<span class="m-badge m-badge--primary m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                    //         break;
+                    //     case 'phoned':
+                    //          selection = '<span class="m-badge m-badge--accent m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                    //         break;
+                    //     case 'interviewed':
+                    //          selection = '<span class="m-badge m-badge--warning m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                    //         break;
+                    //     case 'offered':
+                    //          selection = '<span class="m-badge m-badge--success m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                    //         break;
+                    //     case 'rejected':
+                    //          selection = '<span class="m-badge m-badge--danger m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                    //         break;
+                    //     default:
+                    //         selection = '<span class="m-badge m-badge--brand m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
+                    // }        
                     return selection;
                 }
             },

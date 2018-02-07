@@ -19,14 +19,25 @@ class ApplicantController extends Controller
         $subheader = 'Human Resources';
         $employeeLocations = Location::pluck('name','id');
         $jobs = Job::where('trial',1)->pluck('rank','id');
-
+        $status = [
+            'applied' => 'Applied',
+            'reviewed' => 'Reviewed',
+            'phoned' => 'Phone Screened',
+            'interviewed' => 'Interviewed',
+            'offered' => 'Job Offered',
+            'rejected' => 'Rejected',
+            'hired' => 'Hired'
+        ];
 
         $applicants = DB::connection('applicants')->table('applicants')->where('applicant_status','<>','hired')->latest()->get();
         foreach($applicants as $a){
             $a->location = Location::where('id',$a->location)->first()->name;
             $a->job = Job::where('id',$a->role)->first()->rank;
         }
-        return view('hr.applicants.index',compact('applicants','subheader','employeeLocations','jobs'));
+
+
+
+        return view('hr.applicants.index',compact('applicants','subheader','employeeLocations','jobs','status'));
     }
 
     /**
