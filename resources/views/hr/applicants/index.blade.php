@@ -39,9 +39,11 @@
                                 <td>{{ $a->city }}</td>
                                 <td>{{ $a->phone }}</td>
                                 <td>{{ $a->status }}</td>
-                                <td><a class="btn btn-sm btn-primary applicantDetails" href="/applicant/{{$a->id}}/view">Details</a>
-                                    
-                    <button type="button" class="btn btn-sm btn-success" onclick="hire('{{$a->id}}')">Hire</button></td>
+                                <td>
+                                    <a class="btn btn-sm btn-primary applicantDetails" href="/applicant/{{$a->id}}/view">Details</a>
+                                    <button type="button" class="btn btn-sm btn-success" onclick="hire('{{$a->id}}')">Hire</button>
+                                    <a class="btn btn-sm btn-danger" href="/applicant/{{$a->id}}/remove">Remove</a>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

@@ -127,6 +127,16 @@ class ApplicantController extends Controller
      */
     public function destroy($id)
     {
-        //
+         
+         DB::connection('applicants')->table('availabilities')->where('applicant_id',$id)->delete();
+         DB::connection('applicants')->table('pastworks')->where('applicant_id',$id)->delete();
+         DB::connection('applicants')->table('schools')->where('applicant_id',$id)->delete();
+         DB::connection('applicants')->table('positions')->where('applicant_id',$id)->delete();
+         $status = DB::connection('applicants')->table('applicants')->where('id',$id)->delete();
+        if($status){
+            return redirect('/applicant');
+        } else {
+            return 'failed to remove this applicant';
+        }
     }
 }
