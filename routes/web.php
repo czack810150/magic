@@ -14,6 +14,9 @@
 // 	App::setLocale($locale);
 // });
 
+Route::get('/scheduler','ScheduleController@index');
+
+
 
 Route::get('/qr',function(){
 	return  QRCode::text('Laravel QR Code Generator!')->svg();    
