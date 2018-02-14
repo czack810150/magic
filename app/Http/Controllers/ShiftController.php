@@ -114,4 +114,10 @@ class ShiftController extends Controller
                     ->get();
         return view('shift/shift/shiftList',compact('shifts'));
     }
+    public function fetchWeek(Request $r)
+    {
+        //return $r;
+        $shifts = Shift::fetchPeriod($r->location,$r->start,$r->end);
+        return $shifts;
+    }
 }

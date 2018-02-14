@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 use App\Job;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use DB;
 
 class JobController extends Controller
 {
@@ -19,12 +22,14 @@ class JobController extends Controller
     public function index()
     {   
         $subheader = 'Positions';
+        $baseRate = DB::table('payroll_config')->where('year',Carbon::now()->year)->first()->minimumPay;
         if(Auth::user()->authorization->level > 2) {
             $jobs = Job::where('valid',true)->get();
         } else {
             $jobs = Job::where('hour',true)->where('valid',true)->get();
+            
         }
-        return view('jobs.index',compact('jobs','subheader'));
+        return view('jobs.index',compact('jobs','subheader','baseRate'));
     }
 
     /**

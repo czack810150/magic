@@ -45,10 +45,10 @@
 				<td>{{ $j->rank }}</td>
 				<td>{{ $j->short }}</td>
 
-				@if($j->rate > 1000)
+				@if($j->rate > 1400)
 				<td>${{ $j->rate/100 }} / hr</td>
 				@else
-				<td>$12 / hr</td>
+				<td>${{$baseRate/100}} / hr</td>
 				@endif
 				
 

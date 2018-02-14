@@ -1,6 +1,7 @@
 @extends('layouts.magicshift.magicshift')
 @section('content')
 {{Carbon\Carbon::now()->toIso8601String() }}
+<span id="status_bar"></span>
 <!--begin::Portlet-->
 		<div class="m-portlet m-portlet--responsive-mobile">
 			<div class="m-portlet__head">
@@ -10,7 +11,7 @@
 							<i class="flaticon-squares-1 m--font-brand"></i>
 						</span>
 						<h3 class="m-portlet__head-text m--font-brand">
-							Magic Shift
+							Magic Shift 
 						</h3>
 					</div>			
 				</div>
@@ -34,10 +35,89 @@
 
 $(document).ready(function() {
 
+
+
+
+
+
+
     // page is now ready, initialize the calendar...
 
     let cal = $('#calendar').fullCalendar({
-    	locale:'en',
+
+    	events: {
+    	
+    			type:'post',
+    			url: '/shifts/fetchWeek',
+    			dataType:'json',
+    			data:{
+    				_token: '{{csrf_token()}}',
+    				location:1,
+    				// start:'2018-02-14',
+    				// end:'2018-02-14'
+    			},
+    			success: function(result){
+    				console.log(result);
+    			},
+    			error: function(){
+    				alert('there was an error while fetching events!');
+    			},
+    			color:'yellow',
+    			textColor: 'black'
+    			
+    			//callback(events);
+    		
+    			},
+    	loading: function(isLoading,view){
+    		if(isLoading)
+    		{
+    			$('#status_bar').html('<div class="alert alert-info" role="alert">Loading..</div>');
+    		}
+    		else
+    		{
+    			$('#status_bar').html('');
+    		}
+    		
+    	},
+    	eventClick: function(event,element){
+    		event.title = 'Clicked!';
+    		$("#calendar").fullCalendar('updateEvent',event);
+
+    	},
+    	eventDataTransform: function(eventData){
+    		eventData.title = eventData.role.c_name;
+    		return eventData;
+    	},
+    	// events: [
+    	// {
+    	// 	id: 111,
+    	// 	title: 'event title',
+    	// 	allDay: false,
+    	// 	start: '2018-02-14 10:00',
+    	// 	end: '2018-02-14 13:00',
+    	// 	editable: true,
+    	// 	startEditable: true,
+    	// 	durationEditable: true,
+    	// 	description:'abc',
+
+    	// },
+    	// {
+    	// 	id: 1112,
+    	// 	title: 'event title',
+    	// 	allDay: false,
+    	// 	start: '2018-02-15 11:00',
+    	// 	end: '2018-02-15 14:00',
+    	// 	editable: true,
+    	// 	startEditable: true,
+    	// 	durationEditable: true,
+    	// 	description:'cde',
+
+    	// },
+    	// ],
+    	// eventRender: function(event,element){
+    	// 	console.log(event.description);
+    	// },
+    	
     	firstDay:1,
     	isRTL:false,
     	weekends:true,
@@ -73,9 +153,9 @@ $(document).ready(function() {
     
        
 
-        // dayClick: function() {
-        // 	alert('a days has been clicked '+ $("#calendar").fullCalendar('getView').start.format('YYYY-MM-DD'));
-        // },
+        dayClick: function(date,jsEvent,view) {
+        	alert('a days has been clicked '+ date.format());
+        },
 		defaultView: 'agendaWeek',
 		customButtons:{
 			lang: {

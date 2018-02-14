@@ -32,4 +32,25 @@ class Shift extends Model
                             orderBy('start')->get();
         return $shifts;
     }
+
+    public static function fetchDay($location,$date)
+    {
+       $shifts = Shift::where('location_id',$location)->whereDate('start',$date)->get();
+       foreach($shifts as $s)
+       {
+        $s->title = $s->role->c_name;
+        $s->employee;
+       }
+       return $shifts;
+    }
+    public static function fetchPeriod($location,$start,$end)
+    {
+       $shifts = Shift::where('location_id',$location)->where('start','>=',$start)->where('start','<',$end)->get();
+       foreach($shifts as $s)
+       {
+        $s->role;
+        $s->employee;
+       }
+       return $shifts;
+    }
 }

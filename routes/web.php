@@ -160,6 +160,7 @@ Route::post('/employee/location','EmployeeController@employeesByLocation');
 //Scheduled Shifts
 Route::get('/shift','ShiftController@index');
 Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@getShift'));
+Route::post('/shifts/fetchWeek', 'ShiftController@fetchWeek');
 
 //Clocks
 Route::get('/clocks','ClockController@shiftClocks');
