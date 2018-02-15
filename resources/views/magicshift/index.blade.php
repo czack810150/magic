@@ -62,8 +62,9 @@ $(document).ready(function() {
     			error: function(){
     				alert('there was an error while fetching events!');
     			},
-    			color:'yellow',
-    			textColor: 'black'
+    			color:'#d3eefd',
+    			textColor: 'black',
+
     			
     			//callback(events);
     		
@@ -129,6 +130,7 @@ $(document).ready(function() {
     	navLinks:true,
     	selectable:true,
     	unselectAuto:true,
+    	editable:true,
 
     	businessHours: {
     		dow:[1,2,3,4,5,6,0],
