@@ -44,7 +44,7 @@ $(document).ready(function() {
     // page is now ready, initialize the calendar...
 
     let cal = $('#calendar').fullCalendar({
-
+    	schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
     	events: {
     	
     			type:'post',
@@ -65,10 +65,12 @@ $(document).ready(function() {
     			color:'#d3eefd',
     			textColor: 'black',
 
+
     			
     			//callback(events);
     		
     			},
+    	slotLabelInterval:'01:00',
     	resourceColumns:[
     		{
     		labelText:'name',
@@ -103,13 +105,18 @@ $(document).ready(function() {
     		
     	},
     	eventClick: function(event,element){
-    		event.title = 'Clicked!';
+    		event.title = event.title + ' Clicked!';
     		$("#calendar").fullCalendar('updateEvent',event);
 
     	},
     	eventDataTransform: function(eventData){
     		eventData.title = eventData.role.c_name;
     		return eventData;
+    	},
+    	eventRender: function(event,element){
+    		console.log(event);
+    		// let str = event.title + '<br>' + event.start.format('h:mma') + ' - ' + event.end.format('h:mma');
+    		// element.html(str);
     	},
     	// events: [
     	// {
@@ -184,7 +191,33 @@ $(document).ready(function() {
         dayClick: function(date,jsEvent,view) {
         	alert('a days has been clicked '+ date.format());
         },
-		defaultView: 'timelineDay',
+
+        views:{
+        	timelineWorkWeek: {
+        		buttonText:'Week',
+        		type:'timeline',
+        		// visibleRange: function(currentDate){
+        		// 	console.log(currentDate);
+        		// 	return {
+        		// 		start: currentDate.clone().day(1),
+          //          		end: currentDate.clone().day(8) 
+        		// 	};
+        		// },
+
+        		slotLabelFormat:[
+        		'MMMM',
+        		'ddd DD'
+        		],
+        		slotLabelInterval: '24:00',
+        		duration:{weeks: 1},
+        		start:'2018-01-01',
+        	}
+        },
+
+		defaultView: 'timelineWorkWeek',
+
+
+
 		customButtons:{
 			lang: {
 				text:'Language',
@@ -197,7 +230,7 @@ $(document).ready(function() {
        
         header: {
         	left:   'title  ',
-   			center: 'agendaDay,agendaWeek,month,listWeek prev,today,next',
+   			center: 'timelineDay,timelineWorkWeek,month,listWeek prev,today,next',
    			right:  'lang',
         },
        
@@ -208,6 +241,7 @@ $(document).ready(function() {
 
 
 });
+
 
 </script>
 @endsection
