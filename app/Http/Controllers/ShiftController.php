@@ -118,6 +118,10 @@ class ShiftController extends Controller
     {
         //return $r;
         $shifts = Shift::fetchPeriod($r->location,$r->start,$r->end);
+        foreach($shifts as $s)
+        {
+            $s->resourceId = $s->employee_id;
+        }
         return $shifts;
     }
 }

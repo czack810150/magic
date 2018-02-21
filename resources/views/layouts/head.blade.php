@@ -20,6 +20,7 @@
      <!--begin::Base Styles -->  
         <!--begin::Page Vendors -->
         <link href="{{asset('assets/vendors/custom/fullcalendar/fullcalendar.bundle.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{asset('css/scheduler.min.css')}}" rel="stylesheet"/>
         <!--end::Page Vendors -->
         <link href="{{asset('/assets/vendors/base/vendors.bundle.css')}}" rel="stylesheet" type="text/css" />
         <link href="{{asset('/assets/demo/default/base/style.bundle.css')}}" rel="stylesheet" type="text/css" />

@@ -69,6 +69,28 @@ $(document).ready(function() {
     			//callback(events);
     		
     			},
+    	resourceColumns:[
+    		{
+    		labelText:'name',
+    		field:'cName',
+    		},
+    	],
+    	resourceOrder: 'job_id',
+    	resources: function(callback){
+    		$.post(
+    			'/employee/get',
+    			{
+    				_token: '{{csrf_token()}}',
+    				location:1,
+    			},
+    			function(data,status){
+    				if(status == 'success'){
+    					callback(data);
+    				}
+    			},
+    			'json'
+    		);
+    	},
     	loading: function(isLoading,view){
     		if(isLoading)
     		{
@@ -152,13 +174,17 @@ $(document).ready(function() {
     	listDayFormat:true,
     	nowIndicator:true,
 
+    	// scheduler settings
+    	resourceAreaWidth:'10%',
+    	resourceLabelText:'Employees',
+
     
        
 
         dayClick: function(date,jsEvent,view) {
         	alert('a days has been clicked '+ date.format());
         },
-		defaultView: 'agendaWeek',
+		defaultView: 'timelineDay',
 		customButtons:{
 			lang: {
 				text:'Language',

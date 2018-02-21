@@ -15,6 +15,7 @@
 // });
 
 Route::get('/scheduler','ScheduleController@index');
+Route::post('/employee/get','EmployeeController@getByLocation');
 
 
 
@@ -57,6 +58,7 @@ Route::post('/employee/edit/contact/update','EmployeeController@updateContact');
 Route::post('/employee/edit/address','EmployeeController@editAddress');
 Route::post('/employee/edit/address/cancel','EmployeeController@cancelAddress');
 Route::post('/employee/edit/address/update','EmployeeController@updateAddress');
+
 // Employee background
 Route::post('/employee/background/{id}/show','EmployeeController@background');
 Route::post('/employee/education/{id}/edit','EmployeeController@editEducation');

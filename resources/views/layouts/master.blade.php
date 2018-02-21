@@ -61,7 +61,9 @@
     <script src="{{asset('assets/demo/default/custom/components/forms/widgets/bootstrap-datepicker.js')}}"></script>
     <!--end::Base Scripts -->   
         <!--begin::Page Vendors -->
-    <script src="{{asset('/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js')}}" type="text/javascript"></script>
+    <!-- <script src="{{asset('/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js')}}" type="text/javascript"></script> -->
+    <script src="{{asset('js/fullcalendar.min.js')}}" type="text/javascript"></script>
+     <script src="{{asset('js/scheduler.min.js')}}" type="text/javascript"></script>
     <!--end::Page Vendors -->  
         <!--begin::Page Snippets -->
     <script src="{{asset('/assets/app/js/dashboard.js')}}" type="text/javascript"></script>

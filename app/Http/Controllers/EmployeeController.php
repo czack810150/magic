@@ -731,4 +731,9 @@ class EmployeeController extends Controller
        return redirect('/staff/profile/'.$employee->id.'/show');
      }
 
+     public function getByLocation(Request $r)
+     {
+        return Employee::where('location_id',$r->location)->get();
+     }
+
 }
