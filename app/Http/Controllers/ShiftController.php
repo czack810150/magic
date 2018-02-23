@@ -121,6 +121,7 @@ class ShiftController extends Controller
         foreach($shifts as $s)
         {
             $s->resourceId = $s->employee_id;
+            $s->employee->job;
         }
         return $shifts;
     }

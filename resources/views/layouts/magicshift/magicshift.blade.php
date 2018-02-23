@@ -5,11 +5,9 @@
   <body class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default"  >
  <!-- begin:: Page -->
     <div class="m-grid m-grid--hor m-grid--root m-page">
- @if(Auth::user()->authorization->type != 'employee')      
+     
     @include('layouts.header')
- @else
-    @include('layouts.employee.header')
- @endif   
+  
 
     <!-- begin::Body -->
       <div class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
@@ -47,11 +45,11 @@
     <script src="{{asset('/assets/vendors/base/vendors.bundle.js')}}" type="text/javascript"></script>
     <script src="{{asset('/assets/demo/default/base/scripts.bundle.js')}}" type="text/javascript"></script>
     <script src="{{asset('assets/demo/default/custom/components/forms/widgets/bootstrap-datepicker.js')}}"></script>
+
     <script src="{{asset('/js/moment.min.js')}}"></script>
-    <!--end::Base Scripts -->   
-        <!--begin::Page Vendors -->
-    <!-- <script src="{{asset('/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js')}}" type="text/javascript"></script> -->
-    <script src="{{asset('js/fullcalendar.min.js')}}" type="text/javascript"></script>
+
+    
+    <script src="{{asset('js/fullcalendar.js')}}" type="text/javascript"></script>
      <script src="{{asset('js/scheduler.min.js')}}" type="text/javascript"></script>
     <!--end::Page Vendors -->  
         <!--begin::Page Snippets -->
@@ -62,7 +60,7 @@
     <script src="{{asset('/js/hr.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/csv.js')}}" type="text/javascript"></script>
 
-
+    <script src="{{asset('/js/jquery-ui.min.js')}}" type="text/javascript"></script>
 
  @yield('pageJS')
 

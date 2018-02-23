@@ -3,7 +3,7 @@
  * Docs & License: https://fullcalendar.io/
  * (c) 2018 Adam Shaw
  */
-(function webpackUniversalModuleDefinition(root, factory) {
+ (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("moment"), require("jquery"));
 	else if(typeof define === 'function' && define.amd)
@@ -4427,6 +4427,7 @@ var EventRenderer = /** @class */ (function () {
         }
         if (displayEnd == null) {
             displayEnd = this.displayEventEnd;
+           
         }
         if (this.displayEventTime && !isAllDay) {
             if (displayEnd && end) {

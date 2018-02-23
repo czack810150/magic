@@ -25,7 +25,7 @@
 		<!--end::Portlet-->
 
 
-
+@include('layouts.magicshift.modifyShift')
 
 @endsection
 
@@ -35,8 +35,25 @@
 
 $(document).ready(function() {
 
+moment.lang('en', {
+     meridiem : function (hours, minutes, isLower) {
+        if (hours > 11) {
+            return isLower ? 'p' : 'P';
+        } else {
+            return isLower ? 'a' : 'A';
+        }
+    }
+});
 
-
+const options = {
+    modal:true,
+    autoOpen:false,
+    position: { my: "center", at: "center", of: window },
+    resizable: false,
+    width:500,
+    height:400,
+};
+$( "#dialog" ).dialog(options);
 
 
 
@@ -64,10 +81,6 @@ $(document).ready(function() {
     			},
     			color:'#d3eefd',
     			textColor: 'black',
-
-
-    			
-    			//callback(events);
     		
     			},
     	slotLabelInterval:'01:00',
@@ -93,6 +106,8 @@ $(document).ready(function() {
     			'json'
     		);
     	},
+        filterResourcesWithEvents: true,
+
     	loading: function(isLoading,view){
     		if(isLoading)
     		{
@@ -104,49 +119,39 @@ $(document).ready(function() {
     		}
     		
     	},
-    	eventClick: function(event,element){
-    		event.title = event.title + ' Clicked!';
-    		$("#calendar").fullCalendar('updateEvent',event);
-
-    	},
+    	
     	eventDataTransform: function(eventData){
     		eventData.title = eventData.role.c_name;
     		return eventData;
     	},
+
     	eventRender: function(event,element){
-    		console.log(event);
-    		// let str = event.title + '<br>' + event.start.format('h:mma') + ' - ' + event.end.format('h:mma');
+    		
+           // console.log(element[0]);
+            var end = '';
+            if(event.end.minutes() == 0){
+                end = event.end.format('ha');
+            } else {
+                end = event.end.format('h:mma');
+            }
+            element.find(".fc-time").append(' - ' + end);
+
+            var duration = (event.end.format('X') - event.start.format('X'))/3600;
+            element.find(".fc-title").append(' <span class="float-right badge badge-secondary">'+ Math.round(duration*100)/100 + '</span>');
+            
+            console.log(event);
+          
+
+    		// let str = event.employee.job.type + '<br>' + event.start.format('h:mma') + ' - ' + event.end.format('h:mma');
     		// element.html(str);
     	},
-    	// events: [
-    	// {
-    	// 	id: 111,
-    	// 	title: 'event title',
-    	// 	allDay: false,
-    	// 	start: '2018-02-14 10:00',
-    	// 	end: '2018-02-14 13:00',
-    	// 	editable: true,
-    	// 	startEditable: true,
-    	// 	durationEditable: true,
-    	// 	description:'abc',
-
-    	// },
-    	// {
-    	// 	id: 1112,
-    	// 	title: 'event title',
-    	// 	allDay: false,
-    	// 	start: '2018-02-15 11:00',
-    	// 	end: '2018-02-15 14:00',
-    	// 	editable: true,
-    	// 	startEditable: true,
-    	// 	durationEditable: true,
-    	// 	description:'cde',
-
-    	// },
-    	// ],
-    	// eventRender: function(event,element){
-    	// 	console.log(event.description);
-    	// },
+        eventClick: function(event,element){
+            //$('#exampleModal').modal();
+            // event.title = event.title + ' Clicked!';
+            // $("#calendar").fullCalendar('updateEvent',event);
+            $('#dialog').dialog('open');
+        },
+    
     	
     	firstDay:1,
     	isRTL:false,
