@@ -72,7 +72,14 @@ class ShiftController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $shift = Shift::find($id);
+        $shift->employee_id = $request->employee;
+        $shift->role_id = $request->role;
+        $shift->start = $request->start.":00";
+        $shift->end = $request->end.":00";
+        $shift->comment = $request->note;
+        $shift->save();
+        return $shift;
     }
 
     /**

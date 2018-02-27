@@ -35,6 +35,63 @@
 
 $(document).ready(function() {
 
+var currentShift = {
+    id:0,
+    start:0,
+    end:0,
+    role:0,
+    employee:0,
+    note:'',
+    clear:function(){
+        this.id = 0;
+        this.start = 0;
+        this.end = 0;
+        this.role = 0;
+        this.employee = 0;
+        this.note = '';
+    },
+};
+var currentEvent = {};
+
+
+
+function parseShift(){
+    const startStr = $('#startDate').val() + ' ' + $('#startTime').val();
+    const endStr = $('#endDate').val() + ' ' + $('#endTime').val();
+    const start = moment(startStr,'MMM D, YYYY h:ma');
+    const end = moment(endStr,'MMM D, YYYY h:ma');
+    if(start >= end){
+        alert('End time must be greater than start time!');
+        return false;
+    } else {
+        return {
+        start:start,
+        end:end
+    };
+    }
+    
+}
+function updateShift(shift){
+    $.post(
+        '/shift/' + shift.id +'/update',
+        {
+            _token:'{{csrf_token()}}',
+            employee: shift.employee,
+            role: shift.role,
+            start: shift.start,
+            end: shift.end,
+            note: shift.note,
+        },
+        function(data,status){
+            if(status == 'success'){
+                console.log(data);
+                shift.clear();       
+            }
+        }
+        );
+}
+
+
 moment.lang('en', {
      meridiem : function (hours, minutes, isLower) {
         if (hours > 11) {
@@ -44,16 +101,50 @@ moment.lang('en', {
         }
     }
 });
+var dpOptions =  {
+    dateFormat: 'M d, yy',
+    firstDay: 1,
+    defaultDate: null,
+};
+//$.dateragnepicker.setDefaults( dpOptions );
 
-const options = {
+var options = {
+    dialogClass:'no-close',
     modal:true,
     autoOpen:false,
     position: { my: "center", at: "center", of: window },
     resizable: false,
     width:500,
     height:400,
+    title: 'Role',
+    buttons: [
+        {
+            text: 'Cancel',
+            click: function(){
+                $(this).dialog('close');
+            }
+        },
+        {
+            text: 'Save & Close',
+            click: function(){
+                  ///console.log('start '+ start.format('YYYY-MM-DD HH:mm') + ' ' + 'end: '+end.format('YYYY-MM-DD HH:mm'));
+                const shift = parseShift();
+                // console.log(shift.start.format('YYYY-MM-DD HH:mm'));
+                 currentShift.start = shift.start.format('YYYY-MM-DD HH:mm');
+                 currentShift.end = shift.end.format('YYYY-MM-DD HH:mm');
+                 currentShift.note = $('#shiftNote').val();
+                 console.log(currentShift);
+                 updateShift(currentShift);
+                $(this).dialog('close');
+                $('#calendar').fullCalendar('refetchEvents');
+
+            }
+        },
+
+    ],
+    
 };
-$( "#dialog" ).dialog(options);
+$( "#shiftDialog" ).dialog(options);
 
 
 
@@ -146,10 +237,46 @@ $( "#dialog" ).dialog(options);
     		// element.html(str);
     	},
         eventClick: function(event,element){
-            //$('#exampleModal').modal();
-            // event.title = event.title + ' Clicked!';
-            // $("#calendar").fullCalendar('updateEvent',event);
-            $('#dialog').dialog('open');
+            currentEvent = event;
+            currentShift.id = event.id;
+            currentShift.employee = event.resourceId;
+            currentShift.role = event.role_id;
+
+            var defaultStartDate = event.start;
+            $('#startDate').val(event.start.format('MMM D, YYYY'));
+            $('#startDate').daterangepicker({
+                locale: {
+                    format:'MMM D, YYYY',
+                },
+                singleDatePicker:true,
+                });
+
+
+            $('#endDate').val(event.end.format('MMM D, YYYY'));
+            $('#endDate').daterangepicker({
+                locale: {
+                    format:'MMM D, YYYY',
+                },
+                singleDatePicker:true,
+                });
+            $('#startTime').val(event.start.format('h:mma'));
+            $('#startTime').timepicker();
+
+            $('#endTime').val(event.end.format('h:mma'));
+            $("#endTime").timepicker();
+            $('#shiftDialog').dialog('option','title',event.title);
+            $('#shiftDialog').dialog('open');
+
+        },
+        eventDrop: function(event,delta,revertFunc,jsEvent,ui,view){
+            console.log('dropped: ' + event.start.format('YYYY-MM-DD'));
+            currentEvent = event;
+            currentShift.id = event.id;
+            currentShift.employee = event.resourceId;
+            currentShift.role = event.role_id;
+            currentShift.start = event.start.format('YYYY-MM-DD HH:mm');
+            currentShift.end = event.end.format('YYYY-MM-DD HH:mm');
+            updateShift(currentShift);
         },
     
     	
@@ -165,6 +292,7 @@ $( "#dialog" ).dialog(options);
     	selectable:true,
     	unselectAuto:true,
     	editable:true,
+        droppable:true,
 
     	businessHours: {
     		dow:[1,2,3,4,5,6,0],

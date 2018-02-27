@@ -16,6 +16,7 @@
 
 Route::get('/scheduler','ScheduleController@index');
 Route::post('/employee/get','EmployeeController@getByLocation');
+Route::post('/shift/{id}/update','ShiftController@update');
 
 
 

@@ -50,7 +50,8 @@
 
     
     <script src="{{asset('js/fullcalendar.js')}}" type="text/javascript"></script>
-     <script src="{{asset('js/scheduler.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('js/scheduler.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('js/jquery.timepicker.min.js')}}" type="text/javascript"></script>
     <!--end::Page Vendors -->  
         <!--begin::Page Snippets -->
     <script src="{{asset('/assets/app/js/dashboard.js')}}" type="text/javascript"></script>

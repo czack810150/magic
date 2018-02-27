@@ -1,30 +1,34 @@
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
+<div id="shiftDialog">
+<form>
+<div class="form-group row">
+ <label for="startDate" class="col-sm-2 col-form-label"><i class="fa  fa-calendar-o"></i>&nbsp&nbspDate</label>
+ <div class="col-sm-4">
+  <input type="text" class="form-control form-control-sm" id="startDate" name="startDate">
+ </div>
+ <div class="col-sm-1"> - </div>
+  <div class="col-sm-4">
+  <input type="text" class="form-control form-control-sm" id="endDate" name="endDate">
+ </div>
+</div>
+
+<div class="form-group row">
+ <label for="startTime" class="col-sm-2 col-form-label"><i class="fa  fa-clock-o"></i>&nbsp&nbspTime</label>
+ <div class="col-sm-3">
+  <input type="text" class="form-control form-control-sm" id="startTime" name="startTime">
+ </div>
+ <div class="col-sm-1"> - </div>
+  <div class="col-sm-3">
+  <input type="text" class="form-control form-control-sm" id="endTime" name="endTime">
+ </div>
+</div>
+
+<div class="row">
+<div class="col-12">
+<textarea rows="3" class="form-control" placeholder="Notes" id="shiftNote" name="shiftNote" autofocus></textarea>
+</div>
 </div>
 
 
-<button id="opener">open the dialog</button>
-<div id="dialog" title="Dialog Title">I'm a dialog</div>
- 
-<script>
 
-
-
-</script>
+</form>
+</div> 
