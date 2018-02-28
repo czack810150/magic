@@ -24,7 +24,7 @@
 		</div>	
 		<!--end::Portlet-->
 
-
+@include('layouts.magicshift.createShift')
 @include('layouts.magicshift.modifyShift')
 
 @endsection
@@ -34,7 +34,7 @@
 
 
 $(document).ready(function() {
-
+const csrf_token = '{{csrf_token()}}';
 var currentShift = {
     id:0,
     start:0,
@@ -53,7 +53,37 @@ var currentShift = {
 };
 var currentEvent = {};
 
+document.getElementById("shiftTime").addEventListener("keypress", function(event){
+    if(event.keyCode == 13 ) {
+        const shiftTime = $('#shiftTime').val();
+        getNewShiftTime(shiftTime);
+    }
+    
+})
 
+function getRoleList(){
+    $.get(
+        '/role/get',
+        function(data,status){
+            $('#roleOptions').html(data);
+        }
+    );        
+}
+
+function getNewShiftTime(str){
+    $.post(
+        '/datetime/parseStr',
+        {
+            _token: csrf_token,
+            str:str,
+        },
+        function(data,status){
+            if(status == 'success'){
+                console.log(data);
+            }
+        }
+        );
+}
 
 function parseShift(){
     const startStr = $('#startDate').val() + ' ' + $('#startTime').val();
@@ -72,10 +102,11 @@ function parseShift(){
     
 }
 function updateShift(shift){
+    
     $.post(
         '/shift/' + shift.id +'/update',
         {
-            _token:'{{csrf_token()}}',
+            _token:csrf_token,
             employee: shift.employee,
             role: shift.role,
             start: shift.start,
@@ -85,10 +116,11 @@ function updateShift(shift){
         function(data,status){
             if(status == 'success'){
                 console.log(data);
-                shift.clear();       
-            }
+                shift.clear();     
+            } 
         }
         );
+
 }
 
 
@@ -144,7 +176,21 @@ var options = {
     ],
     
 };
-$( "#shiftDialog" ).dialog(options);
+
+var newShiftDialogOptions = {
+    dialogClass:'no-close alert',
+    'position': { my: "center", at: "center", of: window },
+    modal:false,
+    autoOpen:false,
+    title:'New Shift',
+    resizable: false,
+    width:400,
+    height:300,
+   
+    
+};
+$( "#modifyShiftDialog" ).dialog(options);
+$( "#createShiftDialog" ).dialog(newShiftDialogOptions);
 
 
 
@@ -226,15 +272,9 @@ $( "#shiftDialog" ).dialog(options);
                 end = event.end.format('h:mma');
             }
             element.find(".fc-time").append(' - ' + end);
-
             var duration = (event.end.format('X') - event.start.format('X'))/3600;
             element.find(".fc-title").append(' <span class="float-right badge badge-secondary">'+ Math.round(duration*100)/100 + '</span>');
-            
-            console.log(event);
-          
-
-    		// let str = event.employee.job.type + '<br>' + event.start.format('h:mma') + ' - ' + event.end.format('h:mma');
-    		// element.html(str);
+      
     	},
         eventClick: function(event,element){
             currentEvent = event;
@@ -264,8 +304,8 @@ $( "#shiftDialog" ).dialog(options);
 
             $('#endTime').val(event.end.format('h:mma'));
             $("#endTime").timepicker();
-            $('#shiftDialog').dialog('option','title',event.title);
-            $('#shiftDialog').dialog('open');
+            $('#modifyShiftDialog').dialog('option','title',event.title);
+            $('#modifyShiftDialog').dialog('open');
 
         },
         eventDrop: function(event,delta,revertFunc,jsEvent,ui,view){
@@ -278,6 +318,17 @@ $( "#shiftDialog" ).dialog(options);
             currentShift.end = event.end.format('YYYY-MM-DD HH:mm');
             updateShift(currentShift);
         },
+        eventResize: function(event,delta,revertFunc,jsEvent,ui,view){
+            console.log('resized: ' + event.start.format('YYYY-MM-DD'));
+            currentEvent = event;
+            currentShift.id = event.id;
+            currentShift.employee = event.resourceId;
+            currentShift.role = event.role_id;
+            currentShift.start = event.start.format('YYYY-MM-DD HH:mm');
+            currentShift.end = event.end.format('YYYY-MM-DD HH:mm');
+            updateShift(currentShift);
+            console.log(delta); 
+        },
     
     	
     	firstDay:1,
@@ -289,7 +340,7 @@ $( "#shiftDialog" ).dialog(options);
     	weekNumbers:true,
     	weekNumbersWithinDays:true,
     	navLinks:true,
-    	selectable:true,
+    	selectable:false,
     	unselectAuto:true,
     	editable:true,
         droppable:true,
@@ -321,8 +372,16 @@ $( "#shiftDialog" ).dialog(options);
     
        
 
-        dayClick: function(date,jsEvent,view) {
-        	alert('a days has been clicked '+ date.format());
+        dayClick: function(date,jsEvent,view,resource) {
+            getRoleList();
+            $('#shiftDate').text(date.format('dddd, MMM D, YYYY'));
+            $('#createShiftDialog').dialog('option','title','New Shift for ' + resource.cName);
+        	$('#createShiftDialog').dialog('open');
+
+//console.log('Clicked on: ' + date.format() + ' with resource: ' +  JSON.stringify(jsEvent,null,4) );
+console.log(jsEvent);
+  
+
         },
 
         views:{

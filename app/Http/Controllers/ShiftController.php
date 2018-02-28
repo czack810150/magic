@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Shift;
 use App\Location;
+use App\Datetime;
 
 class ShiftController extends Controller
 {
@@ -131,5 +132,9 @@ class ShiftController extends Controller
             $s->employee->job;
         }
         return $shifts;
+    }
+    public function parseShiftTime(Request $r)
+    {
+        return Datetime::shiftParser($r->str);
     }
 }

@@ -1,4 +1,4 @@
-<div id="shiftDialog">
+<div id="modifyShiftDialog">
 <form>
 <div class="form-group row">
  <label for="startDate" class="col-sm-2 col-form-label"><i class="fa  fa-calendar-o"></i>&nbsp&nbspDate</label>
