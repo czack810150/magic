@@ -51,12 +51,28 @@ var currentShift = {
         this.note = '';
     },
 };
+var newShift = {
+    start:null,
+    end:null,
+    role:null,
+    employee:null,
+    note:null,
+    clear:function(){
+        this.start = null;
+        this.end = null;
+        this.role = null;
+        this.employee = null;
+        this.note = null;
+    },
+};
 var currentEvent = {};
+var currentDate = moment();
 
 document.getElementById("shiftTime").addEventListener("keypress", function(event){
     if(event.keyCode == 13 ) {
         const shiftTime = $('#shiftTime').val();
         getNewShiftTime(shiftTime);
+
     }
     
 })
@@ -80,6 +96,37 @@ function getNewShiftTime(str){
         function(data,status){
             if(status == 'success'){
                 console.log(data);
+                const shift = {
+                    start : currentDate.clone().hour(data.from.hour).minute(data.from.minute).format('YYYY-MM-DD HH:mm:ss'),
+                    end : currentDate.clone().hour(data.to.hour).minute(data.to.minute).format('YYYY-MM-DD HH:mm:ss'),
+                };
+                newShift.role = $('#shiftRole').val();
+                newShift.start = shift.start;
+                newShift.end = shift.end;
+                submitShift();
+            }
+        }
+        );
+}
+function submitShift(){
+    $.post(
+        '/shift/create',
+        {
+            _token: csrf_token,
+            location: 1,
+            start: newShift.start,
+            end: newShift.end,
+            role: newShift.role,
+            employee: newShift.employee,
+            note: newShift.note,
+        },
+        function(data,status){
+            if(status == 'success'){
+                console.log(data);
+                newShift.clear();
+                $('#createShiftDialog').dialog('close');
+                $('#calendar').fullCalendar('refetchEvents');
+
             }
         }
         );
@@ -211,7 +258,6 @@ $( "#createShiftDialog" ).dialog(newShiftDialogOptions);
     				// end:'2018-02-14'
     			},
     			success: function(result){
-    				console.log(result);
     			},
     			error: function(){
     				alert('there was an error while fetching events!');
@@ -374,14 +420,22 @@ $( "#createShiftDialog" ).dialog(newShiftDialogOptions);
 
         dayClick: function(date,jsEvent,view,resource) {
             getRoleList();
+            currentDate = date;
             $('#shiftDate').text(date.format('dddd, MMM D, YYYY'));
             $('#createShiftDialog').dialog('option','title','New Shift for ' + resource.cName);
         	$('#createShiftDialog').dialog('open');
 
-//console.log('Clicked on: ' + date.format() + ' with resource: ' +  JSON.stringify(jsEvent,null,4) );
-console.log(jsEvent);
-  
 
+            
+            newShift.employee = resource.id;
+            newShift.note = $('#newShiftNote').val();
+                
+            
+
+            console.log(currentDate.format());
+
+            parseShiftTimeString('tset');
+          
         },
 
         views:{

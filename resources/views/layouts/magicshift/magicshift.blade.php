@@ -37,9 +37,6 @@
    </div>
   </div>
   <!-- end:: Page -->
- 
-
-
 
       <!--begin::Base Scripts -->
     <script src="{{asset('/assets/vendors/base/vendors.bundle.js')}}" type="text/javascript"></script>
@@ -55,23 +52,11 @@
     <!--end::Page Vendors -->  
         <!--begin::Page Snippets -->
     <script src="{{asset('/assets/app/js/dashboard.js')}}" type="text/javascript"></script>
-    <script src="{{ asset('/assets/demo/default/custom/components/base/sweetalert2.js') }}"></script>
-    <script src="/js/datatable.js"></script>
-    <!--end::Page Snippets -->
-    <script src="{{asset('/js/hr.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/csv.js')}}" type="text/javascript"></script>
-
     <script src="{{asset('/js/jquery-ui.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('/js/ms.js')}}"></script>
 
  @yield('pageJS')
 
-<script>
-
-  // get current URL path and assign 'active' class
-  var pathname = window.location.pathname;
-  $('li.nav-item > a[href="'+pathname+'"]').parent().addClass('active');
-
-</script>
 
 </body>
 </html>

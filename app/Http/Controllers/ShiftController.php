@@ -26,9 +26,18 @@ class ShiftController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $r)
     {
-        //
+        Shift::create([
+            'location_id' => $r->location,
+            'employee_id' => $r->employee,
+            'role_id' => $r->role,
+            'start' => $r->start,
+            'end' => $r->end,
+            'published' => 0,
+            'comment' => $r->note
+        ]);
+        return 'OK';
     }
 
     /**

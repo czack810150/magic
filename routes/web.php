@@ -19,6 +19,7 @@ Route::post('/employee/get','EmployeeController@getByLocation');
 Route::post('/shift/{id}/update','ShiftController@update');
 Route::get('/role/get','RoleController@list');
 Route::post('/datetime/parseStr','ShiftController@parseShiftTime');
+Route::post('/shift/create','ShiftController@create');
 
 
 Route::get('/qr',function(){

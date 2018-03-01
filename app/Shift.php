@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Shift extends Model
 {
    protected $dates = array('start','end');
+   protected $guarded = [];
 
     public function role()
     {
