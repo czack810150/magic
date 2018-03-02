@@ -15,6 +15,27 @@
 						</h3>
 					</div>			
 				</div>
+                <div class="m-portlet__head-tools">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <button type="button" class="m-btn btn btn-secondary"><i class="la la-file-text-o"></i></button>
+                        <button type="button" class="m-btn btn btn-secondary"><i class="la la-floppy-o"></i></button>
+                        <button type="button" class="m-btn btn btn-secondary"><i class="la la-header"></i></button>
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <a class="dropdown-item" href="#">Dropdown link</a>
+                            <a class="dropdown-item" href="#">Dropdown link</a>
+                            <a class="dropdown-item" href="#">Dropdown link</a>
+                            <a class="dropdown-item" href="#">Dropdown link</a>
+                        </div>
+                      </div>
+                     
+                      {{Form::select('location',$locations,$defaultLocation,['class'=>'selectpicker','id'=>'location'])}}
+                        
+                    </div>
+                </div>
 				
 			</div>
 			<div class="m-portlet__body">
@@ -63,16 +84,67 @@ var newShift = {
         this.role = null;
         this.employee = null;
         this.note = null;
+        $('#form-control-feedback').html('');
     },
 };
 var currentEvent = {};
 var currentDate = moment();
+var currentLocation = {{ $defaultLocation }};
+
+
+
+$('.selectpicker').selectpicker();
+$('#location').on('changed.bs.select',function(e){
+    currentLocation = $('#location').val();
+     $('#calendar').fullCalendar();
+});
+
+
+
 
 document.getElementById("shiftTime").addEventListener("keypress", function(event){
     if(event.keyCode == 13 ) {
-        const shiftTime = $('#shiftTime').val();
-        getNewShiftTime(shiftTime);
-
+            newShift.role = $('#shiftRole').val();
+            newShift.note = $('#newShiftNote').val();
+            const shift = parseShiftTimeString($('#shiftTime').val());
+            console.log(shift);
+            if(shift.error == null){
+                newShift.start = currentDate.clone().hour(shift.start.hour).minute(shift.start.minute).format('YYYY-MM-DD HH:mm:ss');
+                if(shift.addDay){
+                    newShift.end = currentDate.clone().add(1,'d').hour(shift.end.hour).minute(shift.end.minute).format('YYYY-MM-DD HH:mm:ss'); 
+                } else {
+                        newShift.end = currentDate.clone().hour(shift.end.hour).minute(shift.end.minute).format('YYYY-MM-DD HH:mm:ss'); 
+                    }
+                 submitShift(); 
+            } else {
+                switch(shift.error){
+                    case 0:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 1:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 2:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 3:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 4:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;    
+                    default:
+                        console.log('unknown error');
+                        formControlFeedback(shift.msg);
+              }
+            }
+           
+        console.log(newShift);
     }
     
 })
@@ -113,7 +185,7 @@ function submitShift(){
         '/shift/create',
         {
             _token: csrf_token,
-            location: 1,
+            location: currentLocation,
             start: newShift.start,
             end: newShift.end,
             role: newShift.role,
@@ -124,6 +196,7 @@ function submitShift(){
             if(status == 'success'){
                 console.log(data);
                 newShift.clear();
+
                 $('#createShiftDialog').dialog('close');
                 $('#calendar').fullCalendar('refetchEvents');
 
@@ -233,6 +306,7 @@ var newShiftDialogOptions = {
     resizable: false,
     width:400,
     height:300,
+    closeOnEscape:true,
    
     
 };
@@ -240,76 +314,72 @@ $( "#modifyShiftDialog" ).dialog(options);
 $( "#createShiftDialog" ).dialog(newShiftDialogOptions);
 
 
-
-
-    // page is now ready, initialize the calendar...
-
-    let cal = $('#calendar').fullCalendar({
-    	schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-    	events: {
-    	
-    			type:'post',
-    			url: '/shifts/fetchWeek',
-    			dataType:'json',
-    			data:{
-    				_token: '{{csrf_token()}}',
-    				location:1,
-    				// start:'2018-02-14',
-    				// end:'2018-02-14'
-    			},
-    			success: function(result){
-    			},
-    			error: function(){
-    				alert('there was an error while fetching events!');
-    			},
-    			color:'#d3eefd',
-    			textColor: 'black',
-    		
-    			},
-    	slotLabelInterval:'01:00',
-    	resourceColumns:[
-    		{
-    		labelText:'name',
-    		field:'cName',
-    		},
-    	],
-    	resourceOrder: 'job_id',
-    	resources: function(callback){
-    		$.post(
-    			'/employee/get',
-    			{
-    				_token: '{{csrf_token()}}',
-    				location:1,
-    			},
-    			function(data,status){
-    				if(status == 'success'){
-    					callback(data);
-    				}
-    			},
-    			'json'
-    		);
-    	},
+var fullCalOptions = {
+        schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+        events: {
+        
+                type:'post',
+                url: '/shifts/fetchWeek',
+                dataType:'json',
+                data:{
+                    _token: '{{csrf_token()}}',
+                    location:currentLocation,
+                    // start:'2018-02-14',
+                    // end:'2018-02-14'
+                },
+                success: function(result){
+                },
+                error: function(){
+                    alert('there was an error while fetching events!');
+                },
+                color:'#d3eefd',
+                textColor: 'black',
+            
+                },
+        slotLabelInterval:'01:00',
+        resourceColumns:[
+            {
+            labelText:'name',
+            field:'cName',
+            },
+        ],
+        resourceOrder: 'job_id',
+        resources: function(callback){
+            $.post(
+                '/employee/get',
+                {
+                    _token: '{{csrf_token()}}',
+                    location:currentLocation,
+                },
+                function(data,status){
+                    if(status == 'success'){
+                        callback(data);
+                    }
+                },
+                'json'
+            );
+        },
         filterResourcesWithEvents: true,
 
-    	loading: function(isLoading,view){
-    		if(isLoading)
-    		{
-    			$('#status_bar').html('<div class="alert alert-info" role="alert">Loading..</div>');
-    		}
-    		else
-    		{
-    			$('#status_bar').html('');
-    		}
-    		
-    	},
-    	
-    	eventDataTransform: function(eventData){
-    		eventData.title = eventData.role.c_name;
-    		return eventData;
-    	},
+        loading: function(isLoading,view){
+            if(isLoading)
+            {
+                $('#status_bar').html('<div class="alert alert-info" role="alert">Loading..</div>');
+            }
+            else
+            {
+                $('#status_bar').html('');
+            }
+            
+        },
+        
+        eventDataTransform: function(eventData){
+            eventData.title = eventData.role.c_name;
+            return eventData;
+        },
 
-    	eventRender: function(event,element){
-    		
+        eventRender: function(event,element){
+            
            // console.log(element[0]);
             var end = '';
             if(event.end.minutes() == 0){
@@ -321,7 +391,7 @@ $( "#createShiftDialog" ).dialog(newShiftDialogOptions);
             var duration = (event.end.format('X') - event.start.format('X'))/3600;
             element.find(".fc-title").append(' <span class="float-right badge badge-secondary">'+ Math.round(duration*100)/100 + '</span>');
       
-    	},
+        },
         eventClick: function(event,element){
             currentEvent = event;
             currentShift.id = event.id;
@@ -373,115 +443,111 @@ $( "#createShiftDialog" ).dialog(newShiftDialogOptions);
             currentShift.start = event.start.format('YYYY-MM-DD HH:mm');
             currentShift.end = event.end.format('YYYY-MM-DD HH:mm');
             updateShift(currentShift);
-            console.log(delta); 
         },
     
-    	
-    	firstDay:1,
-    	isRTL:false,
-    	weekends:true,
-    	hiddenDays:[],
-    	columnHeader:true,
-    	fixedWeekCount:false,
-    	weekNumbers:true,
-    	weekNumbersWithinDays:true,
-    	navLinks:true,
-    	selectable:false,
-    	unselectAuto:true,
-    	editable:true,
+        
+        firstDay:1,
+        isRTL:false,
+        weekends:true,
+        hiddenDays:[],
+        columnHeader:true,
+        fixedWeekCount:false,
+        weekNumbers:true,
+        weekNumbersWithinDays:true,
+        navLinks:true,
+        selectable:false,
+        unselectAuto:true,
+        editable:true,
         droppable:true,
 
-    	businessHours: {
-    		dow:[1,2,3,4,5,6,0],
-    		start:'00:00',
-    		end:'24:00',
-    	},
-    	buttonText: {
-    		today: 'Today',
-    		month: 'Month',
-    		week: 'Week',
-    		day: 'Day',
-    		list: 'List'
-    	},
-    	showNonCurrentDates:true,
-    	contentHeight:'aspectRatio',
-    	now:'{{Carbon\Carbon::now()->toIso8601String() }}',
-    	allDaySlot:true,
-    	noEventsMessage:'No scheduled shifts',
-    	listDayFormat:true,
-    	nowIndicator:true,
+        businessHours: {
+            dow:[1,2,3,4,5,6,0],
+            start:'00:00',
+            end:'24:00',
+        },
+        buttonText: {
+            today: 'Today',
+            month: 'Month',
+            week: 'Week',
+            day: 'Day',
+            list: 'List'
+        },
+        showNonCurrentDates:true,
+        contentHeight:'aspectRatio',
+        now:'{{Carbon\Carbon::now()->toIso8601String() }}',
+        allDaySlot:true,
+        noEventsMessage:'No scheduled shifts',
+        listDayFormat:true,
+        nowIndicator:true,
 
-    	// scheduler settings
-    	resourceAreaWidth:'10%',
-    	resourceLabelText:'Employees',
+        // scheduler settings
+        resourceAreaWidth:'10%',
+        resourceLabelText:'Employees',
 
     
        
 
         dayClick: function(date,jsEvent,view,resource) {
+            $('#shiftTime').val('');
+            $('#form-control-feedback').html(''); 
             getRoleList();
             currentDate = date;
             $('#shiftDate').text(date.format('dddd, MMM D, YYYY'));
             $('#createShiftDialog').dialog('option','title','New Shift for ' + resource.cName);
-        	$('#createShiftDialog').dialog('open');
-
+            $('#createShiftDialog').dialog('open');
 
             
             newShift.employee = resource.id;
-            newShift.note = $('#newShiftNote').val();
-                
-            
-
-            console.log(currentDate.format());
-
-            parseShiftTimeString('tset');
           
         },
 
         views:{
-        	timelineWorkWeek: {
-        		buttonText:'Week',
-        		type:'timeline',
-        		// visibleRange: function(currentDate){
-        		// 	console.log(currentDate);
-        		// 	return {
-        		// 		start: currentDate.clone().day(1),
-          //          		end: currentDate.clone().day(8) 
-        		// 	};
-        		// },
+            timelineWorkWeek: {
+                buttonText:'Week',
+                type:'timeline',
+                // visibleRange: function(currentDate){
+                //  console.log(currentDate);
+                //  return {
+                //      start: currentDate.clone().day(1),
+          //                end: currentDate.clone().day(8) 
+                //  };
+                // },
 
-        		slotLabelFormat:[
-        		'MMMM',
-        		'ddd DD'
-        		],
-        		slotLabelInterval: '24:00',
-        		duration:{weeks: 1},
-        		start:'2018-01-01',
-        	}
+                slotLabelFormat:[
+                'MMMM',
+                'ddd DD'
+                ],
+                slotLabelInterval: '24:00',
+                duration:{weeks: 1},
+                start:'2018-01-01',
+            }
         },
 
-		defaultView: 'timelineWorkWeek',
+        defaultView: 'timelineWorkWeek',
 
 
 
-		customButtons:{
-			lang: {
-				text:'Language',
-				click: function(){
-					$("#calendar").fullCalendar('locale','en');
-				}
-			}
-		},
+        customButtons:{
+            lang: {
+                text:'Language',
+                click: function(){
+                    $("#calendar").fullCalendar('locale','en');
+                }
+            }
+        },
 
        
         header: {
-        	left:   'title  ',
-   			center: 'timelineDay,timelineWorkWeek,month,listWeek prev,today,next',
-   			right:  'lang',
+            left:   'title  ',
+            center: 'timelineDay,timelineWorkWeek,month,listWeek prev,today,next',
+            right:  'lang',
         },
        
 
-    });
+    };
+
+
+    let cal = $('#calendar').fullCalendar(fullCalOptions);
 
     //cal.fullCalendar('gotoDate','2018-01-01');
 

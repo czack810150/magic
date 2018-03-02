@@ -1,11 +1,27 @@
+function formControlFeedback(str){
+	$('#form-control-feedback').html(str);
+}
+
+
 function parseShiftTimeString(ts){
-	const str = ts.trim().toLowerCase();	
-	if(!str.length) return 'empty';
+	const str = ts.trim().toLowerCase();
 	const separator = '-';
 	var shift = {
 		addDay : false,
 		error: null,
-	};
+		msg: null,
+	};	
+	if(!str.length) {
+		shift.error = 0;
+		shift.msg = 'must provide a shift time';
+		return shift;
+	}
+	
+	if( str.match(/-/g) == null){
+		shift.error = 1;
+		shift.msg = 'Invalid format: no separator \'-\'';
+		return shift;
+	}
 
 	if( str.match(/-/g).length == 1){
 		const data = str.split(separator,2);
@@ -14,11 +30,17 @@ function parseShiftTimeString(ts){
 			shift.start = parseTime(data[0]);
 		} else {
 			console.log('Wrong start time format');
+			shift.error = 2;
+			shift.msg = 'Wrong start time format';
+			return shift;
 		}
 		if(data[1].length > 0 && data[0].length <= 7){
 			shift.end = parseTime(data[1]);
 		} else {
 			console.log('Wrong end time format');
+			shift.error = 3;
+			shift.msg = 'Wrong end time format';
+			return shift;
 		}
 
 
@@ -28,8 +50,8 @@ function parseShiftTimeString(ts){
 			if(shift.start.minute > shift.end.minute){
 				shift.addDay = true;
 			} else if(shift.start.minute == shift.end.minute){
-				shift.error = 'Invalid time range: start time and end time must be different.';
-				shift.addDay = false;
+				//shift.error = 'Invalid time range: start time and end time must be different.';
+				shift.addDay = true;
 			}
 		}
 
@@ -37,6 +59,9 @@ function parseShiftTimeString(ts){
 		
 	} else {
 		console.log('Invalid format: must use one \'-\' as separator');
+		shift.error = 4;
+		shift.msg = 'Invalid format: must use one \'-\' as separator';
+		return shift;
 	}
 }
 

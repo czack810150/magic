@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Location;
 
 class ScheduleController extends Controller
 {
@@ -13,8 +14,10 @@ class ScheduleController extends Controller
     
     public function index()
     {
-        
-        return view('magicshift.index');
+        $locations = Location::Store()->pluck('name','id');
+        $defaultLocation = 1;
+
+        return view('magicshift.index',compact('defaultLocation','locations'));
     }
 
     /**
