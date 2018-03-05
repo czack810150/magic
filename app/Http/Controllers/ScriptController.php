@@ -32,6 +32,7 @@ class ScriptController extends Controller
             730 => 577,
             689 => 96, // 姜超迪
             706 => 96,
+            530 => 96, // 4
             685 => 648, 
             680 => 403,
             683 => 551,
@@ -47,7 +48,14 @@ class ScriptController extends Controller
             742 => 716, //解志坚
             744 => 709, // 馮翊維
             569 => 112, // 阴操
+            7406 => 112,
+            7407 => 471, // 江思俊
             755 => 323, //何君碧
+            7409 => 48, // 谢丽英
+            704 => 213, // 孙俊博
+            571 => 213, // 4
+
+
     	];
     	$fixed = array();
     	foreach($employees as $old => $new)

@@ -52,9 +52,9 @@
 
 @section('pageJS')
 <script>
-
-
-$(document).ready(function() {
+var currentEvent = {};
+var currentDate = moment();
+var currentLocation = {{ $defaultLocation }};
 const csrf_token = '{{csrf_token()}}';
 var currentShift = {
     id:0,
@@ -87,16 +87,23 @@ var newShift = {
         $('#form-control-feedback').html('');
     },
 };
-var currentEvent = {};
-var currentDate = moment();
-var currentLocation = {{ $defaultLocation }};
+
+
+
+
+
+
+$(document).ready(function() {
+
+
+
 
 
 
 $('.selectpicker').selectpicker();
 $('#location').on('changed.bs.select',function(e){
     currentLocation = $('#location').val();
-     $('#calendar').fullCalendar();
+    window.location.replace('{{ url("/scheduler") }}/'+currentLocation);
 });
 
 
@@ -314,6 +321,8 @@ $( "#modifyShiftDialog" ).dialog(options);
 $( "#createShiftDialog" ).dialog(newShiftDialogOptions);
 
 
+
+
 var fullCalOptions = {
         schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
         events: {
@@ -322,7 +331,7 @@ var fullCalOptions = {
                 url: '/shifts/fetchWeek',
                 dataType:'json',
                 data:{
-                    _token: '{{csrf_token()}}',
+                    _token: csrf_token,
                     location:currentLocation,
                     // start:'2018-02-14',
                     // end:'2018-02-14'
@@ -344,12 +353,16 @@ var fullCalOptions = {
             },
         ],
         resourceOrder: 'job_id',
-        resources: function(callback){
+        filterResourcesWithEvents: false,
+        refetchResourcesOnNavigate: true,
+        resources: function(callback,start,end,timezone){
             $.post(
                 '/employee/get',
                 {
                     _token: '{{csrf_token()}}',
                     location:currentLocation,
+                    start: start.format('YYYY-MM-DD'),
+                    end: end.format('YYYY-MM-DD')
                 },
                 function(data,status){
                     if(status == 'success'){
@@ -359,7 +372,16 @@ var fullCalOptions = {
                 'json'
             );
         },
-        filterResourcesWithEvents: true,
+        resourceRender: function(resourceObj,labelTds,bodyTds){
+            
+            labelTds.eq(0).find('.fc-cell-content')
+        .append(
+          '<small class="float-right"> <i class="fa fa-clock-o fa-sm"></i>&nbsp;<span>88</span></small>'
+        );
+        },
+
+
+
 
         loading: function(isLoading,view){
             if(isLoading)
@@ -545,8 +567,6 @@ var fullCalOptions = {
        
 
     };
-
-
     let cal = $('#calendar').fullCalendar(fullCalOptions);
 
     //cal.fullCalendar('gotoDate','2018-01-01');

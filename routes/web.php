@@ -13,9 +13,9 @@
 // Route::get('/{locale}',function($locale){
 // 	App::setLocale($locale);
 // });
-
 Route::get('/scheduler','ScheduleController@index');
-Route::post('/employee/get','EmployeeController@getByLocation');
+Route::get('/scheduler/{location}/','ScheduleController@index');
+Route::post('/employee/get','ShiftController@getResourcesByLocation');
 Route::post('/shift/{id}/update','ShiftController@update');
 Route::get('/role/get','RoleController@list');
 Route::post('/datetime/parseStr','ShiftController@parseShiftTime');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Shift;
 use App\Location;
 use App\Datetime;
+use App\Employee;
 
 class ShiftController extends Controller
 {
@@ -146,4 +147,8 @@ class ShiftController extends Controller
     {
         return Datetime::shiftParser($r->str);
     }
+    public function getResourcesByLocation(Request $r)
+     {
+        return Employee::where('location_id',$r->location)->get();
+     }
 }

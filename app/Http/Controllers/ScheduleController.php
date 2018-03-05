@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Location;
+use Auth;
 
 class ScheduleController extends Controller
 {
@@ -12,10 +13,15 @@ class ScheduleController extends Controller
         $this->middleware('auth');
     }
     
-    public function index()
+    public function index($location = null)
     {
-        $locations = Location::Store()->pluck('name','id');
-        $defaultLocation = 1;
+        $locations = Location::pluck('name','id');
+        if(is_null($location)){
+            $defaultLocation = Auth::user()->authorization->employee->location_id;
+        } else {
+            $defaultLocation = $location;
+        }
+        
 
         return view('magicshift.index',compact('defaultLocation','locations'));
     }
