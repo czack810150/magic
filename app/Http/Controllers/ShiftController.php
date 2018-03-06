@@ -29,7 +29,7 @@ class ShiftController extends Controller
      */
     public function create(Request $r)
     {
-        Shift::create([
+        $shift = Shift::create([
             'location_id' => $r->location,
             'employee_id' => $r->employee,
             'role_id' => $r->role,
@@ -38,7 +38,7 @@ class ShiftController extends Controller
             'published' => 0,
             'comment' => $r->note
         ]);
-        return 'OK';
+        return $shift;
     }
 
     /**
@@ -149,6 +149,10 @@ class ShiftController extends Controller
     }
     public function getResourcesByLocation(Request $r)
      {
-        return Employee::where('location_id',$r->location)->get();
+        $employees =  Employee::where('location_id',$r->location)->get();
+        foreach($employees as $e){
+            $e->weekTotal = Shift::weekTotalHour($e->id,$r->location,$r->start,$r->end);
+        }
+        return $employees;
      }
 }

@@ -201,11 +201,10 @@ function submitShift(){
         },
         function(data,status){
             if(status == 'success'){
-                console.log(data);
                 newShift.clear();
-
                 $('#createShiftDialog').dialog('close');
                 $('#calendar').fullCalendar('refetchEvents');
+                updateWeekTotal(data);
 
             }
         }
@@ -242,12 +241,38 @@ function updateShift(shift){
         },
         function(data,status){
             if(status == 'success'){
-                console.log(data);
-                shift.clear();     
+                updateWeekTotal(data);
+                shift.clear(); 
+                //$('#calendar').fullCalendar('refetchResources');  
             } 
         }
         );
+}
 
+function updateWeekTotal(shift){
+    var resource = $('#calendar').fullCalendar('getResourceById',shift.employee_id);
+    var total = $('#weekTotal'+shift.employee_id);
+    var oldWeekTotal = Number(total.text());
+    const newEventTotal = (moment(shift.end).format('X') - moment(shift.start).format('X'))/3600;
+    if(Object.keys(currentEvent).length){
+        const oldEventTotal = (currentEvent.end.format('X') - currentEvent.start.format('X'))/3600;
+        resource.weekTotal = oldWeekTotal - oldEventTotal + newEventTotal;
+    } else {
+        resource.weekTotal = oldWeekTotal + newEventTotal;
+    }
+    
+    const newWeekTotal = Math.round(resource.weekTotal *100)/100;
+
+    total.text(newWeekTotal);
+    if(newWeekTotal <= 44.0){
+        total.removeClass('badge badge-danger');
+        total.addClass('badge badge-success');
+    } else {
+        total.removeClass('badge badge-success');
+        total.addClass('badge badge-danger');
+    }
+    
+    currentEvent = {};
 }
 
 
@@ -373,11 +398,21 @@ var fullCalOptions = {
             );
         },
         resourceRender: function(resourceObj,labelTds,bodyTds){
-            
-            labelTds.eq(0).find('.fc-cell-content')
-        .append(
-          '<small class="float-right"> <i class="fa fa-clock-o fa-sm"></i>&nbsp;<span>88</span></small>'
-        );
+            console.log(resourceObj);
+            var weekTotalStr = '';
+            if(resourceObj.weekTotal) {
+                if(Number(resourceObj.weekTotal) <= 44.0){
+                    weekTotalStr = '<span class="float-right badge badge-success" id="weekTotal'+resourceObj.id+'">' + resourceObj.weekTotal +'</span>';
+                } else {
+                    weekTotalStr = '<span class="float-right badge badge-danger" id="weekTotal'+resourceObj.id+'">' + resourceObj.weekTotal +'</span>';
+                }
+                
+            } else {
+                weekTotalStr = '<span class="float-right" id="weekTotal'+ resourceObj.id + '"></span>';
+            }
+
+             labelTds.eq(0).find('.fc-cell-content').append(weekTotalStr);
+           
         },
 
 
@@ -419,7 +454,6 @@ var fullCalOptions = {
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role = event.role_id;
-
             var defaultStartDate = event.start;
             $('#startDate').val(event.start.format('MMM D, YYYY'));
             $('#startDate').daterangepicker({
