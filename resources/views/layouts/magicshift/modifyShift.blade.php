@@ -22,10 +22,21 @@
  </div>
 </div>
 
-<div class="row">
+<div class="row mb-3">
 <div class="col-12">
 <textarea rows="3" class="form-control" placeholder="Notes" id="shiftNote" name="shiftNote" autofocus></textarea>
 </div>
+</div>
+
+<div class="form-group row m-form">
+
+	<label class="col-form-label col-2 ">Remove</label>
+				<div class="col-3 ">
+							<div id="removeSlider" class="m-nouislider m-nouislider--handle-danger"></div>
+					<span class="m-form__help">Slide to confirm</span>
+				</div>
+
+
 </div>
 
 

@@ -101,7 +101,13 @@ class ShiftController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $shift = Shift::find($id);
+        $removedShift = $shift;
+        if($shift->delete()){
+            return $removedShift;
+        } else {
+            return false;
+        }
     }
     public function apiCreate(Request $request)
     {
@@ -149,7 +155,19 @@ class ShiftController extends Controller
     }
     public function getResourcesByLocation(Request $r)
      {
-        $employees =  Employee::where('location_id',$r->location)->get();
+        $employees =  Employee::where('location_id',$r->location)->ActiveEmployee()->get();
+        $borrowed = collect();
+        $shifts = Shift::where('location_id',$r->location)->whereBetween('start',[$r->start,$r->end])->get();
+        foreach($shifts as $s){
+            if($s->employee->location_id != $r->location){
+                $borrowed->push($s->employee);
+            }
+        }
+        if(count($borrowed)){ 
+            $borrowed = $borrowed->unique();
+            $employees = $employees->merge($borrowed);
+        }
+
         foreach($employees as $e){
             $e->weekTotal = Shift::weekTotalHour($e->id,$r->location,$r->start,$r->end);
         }

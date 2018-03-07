@@ -203,3 +203,45 @@ function parseTime(ts){
 
 	return time;
 }
+
+// remove shift
+var slider = document.getElementById('removeSlider');
+
+noUiSlider.create(slider, {
+    start: 0,
+    step: 0.1,
+    connect: false,
+    range: {
+        'min': 0,
+        'max': 100
+    }
+});
+slider.noUiSlider.on('change',function(){
+    sliderConfirm();
+});
+function sliderConfirm(){
+    const v = slider.noUiSlider.get();
+    if(Number(v) === 100) {
+        removeShift(currentEvent);
+    } 
+        slider.noUiSlider.reset();
+}
+function removeShift(shift){
+    $.post(
+        '/shift/'+shift.id+'/remove',
+        {
+            _token: csrf_token,
+        },
+        function(data,status){
+            if(status == 'success'){
+                if(data){
+                    $('#modifyShiftDialog').dialog('close');
+                    $('#calendar').fullCalendar('refetchEvents');
+                    udpateWeekTotalOnRemoval(data);
+                    currentShift.clear();
+                }
+            }
+        }
+    );
+}
+// end remove shift

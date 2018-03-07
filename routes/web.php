@@ -15,11 +15,12 @@
 // });
 Route::get('/scheduler','ScheduleController@index');
 Route::get('/scheduler/{location}/','ScheduleController@index');
-Route::post('/employee/get','ShiftController@getResourcesByLocation');
+Route::post('/sr/get','ShiftController@getResourcesByLocation');
 Route::post('/shift/{id}/update','ShiftController@update');
 Route::get('/role/get','RoleController@list');
 Route::post('/datetime/parseStr','ShiftController@parseShiftTime');
 Route::post('/shift/create','ShiftController@create');
+Route::post('/shift/{id}/remove','ShiftController@destroy');
 
 
 Route::get('/qr',function(){
