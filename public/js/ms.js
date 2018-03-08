@@ -245,3 +245,4 @@ function removeShift(shift){
     );
 }
 // end remove shift
+

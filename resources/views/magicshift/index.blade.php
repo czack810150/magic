@@ -47,56 +47,14 @@
 
 @include('layouts.magicshift.createShift')
 @include('layouts.magicshift.modifyShift')
-
+@include('layouts.magicshift.borrowEmployee')
 @endsection
 
 @section('pageJS')
 <script>
 const csrf_token = '{{csrf_token()}}';
 
-var slider = document.getElementById('removeSlider');
 
-noUiSlider.create(slider, {
-    start: 0,
-    step: 0.1,
-    connect: false,
-    range: {
-        'min': 0,
-        'max': 100
-    }
-});
-slider.noUiSlider.on('change',function(){
-    sliderConfirm();
-});
-function sliderConfirm(){
-    const v = slider.noUiSlider.get();
-    if(Number(v) === 100) {
-        removeShift(currentEvent);
-    } 
-        slider.noUiSlider.reset();
-}
-function removeShift(shift){
-    $.post(
-        '/shift/'+shift.id+'/remove',
-        {
-            _token: csrf_token,
-        },
-        function(data,status){
-            if(status == 'success'){
-                console.log(data);
-                if(data){
-                    $('#modifyShiftDialog').dialog('close');
-                    $('#calendar').fullCalendar('refetchEvents');
-                    udpateWeekTotalOnRemoval(data);
-                    currentShift.clear();
-
-                }
-                    
-               
-            }
-        }
-    );
-}
 
 
 var currentEvent = {};
@@ -134,6 +92,9 @@ var newShift = {
         $('#form-control-feedback').html('');
     },
 };
+
+
+
 
 function udpateWeekTotalOnRemoval(shift){
     var resource = $('#calendar').fullCalendar('getResourceById',shift.employee_id);
@@ -198,6 +159,35 @@ $('#location').on('changed.bs.select',function(e){
     currentLocation = $('#location').val();
     window.location.replace('{{ url("/scheduler") }}/'+currentLocation);
 });
+
+$('#otherLocation').on('changed.bs.select',function(e){
+    getBorrowList()
+});
+$('#borrowPosition').on('changed.bs.select',function(e){
+    getBorrowList()
+});
+
+function getBorrowList(){
+    const location = $('#otherLocation').val();
+    const position = $('#borrowPosition').val();
+
+    if(location != '' && position != '' ){
+        $.post(
+            '/employees/positionFilter',
+            {
+                _token: csrf_token,
+                location: location,
+                position: position
+            },
+            function(data,status){
+                if(status == 'success'){
+                    $('#availables').html(data);
+                }
+            }
+            );
+    }
+}
+
 
 
 
@@ -361,7 +351,7 @@ var dpOptions =  {
 };
 //$.dateragnepicker.setDefaults( dpOptions );
 
-var options = {
+var modifyShiftOptions = {
     dialogClass:'no-close',
     modal:true,
     autoOpen:false,
@@ -408,11 +398,33 @@ var newShiftDialogOptions = {
     width:400,
     height:300,
     closeOnEscape:true,
-   
-    
 };
-$( "#modifyShiftDialog" ).dialog(options);
+var borrowOptions = {
+    dialogClass: 'noTitleStuff',
+    modal:true,
+    autoOpen:false,
+    position: { my: "center", at: "center", of: window },
+    resizable: false,
+    width:500,
+};
+$( "#modifyShiftDialog" ).dialog(modifyShiftOptions);
 $( "#createShiftDialog" ).dialog(newShiftDialogOptions);
+$("#borrowDialog").dialog(borrowOptions);
+
+var bCancel = document.getElementById('borrowCancel');
+bCancel.addEventListener('click',function(){
+    $("#borrowDialog").dialog('close');
+});
+var bBtn = document.getElementById('borrowBtn');
+bBtn.addEventListener('click',function(){
+    if($('#borrowedEmployee').val() != ''){
+        $('#calendar').fullCalendar('addResource',{
+            id: $('#borrowedEmployee').val(),
+            cName:$('#borrowedEmployee option:selected').text(),
+        })
+    }
+    $("#borrowDialog").dialog('close');
+});
 
 
 
@@ -467,7 +479,6 @@ var fullCalOptions = {
             );
         },
         resourceRender: function(resourceObj,labelTds,bodyTds){
-            console.log(resourceObj);
             var weekTotalStr = '';
             if(resourceObj.weekTotal) {
                 if(Number(resourceObj.weekTotal) <= 44.0){
@@ -660,10 +671,10 @@ var fullCalOptions = {
 
 
         customButtons:{
-            lang: {
-                text:'Language',
+            borrow: {
+                text:'借用他店员工',
                 click: function(){
-                    $("#calendar").fullCalendar('locale','en');
+                    $('#borrowDialog').dialog('open');
                 }
             }
         },
@@ -672,7 +683,7 @@ var fullCalOptions = {
         header: {
             left:   'title  ',
             center: 'timelineDay,timelineWorkWeek,month,listWeek prev,today,next',
-            right:  'lang',
+            right:  'borrow',
         },
        
 

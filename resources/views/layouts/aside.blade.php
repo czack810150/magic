@@ -48,6 +48,7 @@
 									</span>
 								</a>
 							</li>
+							@can('use-scheduler')
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="{{ url('/scheduler') }}" class="m-menu__link ">
 									<i class="m-menu__link-icon flaticon-squares-1"></i>
@@ -61,6 +62,7 @@
 									</span>
 								</a>
 							</li>
+							@endcan
 
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">

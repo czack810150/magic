@@ -77,5 +77,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('view-hr',function($user){
             return in_array($user->authorization->type,['hr','dm','manager','accounting','gm','admin']);
         });
+        Gate::define('use-scheduler',function($user){
+            return in_array($user->authorization->type,['dm','admin']);
+        });
     }
 }

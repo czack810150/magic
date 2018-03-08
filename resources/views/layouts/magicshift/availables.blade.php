@@ -1,0 +1,1 @@
+{{ Form::select('borrowedEmployee',$availables,null,['class'=>'form-control','id'=>'borrowedEmployee','placeholder'=>'Choose Employee']) }}

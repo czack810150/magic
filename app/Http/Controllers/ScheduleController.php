@@ -22,8 +22,15 @@ class ScheduleController extends Controller
             $defaultLocation = $location;
         }
         
+        $otherStores = Location::Store()->where('id','!=',$defaultLocation)->pluck('name','id');
+        $positions = array(
+            'server' => '服务员',
+            'cook' => '厨工',
+            'noodle' => '拉面师',
+            'dish' => '洗碗工'
+        );
 
-        return view('magicshift.index',compact('defaultLocation','locations'));
+        return view('magicshift.index',compact('defaultLocation','locations','otherStores','positions'));
     }
 
     /**

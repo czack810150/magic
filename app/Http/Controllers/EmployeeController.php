@@ -43,6 +43,19 @@ class EmployeeController extends Controller
         $jobs = Job::where('trial',1)->pluck('rank','id');
         return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations'));
     }
+    public function positionFilter(Request $r)
+    {
+        $employees = Employee::where('location_id',$r->location)->ActiveEmployee()->get();
+        $filtered = collect();
+        foreach($employees as $e){
+            if($e->job->type == $r->position ){
+                $filtered->push($e);
+            }
+        }
+        $availables = $filtered->pluck('cName','id');
+        return view('layouts.magicshift.availables',compact('availables'));   
+    }
+
      public function filterEmployees(Request $r)
     {
 
