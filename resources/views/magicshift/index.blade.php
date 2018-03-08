@@ -45,9 +45,7 @@
 		</div>	
 		<!--end::Portlet-->
 
-@include('layouts.magicshift.createShift')
-@include('layouts.magicshift.modifyShift')
-@include('layouts.magicshift.borrowEmployee')
+
 @endsection
 
 @section('pageJS')
@@ -358,7 +356,7 @@ var modifyShiftOptions = {
     position: { my: "center", at: "center", of: window },
     resizable: false,
     width:500,
-    height:400,
+    height:500,
     title: 'Role',
     buttons: [
         {
@@ -389,14 +387,12 @@ var modifyShiftOptions = {
 };
 
 var newShiftDialogOptions = {
-    dialogClass:'no-close alert',
+    dialogClass:'noTitleStuff',
     'position': { my: "center", at: "center", of: window },
     modal:false,
     autoOpen:false,
-    title:'New Shift',
     resizable: false,
     width:400,
-    height:300,
     closeOnEscape:true,
 };
 var borrowOptions = {
@@ -421,9 +417,58 @@ bBtn.addEventListener('click',function(){
         $('#calendar').fullCalendar('addResource',{
             id: $('#borrowedEmployee').val(),
             cName:$('#borrowedEmployee option:selected').text(),
-        })
+        },true);
     }
     $("#borrowDialog").dialog('close');
+});
+
+var createCancel = document.getElementById('createCancel');
+createCancel.addEventListener('click',function(){
+    $("#createShiftDialog").dialog('close');
+});
+var createBtn = document.getElementById('createBtn');
+createBtn.addEventListener('click',function(){
+     newShift.role = $('#shiftRole').val();
+            newShift.note = $('#newShiftNote').val();
+            const shift = parseShiftTimeString($('#shiftTime').val());
+            console.log(shift);
+            if(shift.error == null){
+                newShift.start = currentDate.clone().hour(shift.start.hour).minute(shift.start.minute).format('YYYY-MM-DD HH:mm:ss');
+                if(shift.addDay){
+                    newShift.end = currentDate.clone().add(1,'d').hour(shift.end.hour).minute(shift.end.minute).format('YYYY-MM-DD HH:mm:ss'); 
+                } else {
+                        newShift.end = currentDate.clone().hour(shift.end.hour).minute(shift.end.minute).format('YYYY-MM-DD HH:mm:ss'); 
+                    }
+                 submitShift();
+                 $("#createShiftDialog").dialog('close'); 
+            } else {
+                switch(shift.error){
+                    case 0:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 1:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 2:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 3:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 4:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;    
+                    default:
+                        console.log('unknown error');
+                        formControlFeedback(shift.msg);
+              }
+            }
+    
 });
 
 
@@ -562,7 +607,9 @@ var fullCalOptions = {
 
             $('#endTime').val(event.end.format('h:mma'));
             $("#endTime").timepicker();
+            $('#shiftNote').val(event.comment);
             $('#modifyShiftDialog').dialog('option','title',event.title);
+            //$('#modifyShiftDialog').hide();
             $('#modifyShiftDialog').dialog('open');
             console.log(currentEvent);
 
@@ -588,7 +635,7 @@ var fullCalOptions = {
             updateShift(currentShift);
         },
     
-        
+        height:'auto',
         firstDay:1,
         isRTL:false,
         weekends:true,
@@ -636,7 +683,7 @@ var fullCalOptions = {
             getRoleList();
             currentDate = date;
             $('#shiftDate').text(date.format('dddd, MMM D, YYYY'));
-            $('#createShiftDialog').dialog('option','title','New Shift for ' + resource.cName);
+            $('#newShiftEmployee').text(resource.cName);
             $('#createShiftDialog').dialog('open');
 
             
@@ -697,4 +744,9 @@ var fullCalOptions = {
 
 
 </script>
+<div hidden>
+@include('layouts.magicshift.createShift')
+@include('layouts.magicshift.modifyShift')
+@include('layouts.magicshift.borrowEmployee')
+</div>
 @endsection

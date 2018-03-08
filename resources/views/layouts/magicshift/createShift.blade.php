@@ -1,6 +1,14 @@
-<div id="createShiftDialog">
+<div class="m-portlet m-form" id="createShiftDialog">
 
-
+<div class="m-portlet__head">
+				<div class="m-portlet__head-caption">
+					<div class="m-portlet__head-title">
+						<h3 class="m-portlet__head-text">
+							Create Shift for <span id="newShiftEmployee"></span>
+						</h3>
+					</div>			
+				</div>
+			</div>
 			
 				<div class="m-portlet__body m-form">	
 					<div class="form-group m-form__group row">
@@ -27,10 +35,18 @@
 							<textarea rows="3" class="form-control" placeholder="Notes" id="newShiftNote" name="newShiftNote"></textarea>
 						</div>
 					</div>
-
-					
-
 	            </div>
+	           <div class="m-portlet__foot m-portlet__foot--fit">
+				<div class="m-form__actions">
+					<div class="row">
+						<div class="col-2"></div>
+						<div class="col-10">
+							<button id="createBtn" type="button" class="btn btn-success">Add</button>
+							<button id="createCancel" type="button" class="btn btn-secondary">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
 	     
 			
 </div>
