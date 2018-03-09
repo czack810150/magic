@@ -224,24 +224,27 @@ var fullCalOptions = {
 
 
 
-        loading: function(isLoading,view){
-            if(isLoading)
-            {
-                $('#status_bar').html('<div class="alert alert-info" role="alert">Loading..</div>');
-            }
-            else
-            {
-                $('#status_bar').html('');
-            }
+        // loading: function(isLoading,view){
+        //     if(isLoading)
+        //     {
+        //         $('#status_bar').html('<div class="alert alert-info" role="alert">Loading..</div>');
+        //     }
+        //     else
+        //     {
+        //         $('#status_bar').html('');
+        //     }
             
-        },
+        // },
         
         eventDataTransform: function(eventData){
             eventData.title = eventData.role.c_name;
+            if(eventData.role_id == '2')
+            eventData.backgroundColor = '#fa4377';
             return eventData;
         },
 
         eventRender: function(event,element){
+            
             
            // console.log(element[0]);
             var end = '';
@@ -253,6 +256,7 @@ var fullCalOptions = {
             element.find(".fc-time").append(' - ' + end);
             var duration = (event.end.format('X') - event.start.format('X'))/3600;
             element.find(".fc-title").append(' <span class="float-right badge badge-secondary">'+ Math.round(duration*100)/100 + '</span>');
+            console.log(event);
       
         },
         eventClick: function(event,element){
@@ -761,10 +765,10 @@ $("[name='resourceToggle']").bootstrapSwitch({
         if(state){
             resourceToggle()
         } else {
-            $('#calendar').fullCalendar('refetchResources');
-            // for(i in allResources){
-            //      $('#calendar').fullCalendar('addResource',allResources[i]);
-            // }
+           // $('#calendar').fullCalendar('refetchResources');
+            for(i in allResources){
+                 $('#calendar').fullCalendar('addResource',allResources[i]);
+            }
         }
     }
 });
