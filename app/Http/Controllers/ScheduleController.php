@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Location;
+use App\Role;
 use Auth;
+
 
 class ScheduleController extends Controller
 {
@@ -29,8 +31,9 @@ class ScheduleController extends Controller
             'noodle' => '拉面师',
             'dish' => '洗碗工'
         );
+        $roles = Role::pluck('c_name','id');
 
-        return view('magicshift.index',compact('defaultLocation','locations','otherStores','positions'));
+        return view('magicshift.index',compact('defaultLocation','locations','otherStores','positions','roles'));
     }
 
     /**

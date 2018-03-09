@@ -1,6 +1,6 @@
 <div class="m-portlet m-form" id="createShiftDialog">
 
-<div class="m-portlet__head">
+			<div class="m-portlet__head">
 				<div class="m-portlet__head-caption">
 					<div class="m-portlet__head-title">
 						<h3 class="m-portlet__head-text">
@@ -10,13 +10,13 @@
 				</div>
 			</div>
 			
-				<div class="m-portlet__body m-form">	
+				<div class="m-portlet__body ">	
 					<div class="form-group m-form__group row">
 						 <label for="shiftDate" class="col-12 form-control-label"><i class="fa  fa-calendar-o"></i>&nbsp;&nbsp;Date&emsp;<span id="shiftDate"></span></label>
 					</div>
 
 					<div class="form-group m-form__group  row">
-					  	<label class="col-form-label col-4" for="inputWarning1"><i class="fa  fa-clock-o"></i>&nbsp;&nbsp;Role</label>
+					  	<label class="col-form-label col-4" for="roleOptions"><i class="fa  fa-rocket"></i>&nbsp;&nbsp;Role</label>
 					  	<div class="col-8" id="roleOptions"></div>
 					</div>
 
@@ -36,7 +36,7 @@
 						</div>
 					</div>
 	            </div>
-	           <div class="m-portlet__foot m-portlet__foot--fit">
+	          	<div class="m-portlet__foot m-portlet__foot--fit">
 				<div class="m-form__actions">
 					<div class="row">
 						<div class="col-2"></div>
@@ -46,7 +46,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+				</div>
 	     
 			
 </div>
