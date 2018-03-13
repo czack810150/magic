@@ -1,3 +1,6 @@
+// app level variables
+var currentView;
+
 function formControlFeedback(str){
 	$('#form-control-feedback').html(str);
 }
@@ -245,4 +248,74 @@ function removeShift(shift){
     );
 }
 // end remove shift
+
+
+//copy schedule
+const copyOptions = {
+    dialogClass: 'noTitleStuff',
+    modal:true,
+    autoOpen:false,
+    position: { my: "center", at: "center", of: window },
+    resizable: false,
+    width:500,
+};
+var copyFrom,copyTo,dFrom,dTo;
+$('#copyScheduleDialog').dialog(copyOptions);
+$('#copyScheduleBtn').click(function(){
+	const view = $('#calendar').fullCalendar('getView');
+	currentView = view;
+	console.log(currentView.name);
+	$('#currentTimeline').text(view.intervalStart.format('MMM D, YYYY')+ ' - ' + view.intervalEnd.clone().add(-1,'day').format('MMM D, YYYY'));
+	dFrom = view.intervalStart.format('YYYY-MM-DD');
+	dTo = view.intervalEnd.clone().add(-1,'day').format('YYYY-MM-DD');
+	copyFrom = view.intervalStart.clone().add(-7,'days');
+	copyTo = view.intervalEnd.clone().add(-7,'day');
+	$('#copyFrom').val(copyFrom.format('MMM D, YYYY'));
+	$('#copyTo').val(copyTo.add(-1,'day').format('MMM D, YYYY'))
+
+	$('#copyScheduleDialog').dialog('open');
+	$('#copyFrom').blur();
+	//alert(view.intervalEnd.format('MMM D, YYYY'));
+});
+$('#copyCancel').click(function(){
+	$('#copyScheduleDialog').dialog('close');
+});
+ $('#copyFrom').daterangepicker({
+                locale: {
+                    format:'MMM D, YYYY',
+                },
+                singleDatePicker:true,
+});
+$('#copyFrom').on('apply.daterangepicker',function(ev,pk){
+	copyFrom = pk.startDate;
+	if(currentView.name == 'timelineWorkWeek'){
+		copyTo = pk.startDate.clone().add(8,'days');
+	} else if( currentView.name == 'timelineDay'){
+		copyTo = pk.startDate.clone().add(1,'day');
+	}
+	$('#copyFrom').val(copyFrom.format('MMM D, YYYY'));
+	$('#copyTo').val(copyTo.clone().add(-1,'day').format('MMM D, YYYY'))
+});
+var copyBtn = document.getElementById('copyBtn');
+copyBtn.addEventListener('click',function(){
+	copyShifts();
+},false);
+function copyShifts(){
+	$.post(
+		'/shift/copy',
+		{
+			_token: csrf_token,
+			location: currentLocation,
+			from: copyFrom.format('YYYY-MM-DD'),
+			to: copyTo.format('YYYY-MM-DD'),
+			dFrom: dFrom,
+			dTo: dTo,
+		},
+		function(data,status){
+			if(status == 'success'){
+				console.log(data);
+			}
+		}
+		);
+}
 

@@ -22,6 +22,7 @@ Route::post('/datetime/parseStr','ShiftController@parseShiftTime');
 Route::post('/shift/create','ShiftController@create');
 Route::post('/shift/{id}/remove','ShiftController@destroy');
 Route::post('/employees/positionFilter','EmployeeController@positionFilter');
+Route::post('/shift/copy','ShiftController@copyShifts');
 
 
 Route::get('/qr',function(){

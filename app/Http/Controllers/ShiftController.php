@@ -7,6 +7,7 @@ use App\Shift;
 use App\Location;
 use App\Datetime;
 use App\Employee;
+use Carbon\Carbon;
 
 class ShiftController extends Controller
 {
@@ -172,5 +173,31 @@ class ShiftController extends Controller
             $e->weekTotal = Shift::weekTotalHour($e->id,$r->location,$r->start,$r->end);
         }
         return $employees;
+     }
+
+     public function copyShifts(Request $r){
+       $from = Carbon::createFromFormat('Y-m-d',$r->from);
+       $to = Carbon::createFromFormat('Y-m-d',$r->to);
+       $dFrom = Carbon::createFromFormat('Y-m-d',$r->dFrom);
+       $dTo = Carbon::createFromFormat('Y-m-d',$r->dTo);
+      
+       $diff =  $dFrom->diffInDays($from);
+       if($dFrom->greaterThanOrEqualTo($from)){
+        $shifts = Shift::where('location_id',$r->location)->whereBetween('start',[$r->from,$r->to])->get();
+        foreach($shifts as $s){
+            Shift::create([
+                'location_id' => $r->location,
+                'employee_id' => $s->employee_id,
+                'role_id' => $s->role_id,
+                'start' => Carbon::createFromFormat('Y-m-d H:i:s',$s->start)->addDays($diff)->toDateTimeString(),
+                'end' => Carbon::createFromFormat('Y-m-d H:i:s',$s->end)->addDays($diff)->toDateTimeString(),
+                'published'=> false,
+            ]);
+        }
+        return $shifts;
+       } else {
+        return -$diff;
+       } 
+       
      }
 }

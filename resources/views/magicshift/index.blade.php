@@ -24,10 +24,10 @@
                         <button type="button" class="m-btn btn btn-secondary"><i class="la la-header"></i></button>
                         <div class="btn-group" role="group">
                             <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Dropdown
+                            <i class="la la-navicon"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                            <a class="dropdown-item" href="#">Dropdown link</a>
+                            <button class="dropdown-item" type="button" id="copyScheduleBtn">Copy Schedule</button>
                             <a class="dropdown-item" href="#">Dropdown link</a>
                             <a class="dropdown-item" href="#">Dropdown link</a>
                             <a class="dropdown-item" href="#">Dropdown link</a>
@@ -50,6 +50,7 @@
 @include('layouts.magicshift.createShift')
 @include('layouts.magicshift.modifyShift')
 @include('layouts.magicshift.borrowEmployee')
+@include('layouts.magicshift.copySchedule')
 </div>
 
 @endsection
