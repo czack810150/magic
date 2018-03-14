@@ -1,6 +1,5 @@
 @extends('layouts.magicshift.magicshift')
 @section('content')
-{{Carbon\Carbon::now()->toIso8601String() }}
 <span id="status_bar"></span>
 <!--begin::Portlet-->
 		<div class="m-portlet m-portlet--responsive-mobile">
@@ -28,9 +27,7 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                             <button class="dropdown-item" type="button" id="copyScheduleBtn">Copy Schedule</button>
-                            <a class="dropdown-item" href="#">Dropdown link</a>
-                            <a class="dropdown-item" href="#">Dropdown link</a>
-                            <a class="dropdown-item" href="#">Dropdown link</a>
+                          
                         </div>
                       </div>
                      
@@ -245,9 +242,6 @@ var fullCalOptions = {
         },
 
         eventRender: function(event,element){
-            
-            
-           // console.log(element[0]);
             var end = '';
             if(event.end.minutes() == 0){
                 end = event.end.format('ha');
@@ -257,7 +251,6 @@ var fullCalOptions = {
             element.find(".fc-time").append(' - ' + end);
             var duration = (event.end.format('X') - event.start.format('X'))/3600;
             element.find(".fc-title").append(' <span class="float-right badge badge-secondary">'+ Math.round(duration*100)/100 + '</span>');
-            console.log(event);
       
         },
         eventClick: function(event,element){

@@ -26,6 +26,24 @@
  </div>
 </div>
 
+<div class="row">
+  <div class="col-12">
+  <p id="shiftsCount"></p>
+</div>
+</div>
+
+<div class="m-form__group form-group row">
+
+  <div class="col-12">
+    <div class="m-checkbox-inline">
+      <label class="m-checkbox">
+      <input type="checkbox" id="clearCurrent" unchecked>Clear schedule before copying<span></span>
+      </label>
+    </div>
+    <span class="m-form__help">删除当前周期的已有排班</span>
+  </div>
+</div>
+
 
 
 </div>

@@ -176,14 +176,27 @@ class ShiftController extends Controller
      }
 
      public function copyShifts(Request $r){
+       $msg = '';
        $from = Carbon::createFromFormat('Y-m-d',$r->from);
        $to = Carbon::createFromFormat('Y-m-d',$r->to);
        $dFrom = Carbon::createFromFormat('Y-m-d',$r->dFrom);
        $dTo = Carbon::createFromFormat('Y-m-d',$r->dTo);
+
+       if($r->clear){ // delete all shifts for current period
+        $currentPeriodShifts = Shift::where('location_id',$r->location)->whereBetween('start',[$dFrom->toDateString(),$dTo->toDateString()])->delete();
+        }
+
+
       
        $diff =  $dFrom->diffInDays($from);
+
+       $shifts = Shift::where('location_id',$r->location)->whereBetween('start',[$from->toDateString(),$to->toDateString()])->get();
+
+       
+
+       
        if($dFrom->greaterThanOrEqualTo($from)){
-        $shifts = Shift::where('location_id',$r->location)->whereBetween('start',[$r->from,$r->to])->get();
+       
         foreach($shifts as $s){
             Shift::create([
                 'location_id' => $r->location,
@@ -194,10 +207,28 @@ class ShiftController extends Controller
                 'published'=> false,
             ]);
         }
-        return $shifts;
+        $msg = 'copied from past';
        } else {
-        return -$diff;
+        foreach($shifts as $s){
+            Shift::create([
+                'location_id' => $r->location,
+                'employee_id' => $s->employee_id,
+                'role_id' => $s->role_id,
+                'start' => Carbon::createFromFormat('Y-m-d H:i:s',$s->start)->subDays($diff)->toDateTimeString(),
+                'end' => Carbon::createFromFormat('Y-m-d H:i:s',$s->end)->subDays($diff)->toDateTimeString(),
+                'published'=> false,
+            ]);
+        }
+        $msg = 'copied from future';
        } 
-       
+        
+
+        
+        return $msg;
+     }
+     public function countShifts(Request $r){
+        
+        $shifts = Shift::where('location_id',$r->location)->whereBetween('start',[$r->from,$r->to])->count();
+        return $shifts;
      }
 }

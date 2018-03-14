@@ -267,15 +267,14 @@ $('#copyScheduleBtn').click(function(){
 	console.log(currentView.name);
 	$('#currentTimeline').text(view.intervalStart.format('MMM D, YYYY')+ ' - ' + view.intervalEnd.clone().add(-1,'day').format('MMM D, YYYY'));
 	dFrom = view.intervalStart.format('YYYY-MM-DD');
-	dTo = view.intervalEnd.clone().add(-1,'day').format('YYYY-MM-DD');
+	dTo = view.intervalEnd.clone().format('YYYY-MM-DD');
 	copyFrom = view.intervalStart.clone().add(-7,'days');
-	copyTo = view.intervalEnd.clone().add(-7,'day');
+	copyTo = view.intervalEnd.clone().add(-6,'day');
 	$('#copyFrom').val(copyFrom.format('MMM D, YYYY'));
 	$('#copyTo').val(copyTo.add(-1,'day').format('MMM D, YYYY'))
-
 	$('#copyScheduleDialog').dialog('open');
 	$('#copyFrom').blur();
-	//alert(view.intervalEnd.format('MMM D, YYYY'));
+	shiftCount();
 });
 $('#copyCancel').click(function(){
 	$('#copyScheduleDialog').dialog('close');
@@ -289,18 +288,44 @@ $('#copyCancel').click(function(){
 $('#copyFrom').on('apply.daterangepicker',function(ev,pk){
 	copyFrom = pk.startDate;
 	if(currentView.name == 'timelineWorkWeek'){
-		copyTo = pk.startDate.clone().add(8,'days');
+		copyTo = pk.startDate.clone().add(7,'days');
 	} else if( currentView.name == 'timelineDay'){
 		copyTo = pk.startDate.clone().add(1,'day');
 	}
 	$('#copyFrom').val(copyFrom.format('MMM D, YYYY'));
-	$('#copyTo').val(copyTo.clone().add(-1,'day').format('MMM D, YYYY'))
+	$('#copyTo').val(copyTo.clone().add(-1,'day').format('MMM D, YYYY'));
+	shiftCount();
 });
+// get # of total shifts for selected period 
+function shiftCount(){
+	$.post(
+		'shift/count',
+		{
+			_token: csrf_token,
+			from: copyFrom.format('YYYY-MM-DD'),
+			to: copyTo.format('YYYY-MM-DD'),
+			location:currentLocation,
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#shiftsCount').text(data + ' shifts to copy');
+			}
+		}
+		);
+}
+
 var copyBtn = document.getElementById('copyBtn');
 copyBtn.addEventListener('click',function(){
 	copyShifts();
 },false);
 function copyShifts(){
+	var clear = 0;
+	if(document.getElementById('clearCurrent').checked){
+		clear = 1;
+	} else {
+		clear = 0;
+	}
+	console.log('clear: '+clear);
 	$.post(
 		'/shift/copy',
 		{
@@ -310,10 +335,25 @@ function copyShifts(){
 			to: copyTo.format('YYYY-MM-DD'),
 			dFrom: dFrom,
 			dTo: dTo,
+			clear: clear
 		},
 		function(data,status){
 			if(status == 'success'){
 				console.log(data);
+				$('#calendar').fullCalendar('refetchEvents');
+				$('#copyScheduleDialog').dialog('close');
+
+				$.notify({
+					title: 'Success',
+					message: data,
+				},
+				{
+					type:'success',
+					allow_dismiss:false,
+					newest_on_top:true,
+					placement:{from:'top',align:'center'},
+
+				});
 			}
 		}
 		);
