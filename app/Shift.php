@@ -22,6 +22,11 @@ class Shift extends Model
     {
     	return $this->belongsTo('App\Location');
     }
+    public function duty()
+    {
+      return $this->BelongsTo('App\Duty');
+    }
+
     public function scheduledHours(){
         return DB::table('shifts')->select(DB::raw('UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start)'))
                     ->get();

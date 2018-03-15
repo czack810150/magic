@@ -19,6 +19,12 @@
 					  	<label class="col-form-label col-4" for="roleOptions"><i class="fa  fa-rocket"></i>&nbsp;&nbsp;Role</label>
 					  	<div class="col-8" id="roleOptions"></div>
 					</div>
+					<div class="form-group m-form__group  row">
+					  	<label class="col-form-label col-4" for="dutyOptions"><i class="fa  fa-puzzle-piece"></i>&nbsp;&nbsp;Duty</label>
+					  	<div class="col-8" id="dutyOptions">
+					  		{{ Form::select('dutyCreate',$duties,null,['class'=>'form-control','placeholder'=>'No Assigned Duty','id'=>'dutyCreate']) }}
+					  	</div>
+					</div>
 
 
 					<div class="form-group m-form__group has-danger row">

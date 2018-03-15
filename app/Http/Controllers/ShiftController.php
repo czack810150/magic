@@ -34,6 +34,7 @@ class ShiftController extends Controller
             'location_id' => $r->location,
             'employee_id' => $r->employee,
             'role_id' => $r->role,
+            'duty_id' => $r->duty,
             'start' => $r->start,
             'end' => $r->end,
             'published' => 0,
@@ -87,6 +88,7 @@ class ShiftController extends Controller
         $shift = Shift::find($id);
         $shift->employee_id = $request->employee;
         $shift->role_id = $request->role;
+        $shift->duty_id = $request->duty;
         $shift->start = $request->start.":00";
         $shift->end = $request->end.":00";
         $shift->comment = $request->note;
@@ -147,6 +149,7 @@ class ShiftController extends Controller
         {
             $s->resourceId = $s->employee_id;
             $s->employee->job;
+            $s->duty;
         }
         return $shifts;
     }

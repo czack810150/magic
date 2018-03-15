@@ -68,6 +68,7 @@ var currentShift = {
     start:0,
     end:0,
     role:0,
+    duty: null,
     employee:0,
     note:'',
     clear:function(){
@@ -75,6 +76,7 @@ var currentShift = {
         this.start = 0;
         this.end = 0;
         this.role = 0;
+        this.duty = null;
         this.employee = 0;
         this.note = '';
     },
@@ -83,12 +85,14 @@ var newShift = {
     start:null,
     end:null,
     role:null,
+    duty:null,
     employee:null,
     note:null,
     clear:function(){
         this.start = null;
         this.end = null;
         this.role = null;
+        this.duty = null;
         this.employee = null;
         this.note = null;
         $('#form-control-feedback').html('');
@@ -236,8 +240,8 @@ var fullCalOptions = {
         
         eventDataTransform: function(eventData){
             eventData.title = eventData.role.c_name;
-            if(eventData.role_id == '2')
-            eventData.backgroundColor = '#fa4377';
+            if(eventData.duty_id)
+            eventData.backgroundColor = eventData.duty.color;
             return eventData;
         },
 
@@ -258,8 +262,10 @@ var fullCalOptions = {
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role = event.role_id;
+            currentShift.duty = event.duty_id;
             var defaultStartDate = event.start;
             $('#modifyRole').val(event.role_id);
+            $('#modifyDuty').val(event.duty_id);
             $('#startDate').val(event.start.format('MMM D, YYYY'));
             $('#startDate').daterangepicker({
                 locale: {
@@ -282,10 +288,7 @@ var fullCalOptions = {
             $("#endTime").timepicker();
             $('#shiftNote').val(event.comment);
             $('#modifyShiftDialog').dialog('option','title',event.title);
-            //$('#modifyShiftDialog').hide();
             $('#modifyShiftDialog').dialog('open');
-            console.log(currentEvent);
-            console.log($('#modifyRole').val());
 
         },
         eventDrop: function(event,delta,revertFunc,jsEvent,ui,view){
@@ -294,6 +297,7 @@ var fullCalOptions = {
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role = event.role_id;
+            currentShift.duty = event.duty_id;
             currentShift.start = event.start.format('YYYY-MM-DD HH:mm');
             currentShift.end = event.end.format('YYYY-MM-DD HH:mm');
             updateShift(currentShift);
@@ -304,6 +308,7 @@ var fullCalOptions = {
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role = event.role_id;
+            currentShift.duty = event.duty_id;
             currentShift.start = event.start.format('YYYY-MM-DD HH:mm');
             currentShift.end = event.end.format('YYYY-MM-DD HH:mm');
             updateShift(currentShift);
@@ -358,11 +363,9 @@ var fullCalOptions = {
             currentDate = date;
             $('#shiftDate').text(date.format('dddd, MMM D, YYYY'));
             $('#newShiftEmployee').text(resource.cName);
+            $('#dutyCreate option[selected="selected"]').prop('selected','selected');
             $('#createShiftDialog').dialog('open');
-
-            
             newShift.employee = resource.id;
-          
         },
 
         views:{
@@ -455,6 +458,7 @@ document.getElementById("shiftTime").addEventListener("keypress", function(event
     if(event.keyCode == 13 ) {
             newShift.role = $('#shiftRole').val();
             newShift.note = $('#newShiftNote').val();
+            newShift.duty = $('#dutyCreate').val();
             const shift = parseShiftTimeString($('#shiftTime').val());
             console.log(shift);
             if(shift.error == null){
@@ -542,6 +546,7 @@ function submitShift(){
             start: newShift.start,
             end: newShift.end,
             role: newShift.role,
+            duty: newShift.duty,
             employee: newShift.employee,
             note: newShift.note,
         },
@@ -581,6 +586,7 @@ function updateShift(shift){
             _token:csrf_token,
             employee: shift.employee,
             role: shift.role,
+            duty: shift.duty,
             start: shift.start,
             end: shift.end,
             note: shift.note,
@@ -661,6 +667,8 @@ function modifyShift(){
                  currentShift.note = $('#shiftNote').val();
                  currentShift.role = $('#modifyRole').val();
                  currentShift.role_id = $('#modifyRole').val();
+                 currentShift.duty = $('#modifyDuty').val();
+                 currentShift.duty_id = $('#modifyDuty').val();
                  console.log(currentShift);
                  updateShift(currentShift);
                  currentEvent.end = shift.end;
@@ -693,7 +701,8 @@ createCancel.addEventListener('click',function(){
 },false);
 var createBtn = document.getElementById('createBtn');
 createBtn.addEventListener('click',function(){
-     newShift.role = $('#shiftRole').val();
+            newShift.role = $('#shiftRole').val();
+            newShift.duty = $('#createDuty').val();
             newShift.note = $('#newShiftNote').val();
             const shift = parseShiftTimeString($('#shiftTime').val());
             console.log(shift);

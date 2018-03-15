@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Location;
 use App\Role;
+use App\Duty;
 use Auth;
 
 
@@ -32,8 +33,8 @@ class ScheduleController extends Controller
             'dish' => '洗碗工'
         );
         $roles = Role::pluck('c_name','id');
-
-        return view('magicshift.index',compact('defaultLocation','locations','otherStores','positions','roles'));
+        $duties = Duty::pluck('cName','id');
+        return view('magicshift.index',compact('defaultLocation','locations','otherStores','positions','roles','duties'));
     }
 
     /**

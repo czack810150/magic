@@ -39,7 +39,14 @@
               <div class="col-8">
               {{ Form::select('modifyRole',$roles,null,['id'=>'modifyRole','class'=>'form-control m-input']) }}
               </div>
-          </div>
+</div>
+
+<div class="form-group m-form__group  row">
+              <label class="col-form-label col-4" for="modifyDutyOptions"><i class="fa  fa-puzzle-piece"></i>&nbsp;&nbsp;Duty</label>
+              <div class="col-8" id="dutyOptions">
+                {{ Form::select('modifyDuty',$duties,null,['class'=>'form-control','placeholder'=>'No Assigned Duty','id'=>'modifyDuty']) }}
+              </div>
+</div>
 
 
 <div class="row mb-3">
