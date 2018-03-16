@@ -238,6 +238,7 @@ function removeShift(shift){
         function(data,status){
             if(status == 'success'){
                 if(data){
+                	clearStats();
                     $('#modifyShiftDialog').dialog('close');
                     $('#calendar').fullCalendar('refetchEvents');
                     udpateWeekTotalOnRemoval(data);
@@ -358,4 +359,23 @@ function copyShifts(){
 		}
 		);
 }
+
+
+//statistics
+var totalHours = 0.0;
+function getTotalHours(hour){
+    totalHours += Number(hour);
+    $('#totalHour').text(totalHours.toFixed(2));
+}
+function clearStats()
+{
+	totalHours = 0.0;
+}
+function hideStats(){
+	 $('#totalHour').hide();
+}
+function showStats(){
+	 $('#totalHour').show();
+}
+// end of statistics
 

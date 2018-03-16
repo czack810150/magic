@@ -1,6 +1,6 @@
 @extends('layouts.magicshift.magicshift')
 @section('content')
-<span id="status_bar"></span>
+
 <!--begin::Portlet-->
 		<div class="m-portlet m-portlet--responsive-mobile">
 			<div class="m-portlet__head">
@@ -38,8 +38,36 @@
 				
 			</div>
 			<div class="m-portlet__body">
-
-<div id="calendar"></div>
+             <div class="row m-row--no-padding m-row--col-separator-xl mb-5">
+                <div class="col-2">
+                <!--begin::Total Profit-->
+                <div class="m-widget24">                     
+                    <div class="m-widget24__item">
+                        <h4 class="m-widget24__title">
+                            Total Hours
+                        </h4><br>
+                        <span class="m-widget24__desc">
+                            排班工时
+                        </span>
+                        <span class="m-widget24__stats m--font-success" >
+                            
+                        </span>     
+                       
+                    </div>                    
+                </div>
+                <!--end::Total Profit-->
+                </div>
+            </div> 
+                    <span id="status_bar"></span>
+                     <div class="row">
+                <div class="col-12" id="stats">
+                    @include('magicshift.stats')
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12" id="calendar"></div>
+            </div>
+           
 			</div>
 		</div>	
 		<!--end::Portlet-->
@@ -55,7 +83,6 @@
 @section('pageJS')
 <script>
 const csrf_token = '{{csrf_token()}}';
-
 
 
 
@@ -149,7 +176,7 @@ function updateWeekTotal(shift){
     
     currentEvent = {};
 }
-
+var shiftCounter = 0;
 
 var fullCalOptions = {
         schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
@@ -246,16 +273,16 @@ var fullCalOptions = {
         },
 
         eventRender: function(event,element){
-            var end = '';
-            if(event.end.minutes() == 0){
-                end = event.end.format('ha');
+            shiftCounter += 1;
+            const duration = (event.end.format('X') - event.start.format('X'))/3600;
+            getTotalHours(duration);
+            element.find(".fc-time").append(' <span class="float-right badge badge-secondary">'+ Number(duration.toFixed(2)) + '</span>');
+            if(event.duty){
+                element.find(".fc-time").append('<br><strong>' + event.duty.cName + '</strong>');
             } else {
-                end = event.end.format('h:mma');
+                element.find(".fc-time").append('<br>');
             }
-            element.find(".fc-time").append(' - ' + end);
-            var duration = (event.end.format('X') - event.start.format('X'))/3600;
-            element.find(".fc-title").append(' <span class="float-right badge badge-secondary">'+ Math.round(duration*100)/100 + '</span>');
-      
+            //element.removeClass('fc-start');
         },
         eventClick: function(event,element){
             currentEvent = event;
@@ -291,7 +318,16 @@ var fullCalOptions = {
             $('#modifyShiftDialog').dialog('open');
 
         },
+        eventDragStart: function(event,jsEvent,ui,view){
+            clearStats();
+            hideStats();
+        },
+        eventDragStop: function(event,jsEvent,ui,view){
+            clearStats();
+            showStats();
+        },
         eventDrop: function(event,delta,revertFunc,jsEvent,ui,view){
+           
             console.log('dropped: ' + event.start.format('YYYY-MM-DD'));
             currentEvent = event;
             currentShift.id = event.id;
@@ -302,7 +338,16 @@ var fullCalOptions = {
             currentShift.end = event.end.format('YYYY-MM-DD HH:mm');
             updateShift(currentShift);
         },
+         eventResizeStart: function(event,jsEvent,ui,view){
+            clearStats();
+            hideStats();
+        },
+        eventResizeStop: function(event,jsEvent,ui,view){
+            clearStats();
+            showStats();
+        },
         eventResize: function(event,delta,revertFunc,jsEvent,ui,view){
+             clearStats();
             console.log('resized: ' + event.start.format('YYYY-MM-DD'));
             currentEvent = event;
             currentShift.id = event.id;
@@ -315,6 +360,7 @@ var fullCalOptions = {
         },
     
         height:'auto',
+        contentHeight:'600',
         firstDay:1,
         isRTL:false,
         weekends:true,
@@ -328,6 +374,9 @@ var fullCalOptions = {
         unselectAuto:true,
         editable:true,
         droppable:true,
+        displayEventEnd: true,
+        timeFormat:'h(:mm)t',
+        nextDayThreshold:'12:30:00',
 
         businessHours: {
             dow:[1,2,3,4,5,6,0],
@@ -342,7 +391,7 @@ var fullCalOptions = {
             list: 'List'
         },
         showNonCurrentDates:true,
-        contentHeight:'aspectRatio',
+       
         now:'{{Carbon\Carbon::now()->toIso8601String() }}',
         allDaySlot:true,
         noEventsMessage:'No scheduled shifts',
@@ -386,7 +435,7 @@ var fullCalOptions = {
                 ],
                 slotLabelInterval: '24:00',
                 duration:{weeks: 1},
-                start:'2018-01-01',
+                //start:'2018-01-01',
             }
         },
 
@@ -460,7 +509,6 @@ document.getElementById("shiftTime").addEventListener("keypress", function(event
             newShift.note = $('#newShiftNote').val();
             newShift.duty = $('#dutyCreate').val();
             const shift = parseShiftTimeString($('#shiftTime').val());
-            console.log(shift);
             if(shift.error == null){
                 newShift.start = currentDate.clone().hour(shift.start.hour).minute(shift.start.minute).format('YYYY-MM-DD HH:mm:ss');
                 if(shift.addDay){
@@ -496,8 +544,6 @@ document.getElementById("shiftTime").addEventListener("keypress", function(event
                         formControlFeedback(shift.msg);
               }
             }
-           
-        console.log(newShift);
     }
     
 })
@@ -538,6 +584,7 @@ function getNewShiftTime(str){
         );
 }
 function submitShift(){
+    clearStats();
     $.post(
         '/shift/create',
         {
@@ -593,6 +640,7 @@ function updateShift(shift){
         },
         function(data,status){
             if(status == 'success'){
+                clearStats();
                 updateWeekTotal(data);
                 shift.clear(); 
                 //$('#calendar').fullCalendar('refetchResources');  
@@ -627,7 +675,7 @@ var modifyShiftOptions = {
     position: { my: "center", at: "center", of: window },
     resizable: false,
     width:600,
-    height:600,    
+    height:680,    
 };
 
 var newShiftDialogOptions = {
@@ -775,6 +823,7 @@ $("[name='resourceToggle']").bootstrapSwitch({
         }
     }
 });
+
 
 
 </script>

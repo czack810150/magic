@@ -19,7 +19,8 @@
     <title>MagicShift</title>
      <!--begin::Base Styles -->  
         <!--begin::Page Vendors -->
-        <link href="{{asset('assets/vendors/custom/fullcalendar/fullcalendar.bundle.css')}}" rel="stylesheet" type="text/css" />
+        <!-- <link href="{{asset('assets/vendors/custom/fullcalendar/fullcalendar.bundle.css')}}" rel="stylesheet"/> -->
+        <link href="{{ asset('css/fullcalendar.css') }}" rel="stylesheet"/>
         <link href="{{asset('css/jquery-ui.min.css')}}" rel="stylesheet"/>
         <link href="{{asset('css/jquery.timepicker.min.css')}}" rel="stylesheet"/>
         <link href="{{asset('css/scheduler.min.css')}}" rel="stylesheet"/>
