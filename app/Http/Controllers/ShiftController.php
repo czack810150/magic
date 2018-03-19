@@ -8,6 +8,7 @@ use App\Location;
 use App\Datetime;
 use App\Employee;
 use Carbon\Carbon;
+use App\Duty;
 
 class ShiftController extends Controller
 {
@@ -96,12 +97,6 @@ class ShiftController extends Controller
         return $shift;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $shift = Shift::find($id);
@@ -188,23 +183,17 @@ class ShiftController extends Controller
        if($r->clear){ // delete all shifts for current period
         $currentPeriodShifts = Shift::where('location_id',$r->location)->whereBetween('start',[$dFrom->toDateString(),$dTo->toDateString()])->delete();
         }
-
-
       
        $diff =  $dFrom->diffInDays($from);
-
        $shifts = Shift::where('location_id',$r->location)->whereBetween('start',[$from->toDateString(),$to->toDateString()])->get();
-
-       
-
        
        if($dFrom->greaterThanOrEqualTo($from)){
-       
         foreach($shifts as $s){
             Shift::create([
                 'location_id' => $r->location,
                 'employee_id' => $s->employee_id,
                 'role_id' => $s->role_id,
+                'duty_id' => $s->duty_id,
                 'start' => Carbon::createFromFormat('Y-m-d H:i:s',$s->start)->addDays($diff)->toDateTimeString(),
                 'end' => Carbon::createFromFormat('Y-m-d H:i:s',$s->end)->addDays($diff)->toDateTimeString(),
                 'published'=> false,
@@ -217,6 +206,7 @@ class ShiftController extends Controller
                 'location_id' => $r->location,
                 'employee_id' => $s->employee_id,
                 'role_id' => $s->role_id,
+                'duty_id' => $s->duty_id,
                 'start' => Carbon::createFromFormat('Y-m-d H:i:s',$s->start)->subDays($diff)->toDateTimeString(),
                 'end' => Carbon::createFromFormat('Y-m-d H:i:s',$s->end)->subDays($diff)->toDateTimeString(),
                 'published'=> false,
@@ -224,14 +214,16 @@ class ShiftController extends Controller
         }
         $msg = 'copied from future';
        } 
-        
-
-        
         return $msg;
      }
      public function countShifts(Request $r){
-        
         $shifts = Shift::where('location_id',$r->location)->whereBetween('start',[$r->from,$r->to])->count();
         return $shifts;
+     }
+     public function fetchStats(Request $r)
+     {
+        $stats = Shift::locationStats(9,'2018-03-19','2018-03-26');
+        $duties = Duty::get();
+        return view('magicshift.stats',compact('stats','duties'));
      }
 }

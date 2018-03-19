@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-
+use Carbon\Carbon;
 class Shift extends Model
 {
    protected $dates = array('start','end');
@@ -68,5 +68,29 @@ class Shift extends Model
         return 0;
       }
       
+    }
+
+    public static function locationStats($location,$startStr,$endStr){
+      $start = Carbon::createFromFormat('Y-m-d',$startStr);
+      $end = Carbon::createFromFormat('Y-m-d',$endStr);
+      $diff = $start->diffInDays($end);
+      $result = collect();
+      
+      for($i = 0; $i < $diff; $i++){
+        $result->push(['date' => $start->toDateString(),'totalHour' => self::dailyTotal($location,$start->toDateString())]);
+        $start->addDay();
+      
+      }
+      return $result;
+    }
+
+    public static function dailyTotal($location,$date)
+    {
+      $weekTotal = DB::table('shifts')->select(DB::raw('SUM(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 AS totalHour'))->where('location_id',$location)->whereDate('start',$date)->first()->totalHour;
+      if($weekTotal){
+        return $weekTotal;
+      } else {
+        return 0;
+      }
     }
 }

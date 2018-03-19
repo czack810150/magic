@@ -60,9 +60,7 @@
             </div> 
                     <span id="status_bar"></span>
                      <div class="row">
-                <div class="col-12" id="stats">
-                    @include('magicshift.stats')
-                </div>
+                <div class="col-12" id="stats"></div>
             </div>
             <div class="row">
                 <div class="col-12" id="calendar"></div>
@@ -347,7 +345,7 @@ var fullCalOptions = {
             showStats();
         },
         eventResize: function(event,delta,revertFunc,jsEvent,ui,view){
-             clearStats();
+            clearStats();
             console.log('resized: ' + event.start.format('YYYY-MM-DD'));
             currentEvent = event;
             currentShift.id = event.id;
@@ -604,6 +602,7 @@ function submitShift(){
                 $('#calendar').fullCalendar('refetchEvents');
                 updateWeekTotal(data);
 
+                scheduleStats();
             }
         }
         );
@@ -643,6 +642,7 @@ function updateShift(shift){
                 clearStats();
                 updateWeekTotal(data);
                 shift.clear(); 
+                scheduleStats();
                 //$('#calendar').fullCalendar('refetchResources');  
             } 
         }
@@ -825,6 +825,22 @@ $("[name='resourceToggle']").bootstrapSwitch({
 });
 
 
+function scheduleStats(){ 
+    $.post(
+        '/scheduler/stats/fetch',
+        {
+            _token: csrf_token,
+
+        },
+        function(data,status){
+            if(status == 'success'){
+                $('#stats').html(data);
+                console.log(data);
+            }
+        }
+        );
+}
+scheduleStats();
 
 </script>
 @endsection

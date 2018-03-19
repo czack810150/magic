@@ -24,6 +24,8 @@ Route::post('/shift/{id}/remove','ShiftController@destroy');
 Route::post('/employees/positionFilter','EmployeeController@positionFilter');
 Route::post('/shift/copy','ShiftController@copyShifts');
 Route::post('/shift/count','ShiftController@countShifts');
+Route::post('/scheduler/stats/fetch','ShiftController@fetchStats');
+
 
 Route::get('/qr',function(){
 	return  QRCode::text('Laravel QR Code Generator!')->svg();    
