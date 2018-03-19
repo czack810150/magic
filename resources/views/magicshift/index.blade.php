@@ -717,14 +717,14 @@ function modifyShift(){
                  currentShift.role_id = $('#modifyRole').val();
                  currentShift.duty = $('#modifyDuty').val();
                  currentShift.duty_id = $('#modifyDuty').val();
-                 console.log(currentShift);
+                 
                  updateShift(currentShift);
                  currentEvent.end = shift.end;
                  currentEvent.start = shift.start;
                  currentEvent.comment = currentShift.note;
                  currentEvent.title = $('#modifyRole option:selected').text();
                  $('#calendar').fullCalendar('updateEvent',currentEvent);
-                 console.log(currentEvent);
+               
                  $('#modifyShiftDialog').dialog('close');
 }
 

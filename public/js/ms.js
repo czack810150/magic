@@ -243,6 +243,7 @@ function removeShift(shift){
                     $('#calendar').fullCalendar('refetchEvents');
                     udpateWeekTotalOnRemoval(data);
                     currentShift.clear();
+                    scheduleStats();
                 }
             }
         }
