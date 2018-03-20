@@ -39,6 +39,7 @@ class ShiftController extends Controller
             'start' => $r->start,
             'end' => $r->end,
             'published' => 0,
+            'special' => $r->special == 'true'?true:false,
             'comment' => $r->note
         ]);
         return $shift;
@@ -90,6 +91,7 @@ class ShiftController extends Controller
         $shift->employee_id = $request->employee;
         $shift->role_id = $request->role;
         $shift->duty_id = $request->duty;
+        $shift->special = $request->special == 'true'?true:false;
         $shift->start = $request->start.":00";
         $shift->end = $request->end.":00";
         $shift->comment = $request->note;
@@ -222,7 +224,7 @@ class ShiftController extends Controller
      }
      public function fetchStats(Request $r)
      {
-        $stats = Shift::locationStats(9,'2018-03-19','2018-03-26');
+        $stats = Shift::locationStats($r->location,$r->from,$r->to);
         $duties = Duty::get();
         return view('magicshift.stats',compact('stats','duties'));
      }

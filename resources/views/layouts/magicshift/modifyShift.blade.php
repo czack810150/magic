@@ -56,11 +56,22 @@
 </div>
 
 <div class="form-group row m-form">
-	<label class="col-form-label col-2 ">Remove</label>
+	<label class="col-form-label col-3 ">Remove</label>
 				<div class="col-3 ">
 							<div id="removeSlider" class="m-nouislider m-nouislider--handle-danger"></div>
 					<span class="m-form__help">Slide to confirm</span>
 				</div>
+         <label class="col-3 col-form-label"><i class="fa  fa-flag"></i>&nbsp&nbspSpecial</label> 
+            <div class="col-3">
+              <span class="m-switch m-switch--icon m-switch--warning">
+                <label>
+                  <input type="checkbox" name="modifySpecial" id="modifySpecial"><span></span>
+                </label>
+              </span>
+
+            </div>
+
+
 </div>
 
 

@@ -95,6 +95,8 @@ var currentShift = {
     role:0,
     duty: null,
     employee:0,
+    published:false,
+    special:false,
     note:'',
     clear:function(){
         this.id = 0;
@@ -103,7 +105,10 @@ var currentShift = {
         this.role = 0;
         this.duty = null;
         this.employee = 0;
+        this.published = false;
+        this.special = false;
         this.note = '';
+        $('#createSpecial').prop('checked',false);
     },
 };
 var newShift = {
@@ -112,6 +117,8 @@ var newShift = {
     role:null,
     duty:null,
     employee:null,
+    published:false,
+    special:false,
     note:null,
     clear:function(){
         this.start = null;
@@ -119,8 +126,11 @@ var newShift = {
         this.role = null;
         this.duty = null;
         this.employee = null;
+        this.published = false;
+        this.special = false;
         this.note = null;
         $('#form-control-feedback').html('');
+        $('#createSpecial').prop('checked',false);
     },
 };
 
@@ -274,12 +284,16 @@ var fullCalOptions = {
             shiftCounter += 1;
             const duration = (event.end.format('X') - event.start.format('X'))/3600;
             getTotalHours(duration);
+            if(event.special){
+                element.find(".fc-time").append(' <i class="fa  fa-usd m--font-warning">');
+            }
             element.find(".fc-time").append(' <span class="float-right badge badge-secondary">'+ Number(duration.toFixed(2)) + '</span>');
             if(event.duty){
                 element.find(".fc-time").append('<br><strong>' + event.duty.cName + '</strong>');
             } else {
                 element.find(".fc-time").append('<br>');
             }
+
             //element.removeClass('fc-start');
         },
         eventClick: function(event,element){
@@ -288,6 +302,7 @@ var fullCalOptions = {
             currentShift.employee = event.resourceId;
             currentShift.role = event.role_id;
             currentShift.duty = event.duty_id;
+            currentShift.special = event.special;
             var defaultStartDate = event.start;
             $('#modifyRole').val(event.role_id);
             $('#modifyDuty').val(event.duty_id);
@@ -312,6 +327,12 @@ var fullCalOptions = {
             $('#endTime').val(event.end.format('h:mma'));
             $("#endTime").timepicker();
             $('#shiftNote').val(event.comment);
+            if(event.special){
+                $('#modifySpecial').prop('checked',true);
+            } else {
+                $('#modifySpecial').prop('checked',false);
+            }
+            
             $('#modifyShiftDialog').dialog('option','title',event.title);
             $('#modifyShiftDialog').dialog('open');
 
@@ -411,6 +432,7 @@ var fullCalOptions = {
             $('#shiftDate').text(date.format('dddd, MMM D, YYYY'));
             $('#newShiftEmployee').text(resource.cName);
             $('#dutyCreate option[selected="selected"]').prop('selected','selected');
+            $('#createSpecial').prop('checked',false);
             $('#createShiftDialog').dialog('open');
             newShift.employee = resource.id;
         },
@@ -456,7 +478,10 @@ var fullCalOptions = {
             center: 'timelineDay,timelineWorkWeek,month,listWeek prev,today,next',
             right:  'borrow',
         },
-       
+        viewRender: function(view,element)
+        {
+            scheduleStats(view);
+        }
 
     };
 
@@ -506,6 +531,7 @@ document.getElementById("shiftTime").addEventListener("keypress", function(event
             newShift.role = $('#shiftRole').val();
             newShift.note = $('#newShiftNote').val();
             newShift.duty = $('#dutyCreate').val();
+            newShift.special = $('#createSpecial').prop('checked');
             const shift = parseShiftTimeString($('#shiftTime').val());
             if(shift.error == null){
                 newShift.start = currentDate.clone().hour(shift.start.hour).minute(shift.start.minute).format('YYYY-MM-DD HH:mm:ss');
@@ -592,6 +618,7 @@ function submitShift(){
             end: newShift.end,
             role: newShift.role,
             duty: newShift.duty,
+            special: newShift.special,
             employee: newShift.employee,
             note: newShift.note,
         },
@@ -601,7 +628,6 @@ function submitShift(){
                 $('#createShiftDialog').dialog('close');
                 $('#calendar').fullCalendar('refetchEvents');
                 updateWeekTotal(data);
-
                 scheduleStats();
             }
         }
@@ -625,6 +651,8 @@ function parseShift(){
     
 }
 function updateShift(shift){
+    console.log(shift);
+    
     
     $.post(
         '/shift/' + shift.id +'/update',
@@ -633,6 +661,7 @@ function updateShift(shift){
             employee: shift.employee,
             role: shift.role,
             duty: shift.duty,
+            special: shift.special,
             start: shift.start,
             end: shift.end,
             note: shift.note,
@@ -643,7 +672,9 @@ function updateShift(shift){
                 updateWeekTotal(data);
                 shift.clear(); 
                 scheduleStats();
-                //$('#calendar').fullCalendar('refetchResources');  
+                currentEvent.duty_id = shift.duty;
+                $('#calendar').fullCalendar('updateEvent',currentEvent);  
+                console.log(currentEvent);
             } 
         }
         );
@@ -717,6 +748,7 @@ function modifyShift(){
                  currentShift.role_id = $('#modifyRole').val();
                  currentShift.duty = $('#modifyDuty').val();
                  currentShift.duty_id = $('#modifyDuty').val();
+                 currentShift.special = $('#modifySpecial').prop('checked');
                  
                  updateShift(currentShift);
                  currentEvent.end = shift.end;
@@ -746,12 +778,14 @@ bBtn.addEventListener('click',function(){
 var createCancel = document.getElementById('createCancel');
 createCancel.addEventListener('click',function(){
     $("#createShiftDialog").dialog('close');
+    $('#createSpecial').prop('checked',false);
 },false);
 var createBtn = document.getElementById('createBtn');
 createBtn.addEventListener('click',function(){
             newShift.role = $('#shiftRole').val();
-            newShift.duty = $('#createDuty').val();
+            newShift.duty = $('#dutyCreate').val();
             newShift.note = $('#newShiftNote').val();
+            newShift.special = $('#createSpecial').prop('checked');
             const shift = parseShiftTimeString($('#shiftTime').val());
             console.log(shift);
             if(shift.error == null){
@@ -825,22 +859,22 @@ $("[name='resourceToggle']").bootstrapSwitch({
 });
 
 
-function scheduleStats(){ 
+function scheduleStats(view){ 
     $.post(
         '/scheduler/stats/fetch',
         {
             _token: csrf_token,
-
+            location: currentLocation,
+            from:view.start.format('YYYY-MM-DD'),
+            to:view.end.format('YYYY-MM-DD'),
         },
         function(data,status){
             if(status == 'success'){
                 $('#stats').html(data);
-                console.log(data);
             }
         }
         );
 }
-scheduleStats();
 
 </script>
 @endsection

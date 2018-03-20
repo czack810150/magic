@@ -36,6 +36,20 @@
 					  	</div>
 					</div>
 
+
+					<div class="m-form__group form-group row">
+						<label class="col-4 col-form-label"><i class="fa  fa-flag"></i>&nbsp&nbspSpecial</label> 
+						<div class="col-4">
+							<span class="m-switch m-switch--icon m-switch--warning">
+								<label>
+									<input type="checkbox" name="createSpecial" id="createSpecial"><span></span>
+								</label>
+							</span>
+
+						</div>
+					</div>
+
+
 					<div class="form-group m-form__group row">
 						<div class="col-12">
 							<textarea rows="3" class="form-control" placeholder="Notes" id="newShiftNote" name="newShiftNote"></textarea>
