@@ -88,10 +88,14 @@ var currentEvent = {};
 var currentDate = moment();
 var currentLocation = {{ $defaultLocation }};
 
+
 var currentShift = {
     id:0,
-    start:0,
-    end:0,
+    start:{},
+    end:{},
+    startStr:'',
+    endStr:'',
+    title:'',
     role:0,
     duty: null,
     employee:0,
@@ -100,8 +104,11 @@ var currentShift = {
     note:'',
     clear:function(){
         this.id = 0;
-        this.start = 0;
-        this.end = 0;
+        this.start = {};
+        this.end = {};
+        this.startStr = '',
+        this.endStr = '',
+        this.title = '',
         this.role = 0;
         this.duty = null;
         this.employee = 0;
@@ -182,7 +189,7 @@ function updateWeekTotal(shift){
         total.addClass('badge badge-danger');
     }
     
-    currentEvent = {};
+    //currentEvent = {};
 }
 var shiftCounter = 0;
 
@@ -275,16 +282,21 @@ var fullCalOptions = {
         
         eventDataTransform: function(eventData){
             eventData.title = eventData.role.c_name;
-            if(eventData.duty_id)
-            eventData.backgroundColor = eventData.duty.color;
+            if(eventData.duty_id){
+                eventData.color = eventData.duty.color;
+            } else {
+                eventData.color = '#d3eefd';
+            }
+            
             return eventData;
         },
 
         eventRender: function(event,element){
-            shiftCounter += 1;
+
+            console.log(event);
             const duration = (event.end.format('X') - event.start.format('X'))/3600;
             getTotalHours(duration);
-            if(event.special){
+            if(event.special == "1"){
                 element.find(".fc-time").append(' <i class="fa  fa-usd m--font-warning">');
             }
             element.find(".fc-time").append(' <span class="float-right badge badge-secondary">'+ Number(duration.toFixed(2)) + '</span>');
@@ -293,11 +305,10 @@ var fullCalOptions = {
             } else {
                 element.find(".fc-time").append('<br>');
             }
-
-            //element.removeClass('fc-start');
         },
         eventClick: function(event,element){
             currentEvent = event;
+            console.log(currentEvent);
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role = event.role_id;
@@ -307,25 +318,9 @@ var fullCalOptions = {
             $('#modifyRole').val(event.role_id);
             $('#modifyDuty').val(event.duty_id);
             $('#startDate').val(event.start.format('MMM D, YYYY'));
-            $('#startDate').daterangepicker({
-                locale: {
-                    format:'MMM D, YYYY',
-                },
-                singleDatePicker:true,
-                });
-
             $('#endDate').val(event.end.format('MMM D, YYYY'));
-            $('#endDate').daterangepicker({
-                locale: {
-                    format:'MMM D, YYYY',
-                },
-                singleDatePicker:true,
-                });
             $('#startTime').val(event.start.format('h:mma'));
-            $('#startTime').timepicker();
-
             $('#endTime').val(event.end.format('h:mma'));
-            $("#endTime").timepicker();
             $('#shiftNote').val(event.comment);
             if(event.special){
                 $('#modifySpecial').prop('checked',true);
@@ -333,7 +328,6 @@ var fullCalOptions = {
                 $('#modifySpecial').prop('checked',false);
             }
             
-            $('#modifyShiftDialog').dialog('option','title',event.title);
             $('#modifyShiftDialog').dialog('open');
 
         },
@@ -353,8 +347,10 @@ var fullCalOptions = {
             currentShift.employee = event.resourceId;
             currentShift.role = event.role_id;
             currentShift.duty = event.duty_id;
-            currentShift.start = event.start.format('YYYY-MM-DD HH:mm');
-            currentShift.end = event.end.format('YYYY-MM-DD HH:mm');
+            currentShift.startStr = event.start.format('YYYY-MM-DD HH:mm');
+            currentShift.endStr = event.end.format('YYYY-MM-DD HH:mm');
+            currentShift.start = event.start;
+            currentShift.end = event.end;
             updateShift(currentShift);
         },
          eventResizeStart: function(event,jsEvent,ui,view){
@@ -373,8 +369,10 @@ var fullCalOptions = {
             currentShift.employee = event.resourceId;
             currentShift.role = event.role_id;
             currentShift.duty = event.duty_id;
-            currentShift.start = event.start.format('YYYY-MM-DD HH:mm');
-            currentShift.end = event.end.format('YYYY-MM-DD HH:mm');
+            currentShift.startStr = event.start.format('YYYY-MM-DD HH:mm');
+            currentShift.endStr = event.end.format('YYYY-MM-DD HH:mm');
+            currentShift.start = event.start;
+            currentShift.end = event.end;
             updateShift(currentShift);
         },
     
@@ -460,9 +458,6 @@ var fullCalOptions = {
         },
 
         defaultView: 'timelineWorkWeek',
-
-
-
         customButtons:{
             borrow: {
                 text:'借用他店员工',
@@ -472,7 +467,6 @@ var fullCalOptions = {
             }
         },
 
-       
         header: {
             left:   'title  ',
             center: 'timelineDay,timelineWorkWeek,month,listWeek prev,today,next',
@@ -480,7 +474,7 @@ var fullCalOptions = {
         },
         viewRender: function(view,element)
         {
-            scheduleStats(view);
+            scheduleStats($('#calendar').fullCalendar('getView'));
         }
 
     };
@@ -585,28 +579,7 @@ function getRoleList(defaultRole){
     );        
 }
 
-function getNewShiftTime(str){
-    $.post(
-        '/datetime/parseStr',
-        {
-            _token: csrf_token,
-            str:str,
-        },
-        function(data,status){
-            if(status == 'success'){
-                console.log(data);
-                const shift = {
-                    start : currentDate.clone().hour(data.from.hour).minute(data.from.minute).format('YYYY-MM-DD HH:mm:ss'),
-                    end : currentDate.clone().hour(data.to.hour).minute(data.to.minute).format('YYYY-MM-DD HH:mm:ss'),
-                };
-                newShift.role = $('#shiftRole').val();
-                newShift.start = shift.start;
-                newShift.end = shift.end;
-                submitShift();
-            }
-        }
-        );
-}
+
 function submitShift(){
     clearStats();
     $.post(
@@ -628,57 +601,14 @@ function submitShift(){
                 $('#createShiftDialog').dialog('close');
                 $('#calendar').fullCalendar('refetchEvents');
                 updateWeekTotal(data);
-                scheduleStats();
+                scheduleStats($('#calendar').fullCalendar('getView'));
             }
         }
         );
 }
 
-function parseShift(){
-    const startStr = $('#startDate').val() + ' ' + $('#startTime').val();
-    const endStr = $('#endDate').val() + ' ' + $('#endTime').val();
-    const start = moment(startStr,'MMM D, YYYY h:ma');
-    const end = moment(endStr,'MMM D, YYYY h:ma');
-    if(start >= end){
-        alert('End time must be greater than start time!');
-        return false;
-    } else {
-        return {
-        start:start,
-        end:end
-    };
-    }
-    
-}
-function updateShift(shift){
-    console.log(shift);
-    
-    
-    $.post(
-        '/shift/' + shift.id +'/update',
-        {
-            _token:csrf_token,
-            employee: shift.employee,
-            role: shift.role,
-            duty: shift.duty,
-            special: shift.special,
-            start: shift.start,
-            end: shift.end,
-            note: shift.note,
-        },
-        function(data,status){
-            if(status == 'success'){
-                clearStats();
-                updateWeekTotal(data);
-                shift.clear(); 
-                scheduleStats();
-                currentEvent.duty_id = shift.duty;
-                $('#calendar').fullCalendar('updateEvent',currentEvent);  
-                console.log(currentEvent);
-            } 
-        }
-        );
-}
+
+
 
 
 
@@ -741,8 +671,11 @@ modifyBtn.addEventListener('click',function(){
 },false);
 function modifyShift(){
     const shift = parseShift();
-                 currentShift.start = shift.start.format('YYYY-MM-DD HH:mm');
-                 currentShift.end = shift.end.format('YYYY-MM-DD HH:mm');
+                 currentShift.startStr = shift.start.format('YYYY-MM-DD HH:mm');
+                 currentShift.endStr = shift.end.format('YYYY-MM-DD HH:mm');
+                 currentShift.start = shift.start;
+                 currentShift.end = shift.end;
+                 currentShift.title = $('#modifyRole option:selected').text();
                  currentShift.note = $('#shiftNote').val();
                  currentShift.role = $('#modifyRole').val();
                  currentShift.role_id = $('#modifyRole').val();
@@ -751,13 +684,52 @@ function modifyShift(){
                  currentShift.special = $('#modifySpecial').prop('checked');
                  
                  updateShift(currentShift);
-                 currentEvent.end = shift.end;
-                 currentEvent.start = shift.start;
-                 currentEvent.comment = currentShift.note;
-                 currentEvent.title = $('#modifyRole option:selected').text();
-                 $('#calendar').fullCalendar('updateEvent',currentEvent);
                
                  $('#modifyShiftDialog').dialog('close');
+}
+function updateShift(shift){
+    $.post(
+        '/shift/' + shift.id +'/update',
+        {
+            _token:csrf_token,
+            employee: shift.employee,
+            role: shift.role,
+            duty: shift.duty,
+            special: shift.special, // true/false
+            start: shift.startStr,
+            end: shift.endStr,
+            note: shift.note,
+        },
+        function(data,status){
+            if(status == 'success'){
+               
+                clearStats();
+                updateWeekTotal(data);
+
+               
+                scheduleStats($('#calendar').fullCalendar('getView'));
+                currentEvent.duty_id = shift.duty_id;
+                if(data.duty){
+                    currentEvent.duty = data.duty;
+                    currentEvent.color = data.duty.color;
+                } else {
+                    currentEvent.duty = null;
+                    currentEvent.color = null;
+                }
+                
+                currentEvent.start = shift.start;
+                currentEvent.end = shift.end;
+                currentEvent.title = shift.title;
+                currentEvent.role_id = shift.role;
+              
+                currentEvent.special = shift.special;
+             
+                $('#calendar').fullCalendar('updateEvent',currentEvent);
+                //shift.clear(); 
+               
+            } 
+        }
+        );
 }
 
 var bCancel = document.getElementById('borrowCancel');
@@ -875,6 +847,17 @@ function scheduleStats(view){
         }
         );
 }
+
+var drpOpions = {
+    locale: {
+        format:'MMM D, YYYY',
+    },
+    singleDatePicker:true,
+};
+$('#startDate').daterangepicker(drpOpions);
+$('#endDate').daterangepicker(drpOpions);
+$('#startTime').timepicker();
+$("#endTime").timepicker();
 
 </script>
 @endsection

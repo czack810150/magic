@@ -56,6 +56,7 @@ class Shift extends Model
        {
         $s->role;
         $s->employee;
+        //$s->duty;
        }
        return $shifts;
     }

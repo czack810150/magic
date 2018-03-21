@@ -25,6 +25,7 @@ Route::post('/employees/positionFilter','EmployeeController@positionFilter');
 Route::post('/shift/copy','ShiftController@copyShifts');
 Route::post('/shift/count','ShiftController@countShifts');
 Route::post('/scheduler/stats/fetch','ShiftController@fetchStats');
+Route::post('/shifts/fetchWeek', 'ShiftController@fetchWeek');
 
 
 Route::get('/qr',function(){
@@ -170,7 +171,7 @@ Route::post('/employee/location','EmployeeController@employeesByLocation');
 //Scheduled Shifts
 Route::get('/shift','ShiftController@index');
 Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@getShift'));
-Route::post('/shifts/fetchWeek', 'ShiftController@fetchWeek');
+
 
 //Clocks
 Route::get('/clocks','ClockController@shiftClocks');

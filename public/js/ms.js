@@ -1,6 +1,24 @@
 // app level variables
 var currentView;
 
+// get clicked shift start and end time, parse to moment obj
+function parseShift(){
+    const startStr = $('#startDate').val() + ' ' + $('#startTime').val();
+    const endStr = $('#endDate').val() + ' ' + $('#endTime').val();
+    const start = moment(startStr,'MMM D, YYYY h:ma');
+    const end = moment(endStr,'MMM D, YYYY h:ma');
+    if(start >= end){
+        alert('End time must be greater than start time!');
+        return false;
+    } else {
+        return {
+        start:start,
+        end:end
+    };
+    }   
+}
+
+
 function formControlFeedback(str){
 	$('#form-control-feedback').html(str);
 }

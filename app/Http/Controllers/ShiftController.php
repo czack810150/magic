@@ -96,6 +96,7 @@ class ShiftController extends Controller
         $shift->end = $request->end.":00";
         $shift->comment = $request->note;
         $shift->save();
+        $shift->duty;
         return $shift;
     }
 
