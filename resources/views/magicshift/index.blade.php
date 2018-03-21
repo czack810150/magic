@@ -725,7 +725,8 @@ function updateShift(shift){
                 currentEvent.special = shift.special;
              
                 $('#calendar').fullCalendar('updateEvent',currentEvent);
-                //shift.clear(); 
+                currentEvent = {};
+                currentShift.clear();
                
             } 
         }
