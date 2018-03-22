@@ -398,3 +398,30 @@ function showStats(){
 }
 // end of statistics
 
+//modify dialog date time pickers
+const drpOptions = {
+    locale: {
+        format:'MMM D, YYYY',
+    },
+    singleDatePicker:true,
+};
+$('#startDate').daterangepicker(drpOptions);
+$('#endDate').daterangepicker(drpOptions);
+$('#startTime').timepicker();
+$("#endTime").timepicker();
+$("#startDate").on('apply.daterangepicker',function(e,p){
+    if(currentEvent.start.format('YYYY-MM-DD') == currentEvent.end.format('YYYY-MM-DD')){
+        $('#endDate').val(p.startDate.format('MMM D, YYYY'));
+    } else {
+        const diff = currentEvent.end.clone().startOf('date').diff(currentEvent.start.clone().startOf('date'),'days');
+        $('#endDate').val(p.startDate.clone().add(diff,'days').format('MMM D, YYYY'));
+    }
+    $('#endDate').daterangepicker({
+        minDate:p.startDate,
+        locale: {
+        format:'MMM D, YYYY',
+        },
+        singleDatePicker:true,
+    });
+});
+//modify dialog date time pickers  End

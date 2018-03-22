@@ -38,26 +38,7 @@
 				
 			</div>
 			<div class="m-portlet__body">
-             <div class="row m-row--no-padding m-row--col-separator-xl mb-5">
-                <div class="col-2">
-                <!--begin::Total Profit-->
-                <div class="m-widget24">                     
-                    <div class="m-widget24__item">
-                        <h4 class="m-widget24__title">
-                            Total Hours
-                        </h4><br>
-                        <span class="m-widget24__desc">
-                            排班工时
-                        </span>
-                        <span class="m-widget24__stats m--font-success" >
-                            
-                        </span>     
-                       
-                    </div>                    
-                </div>
-                <!--end::Total Profit-->
-                </div>
-            </div> 
+           
                     <span id="status_bar"></span>
                      <div class="row">
                 <div class="col-12" id="stats"></div>
@@ -282,7 +263,7 @@ var fullCalOptions = {
         
         eventDataTransform: function(eventData){
             eventData.title = eventData.role.c_name;
-            if(eventData.duty_id){
+            if(eventData.duty){
                 eventData.color = eventData.duty.color;
             } else {
                 eventData.color = '#d3eefd';
@@ -292,12 +273,13 @@ var fullCalOptions = {
         },
 
         eventRender: function(event,element){
-
-            console.log(event);
             const duration = (event.end.format('X') - event.start.format('X'))/3600;
             getTotalHours(duration);
             if(event.special == "1"){
                 element.find(".fc-time").append(' <i class="fa  fa-usd m--font-warning">');
+            }
+            if(event.comment){
+                element.find(".fc-time").append(' <i class="fa  fa-commenting ">');
             }
             element.find(".fc-time").append(' <span class="float-right badge badge-secondary">'+ Number(duration.toFixed(2)) + '</span>');
             if(event.duty){
@@ -308,13 +290,13 @@ var fullCalOptions = {
         },
         eventClick: function(event,element){
             currentEvent = event;
-            console.log(currentEvent);
+            //console.log(currentEvent);
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
-            currentShift.role = event.role_id;
-            currentShift.duty = event.duty_id;
+            currentShift.role_id = event.role_id;
+            currentShift.duty_id = event.duty_id;
             currentShift.special = event.special;
-            var defaultStartDate = event.start;
+            currentShift.note = event.comment;
             $('#modifyRole').val(event.role_id);
             $('#modifyDuty').val(event.duty_id);
             $('#startDate').val(event.start.format('MMM D, YYYY'));
@@ -327,11 +309,12 @@ var fullCalOptions = {
             } else {
                 $('#modifySpecial').prop('checked',false);
             }
-            
             $('#modifyShiftDialog').dialog('open');
+            $('#endDate').daterangepicker({minDate:event.start,locale: {format:'MMM D, YYYY'},singleDatePicker:true,}); // to disable prior dates
 
         },
         eventDragStart: function(event,jsEvent,ui,view){
+            // currentEvent = event;
             clearStats();
             hideStats();
         },
@@ -340,20 +323,19 @@ var fullCalOptions = {
             showStats();
         },
         eventDrop: function(event,delta,revertFunc,jsEvent,ui,view){
-           
-            console.log('dropped: ' + event.start.format('YYYY-MM-DD'));
-            currentEvent = event;
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
-            currentShift.role = event.role_id;
-            currentShift.duty = event.duty_id;
+            currentShift.role_id = event.role_id;
+            currentShift.duty_id = event.duty_id;
             currentShift.startStr = event.start.format('YYYY-MM-DD HH:mm');
             currentShift.endStr = event.end.format('YYYY-MM-DD HH:mm');
             currentShift.start = event.start;
             currentShift.end = event.end;
+            currentShift.special = event.special;
+            currentShift.note =  event.comment;
             updateShift(currentShift);
         },
-         eventResizeStart: function(event,jsEvent,ui,view){
+        eventResizeStart: function(event,jsEvent,ui,view){
             clearStats();
             hideStats();
         },
@@ -363,16 +345,18 @@ var fullCalOptions = {
         },
         eventResize: function(event,delta,revertFunc,jsEvent,ui,view){
             clearStats();
-            console.log('resized: ' + event.start.format('YYYY-MM-DD'));
-            currentEvent = event;
+            console.log('resized: ' + event);
+         
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
-            currentShift.role = event.role_id;
-            currentShift.duty = event.duty_id;
+            currentShift.role_id = event.role_id;
+            currentShift.duty_id = event.duty_id;
             currentShift.startStr = event.start.format('YYYY-MM-DD HH:mm');
             currentShift.endStr = event.end.format('YYYY-MM-DD HH:mm');
             currentShift.start = event.start;
             currentShift.end = event.end;
+            currentShift.note = event.comment;
+            currentShift.special = event.special;
             updateShift(currentShift);
         },
     
@@ -636,7 +620,11 @@ var modifyShiftOptions = {
     position: { my: "center", at: "center", of: window },
     resizable: false,
     width:600,
-    height:680,    
+    height:680,
+    // close:function(event,ui){
+    //     currentEvent = {};
+    //     currentShift.clear();
+    // },    
 };
 
 var newShiftDialogOptions = {
@@ -682,9 +670,7 @@ function modifyShift(){
                  currentShift.duty = $('#modifyDuty').val();
                  currentShift.duty_id = $('#modifyDuty').val();
                  currentShift.special = $('#modifySpecial').prop('checked');
-                 
                  updateShift(currentShift);
-               
                  $('#modifyShiftDialog').dialog('close');
 }
 function updateShift(shift){
@@ -693,8 +679,8 @@ function updateShift(shift){
         {
             _token:csrf_token,
             employee: shift.employee,
-            role: shift.role,
-            duty: shift.duty,
+            role: shift.role_id,
+            duty: shift.duty_id,
             special: shift.special, // true/false
             start: shift.startStr,
             end: shift.endStr,
@@ -706,7 +692,6 @@ function updateShift(shift){
                 clearStats();
                 updateWeekTotal(data);
 
-               
                 scheduleStats($('#calendar').fullCalendar('getView'));
                 currentEvent.duty_id = shift.duty_id;
                 if(data.duty){
@@ -723,6 +708,7 @@ function updateShift(shift){
                 currentEvent.role_id = shift.role;
               
                 currentEvent.special = shift.special;
+                currentEvent.comment = shift.note;
              
                 $('#calendar').fullCalendar('updateEvent',currentEvent);
                 currentEvent = {};
@@ -849,16 +835,9 @@ function scheduleStats(view){
         );
 }
 
-var drpOpions = {
-    locale: {
-        format:'MMM D, YYYY',
-    },
-    singleDatePicker:true,
-};
-$('#startDate').daterangepicker(drpOpions);
-$('#endDate').daterangepicker(drpOpions);
-$('#startTime').timepicker();
-$("#endTime").timepicker();
+
+
+
 
 </script>
 @endsection
