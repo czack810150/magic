@@ -97,6 +97,7 @@ class ShiftController extends Controller
         $shift->comment = $request->note;
         $shift->save();
         $shift->duty;
+        $shift->role;
         return $shift;
     }
 

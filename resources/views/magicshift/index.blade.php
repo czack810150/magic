@@ -276,17 +276,23 @@ var fullCalOptions = {
             const duration = (event.end.format('X') - event.start.format('X'))/3600;
             getTotalHours(duration);
             if(event.special == "1"){
-                element.find(".fc-time").append(' <i class="fa  fa-usd m--font-warning">');
+                element.find(".fc-time").append(' <i class="fa  fa-usd m--font-warning"></i>&nbsp;');
             }
             if(event.comment){
-                element.find(".fc-time").append(' <i class="fa  fa-commenting ">');
+                element.find(".fc-time").append(' <i class="fa  fa-commenting"></i>&nbsp;');
             }
+            if(event.end.isAfter(event.start,'day')){
+                 element.find(".fc-time").append(' <i class="fa  fa-moon-o"></i>&nbsp;');
+            }
+
+
             element.find(".fc-time").append(' <span class="float-right badge badge-secondary">'+ Number(duration.toFixed(2)) + '</span>');
             if(event.duty){
                 element.find(".fc-time").append('<br><strong>' + event.duty.cName + '</strong>');
             } else {
                 element.find(".fc-time").append('<br>');
             }
+
         },
         eventClick: function(event,element){
             currentEvent = event;
@@ -701,6 +707,7 @@ function updateShift(shift){
                     currentEvent.duty = null;
                     currentEvent.color = null;
                 }
+                currentEvent.role = data.role;
                 
                 currentEvent.start = shift.start;
                 currentEvent.end = shift.end;
