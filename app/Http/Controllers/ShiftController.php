@@ -142,15 +142,7 @@ class ShiftController extends Controller
     }
     public function fetchWeek(Request $r)
     {
-        //return $r;
-        $shifts = Shift::fetchPeriod($r->location,$r->start,$r->end);
-        foreach($shifts as $s)
-        {
-            $s->resourceId = $s->employee_id;
-            $s->employee->job;
-            $s->duty;
-        }
-        return $shifts;
+        return Shift::fetchPeriod($r->location,$r->start,$r->end);
     }
     public function parseShiftTime(Request $r)
     {
@@ -173,6 +165,13 @@ class ShiftController extends Controller
 
         foreach($employees as $e){
             $e->weekTotal = Shift::weekTotalHour($e->id,$r->location,$r->start,$r->end);
+            $start  = Shift::where('employee_id',$e->id)->where('location_id',$r->location)->whereDate('start',$r->start)->first();
+            if($start){
+                 $e->firstStart = $start['start']->format('U');
+            }
+            else {
+                $e->firstStart = 7226582400;
+            }
         }
         return $employees;
      }

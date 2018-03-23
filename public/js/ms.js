@@ -425,3 +425,9 @@ $("#startDate").on('apply.daterangepicker',function(e,p){
     });
 });
 //modify dialog date time pickers  End
+
+var refreshBtn = document.getElementById('refreshBtn');
+refreshBtn.addEventListener('click',function(){
+	$('#calendar').fullCalendar('refetchResources');
+	$('#calendar').fullCalendar('refetchEvents');
+},false);

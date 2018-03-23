@@ -54,9 +54,11 @@ class Shift extends Model
        $shifts = Shift::where('location_id',$location)->where('start','>=',$start)->where('start','<',$end)->get();
        foreach($shifts as $s)
        {
-        $s->role;
-        $s->employee;
-        //$s->duty;
+            $s->resourceId = $s->employee_id;
+            $s->employee;
+            $s->employee->job;
+            $s->role;
+            $s->duty;
        }
        return $shifts;
     }
@@ -94,4 +96,5 @@ class Shift extends Model
         return 0;
       }
     }
+   
 }

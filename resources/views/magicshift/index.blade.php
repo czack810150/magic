@@ -18,7 +18,7 @@
                     <input type="checkbox" name="resourceToggle">
                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                         
-                        <button type="button" class="m-btn btn btn-secondary"><i class="la la-file-text-o"></i></button>
+                        <button id="refreshBtn" type="button" class="m-btn btn btn-secondary"><i class="la la-refresh"></i></button>
                         <button type="button" class="m-btn btn btn-secondary"><i class="la la-floppy-o"></i></button>
                         <button type="button" class="m-btn btn btn-secondary"><i class="la la-header"></i></button>
                         <div class="btn-group" role="group">
@@ -184,8 +184,6 @@ var fullCalOptions = {
                 data:{
                     _token: csrf_token,
                     location:currentLocation,
-                    // start:'2018-02-14',
-                    // end:'2018-02-14'
                 },
                 success: function(result){
                 },
@@ -203,7 +201,7 @@ var fullCalOptions = {
             field:'cName',
             },
         ],
-        resourceOrder: 'job_id',
+        resourceOrder: 'firstStart',
         filterResourcesWithEvents: false,
         refetchResourcesOnNavigate: true,
         resources: function(callback,start,end,timezone){
@@ -459,7 +457,8 @@ var fullCalOptions = {
 
         header: {
             left:   'title  ',
-            center: 'timelineDay,timelineWorkWeek,month,listWeek prev,today,next',
+            //center: 'timelineDay,timelineWorkWeek,month,listWeek prev,today,next',
+            center: 'timelineDay,timelineWorkWeek, prev,today,next',
             right:  'borrow',
         },
         viewRender: function(view,element)
