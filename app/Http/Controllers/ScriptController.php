@@ -11,6 +11,7 @@ class ScriptController extends Controller
     {
     	$employees = [
             347 => 30, //赵少斌 4
+            7412 => 30, // 4
     		627 => 30, // 1
             702 => 30, // 2
     		669 => 371,
@@ -53,8 +54,9 @@ class ScriptController extends Controller
             7410 => 471, //1
             755 => 323, //何君碧
             7409 => 48, // 谢丽英
-            704 => 213, // 孙俊博
+            703 => 213, // 孙俊博
             571 => 213, // 4
+            7411 => 213, //1
 
 
     	];

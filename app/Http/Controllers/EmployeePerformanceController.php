@@ -109,7 +109,7 @@ class EmployeePerformanceController extends Controller
     {
         $periodStart = Carbon::createFromFormat('Y-m-d',$r->period);
         $start = $periodStart->toDateString();
-        $end = $periodStart->addDays(14)->toDateString();
+        $end = $periodStart->addDays(13)->toDateString();
         $categories = Score_category::all(); 
         //$employees = Employee::where('location_id',$r->location)->orderBy('job_id')->get();
         $employees = Shift::select('employee_id')->whereBetween('start',[ $start, $end])->where('location_id',$r->location)->distinct()->get();
