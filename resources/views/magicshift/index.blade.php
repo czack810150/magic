@@ -62,116 +62,57 @@
 @section('pageJS')
 <script>
 const csrf_token = '{{csrf_token()}}';
-
-
-
 var currentEvent = {};
 var currentDate = moment();
 var currentLocation = {{ $defaultLocation }};
 
 
-var currentShift = {
-    id:0,
-    start:{},
-    end:{},
-    startStr:'',
-    endStr:'',
-    title:'',
-    role:0,
-    duty: null,
-    employee:0,
-    published:false,
-    special:false,
-    note:'',
-    clear:function(){
-        this.id = 0;
-        this.start = {};
-        this.end = {};
-        this.startStr = '',
-        this.endStr = '',
-        this.title = '',
-        this.role = 0;
-        this.duty = null;
-        this.employee = 0;
-        this.published = false;
-        this.special = false;
-        this.note = '';
-        $('#createSpecial').prop('checked',false);
-    },
-};
-var newShift = {
-    start:null,
-    end:null,
-    role:null,
-    duty:null,
-    employee:null,
-    published:false,
-    special:false,
-    note:null,
-    clear:function(){
+
+class Shift {
+    constructor(){
+        this.id = null;
+        this.title = null;
         this.start = null;
         this.end = null;
+        this.startStr = null;
+        this.endStr = null;
         this.role = null;
         this.duty = null;
+        this.role_id = null;
+        this.duty_id = null;
         this.employee = null;
         this.published = false;
         this.special = false;
         this.note = null;
         $('#form-control-feedback').html('');
         $('#createSpecial').prop('checked',false);
-    },
-};
-
-
-
-
-function udpateWeekTotalOnRemoval(shift){
-    var resource = $('#calendar').fullCalendar('getResourceById',shift.employee_id);
-    var total = $('#weekTotal'+shift.employee_id);
-    var oldWeekTotal = Number(total.text());
-    const removedEventTotal = (moment(shift.end).format('X') - moment(shift.start).format('X'))/3600;
-    resource.weekTotal = oldWeekTotal - removedEventTotal;
-    const newWeekTotal = Math.round(resource.weekTotal *100)/100;
-    total.text(newWeekTotal);
-    if(newWeekTotal <= 44.0 && newWeekTotal != 0.0){
-        total.removeClass('badge badge-danger');
-        total.addClass('badge badge-success');
-    } else  if(newWeekTotal > 44.0) {
-        total.removeClass('badge badge-success');
-        total.addClass('badge badge-danger');
-    } else {
-        total.hide();
+    };
+    clear(){
+        this.id = null;
+        this.title = null;
+        this.start = null;
+        this.end = null;
+        this.startStr = null;
+        this.endStr = null;
+        this.role = null;
+        this.duty = null;
+        this.role_id = null;
+        this.duty_id = null;
+        this.employee = null;
+        this.published = false;
+        this.special = false;
+        this.note = null;
+        $('#form-control-feedback').html('');
+        $('#createSpecial').prop('checked',false);
     }
-    
-    currentEvent = {};
+
 }
 
+var currentShift = new Shift();
+var newShift = new Shift();
 
-function updateWeekTotal(shift){
-    var resource = $('#calendar').fullCalendar('getResourceById',shift.employee_id);
-    var total = $('#weekTotal'+shift.employee_id);
-    var oldWeekTotal = Number(total.text());
-    const newEventTotal = (moment(shift.end).format('X') - moment(shift.start).format('X'))/3600;
-    if(Object.keys(currentEvent).length){
-        const oldEventTotal = (currentEvent.end.format('X') - currentEvent.start.format('X'))/3600;
-        resource.weekTotal = oldWeekTotal - oldEventTotal + newEventTotal;
-    } else {
-        resource.weekTotal = oldWeekTotal + newEventTotal;
-    }
-    
-    const newWeekTotal = Math.round(resource.weekTotal *100)/100;
 
-    total.text(newWeekTotal);
-    if(newWeekTotal <= 44.0){
-        total.removeClass('badge badge-danger');
-        total.addClass('badge badge-success');
-    } else {
-        total.removeClass('badge badge-success');
-        total.addClass('badge badge-danger');
-    }
-    
-    //currentEvent = {};
-}
+
 var shiftCounter = 0;
 
 var fullCalOptions = {
@@ -260,7 +201,12 @@ var fullCalOptions = {
         // },
         
         eventDataTransform: function(eventData){
-            eventData.title = eventData.role.c_name;
+            if(eventData.role){
+                 eventData.title = eventData.role.c_name;
+             } else {
+                eventData.title = 'unassigned';
+             }
+           
             if(eventData.duty){
                 eventData.color = eventData.duty.color;
             } else {
@@ -272,7 +218,7 @@ var fullCalOptions = {
 
         eventRender: function(event,element){
             const duration = (event.end.format('X') - event.start.format('X'))/3600;
-            getTotalHours(duration);
+            //getTotalHours(duration);
             if(event.special == "1"){
                 element.find(".fc-time").append(' <i class="fa  fa-usd m--font-warning"></i>&nbsp;');
             }
@@ -294,7 +240,7 @@ var fullCalOptions = {
         },
         eventClick: function(event,element){
             currentEvent = event;
-            //console.log(currentEvent);
+            console.log(currentEvent);
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role_id = event.role_id;
@@ -318,18 +264,16 @@ var fullCalOptions = {
 
         },
         eventDragStart: function(event,jsEvent,ui,view){
-            // currentEvent = event;
-            clearStats();
             hideStats();
         },
         eventDragStop: function(event,jsEvent,ui,view){
-            clearStats();
-            showStats();
         },
         eventDrop: function(event,delta,revertFunc,jsEvent,ui,view){
+            currentEvent = event;
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role_id = event.role_id;
+            currentShift.role = event.role;
             currentShift.duty_id = event.duty_id;
             currentShift.startStr = event.start.format('YYYY-MM-DD HH:mm');
             currentShift.endStr = event.end.format('YYYY-MM-DD HH:mm');
@@ -338,17 +282,18 @@ var fullCalOptions = {
             currentShift.special = event.special;
             currentShift.note =  event.comment;
             updateShift(currentShift);
+            showStats();
         },
         eventResizeStart: function(event,jsEvent,ui,view){
-            clearStats();
+            
             hideStats();
         },
         eventResizeStop: function(event,jsEvent,ui,view){
-            clearStats();
+          
             showStats();
         },
         eventResize: function(event,delta,revertFunc,jsEvent,ui,view){
-            clearStats();
+            
             console.log('resized: ' + event);
          
             currentShift.id = event.id;
@@ -471,39 +416,7 @@ var fullCalOptions = {
 
 
 
-$('.selectpicker').selectpicker();
-$('#location').on('changed.bs.select',function(e){
-    currentLocation = $('#location').val();
-    window.location.replace('{{ url("/scheduler") }}/'+currentLocation);
-});
 
-$('#otherLocation').on('changed.bs.select',function(e){
-    getBorrowList()
-});
-$('#borrowPosition').on('changed.bs.select',function(e){
-    getBorrowList()
-});
-
-function getBorrowList(){
-    const location = $('#otherLocation').val();
-    const position = $('#borrowPosition').val();
-
-    if(location != '' && position != '' ){
-        $.post(
-            '/employees/positionFilter',
-            {
-                _token: csrf_token,
-                location: location,
-                position: position
-            },
-            function(data,status){
-                if(status == 'success'){
-                    $('#availables').html(data);
-                }
-            }
-            );
-    }
-}
 
 
 
@@ -626,10 +539,9 @@ var modifyShiftOptions = {
     resizable: false,
     width:600,
     height:680,
-    // close:function(event,ui){
-    //     currentEvent = {};
-    //     currentShift.clear();
-    // },    
+    close:function(event,ui){
+        console.log('dialog closed');
+    },    
 };
 
 var newShiftDialogOptions = {
@@ -694,7 +606,6 @@ function updateShift(shift){
         function(data,status){
             if(status == 'success'){
                
-                clearStats();
                 updateWeekTotal(data);
 
                 scheduleStats($('#calendar').fullCalendar('getView'));
@@ -706,13 +617,13 @@ function updateShift(shift){
                     currentEvent.duty = null;
                     currentEvent.color = null;
                 }
-                currentEvent.role = data.role;
+                
                 
                 currentEvent.start = shift.start;
                 currentEvent.end = shift.end;
                 currentEvent.title = shift.title;
-                currentEvent.role_id = shift.role;
-              
+                currentEvent.role_id = shift.role_id;
+                currentEvent.role = shift.role;
                 currentEvent.special = shift.special;
                 currentEvent.comment = shift.note;
              
@@ -794,56 +705,10 @@ createBtn.addEventListener('click',function(){
 
 
 let cal = $('#calendar').fullCalendar(fullCalOptions);
-
-var allResources = [];
-function resourceToggle(){
-    console.log('resource toggle');
-    var resources = cal.fullCalendar('getResources');
-    allResources = resources;
-    for(i in resources){
-        resources[i].events = $('#calendar').fullCalendar('getResourceEvents',resources[i]);
-        if(!resources[i].events.length)
-        $('#calendar').fullCalendar('removeResource',resources[i]);
-    }
-    return 1;
-}
-
-$("[name='resourceToggle']").bootstrapSwitch({
-   
-    onSwitchChange: function(event,state){
-        event.preventDefault()
-        if(state){
-            resourceToggle()
-        } else {
-           // $('#calendar').fullCalendar('refetchResources');
-            for(i in allResources){
-                 $('#calendar').fullCalendar('addResource',allResources[i]);
-            }
-        }
-    }
+$('.selectpicker').selectpicker();
+$('#location').on('changed.bs.select',function(e){
+    currentLocation = $('#location').val();
+    window.location.replace('{{ url("/scheduler") }}/'+currentLocation);
 });
-
-
-function scheduleStats(view){ 
-    $.post(
-        '/scheduler/stats/fetch',
-        {
-            _token: csrf_token,
-            location: currentLocation,
-            from:view.start.format('YYYY-MM-DD'),
-            to:view.end.format('YYYY-MM-DD'),
-        },
-        function(data,status){
-            if(status == 'success'){
-                $('#stats').html(data);
-            }
-        }
-        );
-}
-
-
-
-
-
 </script>
 @endsection

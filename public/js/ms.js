@@ -388,14 +388,80 @@ function getTotalHours(hour){
 }
 function clearStats()
 {
-	totalHours = 0.0;
+	//totalHours = 0.0;
 }
 function hideStats(){
-	 $('#totalHour').hide();
+	 $('.hourCount').text('');
 }
 function showStats(){
-	 $('#totalHour').show();
+	 $('.hourCount').show();
 }
+
+function udpateWeekTotalOnRemoval(shift){
+    var resource = $('#calendar').fullCalendar('getResourceById',shift.employee_id);
+    var total = $('#weekTotal'+shift.employee_id);
+    var oldWeekTotal = Number(total.text());
+    const removedEventTotal = (moment(shift.end).format('X') - moment(shift.start).format('X'))/3600;
+    resource.weekTotal = oldWeekTotal - removedEventTotal;
+    const newWeekTotal = Math.round(resource.weekTotal *100)/100;
+    total.text(newWeekTotal);
+    if(newWeekTotal <= 44.0 && newWeekTotal != 0.0){
+        total.removeClass('badge badge-danger');
+        total.addClass('badge badge-success');
+    } else  if(newWeekTotal > 44.0) {
+        total.removeClass('badge badge-success');
+        total.addClass('badge badge-danger');
+    } else {
+        total.hide();
+    }
+    
+    currentEvent = {};
+}
+
+
+function updateWeekTotal(shift){
+    var resource = $('#calendar').fullCalendar('getResourceById',shift.employee_id);
+    var total = $('#weekTotal'+shift.employee_id);
+    var oldWeekTotal = Number(total.text());
+    const newEventTotal = (moment(shift.end).format('X') - moment(shift.start).format('X'))/3600;
+    if(Object.keys(currentEvent).length){
+        const oldEventTotal = (currentEvent.end.format('X') - currentEvent.start.format('X'))/3600;
+        resource.weekTotal = oldWeekTotal - oldEventTotal + newEventTotal;
+    } else {
+        resource.weekTotal = oldWeekTotal + newEventTotal;
+    }
+    
+    const newWeekTotal = Math.round(resource.weekTotal *100)/100;
+
+    total.text(newWeekTotal);
+    if(newWeekTotal <= 44.0){
+        total.removeClass('badge badge-danger');
+        total.addClass('badge badge-success');
+    } else {
+        total.removeClass('badge badge-success');
+        total.addClass('badge badge-danger');
+    }
+    
+    //currentEvent = {};
+}
+
+function scheduleStats(view){ 
+    $.post(
+        '/scheduler/stats/fetch',
+        {
+            _token: csrf_token,
+            location: currentLocation,
+            from:view.start.format('YYYY-MM-DD'),
+            to:view.end.format('YYYY-MM-DD'),
+        },
+        function(data,status){
+            if(status == 'success'){
+                $('#stats').html(data);
+            }
+        }
+        );
+}
+
 // end of statistics
 
 //modify dialog date time pickers
@@ -425,9 +491,75 @@ $("#startDate").on('apply.daterangepicker',function(e,p){
     });
 });
 //modify dialog date time pickers  End
-
+// refresh btn
 var refreshBtn = document.getElementById('refreshBtn');
 refreshBtn.addEventListener('click',function(){
 	$('#calendar').fullCalendar('refetchResources');
 	$('#calendar').fullCalendar('refetchEvents');
 },false);
+//refresh btn end
+
+
+//borrow employee
+
+$('#location').on('changed.bs.select',function(e){
+    currentLocation = $('#location').val();
+    window.location.replace('{{ url("/scheduler") }}/'+currentLocation);
+});
+
+$('#otherLocation').on('changed.bs.select',function(e){
+    getBorrowList()
+});
+$('#borrowPosition').on('changed.bs.select',function(e){
+    getBorrowList()
+});
+
+function getBorrowList(){
+    const location = $('#otherLocation').val();
+    const position = $('#borrowPosition').val();
+
+    if(location != '' && position != '' ){
+        $.post(
+            '/employees/positionFilter',
+            {
+                _token: csrf_token,
+                location: location,
+                position: position
+            },
+            function(data,status){
+                if(status == 'success'){
+                    $('#availables').html(data);
+                }
+            }
+            );
+    }
+}
+//borrow end
+
+var allResources = [];
+function resourceToggle(){
+    console.log('resource toggle');
+    var resources = cal.fullCalendar('getResources');
+    allResources = resources;
+    for(i in resources){
+        resources[i].events = $('#calendar').fullCalendar('getResourceEvents',resources[i]);
+        if(!resources[i].events.length)
+        $('#calendar').fullCalendar('removeResource',resources[i]);
+    }
+    return 1;
+}
+
+$("[name='resourceToggle']").bootstrapSwitch({
+   
+    onSwitchChange: function(event,state){
+        event.preventDefault()
+        if(state){
+            resourceToggle()
+        } else {
+           // $('#calendar').fullCalendar('refetchResources');
+            for(i in allResources){
+                 $('#calendar').fullCalendar('addResource',allResources[i]);
+            }
+        }
+    }
+});

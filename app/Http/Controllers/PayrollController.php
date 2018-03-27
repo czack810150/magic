@@ -102,8 +102,8 @@ class PayrollController extends Controller
     {
         $subheader = "Money";
         $locations = Location::Store()->pluck('name','id');
-        $dates = Datetime::periods(0);
-        //$dates = Datetime::periods(YEAR);
+        // $dates = Datetime::periods(0); // all years
+        $dates = Datetime::periods(YEAR);
         return view('payroll.basic.index',compact('locations','dates','subheader'));
     }
     public function fetch(Request $r){
