@@ -502,10 +502,7 @@ refreshBtn.addEventListener('click',function(){
 
 //borrow employee
 
-$('#location').on('changed.bs.select',function(e){
-    currentLocation = $('#location').val();
-    window.location.replace('{{ url("/scheduler") }}/'+currentLocation);
-});
+
 
 $('#otherLocation').on('changed.bs.select',function(e){
     getBorrowList()

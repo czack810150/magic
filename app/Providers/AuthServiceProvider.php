@@ -40,7 +40,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('create-employee',function($user){
-            return in_array($user->authorization->type,['admin','hr']);
+            return in_array($user->authorization->type,['admin','hr','dm']);
         });
 
         Gate::define('view-employee',function($user,$employee){
@@ -78,7 +78,7 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->authorization->type,['hr','dm','manager','accounting','gm','admin']);
         });
         Gate::define('use-scheduler',function($user){
-            return in_array($user->authorization->type,['dm','admin']);
+            return in_array($user->authorization->type,['dm','admin','manager']);
         });
     }
 }

@@ -174,3 +174,23 @@
 .fc button {
   display: none;
   /* don't display any button-related controls */ }
+
+/* custome */
+.fc-cell-text, .fc-time, .fc-time {
+  font-size:10px !important;
+}
+.fc-event-container {
+  
+}
+.fc-timeline-event {
+  height:20px !important;
+}
+.fc-head {
+  height:100px !important;
+}
+
+.fc td {
+  border-style: solid;
+  border-width: 1px;
+  padding: 1px;
+  vertical-align: top; }

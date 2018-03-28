@@ -19,7 +19,7 @@
                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                         
                         <button id="refreshBtn" type="button" class="m-btn btn btn-secondary"><i class="la la-refresh"></i></button>
-                        <button type="button" class="m-btn btn btn-secondary"><i class="la la-floppy-o"></i></button>
+                        <button id="printBtn" type="button" class="m-btn btn btn-secondary"><i class="la la-print"></i></button>
                         <button type="button" class="m-btn btn btn-secondary"><i class="la la-header"></i></button>
                         <div class="btn-group" role="group">
                             <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -55,6 +55,14 @@
 @include('layouts.magicshift.modifyShift')
 @include('layouts.magicshift.borrowEmployee')
 @include('layouts.magicshift.copySchedule')
+
+<form id="printForm" action="/scheduler/schedule/print" method="POST">
+{{ csrf_field() }}
+<input name="printLocation" id="printLocation">
+<input name="printStart" id="printStart">
+<input name="printEnd" id="printEnd">
+</form>
+
 </div>
 
 @endsection
@@ -710,5 +718,21 @@ $('#location').on('changed.bs.select',function(e){
     currentLocation = $('#location').val();
     window.location.replace('{{ url("/scheduler") }}/'+currentLocation);
 });
+
+
+// print btn
+var printBtn = document.getElementById('printBtn');
+printBtn.addEventListener('click',function(){
+    const view = $('#calendar').fullCalendar('getView');
+   
+    $('#printLocation').val(currentLocation);
+    $('#printStart').val(view.start.format('YYYY-MM-DD'));
+    $('#printEnd').val(view.end.format('YYYY-MM-DD'));
+    $('#printForm').submit();  
+
+},false);
+//print btn end
+
+
 </script>
 @endsection

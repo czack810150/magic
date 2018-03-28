@@ -229,4 +229,5 @@ class ShiftController extends Controller
         $duties = Duty::get();
         return view('magicshift.stats',compact('stats','duties'));
      }
+     
 }

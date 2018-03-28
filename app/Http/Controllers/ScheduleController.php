@@ -102,4 +102,10 @@ class ScheduleController extends Controller
     {
         //
     }
+
+    public function print(Request $r)
+    {
+        $data = $r->all();
+        return view('magicshift.print',compact('data'));
+    }
 }
