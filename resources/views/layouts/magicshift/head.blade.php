@@ -18,7 +18,7 @@
         <link href="{{asset('/assets/demo/default/base/style.bundle.css')}}" rel="stylesheet" type="text/css" />
    
         <link href="{{ asset('css/fullcalendar.css') }}" rel="stylesheet"/>
-        <link href="{{ asset('css/fullcalendar.print.css') }}" rel="stylesheet" media="print"/>
+        <!-- <link href="{{ asset('css/fullcalendar.print.css') }}" rel="stylesheet" media="print"/> -->
         <link href="{{ asset('css/scheduler.min.css') }}" rel="stylesheet"/>
         
 

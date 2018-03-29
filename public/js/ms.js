@@ -225,6 +225,70 @@ function parseTime(ts){
 	return time;
 }
 
+
+document.getElementById("shiftTime").addEventListener("keypress", function(event){
+    if(event.keyCode == 13 ) {
+            newShift.role = $('#shiftRole').val();
+            newShift.note = $('#newShiftNote').val();
+            newShift.duty = $('#dutyCreate').val();
+            newShift.special = $('#createSpecial').prop('checked');
+            const shift = parseShiftTimeString($('#shiftTime').val());
+            if(shift.error == null){
+                newShift.start = currentDate.clone().hour(shift.start.hour).minute(shift.start.minute).format('YYYY-MM-DD HH:mm:ss');
+                if(shift.addDay){
+                    newShift.end = currentDate.clone().add(1,'d').hour(shift.end.hour).minute(shift.end.minute).format('YYYY-MM-DD HH:mm:ss'); 
+                } else {
+                        newShift.end = currentDate.clone().hour(shift.end.hour).minute(shift.end.minute).format('YYYY-MM-DD HH:mm:ss'); 
+                    }
+                 submitShift(); 
+            } else {
+                switch(shift.error){
+                    case 0:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 1:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 2:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 3:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;
+                    case 4:
+                        console.log(shift.msg);
+                        formControlFeedback(shift.msg);
+                        break;    
+                    default:
+                        console.log('unknown error');
+                        formControlFeedback(shift.msg);
+              }
+            }
+    }
+    
+},false);
+// end of shift time parser
+// role list
+function getRoleList(defaultRole){
+    $.post(
+        '/role/get',
+        {
+            _token:csrf_token,
+            defaultRole: defaultRole
+        },
+        function(data,status){
+            $('#roleOptions').html(data);
+        }
+    );        
+}
+// end of role list
+
+
+
 // remove shift
 var slider = document.getElementById('removeSlider');
 
@@ -248,20 +312,24 @@ function sliderConfirm(){
         slider.noUiSlider.reset();
 }
 function removeShift(shift){
+	const view = $('#calendar').fullCalendar('getView');
     $.post(
         '/shift/'+shift.id+'/remove',
         {
             _token: csrf_token,
+            periodStart: view.start.format('YYYY-MM-DD'),
+            periodEnd: view.end.format('YYYY-MM-DD'),
         },
         function(data,status){
             if(status == 'success'){
                 if(data){
-                	clearStats();
                     $('#modifyShiftDialog').dialog('close');
                     $('#calendar').fullCalendar('refetchEvents');
-                    udpateWeekTotalOnRemoval(data);
+                
+                    	 updateWeekTotal(data);
+                   
                     currentShift.clear();
-                    scheduleStats();
+                    scheduleStats(view);
                 }
             }
         }
@@ -397,53 +465,33 @@ function showStats(){
 	 $('.hourCount').show();
 }
 
-function udpateWeekTotalOnRemoval(shift){
-    var resource = $('#calendar').fullCalendar('getResourceById',shift.employee_id);
-    var total = $('#weekTotal'+shift.employee_id);
-    var oldWeekTotal = Number(total.text());
-    const removedEventTotal = (moment(shift.end).format('X') - moment(shift.start).format('X'))/3600;
-    resource.weekTotal = oldWeekTotal - removedEventTotal;
-    const newWeekTotal = Math.round(resource.weekTotal *100)/100;
-    total.text(newWeekTotal);
-    if(newWeekTotal <= 44.0 && newWeekTotal != 0.0){
-        total.removeClass('badge badge-danger');
-        total.addClass('badge badge-success');
-    } else  if(newWeekTotal > 44.0) {
-        total.removeClass('badge badge-success');
-        total.addClass('badge badge-danger');
-    } else {
-        total.hide();
-    }
-    
-    currentEvent = {};
-}
 
 
-function updateWeekTotal(shift){
-    var resource = $('#calendar').fullCalendar('getResourceById',shift.employee_id);
-    var total = $('#weekTotal'+shift.employee_id);
-    var oldWeekTotal = Number(total.text());
-    const newEventTotal = (moment(shift.end).format('X') - moment(shift.start).format('X'))/3600;
-    if(Object.keys(currentEvent).length){
-        const oldEventTotal = (currentEvent.end.format('X') - currentEvent.start.format('X'))/3600;
-        resource.weekTotal = oldWeekTotal - oldEventTotal + newEventTotal;
-    } else {
-        resource.weekTotal = oldWeekTotal + newEventTotal;
-    }
+// function updateWeekTotal(shift){
+//     var resource = $('#calendar').fullCalendar('getResourceById',shift.employee_id);
+//     var total = $('#weekTotal'+shift.employee_id);
+//     var oldWeekTotal = Number(total.text());
+//     const newEventTotal = (moment(shift.end).format('X') - moment(shift.start).format('X'))/3600;
+//     if(Object.keys(currentEvent).length){
+//         const oldEventTotal = (currentEvent.end.format('X') - currentEvent.start.format('X'))/3600;
+//         resource.weekTotal = oldWeekTotal - oldEventTotal + newEventTotal;
+//     } else {
+//         resource.weekTotal = oldWeekTotal + newEventTotal;
+//     }
     
-    const newWeekTotal = Math.round(resource.weekTotal *100)/100;
+//     const newWeekTotal = Math.round(resource.weekTotal *100)/100;
 
-    total.text(newWeekTotal);
-    if(newWeekTotal <= 44.0){
-        total.removeClass('badge badge-danger');
-        total.addClass('badge badge-success');
-    } else {
-        total.removeClass('badge badge-success');
-        total.addClass('badge badge-danger');
-    }
+//     total.text(newWeekTotal);
+//     if(newWeekTotal <= 44.0){
+//         total.removeClass('badge badge-danger');
+//         total.addClass('badge badge-success');
+//     } else {
+//         total.removeClass('badge badge-success');
+//         total.addClass('badge badge-danger');
+//     }
     
-    //currentEvent = {};
-}
+//     //currentEvent = {};
+// }
 
 function scheduleStats(view){ 
     $.post(

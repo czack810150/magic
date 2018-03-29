@@ -63,7 +63,7 @@ class Shift extends Model
        return $shifts;
     }
     public static function weekTotalHour($employee,$location,$start,$end){
-      $weekTotal = DB::table('shifts')->select(DB::raw('SUM(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 AS total'))->where('employee_id',$employee)->whereBetween('start',[$start,$end])->first();
+      $weekTotal = DB::table('shifts')->select(DB::raw('SUM(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 AS total'))->where('employee_id',$employee)->where('location_id',$location)->whereBetween('start',[$start,$end])->first();
 
       if($weekTotal){
         return round($weekTotal->total,2);

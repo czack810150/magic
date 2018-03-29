@@ -27,6 +27,7 @@ Route::post('/shift/count','ShiftController@countShifts');
 Route::post('/scheduler/stats/fetch','ShiftController@fetchStats');
 Route::post('/shifts/fetchWeek', 'ShiftController@fetchWeek');
 Route::post('/scheduler/schedule/print','ScheduleController@print');
+Route::post('/shift/getOldTotal','ShiftController@getOldTotal');
 
 
 Route::get('/qr',function(){

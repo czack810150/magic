@@ -176,7 +176,7 @@
   /* don't display any button-related controls */ }
 
 /* custome */
-.fc-cell-text, .fc-time, .fc-time {
+/*.fc-cell-text, .fc-time, .fc-time {
   font-size:10px !important;
 }
 .fc-event-container {
@@ -193,4 +193,4 @@
   border-style: solid;
   border-width: 1px;
   padding: 1px;
-  vertical-align: top; }
+  vertical-align: top; }*/

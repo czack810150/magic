@@ -42,6 +42,7 @@ class ShiftController extends Controller
             'special' => $r->special == 'true'?true:false,
             'comment' => $r->note
         ]);
+        $shift->periodTotal  = Shift::weekTotalHour($r->employee,$r->location,$r->periodStart,$r->periodEnd);
         return $shift;
     }
 
@@ -98,19 +99,28 @@ class ShiftController extends Controller
         $shift->save();
         $shift->duty;
         $shift->role;
+        $shift->periodTotal = Shift::weekTotalHour($request->employee,$shift->location_id,$request->periodStart,$request->periodEnd);
         return $shift;
     }
 
-    public function destroy($id)
+    public function destroy(Request $r,$id)
     {
         $shift = Shift::find($id);
         $removedShift = $shift;
         if($shift->delete()){
+            $removedShift->periodTotal = Shift::weekTotalHour($removedShift->employee_id,$removedShift->location_id,$r->periodStart,$r->periodEnd);
             return $removedShift;
         } else {
             return false;
         }
     }
+    public function getOldTotal(Request $r){
+        $shift = Shift::find($r->id);
+        //$shift->periodTotal = Shift::weekTotalHour($r->employee,$r->location,$r->periodStart,$r->periodEnd);
+       // $shift->periodTotal = 99;
+        return $shift;
+    }
+
     public function apiCreate(Request $request)
     {
        
@@ -197,6 +207,7 @@ class ShiftController extends Controller
                 'employee_id' => $s->employee_id,
                 'role_id' => $s->role_id,
                 'duty_id' => $s->duty_id,
+                'special' => $s->special,
                 'start' => Carbon::createFromFormat('Y-m-d H:i:s',$s->start)->addDays($diff)->toDateTimeString(),
                 'end' => Carbon::createFromFormat('Y-m-d H:i:s',$s->end)->addDays($diff)->toDateTimeString(),
                 'published'=> false,

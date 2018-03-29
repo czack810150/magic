@@ -150,7 +150,7 @@ var fullCalOptions = {
             field:'cName',
             },
         ],
-        resourceOrder: 'firstStart',
+        resourceOrder: 'job_id',
         filterResourcesWithEvents: false,
         refetchResourcesOnNavigate: true,
         resources: function(callback,start,end,timezone){
@@ -273,6 +273,7 @@ var fullCalOptions = {
         },
         eventDragStart: function(event,jsEvent,ui,view){
             hideStats();
+            getWeekTotal(event);
         },
         eventDragStop: function(event,jsEvent,ui,view){
         },
@@ -289,6 +290,7 @@ var fullCalOptions = {
             currentShift.end = event.end;
             currentShift.special = event.special;
             currentShift.note =  event.comment;
+
             updateShift(currentShift);
             showStats();
         },
@@ -301,8 +303,6 @@ var fullCalOptions = {
             showStats();
         },
         eventResize: function(event,delta,revertFunc,jsEvent,ui,view){
-            
-            console.log('resized: ' + event);
          
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
@@ -422,76 +422,8 @@ var fullCalOptions = {
     };
 
 
-
-
-
-
-
-
-
-
-document.getElementById("shiftTime").addEventListener("keypress", function(event){
-    if(event.keyCode == 13 ) {
-            newShift.role = $('#shiftRole').val();
-            newShift.note = $('#newShiftNote').val();
-            newShift.duty = $('#dutyCreate').val();
-            newShift.special = $('#createSpecial').prop('checked');
-            const shift = parseShiftTimeString($('#shiftTime').val());
-            if(shift.error == null){
-                newShift.start = currentDate.clone().hour(shift.start.hour).minute(shift.start.minute).format('YYYY-MM-DD HH:mm:ss');
-                if(shift.addDay){
-                    newShift.end = currentDate.clone().add(1,'d').hour(shift.end.hour).minute(shift.end.minute).format('YYYY-MM-DD HH:mm:ss'); 
-                } else {
-                        newShift.end = currentDate.clone().hour(shift.end.hour).minute(shift.end.minute).format('YYYY-MM-DD HH:mm:ss'); 
-                    }
-                 submitShift(); 
-            } else {
-                switch(shift.error){
-                    case 0:
-                        console.log(shift.msg);
-                        formControlFeedback(shift.msg);
-                        break;
-                    case 1:
-                        console.log(shift.msg);
-                        formControlFeedback(shift.msg);
-                        break;
-                    case 2:
-                        console.log(shift.msg);
-                        formControlFeedback(shift.msg);
-                        break;
-                    case 3:
-                        console.log(shift.msg);
-                        formControlFeedback(shift.msg);
-                        break;
-                    case 4:
-                        console.log(shift.msg);
-                        formControlFeedback(shift.msg);
-                        break;    
-                    default:
-                        console.log('unknown error');
-                        formControlFeedback(shift.msg);
-              }
-            }
-    }
-    
-})
-
-function getRoleList(defaultRole){
-    $.post(
-        '/role/get',
-        {
-            _token:csrf_token,
-            defaultRole: defaultRole
-        },
-        function(data,status){
-            $('#roleOptions').html(data);
-        }
-    );        
-}
-
-
 function submitShift(){
-    clearStats();
+    const view = $('#calendar').fullCalendar('getView');
     $.post(
         '/shift/create',
         {
@@ -504,20 +436,59 @@ function submitShift(){
             special: newShift.special,
             employee: newShift.employee,
             note: newShift.note,
+            periodStart: view.start.format('YYYY-MM-DD'),
+            periodEnd: view.end.format('YYYY-MM-DD'),
         },
         function(data,status){
             if(status == 'success'){
-                newShift.clear();
                 $('#createShiftDialog').dialog('close');
                 $('#calendar').fullCalendar('refetchEvents');
                 updateWeekTotal(data);
                 scheduleStats($('#calendar').fullCalendar('getView'));
+                newShift.clear();
             }
         }
         );
 }
 
+function getWeekTotal(event)
+{
 
+    $.post(
+        '/shift/getOldTotal',
+        {
+            _token: csrf_token,
+            shift: event.id,
+            location: event.location_id,
+            employee: event.resourceId,
+            periodStart: event.start.format('YYYY-MM-DD'),
+            periodEnd: event.end.format('YYYY-MM-DD'),
+        },
+        function(data,status){
+            if(status == 'success'){
+                console.log(data.employee_id);
+            }
+        }
+        );
+}
+
+function updateWeekTotal(shift)
+{
+    console.log('total:' + shift.periodTotal);
+    const newWeekTotal = shift.periodTotal;
+    var total = $('#weekTotal'+shift.employee_id);
+    total.text(newWeekTotal);
+    if(newWeekTotal <= 44.0){
+        total.removeClass('badge badge-danger');
+        total.addClass('badge badge-success');
+        if(newWeekTotal == 0){
+            total.text('');
+        }
+    } else {
+        total.removeClass('badge badge-success');
+        total.addClass('badge badge-danger');
+    }
+}
 
 
 
@@ -599,6 +570,7 @@ function modifyShift(){
                  $('#modifyShiftDialog').dialog('close');
 }
 function updateShift(shift){
+    const view = $('#calendar').fullCalendar('getView');
     $.post(
         '/shift/' + shift.id +'/update',
         {
@@ -610,13 +582,15 @@ function updateShift(shift){
             start: shift.startStr,
             end: shift.endStr,
             note: shift.note,
+            periodStart: view.start.format('YYYY-MM-DD'),
+            periodEnd: view.end.format('YYYY-MM-DD'),
         },
         function(data,status){
             if(status == 'success'){
                
                 updateWeekTotal(data);
 
-                scheduleStats($('#calendar').fullCalendar('getView'));
+                scheduleStats(view);
                 currentEvent.duty_id = shift.duty_id;
                 if(data.duty){
                     currentEvent.duty = data.duty;
