@@ -59,6 +59,7 @@ class Shift extends Model
             $s->employee->job;
             $s->role;
             $s->duty;
+            $s->duration = $s->start->diffInSeconds($s->end)/3600;
        }
        return $shifts;
     }

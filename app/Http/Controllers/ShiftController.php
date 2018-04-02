@@ -43,6 +43,7 @@ class ShiftController extends Controller
             'comment' => $r->note
         ]);
         $shift->periodTotal  = Shift::weekTotalHour($r->employee,$r->location,$r->periodStart,$r->periodEnd);
+        $shift->duration = $shift->start->diffInSeconds($shift->end)/3600;
         return $shift;
     }
 
@@ -97,9 +98,12 @@ class ShiftController extends Controller
         $shift->end = $request->end.":00";
         $shift->comment = $request->note;
         $shift->save();
+        $shift->employee;
+        $shift->employee->job;
         $shift->duty;
         $shift->role;
         $shift->periodTotal = Shift::weekTotalHour($request->employee,$shift->location_id,$request->periodStart,$request->periodEnd);
+        $shift->duration = $shift->start->diffInSeconds($shift->end)/3600;
         return $shift;
     }
 
@@ -109,15 +113,16 @@ class ShiftController extends Controller
         $removedShift = $shift;
         if($shift->delete()){
             $removedShift->periodTotal = Shift::weekTotalHour($removedShift->employee_id,$removedShift->location_id,$r->periodStart,$r->periodEnd);
+            $removedShift->duration = $shift->start->diffInSeconds($shift->end)/3600;
             return $removedShift;
         } else {
             return false;
         }
     }
     public function getOldTotal(Request $r){
-        $shift = Shift::find($r->id);
-        //$shift->periodTotal = Shift::weekTotalHour($r->employee,$r->location,$r->periodStart,$r->periodEnd);
-       // $shift->periodTotal = 99;
+        $shift = Shift::find($r->shift);
+        $shift->periodTotal = Shift::weekTotalHour($shift->employee_id,$r->location,$r->periodStart,$r->periodEnd);
+        $shift->total = $shift->start->diffInSeconds($shift->end)/3600;
         return $shift;
     }
 

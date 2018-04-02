@@ -118,7 +118,7 @@ class Shift {
 
 var currentShift = new Shift();
 var newShift = new Shift();
-
+var dragEvent = {};
 
 
 var shiftCounter = 0;
@@ -209,6 +209,7 @@ var fullCalOptions = {
         // },
         
         eventDataTransform: function(eventData){
+
             if(eventData.role){
                  eventData.title = eventData.role.c_name;
              } else {
@@ -226,7 +227,7 @@ var fullCalOptions = {
 
         eventRender: function(event,element){
             const duration = (event.end.format('X') - event.start.format('X'))/3600;
-            //getTotalHours(duration);
+           
             if(event.special == "1"){
                 element.find(".fc-time").append(' <i class="fa  fa-usd m--font-warning"></i>&nbsp;');
             }
@@ -248,7 +249,7 @@ var fullCalOptions = {
         },
         eventClick: function(event,element){
             currentEvent = event;
-            console.log(currentEvent);
+           // console.log(currentEvent);
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role_id = event.role_id;
@@ -273,12 +274,18 @@ var fullCalOptions = {
         },
         eventDragStart: function(event,jsEvent,ui,view){
             hideStats();
-            getWeekTotal(event);
+      
         },
         eventDragStop: function(event,jsEvent,ui,view){
+           
+            
+            
         },
         eventDrop: function(event,delta,revertFunc,jsEvent,ui,view){
             currentEvent = event;
+            dragEvent = event;
+            dragEvent.duration = (event.end.format('X') - event.start.format('X'))/3600;
+
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role_id = event.role_id;
@@ -453,7 +460,7 @@ function submitShift(){
 
 function getWeekTotal(event)
 {
-
+    const view = $('#calendar').fullCalendar('getView');
     $.post(
         '/shift/getOldTotal',
         {
@@ -461,12 +468,14 @@ function getWeekTotal(event)
             shift: event.id,
             location: event.location_id,
             employee: event.resourceId,
-            periodStart: event.start.format('YYYY-MM-DD'),
-            periodEnd: event.end.format('YYYY-MM-DD'),
+            periodStart: view.start.format('YYYY-MM-DD'),
+            periodEnd: view.end.format('YYYY-MM-DD'),
         },
         function(data,status){
             if(status == 'success'){
-                console.log(data.employee_id);
+                
+                console.log(data);
+             
             }
         }
         );
@@ -474,7 +483,7 @@ function getWeekTotal(event)
 
 function updateWeekTotal(shift)
 {
-    console.log('total:' + shift.periodTotal);
+    
     const newWeekTotal = shift.periodTotal;
     var total = $('#weekTotal'+shift.employee_id);
     total.text(newWeekTotal);
@@ -603,6 +612,7 @@ function updateShift(shift){
                 
                 currentEvent.start = shift.start;
                 currentEvent.end = shift.end;
+                currentEvent.duration = data.duration;
                 currentEvent.title = shift.title;
                 currentEvent.role_id = shift.role_id;
                 currentEvent.role = shift.role;
@@ -610,6 +620,29 @@ function updateShift(shift){
                 currentEvent.comment = shift.note;
              
                 $('#calendar').fullCalendar('updateEvent',currentEvent);
+
+             
+                if(dragEvent != 'undefined' && data.employee_id != dragEvent.employee_id ){
+                    var resourceWeekTotal = $('#weekTotal'+dragEvent.employee_id);
+                    const oldWeekTotal = resourceWeekTotal.text();
+                    const newWeekTotal = oldWeekTotal -  data.duration;
+                    resourceWeekTotal.text(newWeekTotal);
+                    if(newWeekTotal <= 44.0){
+                    resourceWeekTotal.removeClass('badge badge-danger');
+                    resourceWeekTotal.addClass('badge badge-success');
+                    if(newWeekTotal == 0){
+                    resourceWeekTotal.text('');
+                 }
+                } else {
+                    resourceWeekTotal.removeClass('badge badge-success');
+                    resourceWeekTotal.addClass('badge badge-danger');
+                }
+
+                } 
+                dragEvent.employee = data.employee;
+                dragEvent.employee_id = data.employee_id;
+                $('#calendar').fullCalendar('updateEvent',dragEvent);
+                dragEvent = {};
                 currentEvent = {};
                 currentShift.clear();
                
