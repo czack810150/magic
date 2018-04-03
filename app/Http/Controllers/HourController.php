@@ -34,35 +34,52 @@ class HourController extends Controller
         $location = $r->location;
         $date = $r->dateRange;
         $stats = ['scheduled' => 0, 'effective' => 0];
+        $index = false;
 
        if(isset($location) && isset($date)){
+            $dt = Carbon::createFromFormat('Y-m-d',$date)->startOfDay();
+            $start = $date;
+            $end = $dt->addDays(14)->toDateString();
             $hours = Hour::where('location_id',$location)->where('start',$date)->get();
-            $scheduledEmployees = Shift::select('employee_id')->where('location_id',$location)->where('start','>=',$date)->whereDate('start','<=',$hours[0]->end)->distinct()->get();
+            $scheduledEmployees = Shift::select('employee_id')->where('location_id',$location)->whereBetween('start',[$start,$end])->distinct()->get();
 
             $stats['effective'] = Hour::where('location_id',$location)->where('start',$date)->sum('wk1Effective');
             $stats['effective'] += Hour::where('location_id',$location)->where('start',$date)->sum('wk2Effective');
             $stats['scheduled'] = Hour::where('location_id',$location)->where('start',$date)->sum('wk1Scheduled');
             $stats['scheduled'] += Hour::where('location_id',$location)->where('start',$date)->sum('wk2Scheduled');
+            $index = true;
 
        } else {
         $hours = [];
         $scheduledEmployees = 0;
+        $index = false;
        }
      
-       
-        return view('hour.index',compact('locations','dates','hours','scheduledEmployees','stats','subheader'));
+   
+        return view('hour.index',compact('index','locations','dates','hours','scheduledEmployees','stats','subheader'));
+   
     }
     public function compute()
     {
         $dates = Datetime::periods(Carbon::now()->year);
-        return view('hour.compute',compact('dates'));
+        $locations = Location::pluck('name','id');
+        $locations->put('all','All locations');
+        $subheader = 'Hours';
+        return view('hour.compute',compact('dates','locations','subheader'));
     }
     public function computeEngine(Request $r)
     {
         if(Gate::allows('calculate-hours')){
-            Hour::where('start',$r->startDate)->delete();
-            $rows = Hour::hoursEngine($r->startDate);  
-            $tip = Tip::tipHours($r->startDate);
+            if($r->location == 'all'){ // all locations
+                Hour::where('start',$r->startDate)->delete();
+                $rows = Hour::hoursEngine($r->startDate,$r->location);  
+                $tip = Tip::tipHours($r->startDate);
+            } else { // single location
+                Hour::where('start',$r->startDate)->where('location_id',$r->location)->delete();
+                $rows = Hour::hoursEngine($r->startDate,$r->location);  
+                $tip = Tip::tipHours($r->startDate);
+            }
+            
             return $rows;
         } else {
             return 'Operation not allowed';

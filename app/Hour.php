@@ -159,7 +159,7 @@ class Hour extends Model
 		}
 	}
 
-	static function hoursEngine($startDate)
+	static function hoursEngine($startDate,$location)
 	{
     	$startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
     	$config = DB::table('payroll_config')->where('year',$startDate->year)->first();
@@ -171,12 +171,17 @@ class Hour extends Model
         $employees = Employee::whereBetween('termination',[$wk1Start,$wk2End])->orWhere('termination',null)->orderBy('location_id')->orderBy('job_id')->get();
         $result = array(
         );
-        
+        $count = 0;
         foreach($employees as $e)
         {
         	$hour = new HourObj($e->id,$e->cName,$e->employeeNumber,$wk1Start,$wk2End);
         	// get all locations that matter for this employee in period
-        	$locations = array_unique(Shift::where('employee_id',$e->id)->whereBetween('start',[$wk1Start,$wk2EndPlusOne])->pluck('location_id')->toArray());
+        	if($location == 'all'){
+        		$locations = array_unique(Shift::where('employee_id',$e->id)->whereBetween('start',[$wk1Start,$wk2EndPlusOne])->pluck('location_id')->toArray());
+        	} else {
+        		$locations = [$location];
+        	}
+        	
         	foreach($locations as $location)
         	{
         		$breakDown = New HourBreakDown;
@@ -215,11 +220,12 @@ class Hour extends Model
         			$HOUR->wk1Overtime = $breakDown->wk1Overtime;
         			$HOUR->wk2Overtime = $breakDown->wk2Overtime;
         			$HOUR->save();
+        			$count += 1;
         		}
         	}
         	$result[] = $hour;
         }
-        return sizeof($result);
+        return $count;
 	}
  	public static function overtime($hours,$overtimeHour){ // calculate overtime hours per week
     	

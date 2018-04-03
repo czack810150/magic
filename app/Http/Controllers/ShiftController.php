@@ -179,6 +179,8 @@ class ShiftController extends Controller
         }
 
         foreach($employees as $e){
+            $e->job;
+            $e->job_type = $e->job->type;
             $e->weekTotal = Shift::weekTotalHour($e->id,$r->location,$r->start,$r->end);
             $start  = Shift::where('employee_id',$e->id)->where('location_id',$r->location)->whereDate('start',$r->start)->first();
             if($start){

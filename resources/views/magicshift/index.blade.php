@@ -150,7 +150,7 @@ var fullCalOptions = {
             field:'cName',
             },
         ],
-        resourceOrder: 'job_id',
+        //resourceOrder: 'job_id',
         filterResourcesWithEvents: false,
         refetchResourcesOnNavigate: true,
         resources: function(callback,start,end,timezone){
@@ -171,6 +171,7 @@ var fullCalOptions = {
             );
         },
         resourceRender: function(resourceObj,labelTds,bodyTds){
+            console.log(resourceObj);
             var weekTotalStr = '';
             if(resourceObj.weekTotal) {
                 if(Number(resourceObj.weekTotal) <= 44.0){
@@ -273,12 +274,9 @@ var fullCalOptions = {
 
         },
         eventDragStart: function(event,jsEvent,ui,view){
-            hideStats();
       
         },
         eventDragStop: function(event,jsEvent,ui,view){
-           
-            
             
         },
         eventDrop: function(event,delta,revertFunc,jsEvent,ui,view){
@@ -303,11 +301,9 @@ var fullCalOptions = {
         },
         eventResizeStart: function(event,jsEvent,ui,view){
             
-            hideStats();
         },
         eventResizeStop: function(event,jsEvent,ui,view){
-          
-            showStats();
+            
         },
         eventResize: function(event,delta,revertFunc,jsEvent,ui,view){
          
@@ -322,6 +318,7 @@ var fullCalOptions = {
             currentShift.note = event.comment;
             currentShift.special = event.special;
             updateShift(currentShift);
+            showStats();
         },
     
         height:'auto',
@@ -387,22 +384,23 @@ var fullCalOptions = {
             timelineWorkWeek: {
                 buttonText:'Week',
                 type:'timeline',
-                // visibleRange: function(currentDate){
-                //  console.log(currentDate);
-                //  return {
-                //      start: currentDate.clone().day(1),
-          //                end: currentDate.clone().day(8) 
-                //  };
-                // },
-
                 slotLabelFormat:[
                 'MMMM',
                 'ddd DD'
                 ],
                 slotLabelInterval: '24:00',
                 duration:{weeks: 1},
-                //start:'2018-01-01',
-            }
+                resourceOrder:'job_id',
+            },
+            timelineDay: {
+                buttonText:'Day',
+                type:'timeline',
+                resourceOrder: 'firstStart',
+                resourceLabelText:'Employees',
+                resourceGroupField:'job_type',
+               
+
+            },
         },
 
         defaultView: 'timelineWorkWeek',

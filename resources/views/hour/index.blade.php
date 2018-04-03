@@ -128,6 +128,18 @@
 
 
 </main>
+@else
+	@if($index)
+<div class="m-alert m-alert--icon m-alert--outline alert alert-info alert-dismissible fade show" role="alert">
+					<div class="m-alert__icon">
+						<i class="la la-warning"></i>
+					</div>
+					<div class="m-alert__text">
+					  	<strong>No data!</strong> Please choose a different period or compute employee hours.		
+					</div>	
+								  	
+				</div>
+	@endif			
 @endif
 
 
