@@ -42,7 +42,7 @@
 			<div class="m-portlet__body">
 <table class="table table-sm table-hover">
 <thead>
-	<tr><th>排班人数</th><th>工时人数</th><th>排班工时</th><th>有效工时</th></tr>
+	<tr><th>排班人数</th><th>工时人数</th><th>排班</th><th>有效</th><th>排班Cash</th><th>有效Cash</th><th>Total 排班</th><th>Total 有效</th></tr>
 </thead>
 <tbody>
 	
@@ -51,6 +51,10 @@
 		<th>{{ count($hours) }}</th>
 		<th>{{ round($stats['scheduled'],2) }}</th>
 		<th>{{ round($stats['effective'],2) }}</th>
+		<th>{{ round($stats['scheduledCash'],2) }}</th>
+		<th>{{ round($stats['effectiveCash'],2) }}</th>
+		<th>{{ round($stats['scheduled'] + $stats['scheduledCash'],2)}}</th>
+		<th>{{ round($stats['effective'] + $stats['effectiveCash'],2)}}</th>
 		
 	</tr>
 	
@@ -68,7 +72,7 @@
 
 <table class="table table-sm table-hover">
 <thead>
-	<tr><th>employee</th><th>Position</th><th>Scheduled</th><th>Effective</th><th>Diff</th><th>Days</th><th>wk1Scheduled</th><th>wk2Scheduled</th><th>wk1Clocked</th><th>wk2Clocked</th><th>wk1Effective</th><th>wk2Effective</th><th>wk1OT</th><th>wk2OT</th><th>wk1Night</th><th>wk2Night</th></tr>
+	<tr><th>Employee</th><th>Position</th><th>Scheduled</th><th>Effective</th><th>Diff</th><th>Days</th><th>wk1Scheduled</th><th>wk2Scheduled</th><th>wk1Clocked</th><th>wk2Clocked</th><th>wk1Effective</th><th>wk2Effective</th><th>wk1OT</th><th>wk2OT</th><th>wk1Night</th><th>wk2Night</th></tr>
 </thead>
 <tbody>
 	@foreach($hours as $h)
@@ -80,9 +84,19 @@
 		<td>{{ $h->employee_id }}</td>
 		@endif
 		<td>{{ $h->employee->job->rank }}</td>
-		<td class="alert alert-primary">{{ $h->wk1Scheduled +$h->wk2Scheduled  }}</td>
-		<td class="alert alert-success">{{ $h->wk1Effective +$h->wk2Effective  }}</td>
-		<td class="alert alert-danger">{{ round($h->wk1Scheduled +$h->wk2Scheduled - $h->wk1Effective - $h->wk2Effective,2)  }}</td>
+		<td class="alert alert-primary">
+			{{ $h->wk1Scheduled +$h->wk2Scheduled  }} 
+			{{ ($h->wk1ScheduledCash + $h->wk2ScheduledCash) > 0? '('.($h->wk1ScheduledCash + $h->wk2ScheduledCash).')':''  }}
+		</td>
+
+		<td class="alert alert-success">
+			{{ $h->wk1Effective +$h->wk2Effective  }}
+			{{ ($h->wk1EffectiveCash + $h->wk2EffectiveCash) > 0? '('.($h->wk1EffectiveCash + $h->wk2EffectiveCash).')':''  }}
+		</td>
+		<td class="alert alert-danger">
+			{{ round($h->wk1Scheduled +$h->wk2Scheduled - $h->wk1Effective - $h->wk2Effective,2)  }}
+			{{ ($h->wk1ScheduledCash + $h->wk2ScheduledCash) > 0? '('.round($h->wk1ScheduledCash +$h->wk2ScheduledCash - $h->wk1EffectiveCash - $h->wk2EffectiveCash,2).')':''  }}
+		</td>
 		<td class="alert alert-warning">{{ $h->days   }}</td>
 		<td>{{ $h->wk1Scheduled }}</td>
 		<td>{{ $h->wk2Scheduled }}</td>

@@ -47,6 +47,10 @@ class HourController extends Controller
             $stats['effective'] += Hour::where('location_id',$location)->where('start',$date)->sum('wk2Effective');
             $stats['scheduled'] = Hour::where('location_id',$location)->where('start',$date)->sum('wk1Scheduled');
             $stats['scheduled'] += Hour::where('location_id',$location)->where('start',$date)->sum('wk2Scheduled');
+            $stats['effectiveCash'] = Hour::where('location_id',$location)->where('start',$date)->sum('wk1EffectiveCash');
+            $stats['effectiveCash'] += Hour::where('location_id',$location)->where('start',$date)->sum('wk2EffectiveCash');
+            $stats['scheduledCash'] = Hour::where('location_id',$location)->where('start',$date)->sum('wk1ScheduledCash');
+            $stats['scheduledCash'] += Hour::where('location_id',$location)->where('start',$date)->sum('wk2ScheduledCash');
             $index = true;
 
        } else {
@@ -72,12 +76,20 @@ class HourController extends Controller
         if(Gate::allows('calculate-hours')){
             if($r->location == 'all'){ // all locations
                 Hour::where('start',$r->startDate)->delete();
-                $rows = Hour::hoursEngine($r->startDate,$r->location);  
-                $tip = Tip::tipHours($r->startDate);
+
+                $locations = Location::get();
+                $rows = 0;
+                foreach($locations as $location)
+                {
+                    $rows += Hour::computeHours($r->startDate,$location->id);
+                    $tip = Tip::tipHours($r->startDate,$location->id);  
+                }
+
+                
             } else { // single location
                 Hour::where('start',$r->startDate)->where('location_id',$r->location)->delete();
-                $rows = Hour::hoursEngine($r->startDate,$r->location);  
-                $tip = Tip::tipHours($r->startDate);
+                $rows = Hour::computeHours($r->startDate,$r->location);  
+                $tip = Tip::tipHours($r->startDate,$r->location);
             }
             
             return $rows;

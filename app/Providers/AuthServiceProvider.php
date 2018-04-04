@@ -78,7 +78,7 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->authorization->type,['hr','dm','manager','accounting','gm','admin']);
         });
         Gate::define('use-scheduler',function($user){
-            return in_array($user->authorization->type,['dm','admin','manager','gm']);
+            return in_array($user->authorization->type,['dm','admin','manager','gm','accounting']);
         });
     }
 }

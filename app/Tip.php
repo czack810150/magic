@@ -10,74 +10,43 @@ use App\Payroll_tip;
 
 class Tip extends Model
 {
-	
-
-    public static function tipHours($startDate)
+    public static function tipHours($startDate,$location)
     {
-    	$startDate = Carbon::createFromFormat('Y-m-d',$startDate);
-    	//return $startDate->toDateString();
-    	$start = $startDate->toDateString();
-    	$end = $startDate->addDays(13)->toDateString();
-    	$hours = Hour::where('start',$start)->get();
-    	
- 
-    	$locations = array();
-
-    	foreach($hours as $h)
-    	{
-    		
-    		
-    	
-    		if( $h->location_id != 0 && !isset($locations[$h->location_id]) )
-    		{
-    			$locations[$h->location_id] = new TipHours($h->location_id,$start,$end);
-    				
-    			if(!$h->employee->job->trial){
-    			$locations[$h->location_id]->tipHours += $h->wk1Effective + $h->wk2Effective;
-    			} 
-    		} else {
-    			if($h->location_id != 0 && !$h->employee->job->trial){
-    			$locations[$h->location_id]->tipHours += $h->wk1Effective + $h->wk2Effective;
-    			}
-    		}
-
-    	}
-    	self::saveLocationTipHours($locations);
-
-    	return $locations;
+        if($location != 0 && $location != 9){
+            $startDate = Carbon::createFromFormat('Y-m-d',$startDate)->startOfDay();
+            $start = $startDate->toDateString();
+            $end = $startDate->addDays(13)->toDateString();
+            $hours = Hour::where('start',$start)->where('location_id',$location)->get();   
+            $tipHours = 0;
+            $payrollTip = Payroll_tip::where('start',$start)->where('location_id',$location)->get();
+            foreach($hours as $h)
+            {
+                if(!$h->employee->job->trial){
+                    $tipHours += $h->wk1Effective + $h->wk2Effective + $h->wk1EffectiveCash + $h->wk2EffectiveCash;
+                }
+                
+            }
+            if(count($payrollTip)){
+                //update
+                $payrollTip = $payrollTip->first();
+                $payrollTip->hours = $tipHours;
+                if(!is_null($payrollTip->tips))
+                {
+                    $payrollTip->hourlyTip = round($payrollTip->tips / $tipHours,0);
+                }
+                $payrollTip->save();
+                } else { // create new
+                    $payrollTip = Payroll_tip::create([
+                    'start' => $start,
+                    'end' => $end,
+                    'location_id' => $location,
+                    'hours' => $tipHours,
+                    ]);
+        }
+            return $payrollTip;
+        } else {
+            return null;
+        }
     }
 
-    public static function saveLocationTipHours($locations){
-    	foreach($locations as $location){
-
-    		$tip = Payroll_tip::where('start',$location->start)->where('location_id',$location->location)->first();
-    		if($tip){
-    			$tip->hours = $location->tipHours;
-    			$tip->save();
-
-    		} else {
-    			Payroll_tip::create([
-    			'start' => $location->start,
-    			'end' => $location->end,
-    			'location_id' => $location->location,
-    			'hours' => $location->tipHours,
-    		]);
-    		}
-
-    		
-    	}
-    }
-}
-
-class TipHours
-{
-	public $location;
-	public $tipHours = 0;
-	public $start;
-	public $end;
-	public function __construct($location,$start,$end){
-		$this->location = $location;
-		$this->start = $start;
-		$this->end = $end;
-	}
 }

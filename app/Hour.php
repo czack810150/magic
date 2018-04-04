@@ -33,6 +33,15 @@ class Hour extends Model
     	return DB::table('shifts')->select(DB::raw('sum(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 as total'))
         ->where('location_id',$location)
         ->where('employee_id',$employee)
+        ->where('special',0)
+        ->where('start','>=',$start)->whereDate('start','<=',$end)
+        ->first()->total;
+    }
+    public static function scheduledHourCash($employee,$location,$start,$end){
+    	return DB::table('shifts')->select(DB::raw('sum(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 as total'))
+        ->where('location_id',$location)
+        ->where('employee_id',$employee)
+        ->where('special',1)
         ->where('start','>=',$start)->whereDate('start','<=',$end)
         ->first()->total;
     }
@@ -55,7 +64,7 @@ class Hour extends Model
 		$totalNightSeconds = 0;
 		$holidays = Holiday::whereDate('date','>=',$start)->whereDate('date','<',$end)->get();
 
-		$shifts = Shift::where('employee_id',$employee)->where('location_id',$location)->where('start','>=',$start)->whereDate('start','<=',$end)->orderBy('start')->get();
+		$shifts = Shift::where('employee_id',$employee)->where('location_id',$location)->where('special',0)->where('start','>=',$start)->whereDate('start','<=',$end)->orderBy('start')->get();
 
 	    
     	if(count($shifts)){
@@ -129,7 +138,92 @@ class Hour extends Model
 			);
 				return $result;
 		}					
+    }
+     public static function effectiveHourCash($employee,$location,$start,$end)
+    {
+    	//config
+    	$nightStart = 1;
+    	$nightEnd = 6;
+    	// statistics 
+		$totalSeconds = 0;
+		$totalLateMinutes = 0;
+		$totalNightSeconds = 0;
+		$holidays = Holiday::whereDate('date','>=',$start)->whereDate('date','<',$end)->get();
 
+		$shifts = Shift::where('employee_id',$employee)->where('location_id',$location)->where('special',1)->where('start','>=',$start)->whereDate('start','<=',$end)->orderBy('start')->get();
+
+	    
+    	if(count($shifts)){
+		foreach($shifts as $s){
+					$planedStart = date_create($s->start);
+					$planedEnd = date_create($s->end);
+
+					$shiftDate = date_format($planedStart,'Y-m-d');
+					$nextDay = Carbon::createFromFormat('Y-m-d',$shiftDate)->addDay()->toDateString();
+					
+					$clockedHours = self::clockedShifts($employee,$location,$shiftDate,$nextDay);	
+
+					if(count($clockedHours)){
+				foreach($clockedHours as $c){
+					$clockIn = date_create($c->clockIn);
+					$clockOut = date_create($c->clockOut);
+					
+					
+					// comming to work
+					if(($clockIn > $planedEnd && $clockIn > $planedStart) || ($clockOut < $planedStart && $clockOut < $planedEnd) ){
+						continue;
+					} else {
+					if($clockIn > $planedStart) { // late for work
+						$effectiveStart = $clockIn;
+						// $lateBegin = $clockIn->diff($planedStart)->format('%h')*60 + $clockIn->diff($planedStart)->format('%i') ;
+						// if($lateBegin > $lateEffectiveMinute){ // late for work over defined late standard
+						// 	$totalLateMinutes += $lateBegin;
+						// }
+		// 					leaving
+							if($clockOut <= $planedEnd) { // left early
+								$effectiveEnd = $clockOut;
+							} else {
+								$effectiveEnd = $planedEnd;
+								// $effectiveEnd = $this->smartOut($clockOut,$planedEnd,$effectiveStart); // for now, left late, we use planed leave time
+								}
+					} else { // early for work
+						$effectiveStart = $planedStart;
+						if($clockOut <= $planedEnd) { // left early
+							$effectiveEnd = $clockOut;
+						}  else {
+								$effectiveEnd = $planedEnd;
+								 // $effectiveEnd = $this->smartOut($clockOut,$planedEnd,$effectiveStart); // for now, left late, we use planed leave time
+								}
+						}
+				$totalSeconds += self::totalSeconds($effectiveStart,$effectiveEnd);
+				$totalNightSeconds += self::nightHours($effectiveStart,$effectiveEnd,$nightStart,$nightEnd);
+				} // check if current clock in is later than the current shift off time end
+				}
+
+					}
+					 
+		}
+			$result = array(
+				'seconds' => $totalSeconds,
+				'hours' => round($totalSeconds/3600,2),
+				//'late' => $totalLateMinutes,
+				'nightSeconds' => $totalNightSeconds,
+				'nightHours' => round($totalNightSeconds/3600,2),
+				'holidays' => $holidays,
+			);
+				return $result;
+		
+		} else {
+			$result = array(
+				'seconds' => 0,
+				'hours' => 0,
+				//'late' => $totalLateMinutes,
+				'nightSeconds' => 0,
+				'nightHours' => 0,
+				'holidays' => $holidays,
+			);
+				return $result;
+		}					
     }
 
     static function totalSeconds($start,$end){
@@ -159,7 +253,63 @@ class Hour extends Model
 		}
 	}
 
-	static function hoursEngine($startDate,$location)
+
+	public static function computeHours($startDate,$location)
+	{
+		$count = 0;
+		$startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
+		$config = DB::table('payroll_config')->where('year',$startDate->year)->first();
+		$wk1Start =  $startDate->toDateString();
+        $wk1End = $startDate->addDays(6)->toDateString();
+        $wk2Start = $startDate->addDay()->toDateString();
+        $wk2End = $startDate->addDays(6)->toDateString();
+        $wk2EndPlusOne = $startDate->addDay()->toDateString();
+
+        $locationShifts = Shift::where('location_id',$location)->whereBetween('start',[$wk1Start,$wk2EndPlusOne])->get();
+      
+        $employees = $locationShifts->map(function($item,$key){
+        		return $item->employee_id;
+        });
+        $employees = $employees->unique()->values()->all();
+        
+        foreach($employees as $eid)
+        {
+
+        	$HOUR = new Hour;
+        			$HOUR->start = $wk1Start;
+        			$HOUR->end = $wk2End;
+        			$HOUR->employee_id = $eid;
+        			$HOUR->location_id = $location;
+        			//new, get the days worked for the peirod( scheduled days )
+        			$HOUR->days = count(Shift::select(DB::raw('DATE(start)'))->where('employee_id',$eid)->where('location_id',$location)->whereBetween('start',[$wk1Start,$wk2End.' 23:59:59'])->distinct()->get());
+        			$HOUR->wk1Scheduled = self::scheduledHour($eid,$location,$wk1Start,$wk1End);
+        			$HOUR->wk2Scheduled = self::scheduledHour($eid,$location,$wk2Start,$wk2End);
+        			$HOUR->wk1ScheduledCash = self::scheduledHourCash($eid,$location,$wk1Start,$wk1End);
+        			$HOUR->wk2ScheduledCash = self::scheduledHourCash($eid,$location,$wk2Start,$wk2End);
+        			$HOUR->wk1Clocked = self::clockedHour($eid,$location,$wk1Start,$wk1End);
+        			$HOUR->wk2Clocked = self::clockedHour($eid,$location,$wk2Start,$wk2End);
+
+        			$wk1Effective = self::effectiveHour($eid,$location,$wk1Start,$wk1End);
+        			$wk2Effective = self::effectiveHour($eid,$location,$wk2Start,$wk2End);
+        			$wk1EffectiveCash = self::effectiveHourCash($eid,$location,$wk1Start,$wk1End);
+        			$wk2EffectiveCash = self::effectiveHourCash($eid,$location,$wk2Start,$wk2End);
+
+        			$HOUR->wk1Effective = $wk1Effective['hours'];
+        			$HOUR->wk2Effective = $wk2Effective['hours'];
+        			$HOUR->wk1EffectiveCash = $wk1EffectiveCash['hours'];
+        			$HOUR->wk2EffectiveCash = $wk2EffectiveCash['hours'];
+        			$HOUR->wk1Night = $wk1Effective['nightHours'];
+        			$HOUR->wk2Night = $wk2Effective['nightHours'];
+        			$HOUR->wk1Overtime = self::overtime($wk1Effective['hours'],$config->overtime);
+        			$HOUR->wk2Overtime = self::overtime($wk2Effective['hours'],$config->overtime);
+        			$HOUR->save();
+        			$count += 1;
+        }
+        return $count;
+
+	}
+
+	static function hoursEngine($startDate)
 	{
     	$startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
     	$config = DB::table('payroll_config')->where('year',$startDate->year)->first();
@@ -176,11 +326,9 @@ class Hour extends Model
         {
         	$hour = new HourObj($e->id,$e->cName,$e->employeeNumber,$wk1Start,$wk2End);
         	// get all locations that matter for this employee in period
-        	if($location == 'all'){
-        		$locations = array_unique(Shift::where('employee_id',$e->id)->whereBetween('start',[$wk1Start,$wk2EndPlusOne])->pluck('location_id')->toArray());
-        	} else {
-        		$locations = [$location];
-        	}
+        	
+            $locations = array_unique(Shift::where('employee_id',$e->id)->whereBetween('start',[$wk1Start,$wk2EndPlusOne])->pluck('location_id')->toArray());
+        	
         	
         	foreach($locations as $location)
         	{
@@ -394,6 +542,6 @@ class HourObj{
 }
 
 class HourBreakDown {
-	public $location_id,$wk1Scheduled,$wk1Clocked,$wk1Effective,$wk1Night,$wk1Overtime;
-	public $wk2Scheduled,$wk2Clocked,$wk2Effective,$wk2Night,$wk2Overtime;
+	public $location_id,$wk1Scheduled,$wk1Clocked,$wk1Effective,$wk1Night,$wk1Overtime = 0;
+	public $wk2Scheduled,$wk2Clocked,$wk2Effective,$wk2Night,$wk2Overtime = 0;
 }
