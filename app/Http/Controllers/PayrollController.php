@@ -138,6 +138,7 @@ class PayrollController extends Controller
             'variable' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('variablePay'),
             'total' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('totalPay'),
             'employees' => sizeof($logs),
+            'cashPay' => Payroll_log::where('startDate',$r->startDate)->where('location_id',$r->location)->sum('cashPay'),
             );
         return view('payroll.basic.table',compact('logs','sum'));
       
@@ -172,10 +173,23 @@ class PayrollController extends Controller
     }
     public function compute(){
         $dates = Datetime::periods(YEAR);
-        return view('payroll.compute.index')->withDates($dates);
+        $locations = Location::pluck('name','id');
+        $locations->put('all','All locations');
+        $subheader = 'Payroll';
+        return view('payroll.compute.index',compact('dates','locations','subheader'));
     }
     public function computePayroll(Request $r){
-        return Payroll::payrollEngineX($r->dateRange).' records has been saved to database.';
+        $subheader = 'Payroll';
+        $validatedData = $r->validate([
+            'dateRange' => 'required',
+            'forLocation' => 'required',
+        ]);
+       
+        $message = Payroll::payrollCompute($r->dateRange,$r->forLocation);
+        // $message = Payroll::payrollEngineX($r->dateRange);
+    
+        return view('payroll.compute.result',compact('message','subheader'));
+  
     }
     public function paystubs(){
         $locations = Location::Store()->pluck('name','id');

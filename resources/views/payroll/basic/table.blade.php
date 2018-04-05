@@ -3,7 +3,7 @@
 <table class="table table-sm">
 	<thead>
 		<tr><th>Total hrs</th><th>Overtime hrs</th><th>Gross</th>
-			<th>EI</th><th>EI Company</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Cheque</th>
+			<th>EI</th><th>EI Company</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Cheque</th><th>Cash</th>
 			<th>nightHrs</th>
 			<th>bonus</th>
 			<th>Variable Pay</th><th>total</th>
@@ -20,6 +20,7 @@
 			<td>{{ $sum['fedTax']/100 }}</td>
 			<td>{{ $sum['pTax']/100 }}</td>
 			<td>{{ $sum['cheque']/100 }}</td>
+			<td>{{ $sum['cashPay']/100 }}</td>
 			<td>{{ round($sum['nightHour'],2) }}</td>
 			<td>{{ $sum['bonus']/100 }}</td>
 			<td>{{ $sum['variable']/100 }}</td>
@@ -37,12 +38,12 @@
 @if($logs)
 <table class="table table-sm">
 	<thead>
-		<tr><th>card</th><th>name</th><th>legal</th><th>wk1</th><th>wk2</th><th>hours</th><th>regular</th><th>overtime</th><th>Holiday</th><th>Gross</th>
+		<tr><th>card</th><th>name</th><th>legal</th><th>cash hours</th><th>cheque hours</th><th>regular</th><th>overtime</th><th>Holiday</th><th>Gross</th>
 			<th>Vacation</th>
-			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>Cheque</th>
+			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>Cheque</th><th>CashSalary</th>
 			<th>Position rate</th><th>Tips</th><th>nightHrs</th><th>Meal</th>
 			<th>P</th>
-			<th>Variable Pay</th><th>Total</th>
+			<th>Variable Pay</th><th>发现</th><th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -53,8 +54,8 @@
 				<td>{{$e->employee->employeeNumber}}</td>
 				<td>{{$e->employee->cName}}</td>
 				<td>{{$e->employee->firstName.' '.$e->employee->lastName}}</td>
-				<td>{{$e->week1}}</td>
-				<td>{{$e->week2}}</td>
+				
+				<td>{{$e->cashHour}}</td>
 				<td>{{$e->week1 + $e->week2}}</td>
 				
 				<td>{{$e->regularPay}}</td>
@@ -68,15 +69,16 @@
 				<td>{{$e->provincialTax}}</td>
 				<td>{{$e->provincialTax + $e->federalTax }}</td>
 				<td>{{$e->cheque}}</td>
-			
+				<td>{{$e->cashPay/100}}</td>
 
 				<td>{{$e->position_rate}}</td>
-				<td>{{ round($e->tip * $e->hourlyTip * ($e->week1 + $e->week2),2)}}</td>
+				<td>{{ round($e->tip * $e->hourlyTip * ($e->week1 + $e->week2 + $e->cashHour),2)}}</td>
 				
 				<td>{{$e->nightHours}}</td>
-				<td>{{ round($e->mealRate * ($e->week1 + $e->week2),2) }}</td>
+				<td>{{ round($e->mealRate * ($e->week1 + $e->week2 + $e->cashHour),2) }}</td>
 				<td>{{$e->performance}}</td>
 				<td>{{$e->variablePay}}</td>
+				<th>{{$e->variablePay + $e->cashPay/100}}</th>
 				<td>{{$e->totalPay}}</td>
 
 
