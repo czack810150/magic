@@ -18,6 +18,7 @@
 
 <form  method="POST" action="/exam/create"  class="">
 {{csrf_field()}}
+<input type="text" id="creator" name="creator" value="{{ Auth()->user()->authorization->employee_id }}" hidden>
 
 
 <div class="form-group">

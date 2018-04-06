@@ -25,7 +25,14 @@ class ExamController extends Controller
     public function index()
     {
         $subheader = 'Employee Training';
-        return view('exam.exam.index',compact('subheader'));
+
+        $exams = Exam::get()->count();
+        $attempted = Exam::where('taken_at','!=',null)->get()->count();
+        $templates = 0;
+        $questions = Question::get()->count();
+        $mc = Question::where('mc',1)->get()->count();
+        $sa = Question::where('mc',0)->get()->count();
+        return view('exam.exam.index',compact('subheader','exams','attempted','templates','questions','mc','sa'));
     }
     public function all()
     {
@@ -58,11 +65,12 @@ class ExamController extends Controller
     {
         $json = json_decode(request('json'));
    
-
+        dd($request->all());
         $exam = new Exam;
         $exam->employee_id = $json->employee;
         $exam->name = $json->name;
         $exam->access = str_random(64);
+        $exam->created_by = $json->creator;
         $exam->save();
 
         foreach($json->questions as $q){
@@ -195,12 +203,42 @@ class ExamController extends Controller
     function attemptedExams(){
         $subheader = 'Employee Training';
         $exams = Exam::finished()->get();
+        foreach($exams as $e)
+        {
+            $e->qs = $e->question;
+            $e->mc = 0;
+            foreach($e->qs as $q){
+
+               if($q->question){
+                if($q->question->mc){
+
+                    $e->mc += 1;
+                 }
+                }
+            }
+           
+        }
         return view('exam.exam.attemptedExams',compact('exams','subheader'));
 
     }
     function mark($id){
+        $subheader = 'Employee Training';
         $exam = Exam::find($id);
-        return view('exam.exam.mark',compact('exam'));
+        $questions = $exam->question->count();
+        $attemptedMC = $exam->question->where('answer_id','!=',null)->count();
+        $attemptedSA = $exam->question->where('short_answer','!=',null)->count();
+        $attempted = $attemptedMC + $attemptedSA;
+        $mc = 0;
+        $sa = 0;
+        foreach($exam->question as $q){
+            if($q->question->mc){
+                $mc += 1;
+            } else {
+                $sa += 1;
+            }
+
+        } 
+        return view('exam.exam.mark',compact('exam','subheader','questions','attempted','mc','sa','attemptedSA','attemptedMC'));
     }
     function my(){
         $subheader = 'My Exams';

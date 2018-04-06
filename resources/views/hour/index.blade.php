@@ -150,9 +150,8 @@
 					</div>
 					<div class="m-alert__text">
 					  	<strong>No data!</strong> Please choose a different period or compute employee hours.		
-					</div>	
-								  	
-				</div>
+					</div>									  	
+</div>
 	@endif			
 @endif
 

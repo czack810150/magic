@@ -1,5 +1,3 @@
-console.log('loaded magic.js');
-
 function locationEmployees(){
 	$.post(
       '/employee/location',
