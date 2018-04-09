@@ -26,11 +26,11 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('calculate-hours',function($user) {
-            return $user->authorization->type == 'admin';
+            return in_array($user->authorization->type,['admin','accounting']);
         });
 
         Gate::define('calculate-payroll',function($user){
-            return $user->authorization->type == 'admin';
+            return in_array($user->authorization->type,['admin','accounting']);
         });
         Gate::define('workon-tips',function($user){
             return in_array($user->authorization->type,['admin','accounting']);
