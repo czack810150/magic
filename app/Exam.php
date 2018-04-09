@@ -18,4 +18,8 @@ class Exam extends Model
     {
     	return $query->where('finished',true);
     }
+    public function scopeMc($query)
+    {
+        return $query->where('finished',true);
+    }
 }

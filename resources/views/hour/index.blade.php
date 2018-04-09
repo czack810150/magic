@@ -98,12 +98,12 @@
 			{{ ($h->wk1ScheduledCash + $h->wk2ScheduledCash) > 0? '('.round($h->wk1ScheduledCash +$h->wk2ScheduledCash - $h->wk1EffectiveCash - $h->wk2EffectiveCash,2).')':''  }}
 		</td>
 		<td class="alert alert-warning">{{ $h->days   }}</td>
-		<td>{{ $h->wk1Scheduled }}</td>
-		<td>{{ $h->wk2Scheduled }}</td>
+		<td>{{ $h->wk1Scheduled }} {{ $h->wk1ScheduledCash? "("."$h->wk1ScheduledCash".")":'' }}</td>
+		<td>{{ $h->wk2Scheduled }} {{ $h->wk2ScheduledCash? "("."$h->wk2ScheduledCash".")":'' }}</td>
 		<td>{{ round($h->wk1Clocked,2) }}</td>
 		<td>{{ round($h->wk2Clocked,2) }}</td>
-		<td class="alert alert-primary">{{ $h->wk1Effective }}</td>
-		<td class="alert alert-primary">{{ $h->wk2Effective }}</td>
+		<td class="alert alert-primary">{{ $h->wk1Effective }} {{$h->wk1EffectiveCash? "("."$h->wk1EffectiveCash".")":''}}</td>
+		<td class="alert alert-primary">{{ $h->wk2Effective }} {{$h->wk2EffectiveCash? "("."$h->wk2EffectiveCash".")":''}}</td>
 		
 		<td class="alert alert-danger">{{ $h->wk1Overtime }}</td>
 		<td class="alert alert-danger">{{ $h->wk2Overtime }}</td>
