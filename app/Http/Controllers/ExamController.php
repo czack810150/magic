@@ -10,6 +10,8 @@ use App\Question;
 use App\Answer;
 use App\Exam;
 use App\Exam_question;
+use App\Exam_template;
+use App\Exam_template_question;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
@@ -32,7 +34,8 @@ class ExamController extends Controller
         $questions = Question::get()->count();
         $mc = Question::where('mc',1)->get()->count();
         $sa = Question::where('mc',0)->get()->count();
-        return view('exam.exam.index',compact('subheader','exams','attempted','templates','questions','mc','sa'));
+        $templates = Exam_template::get()->count();
+        return view('exam.exam.index',compact('subheader','exams','attempted','templates','questions','mc','sa','templates'));
     }
     public function all()
     {
@@ -65,19 +68,32 @@ class ExamController extends Controller
     {
         $json = json_decode(request('json'));
    
-        dd($request->all());
+        
         $exam = new Exam;
         $exam->employee_id = $json->employee;
         $exam->name = $json->name;
         $exam->access = str_random(64);
-        $exam->created_by = $json->creator;
+        $exam->created_by = Auth::user()->authorization->employee_id;
         $exam->save();
-
+        
         foreach($json->questions as $q){
             $question = Exam_question::create(['question_id'=>$q->id]);
             $exam->question()->save($question);
         }
         
+        if($json->createTemplate){
+            $template = new Exam_template; 
+            $template->exam_id= $exam->id;
+            $template->used = 0;
+            $template->name = $json->name;
+            $template->employee_id = Auth::user()->authorization->employee_id;
+            $template->save();
+            
+            foreach($json->questions as $q){
+                $question = Exam_template_question::create(['question_id'=>$q->id]);
+                $template->question()->save($question);
+            }
+        }
     }
 
     /**

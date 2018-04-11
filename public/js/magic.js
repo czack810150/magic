@@ -77,9 +77,9 @@ function attemptSubmit(){
 	const employee = $("#selectedEmployee").val();
 	const name = $("#exam_name").val();
 	if(name != '' && selectedQuestions.length > 0 && employee != 'undefined'){
-		const exam = {"name":name,"employee":employee,"questions":selectedQuestions};
+		const exam = {"name":name,"employee":employee,"questions":selectedQuestions,"createTemplate":$('#createTemplate').prop('checked')};
 		const json = JSON.stringify(exam);
-		$.post(
+  		$.post(
 			 '/exam/store',
       {
         json:json,

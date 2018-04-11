@@ -22,14 +22,14 @@
 
 
 <div class="form-group">
-<lable for="question" class="mr-sm-2">Exam Name</lable>
+<label for="question" class="mr-sm-2">Exam Name</label>
 <div class="input-group">
 <input type="text" id="exam_name" name="exam_name" class="form-control mb-2 mr-sm-2 mb-sm-0" required>
 </div>
 </div>
 
 <div class="form-group">
-<lable for="category" class="mr-sm-2">Question Category</lable>
+<label for="category" class="mr-sm-2">Question Category</label>
 <div class="input-group">
 <select name="category" class="form-control" id="category">
 @foreach($categories as $c)
@@ -38,6 +38,15 @@
 </select>
 </div>
 </div>
+
+<div class="form-group form-check">
+
+
+<input type="checkbox" class="form-check-input" id="createTemplate">
+<label for="createTemplate" class="form-check-label">Save as template</label>
+</div>
+
+
 
 <ul class="list-unstyled" id="questions">
 	@if(isset($questions))

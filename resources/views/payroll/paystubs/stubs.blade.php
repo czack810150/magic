@@ -72,7 +72,7 @@ p
 				<td>12</td>
 				<td>{{$e->cashHour }}</td>
 				<td>{{$e->cashPay/100}}</td>
-				<td>{{round($e->position_rate * ($e->week1 + $e->week2),2)}}</td>
+				<td>{{round($e->position_rate * ($e->week1 + $e->week2 +$e->cashHour),2)}}</td>
 				<td>{{round(round($e->tip * $e->hourlyTip,2) * ($e->week1 + $e->week2 + $e->cashHour),2)}}</td>
 				
 				<td>{{round($e->nightHours * $e->nightRate,2)}}</td>

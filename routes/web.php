@@ -236,7 +236,11 @@ Route::post('/exam/submission','ExamController@submitExam');
 Route::get('/exam/attemptedExams','ExamController@attemptedExams');
 Route::get('/exam/{id}/mark','ExamController@mark');
 Route::get('/my_exam','ExamController@my');
-
+// Exam Templates
+Route::get('/exam_templates/','Exam_templateController@index');
+Route::get('/exam_templates/{id}/show','Exam_templateController@show');
+Route::get('/exam_templates/{id}/remove','Exam_templateController@destroy');
+Route::post('/exam_templates/store','Exam_templateController@store');
 //Jobs
 Route::get('/jobs','JobController@index');
 // My voice
