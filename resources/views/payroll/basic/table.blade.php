@@ -25,9 +25,7 @@
 			<td>{{ $sum['bonus']/100 }}</td>
 			<td>{{ $sum['variable']/100 }}</td>
 			<td>{{ $sum['total']/100 }}</td>
-			@if($sum['total'])
-			<td><a href="/payroll/{{ $sum['startDate'] }}/destroy" class="btn btn-sm btn-danger">Destory</a></td>
-			@endif
+			
 		</tr>
 		<tr><th>BaseRate</th><th>nightRate</th><th>mealRate</th><th>HourlyTip</th><th>Employees</th></tr>
 		<tr><td>{{ $sum['basicRate'] }}</td><td>{{ $sum['nightRate'] }}</td><td>{{ $sum['mealRate'] }}</td><td>{{ $sum['hourlyTip'] }}</td><td>{{ $sum['employees'] }}</td></tr>

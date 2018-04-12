@@ -68,9 +68,13 @@
   </li>
   <li class="nav-item">
     <a class="nav-link" href="javascript:employment('{{ $staff->id }}')">Employment</a>
+  </li>
   <li class="nav-item">
-  	 <li class="nav-item">
-    <a class="nav-link" href="javascript:employeePerformance('{{ $staff->id }}')">Performance</a>
+  	     <a class="nav-link" href="javascript:employeeStats('{{ $staff->id }}')">Stats</a>
+  </li>
+  <li class="nav-item">
+  	     <a class="nav-link" href="javascript:employeePerformance('{{ $staff->id }}')">Performance</a>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="javascript:employeeTraining('{{ $staff->id }}')">Training</a>
   </li>

@@ -554,3 +554,18 @@ function updateWorkHistory(employee){
 		}
 		);
 }
+
+function employeeStats(employee)
+{
+	$.post(
+		'/employee/stats/'+ employee + '/show',
+		{
+			_token: $("input[name=_token]").val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);
+}

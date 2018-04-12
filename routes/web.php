@@ -105,7 +105,8 @@ Route::post('/employee/account/{id}/update','EmployeeController@updateAccount');
 Route::post('/employee/training','EmployeeController@training');
 Route::post('/skill/category/{id}/get','SkillController@getSkillByCategory');
 Route::post('/skill/assign','SkillController@assignSkill');
-
+// Employee Stats
+Route::post('/employee/stats/{id}/show','EmployeeStatsController@show');
 
 // user employee
 Route::get('/payroll/my','EmployeeUserController@payroll');

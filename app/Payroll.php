@@ -187,6 +187,7 @@ class Payroll extends Model
 
     public static function payrollCompute($startDate,$location)
     {
+
         $periodStart =  $startDate;
         $startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
         $config = DB::table('payroll_config')->where('year',$startDate->year)->first();
@@ -213,7 +214,7 @@ class Payroll extends Model
                 $hourlyTip = 0;
             }
             $e->effectiveHour = $e->wk1Effective + $e->wk2Effective; // effective hours
-            $e->nightHour = $e->wk1Night + $e->wk2Night; // night hours
+            $e->nightHour = $e->wk1Night + $e->wk2Night + $e->wk1NightCash + $e->wk2NightCash; // night hours
             $e->cashHour = $e->wk1EffectiveCash + $e->wk2EffectiveCash; // cash hours
 
             //holidays

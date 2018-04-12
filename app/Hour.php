@@ -300,6 +300,8 @@ class Hour extends Model
         			$HOUR->wk2EffectiveCash = $wk2EffectiveCash['hours'];
         			$HOUR->wk1Night = $wk1Effective['nightHours'];
         			$HOUR->wk2Night = $wk2Effective['nightHours'];
+        			$HOUR->Wk1NightCash = $wk1EffectiveCash['nightHours'];
+        			$HOUR->Wk2NightCash = $wk2EffectiveCash['nightHours'];
         			$HOUR->wk1Overtime = self::overtime($wk1Effective['hours'],$config->overtime);
         			$HOUR->wk2Overtime = self::overtime($wk2Effective['hours'],$config->overtime);
         			$HOUR->save();

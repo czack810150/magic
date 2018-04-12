@@ -107,8 +107,8 @@
 		
 		<td class="alert alert-danger">{{ $h->wk1Overtime }}</td>
 		<td class="alert alert-danger">{{ $h->wk2Overtime }}</td>
-		<td class="alert alert-dark">{{ $h->wk1Night }}</td>
-		<td class="alert alert-dark">{{ $h->wk2Night }}</td>
+		<td class="alert alert-dark">{{ $h->wk1Night }} {{$h->wk1NightCash? "("."$h->wk1NightCash".")":''}}</td>
+		<td class="alert alert-dark">{{ $h->wk2Night }} {{$h->wk2NightCash? "("."$h->wk2NightCash".")":''}}</td>
 	</tr>
 	@endforeach
 </tbody>
