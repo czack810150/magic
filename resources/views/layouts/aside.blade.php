@@ -35,19 +35,7 @@
 								<i class="m-menu__section-icon flaticon-more-v3"></i>
 							</li>
 
-							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
-								<a  href="http://www.magicnoodle.ca/magicshift/magicshift" class="m-menu__link ">
-									<i class="m-menu__link-icon flaticon-squares-1"></i>
-									<span class="m-menu__link-title">
-										<span class="m-menu__link-wrap">
-											<span class="m-menu__link-text">
-												MagicShift
-											</span>
-											
-										</span>
-									</span>
-								</a>
-							</li>
+							
 							@can('use-scheduler')
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="{{ url('/scheduler') }}" class="m-menu__link ">
@@ -55,7 +43,7 @@
 									<span class="m-menu__link-title">
 										<span class="m-menu__link-wrap">
 											<span class="m-menu__link-text">
-												Scheduler
+												MagicShift
 											</span>
 											
 										</span>
@@ -384,10 +372,26 @@
 								</div>
 							</li>
 							@endif
+							<!-- Request Leave -->
+							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+								<a  href="{{ url('leave') }}" class="m-menu__link ">
+									<i class="m-menu__link-icon flaticon-paper-plane"></i>
+									<span class="m-menu__link-title">
+										<span class="m-menu__link-wrap">
+											<span class="m-menu__link-text">
+												Leave
+											</span>
+											
+										</span>
+									</span>
+								</a>
+							</li>
+
+
 							<!-- MY VOICE -->
 							<li class="m-menu__item m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
 								<a href="#" class="m-menu__link m-menu__toggle">
-									<i class="m-menu__link-icon flaticon-paper-plane"></i>
+									<i class="m-menu__link-icon flaticon-speech-bubble"></i>
 									<span class="m-menu__link-text">My Voice</span>
 
 									@if(Auth::user()->authorization->employee->message->where('read',false)->count())

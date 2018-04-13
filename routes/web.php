@@ -265,3 +265,8 @@ Route::get('/store/report/performance','EmployeePerformanceController@overview')
 Route::post('/store/report/performance','EmployeePerformanceController@getStorePerformance');
 Route::get('/store/report/schedule','HourController@scheduledHourReport');
 Route::post('/store/report/schedule','HourController@scheduledHourReportData');
+
+// Leave
+Route::get('/leave','LeaveController@index');
+Route::get('/request/leave','LeaveController@create');
+Route::post('/request/leave/send','LeaveController@store');

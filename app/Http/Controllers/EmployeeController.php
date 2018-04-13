@@ -139,6 +139,14 @@ class EmployeeController extends Controller
         $subheader = 'Staff Profile';
         $staff = Employee::findOrFail($id);
         if(Gate::allows('view-employee',$staff)){
+            if(!$staff->employee_background){
+            $staff->employee_background = Employee_background::create([
+                'employee_id' => $id,
+                'education' => 'below highschool'
+            ]);
+        }
+
+
             return view('employee/profile/index',compact('staff','subheader'));
         } else {
             return 'Not authorized';
@@ -541,6 +549,12 @@ class EmployeeController extends Controller
      public function background($id)
      {
         $employee = Employee::find($id);
+        if(!$employee->employee_background){
+            $employee->employee_background = Employee_background::create([
+                'employee_id' => $id,
+                'education' => 'below highschool'
+            ]);
+        }
         return view('employee.profile.background.index',compact('employee'));
      }
      public function editEducation($id)

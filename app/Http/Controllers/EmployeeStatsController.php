@@ -55,9 +55,6 @@ class EmployeeStatsController extends Controller
         $stats['cashHour'] = $hours->sum('wk1EffectiveCash') + $hours->sum('wk2EffectiveCash');
         $stats['scheduledHour'] = $hours->sum('wk1Scheduled') + $hours->sum('wk2Scheduled');
         $stats['scheduledHourCash'] = $hours->sum('wk1ScheduledCash') + $hours->sum('wk2ScheduledCash');
-        if(!$stats['scheduledHourCash']){
-            $stats['scheduledHourCash'] = 1;
-        }
         $stats['overtimeHour'] = $hours->sum('wk1Overtime') + $hours->sum('wk2Overtime');
         $stats['totalNightHour'] = $hours->sum('wk1Night') + $hours->sum('wk2Night')+$hours->sum('wk1NightCash') + $hours->sum('wk2NightCash');
 
@@ -71,6 +68,15 @@ class EmployeeStatsController extends Controller
         $stats['dish'] = DB::table('shifts')->select(DB::raw('sum(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 as total'))->where('employee_id',$id)->where('role_id',8)->first()->total;
         $stats['boil'] = DB::table('shifts')->select(DB::raw('sum(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 as total'))->where('employee_id',$id)->where('role_id',10)->first()->total;
         $stats['pantry'] = DB::table('shifts')->select(DB::raw('sum(UNIX_TIMESTAMP(end)-UNIX_TIMESTAMP(start))/3600 as total'))->where('employee_id',$id)->where('role_id',12)->first()->total;
+
+        $stats['open'] = Shift::where('employee_id',$id)->where('duty_id',1)->count();
+        $stats['close'] = Shift::where('employee_id',$id)->where('duty_id',2)->count();
+        $stats['preClose'] = Shift::where('employee_id',$id)->where('duty_id',3)->count();
+        $stats['clean'] = Shift::where('employee_id',$id)->where('duty_id',4)->count();
+        $stats['deepClean'] = Shift::where('employee_id',$id)->where('duty_id',5)->count();
+        $stats['training'] = Shift::where('employee_id',$id)->where('duty_id',6)->count();
+        $stats['shiftManager'] = Shift::where('employee_id',$id)->where('duty_id',7)->count();
+
         return view('employee.stats.index',compact('stats'));
     }
 

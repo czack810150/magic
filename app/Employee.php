@@ -135,6 +135,10 @@ class Employee extends Model
     {
         return $this->hasOne('App\Availability');
     }
+    public function leave()
+    {
+        return $this->hasMany('App\Leave');
+    }
     
 
 

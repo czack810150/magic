@@ -197,6 +197,21 @@
 									</ul>
 								</div>
 							</li>
+
+							<!-- Request Leave -->
+							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+								<a  href="{{ url('leave') }}" class="m-menu__link ">
+									<i class="m-menu__link-icon flaticon-paper-plane"></i>
+									<span class="m-menu__link-title">
+										<span class="m-menu__link-wrap">
+											<span class="m-menu__link-text">
+												Leave
+											</span>
+											
+										</span>
+									</span>
+								</a>
+							</li>
 							
 							<!-- MY VOICE -->
 							<li class="m-menu__item m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
