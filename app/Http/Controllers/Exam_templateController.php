@@ -54,12 +54,13 @@ class Exam_templateController extends Controller
         $exam->access = str_random(64);
         $exam->created_by = Auth::user()->authorization->employee_id;
         $exam->save();
+
         $template = Exam_template::find($request->templateId);
         $template->used += 1;
         $template->save();
         $questions = $template->question;
         foreach($questions as $q){
-            $question = Exam_question::create(['question_id'=>$q->id]);
+            $question = Exam_question::create(['question_id'=>$q->question_id]);
             $exam->question()->save($question);
         }
         return view('exam.template.success',compact('subheader'));
