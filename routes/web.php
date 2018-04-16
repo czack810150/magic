@@ -270,3 +270,7 @@ Route::post('/store/report/schedule','HourController@scheduledHourReportData');
 Route::get('/leave','LeaveController@index');
 Route::get('/request/leave','LeaveController@create');
 Route::post('/request/leave/send','LeaveController@store');
+Route::get('/leave/{id}/withdraw','LeaveController@destroy');
+Route::get('/leave/{id}/approve','LeaveController@approve');
+Route::get('/leave/{id}/deny','LeaveController@deny');
+Route::get('/leave/{id}/pending','LeaveController@pending');

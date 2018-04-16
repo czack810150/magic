@@ -33,6 +33,10 @@ class Location extends Model
     {
         return $this->belongsTo('App\Employee');
     }
+    public function leave()
+    {
+        return $this->hasMany('App\Leave');
+    }
 
 
 }

@@ -139,6 +139,10 @@ class Employee extends Model
     {
         return $this->hasMany('App\Leave');
     }
+    public function approvedLeave()
+    {
+        return $this->hasMany('App\Leave');
+    }
     
 
 
