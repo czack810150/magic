@@ -274,3 +274,6 @@ Route::get('/leave/{id}/withdraw','LeaveController@destroy');
 Route::get('/leave/{id}/approve','LeaveController@approve');
 Route::get('/leave/{id}/deny','LeaveController@deny');
 Route::get('/leave/{id}/pending','LeaveController@pending');
+
+// Promotion
+Route::get('/request/promotion','PromotionController@apply');

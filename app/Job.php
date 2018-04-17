@@ -23,4 +23,13 @@ class Job extends Model
     	}
     	return $count;
     }
+    public static function nextJob($currentJobId)
+    {
+        $currentJob = self::find($currentJobId);
+        $nextJob = Job::where('type',$currentJob->type)->where('valid',true)->get();
+        // return $nextJob;
+        return $nextJob->first(function($value,$key){
+            return $value->id > 20;
+        });
+    }
 }

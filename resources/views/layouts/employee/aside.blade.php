@@ -212,6 +212,21 @@
 									</span>
 								</a>
 							</li>
+							@can('canBePromoted')
+							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+								<a  href="{{ url('request/promotion') }}" class="m-menu__link ">
+									<i class="m-menu__link-icon flaticon-up-arrow"></i>
+									<span class="m-menu__link-title">
+										<span class="m-menu__link-wrap">
+											<span class="m-menu__link-text">
+												Apply Promotion
+											</span>
+											
+										</span>
+									</span>
+								</a>
+							</li>
+							@endcan
 							
 							<!-- MY VOICE -->
 							<li class="m-menu__item m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">

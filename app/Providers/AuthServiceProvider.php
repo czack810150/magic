@@ -80,5 +80,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('use-scheduler',function($user){
             return in_array($user->authorization->type,['dm','admin','manager','gm','accounting']);
         });
+        Gate::define('canBePromoted',function($user){
+            return in_array($user->authorization->type,['employee','admin']);
+        });
     }
 }
