@@ -31,6 +31,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $subheader = 'Staff Directory';
+        if(Gate::allows('view-allEmployee')){
         $employees = Employee::get();
         $locations = Location::pluck('name','id');
         $employeeLocations = Location::pluck('name','id');
@@ -42,6 +43,22 @@ class EmployeeController extends Controller
         ); 
         $jobs = Job::where('trial',1)->pluck('rank','id');
         return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations'));
+
+        } else if(Auth::user()->authorization->type == 'manager'){
+
+            $employees = Employee::where('location_id',Auth::user()->authorization->employee->location_id)->get();
+            $locations = Location::where('id',Auth::user()->authorization->employee->location_id)->pluck('name','id');
+            $employeeLocations = Location::pluck('name','id');
+            
+            $status = array(
+            'active' => 'Active staffs only',
+            'vacation' => 'On vacation only',
+            'terminated' => 'Terminated staffs',
+        ); 
+        $jobs = Job::where('trial',1)->pluck('rank','id');
+        return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations'));
+        }
+        
     }
     public function positionFilter(Request $r)
     {

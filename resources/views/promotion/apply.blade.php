@@ -103,7 +103,6 @@
 	</div>
 @if($nextJob)
 <div class="m-portlet__body" >
-
 				
 <div class="m-widget13">
 			<div class="m-widget13__item">
@@ -111,7 +110,39 @@
 				Next Job Title
 				</span>
 				<span class="m-widget13__text m-widget13__text-bolder">
-						{{ $nextJob}}	 
+						{{ $nextJob->rank }} @if($nextJob->top) (最高级) @endif
+				</span>
+			</div>
+			<div class="m-widget13__item">
+				<span class="m-widget13__desc m--align-right">
+				Hourly rate
+				</span>
+				<span class="m-widget13__text m-widget13__text-bolder">
+						$ {{$pay->minimumPay/100}}/hour	
+				</span>
+			</div>
+			<div class="m-widget13__item">
+				<span class="m-widget13__desc m--align-right">
+				岗位津贴
+				</span>
+				<span class="m-widget13__text m-widget13__number-bolder m--font-brand">
+				@if($nextJob->hour)
+				$ {{$nextJob->rate/100}}/hour
+				@else
+				N/A
+				@endif							 
+				</span>
+			</div>
+			<div class="m-widget13__item">
+				<span class="m-widget13__desc m--align-right">
+				小费率
+				</span>
+				<span class="m-widget13__text m-widget13__number-bolder m--font-brand">
+				@if($nextJob->tip)
+				$ {{$nextJob->tip*100}}%
+				@else
+				N/A
+				@endif							 
 				</span>
 			</div>
 </div>
@@ -122,23 +153,9 @@
 			<form class="m-form" method="POST" action="{{url('promotion/apply')}}">
 				{{csrf_field()}}
 				<div class="m-portlet__body" >
-
-
-
-
+<input name="newJob" type="text" value="{{$nextJob->id}}" hidden>
 					<div class="m-form__section m-form__section--first">
-						
-
-
-					
-							
-						<div class="form-group m-form__group">
-							<label>Date Range</label>
-							
 								
-								<input type="text" name="daterange" id="daterange" class="form-control m-input" placeholder="Pick dates">
-						
-						</div>			
 						<div class="m-form__group form-group">
 							<label for="">Supportive Comment</label>
 							<textarea class="form-control m-input" rows="3" name="comment"></textarea>

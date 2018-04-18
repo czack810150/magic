@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Employee;
 use App\Employee_trace;
 use App\Location;
+use App\JobPromotion;
 
 class HomeController extends Controller
 {
@@ -36,8 +37,9 @@ class HomeController extends Controller
                 $locations = Location::store()->get();
             }            
             
+            $promotions = JobPromotion::where('status','pending')->get();
 
-            return view('dashboard.management.home',compact('locations'));
+            return view('dashboard.management.home',compact('locations','promotions'));
         } else {
             return view('home');
         }

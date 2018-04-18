@@ -26,10 +26,14 @@ class Job extends Model
     public static function nextJob($currentJobId)
     {
         $currentJob = self::find($currentJobId);
-        $nextJob = Job::where('type',$currentJob->type)->where('valid',true)->get();
-        // return $nextJob;
-        return $nextJob->first(function($value,$key){
-            return $value->id > 20;
-        });
+        $jobs = Job::where('type',$currentJob->type)->where('valid',true)->orderBy('id')->get();
+        // return $jobs;
+
+        foreach($jobs as $job){
+            if($job->id > $currentJobId){
+                return $job;
+            }
+        }
+
     }
 }

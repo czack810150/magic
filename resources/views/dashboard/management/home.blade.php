@@ -1,6 +1,79 @@
 @extends('layouts.master')
 
 @section('content')
+<div class="row">
+    @if(count($promotions))
+    <div class="col-8">
+<!--begin::Portlet Promotions-->
+        <div class="m-portlet">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <span class="m-portlet__head-icon">
+                            <i class="flaticon-up-arrow-1"></i>
+                        </span>
+                        <h3 class="m-portlet__head-text">
+                            Recent Promotions <small>员工晋级</small>
+                        </h3>
+                    </div>          
+                </div>
+            </div>
+            <div class="m-portlet__body">
+<table class="table  m-table">
+                            <thead>
+                                <tr>
+                                    <th>Location</th>
+                                    <th>Staff</th>
+                                    <th>Current Position</th>
+                                    <th>New Position</th>
+                                    <th>Status</th>
+                                    <th>Date applied</th>
+                                    <th>Action By</th>
+                                    <th>Comment</th>
+                                   
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($promotions as $p)
+                                <tr>
+                                    <td>{{ $p->newLocation }}</td>
+                                     <td>{{ $p->employee->cName }}</td>
+                                    <td>{{ $p->oldJob }}</td>
+                                     <td>{{ $p->newJob }}</td>
+                                    
+                                    
+                                    @switch($p->status)
+                                    @case('pending')
+                                    <td><span class="m-badge m-badge--primary m-badge--wide">{{ $p->status }}</span></td>
+                                    @break
+                                    @case('approved')
+                                    <td><span class="m-badge m-badge--success m-badge--wide">{{ $p->status }}</span></td>
+                                    @break
+                                    @case('rejected')
+                                    <td><span class="m-badge m-badge--danger m-badge--wide">{{ $p->status }}</span></td>
+                                    @break
+                                    @default
+                                    <td><span class="m-badge m-badge--secondary m-badge--wide">{{ $p->status }}</span></td>
+                                    @endswitch
+                                     <td>{{ $p->created_at->toFormattedDateString() }}</td>
+                                    <td>{{ $p->modified_by }}</td>
+                                    <td>{{ $p->comment }}</td>
+                                   
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+            </div>
+        </div>  
+<!--end::Portlet Promotions-->
+</div>
+@endif
+</div>
+   
+
+
+
+
 <!--begin::Portlet-->
         <div class="m-portlet">
             <div class="m-portlet__head">

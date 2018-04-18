@@ -10,6 +10,7 @@ use App\Employee;
 use App\Payroll_config;
 use Carbon\Carbon;
 use App\Job;
+use App\JobPromotion;
 
 class PromotionController extends Controller
 {
@@ -30,7 +31,8 @@ class PromotionController extends Controller
      */
     public function create()
     {
-        //
+     
+        
     }
     public function apply()
     {
@@ -43,7 +45,6 @@ class PromotionController extends Controller
        } else {
         return 'only store employees can be promoted in this way.';
        }
-        
     }
 
     /**
@@ -54,7 +55,19 @@ class PromotionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      
+        $employee = Auth::user()->authorization->employee;
+        $promotion = new JobPromotion;
+        $promotion->employee_id = $employee->id;
+        $promotion->oldJob = $employee->job->id;
+        $promotion->newJob = $request->newJob;
+        $promotion->oldLocation = $employee->location_id;
+        $promotion->newLocation = $employee->location_id;
+        $promotion->status = 'pending';
+        $promotion->comment = $request->comment;
+        $promotion->save();
+
+        return $promotion;
     }
 
     /**

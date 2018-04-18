@@ -143,6 +143,10 @@ class Employee extends Model
     {
         return $this->hasMany('App\Leave');
     }
+    public function promotion()
+    {
+        return $this->hasMany('App\JobPromotion');
+    }
     
 
 
