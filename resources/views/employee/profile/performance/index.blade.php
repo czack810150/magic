@@ -64,10 +64,15 @@
 					</ul>
 				</div>
 			</div>
-			<div class="m-portlet__body" id="performanceLogs">
-			</div>
-		</div>	
-		<!--end::Portlet-->
+<div class="m-portlet__body"> 
+	<div id="scoreChart" style="height:400px;"> 
+{{$scores}}	
+</div>
+<div id="performanceLogs"></div>
+
+	
+</div>
+</div><!--end::Portlet-->
 
 
 <script>
@@ -135,4 +140,56 @@
 
 	
 	$('#performanceLogs').mDatatable(options);
+
+
+var scoreString = '{!! $scores !!}';
+var chartData = JSON.parse(scoreString);
+
+var chart = AmCharts.makeChart("scoreChart", {
+    "type": "serial",
+    "theme": "light",
+    "marginRight": 80,
+    "autoMarginOffset": 20,
+    "marginTop": 7,
+    "dataProvider": chartData,
+    "valueAxes": [{
+        "axisAlpha": 0.2,
+        "dashLength": 1,
+        "position": "left"
+    }],
+    "mouseWheelZoomEnabled": true,
+    "graphs": [{
+        "id": "g1",
+        "balloonText": "[[value]]",
+        "bullet": "round",
+        "bulletBorderAlpha": 1,
+        "bulletColor": "#FFFFFF",
+        "hideBulletsCount": 50,
+        "title": "red line",
+        "valueField": "performance",
+        "useLineColorForBulletBorder": true,
+        "balloon":{
+            "drop":true
+        }
+    }],
+    "chartScrollbar": {
+        "autoGridCount": true,
+        "graph": "g1",
+        "scrollbarHeight": 40
+    },
+    "chartCursor": {
+       "limitToGraph":"g1"
+    },
+    "categoryField": "startDate",
+    "categoryAxis": {
+        "parseDates": true,
+        "axisColor": "#DADADA",
+        "dashLength": 1,
+        "minorGridEnabled": true
+    },
+    "export": {
+        "enabled": true
+    }
+});
+
 </script>

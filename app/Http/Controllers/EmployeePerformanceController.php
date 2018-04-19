@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\View;
 use App\Score_category;
 use App\Score_item;
 use App\Score_log;
+use App\Payroll_log;
 use Carbon\Carbon;
 
 class EmployeePerformanceController extends Controller
@@ -144,11 +145,12 @@ class EmployeePerformanceController extends Controller
     public function employee(Request $r)
     {
         $logs = Score_log::where('employee_id',$r->employee)->get();
+        $scores = Payroll_log::where('employee_id',$r->employee)->get();
         foreach($logs as $log){
             $log->location_name = $log->location->name;
             $log->event = $log->score_item->name;
         }
-        return view('employee.profile.performance.index',compact('logs'));
+        return view('employee.profile.performance.index',compact('logs','scores'));
     }
     public function overview()
     {
