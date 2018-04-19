@@ -120,6 +120,18 @@
 												</span>
 											</a>
 										</li>
+											@can('promote-employee')
+										<li class="m-menu__item " aria-haspopup="true" >
+										<a  href="/promotion/view" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													Promotions
+												</span>
+											</a>
+										</li>
+										@endcan
 									</ul>
 								</div>
 							</li>

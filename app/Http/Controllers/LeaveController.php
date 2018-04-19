@@ -130,7 +130,7 @@ class LeaveController extends Controller
             return 'No authorization! You can not approve your own leave request.';
         } else {
             $leave->status = 'approved';
-            $leave->approved_by = Auth::user()->authorization->employee_id;
+            $leave->approvedBy = Auth::user()->authorization->employee_id;
             $leave->save();
             return self::index();
         }

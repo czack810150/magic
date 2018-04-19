@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Employee;
 
 class Leave extends Model
 {
@@ -28,5 +29,10 @@ class Leave extends Model
     public function location()
     {
     	return $this->belongsTo('App\Location');
+    }
+    public function getApprovedByAttribute($value)
+    {
+    
+        return Employee::find($value);
     }
 }

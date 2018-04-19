@@ -21,7 +21,10 @@ class PromotionController extends Controller
      */
     public function index()
     {
-        //
+        $subheader = 'View Promotion';
+        $promotions = JobPromotion::orderBy('created_at')->get();
+
+        return view('promotion.index',compact('promotions','subheader'));
     }
 
     /**
@@ -55,19 +58,28 @@ class PromotionController extends Controller
      */
     public function store(Request $request)
     {
-      
+        $subheader = 'Promotion Request';
         $employee = Auth::user()->authorization->employee;
-        $promotion = new JobPromotion;
-        $promotion->employee_id = $employee->id;
-        $promotion->oldJob = $employee->job->id;
-        $promotion->newJob = $request->newJob;
-        $promotion->oldLocation = $employee->location_id;
-        $promotion->newLocation = $employee->location_id;
-        $promotion->status = 'pending';
-        $promotion->comment = $request->comment;
-        $promotion->save();
+        // check if existing pending application
+        if(!count(JobPromotion::where('employee_id',$employee->id)->where('status','pending')->get()) )
+        {
+             $promotion = new JobPromotion;
+             $promotion->employee_id = $employee->id;
+             $promotion->oldJob = $employee->job->id;
+             $promotion->newJob = $request->newJob;
+             $promotion->oldLocation = $employee->location_id;
+             $promotion->newLocation = $employee->location_id;
+             $promotion->status = 'pending';
+             $promotion->comment = $request->comment;
+             $promotion->save();
+             $message = 'Your promotion request has been created!';
+             return view('request.success',compact('message','subheader'));  
+        } else {
+             $message = 'you have one active pending promotion request already.';
+             return view('request.fail',compact('message','subheader'));  
+        }
 
-        return $promotion;
+        
     }
 
     /**
@@ -114,4 +126,43 @@ class PromotionController extends Controller
     {
         //
     }
+    public function approve($id)
+    {
+        $subheader = 'Promotions';
+        $promotion = JobPromotion::findOrFail($id);
+        if($promotion->employee_id == Auth::user()->authorization->employee_id){
+            return 'No authorization! You can not approve your own promotion request.';
+        } else {
+
+            $employee = Employee::findOrFail($promotion->employee_id);
+            $employee->job_id = $promotion->newJob->id;
+            $employee->location_id = $promotion->newLocation->id;
+            $status = $employee->save();
+            
+            if($status){
+                 $promotion->status = 'approved';
+                 $promotion->modifiedBy = Auth::user()->authorization->employee_id;
+                 $promotion->save();
+                return self::index();
+            }
+            else {
+                return 'saving error';
+            }
+           
+        }
+    }
+    public function deny($id)
+    {
+        $subheader = 'Promotions';
+        $promotion = JobPromotion::findOrFail($id);
+        if($promotion->employee_id == Auth::user()->authorization->employee_id){
+            return 'No authorization! You can not reject your own promotion request.';
+        } else {
+            $promotion->status = 'rejected';
+            $promotion->modifiedBy = Auth::user()->authorization->employee_id;
+            $promotion->save();
+            return self::index();
+        }
+    }
+    
 }

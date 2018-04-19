@@ -277,5 +277,8 @@ Route::get('/leave/{id}/pending','LeaveController@pending');
 
 // Promotion
 Route::get('/request/promotion','PromotionController@apply');
-
 Route::post('/promotion/apply','PromotionController@store');
+Route::get('/promotion/view','PromotionController@index');
+Route::get('/promotion/{id}/approve','PromotionController@approve');
+Route::get('/promotion/{id}/deny','PromotionController@deny');
+Route::get('/promotion/{id}/pending','PromotionController@pending');

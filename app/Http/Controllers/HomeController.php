@@ -37,7 +37,7 @@ class HomeController extends Controller
                 $locations = Location::store()->get();
             }            
             
-            $promotions = JobPromotion::where('status','pending')->get();
+            $promotions = JobPromotion::get();
 
             return view('dashboard.management.home',compact('locations','promotions'));
         } else {

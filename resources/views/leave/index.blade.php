@@ -65,7 +65,7 @@
 							      	@default
 							      	<td><span class="m-badge m-badge--secondary m-badge--wide">{{ $l->status }}</span></td>
 							      	@endswitch
-							      	<td>{{ $l->approved_by }}</td>
+							      	<td>{{ $l->approvedBy->cName }}</td>
 							      	<td>{{ $l->comment }}</td>
 							      	<td>
 							      		
@@ -123,6 +123,7 @@
 						      		<th>To</th>
 						      		<th>Duration</th>
 						      		<th>Status</th>
+						      		<th>Approved By</th>
 						      		<th>Comment</th>
 						      		<th>Action</th>
 						    	</tr>
@@ -147,7 +148,7 @@
 							      	@default
 							      	<td><span class="m-badge m-badge--secondary m-badge--wide">{{ $l->status }}</span></td>
 							      	@endswitch
-							      	
+							      	<td>{{ $l->approvedBy?$l->approvedBy->cName:'' }}</td>
 							      	<td>{{ $l->comment }}</td>
 							      	<td>
 							      		@if($l->status == 'pending')

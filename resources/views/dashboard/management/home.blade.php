@@ -28,18 +28,21 @@
                                     <th>New Position</th>
                                     <th>Status</th>
                                     <th>Date applied</th>
+                                    <th>Action Taken</th>
                                     <th>Action By</th>
+
                                     <th>Comment</th>
                                    
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($promotions as $p)
+                                @if(Carbon\Carbon::now()->diffInDays($p->created_at)<=30)
                                 <tr>
-                                    <td>{{ $p->newLocation }}</td>
+                                    <td>{{ $p->newLocation->name }}</td>
                                      <td>{{ $p->employee->cName }}</td>
-                                    <td>{{ $p->oldJob }}</td>
-                                     <td>{{ $p->newJob }}</td>
+                                    <td>{{ $p->oldJob->rank }}</td>
+                                     <td>{{ $p->newJob->rank }}</td>
                                     
                                     
                                     @switch($p->status)
@@ -56,13 +59,15 @@
                                     <td><span class="m-badge m-badge--secondary m-badge--wide">{{ $p->status }}</span></td>
                                     @endswitch
                                      <td>{{ $p->created_at->toFormattedDateString() }}</td>
-                                    <td>{{ $p->modified_by }}</td>
+                                     <td>{{ $p->updated_at->toFormattedDateString() }}</td>
+                                     <td>{{ $p->modifiedBy? $p->modifiedBy->cName:'' }}</td>
                                     <td>{{ $p->comment }}</td>
                                    
                                 </tr>
+                                @endif
                                 @endforeach
                             </tbody>
-                        </table>
+</table>
             </div>
         </div>  
 <!--end::Portlet Promotions-->

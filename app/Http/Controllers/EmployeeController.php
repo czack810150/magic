@@ -16,6 +16,7 @@ use App\Training_category;
 use App\Availability;
 use App\Location;
 use App\Job;
+use App\JobPromotion;
 use App\Authorization;
 use Carbon\Carbon;
 
@@ -433,8 +434,18 @@ class EmployeeController extends Controller
             $userAuth->type = $r->type;
             $userAuth->save();
         }
-       
+        $promotion = new JobPromotion;
+
         $employee = Employee::find($r->employee);
+
+        $promotion->employee_id = $employee->id;
+        $promotion->oldLocation = $employee->location_id;
+        $promotion->newLocation = $employee->location_id;
+        $promotion->oldJob = $employee->job_id;
+        $promotion->newJob = $r->job;
+        $promotion->status = 'approved';
+        $promotion->modifiedBy = Auth::user()->authorization->employee_id;
+        $status = $promotion->save();
         $employee->job_id = $r->job;
         $employee->employeeNumber = $r->employeeNumber;
         $employee->hired = $r->hired;
