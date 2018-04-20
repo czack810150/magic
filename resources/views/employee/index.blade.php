@@ -31,22 +31,29 @@
 										<div class="m-portlet__body">
 											<div class="form-group m-form__group row">
 												<div class="col-lg-4">
+													<div class="form-group m-form__group">
+													{{ Form::select('location',$locations,-1,['class'=>'custom-select m-input','id'=>'locationSelect'])}}
+												</div>
 													
-													{{ Form::select('location',$locations,-1,['class'=>'form-control m-input','id'=>'locationSelect'])}}
+												</div>
+												<div class="col-lg-4">
+													<div class="form-group m-form__group">
+													{{ Form::select('status',$status,'active',['class'=>'custom-select m-input','id'=>'statusSelect'])}}
+												</div>
 													
 												</div>
 												<div class="col-lg-4">
 													
-													{{ Form::select('status',$status,'active',['class'=>'form-control m-input','id'=>'statusSelect'])}}
-													
-												</div>
-												<div class="col-lg-4">
-													
-													<div class="input-group m-input-group m-input-group--square">
-														<span class="input-group-addon">
+													<div class="form-group m-form__group">
+														
+														<div class="m-input-icon m-input-icon--left">
+														<input type="text" class="form-control m-input" placeholder="Search" id="employeeSearch">
+														<span class="m-input-icon__icon m-input-icon__icon--left">
+														<span>
 															<i class="la la-user"></i>
 														</span>
-														<input type="text" class="form-control m-input" placeholder="">
+														</span>
+														</div>
 													</div>
 												
 												</div>
@@ -220,5 +227,30 @@ function filterEmployees(){
 			}
 			);
 }
+
+var employeeSearch = document.getElementById('employeeSearch');
+employeeSearch.addEventListener('keyup',function(){
+searchEmployee($('#employeeSearch').val());
+
+},false);
+
+function searchEmployee(str)
+{
+	$.post(
+			'/employee/search',
+			{
+				_token: '{{ csrf_token() }}',
+				location: $('#locationSelect').val(),
+				status: $('#statusSelect').val(),
+				searchStr: str,
+			},
+			function(data,status){
+				if(status == 'success'){
+					$('#staffList').html(data);
+				}
+			}
+			);
+}
+
 </script>
 @endsection

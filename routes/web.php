@@ -56,6 +56,7 @@ Route::post('/applicant/updateStatus','ApplicantController@update');
 
 
 //EMPLOYEE
+
 Route::post('/employee/store','EmployeeController@store');
 Route::post('/filter/employee/list','EmployeeController@filterEmployees');
 Route::get('/employee','EmployeeController@index');
@@ -69,6 +70,8 @@ Route::post('/employee/edit/contact/update','EmployeeController@updateContact');
 Route::post('/employee/edit/address','EmployeeController@editAddress');
 Route::post('/employee/edit/address/cancel','EmployeeController@cancelAddress');
 Route::post('/employee/edit/address/update','EmployeeController@updateAddress');
+// search
+Route::post('/employee/search','EmployeeController@search');
 
 // Employee background
 Route::post('/employee/background/{id}/show','EmployeeController@background');

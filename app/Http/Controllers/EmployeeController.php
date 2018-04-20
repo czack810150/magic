@@ -792,6 +792,24 @@ class EmployeeController extends Controller
        
         return view('employee.profile.leave.index',compact('employee'));
      }
-     
+     public function search(Request $r)
+     {
+        if($r->location != -1){
+            $employees = Employee::where('location_id',$r->location)->where('status',$r->status)->
+            where(function ($query) use($r){
+                $query->where('firstName','like',$r->searchStr.'%')->
+             orWhere('lastName','like',$r->searchStr.'%')->
+             orWhere('employeeNumber','like',$r->searchStr.'%');
+            })->get();
+        } else {
+            $employees = Employee::where('status',$r->status)->
+             where(function ($query) use($r){
+                $query->where('firstName','like',$r->searchStr.'%')->
+             orWhere('lastName','like',$r->searchStr.'%')->
+             orWhere('employeeNumber','like',$r->searchStr.'%');
+            })->get();
+        }
+        return View::make('employee.list',compact('employees'))->render();
+     }
 
 }
