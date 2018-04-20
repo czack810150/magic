@@ -569,3 +569,17 @@ function employeeStats(employee)
 		}
 		);
 }
+function employeeTimeoff(employee)
+{
+	$.post(
+		'/employee/timeoff/'+ employee + '/show',
+		{
+			_token: $("input[name=_token]").val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);
+}

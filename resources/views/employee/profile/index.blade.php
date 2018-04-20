@@ -79,7 +79,7 @@
     <a class="nav-link" href="javascript:employeeTraining('{{ $staff->id }}')">Training</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Time off</a>
+    <a class="nav-link" href="javascript:employeeTimeoff({{ $staff->id }})">Time off</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="javascript:employeeAccount('{{ $staff->id }}')">Account</a>

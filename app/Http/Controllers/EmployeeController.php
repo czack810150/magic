@@ -19,6 +19,7 @@ use App\Job;
 use App\JobPromotion;
 use App\Authorization;
 use Carbon\Carbon;
+use App\Leave;
 
 
 
@@ -785,7 +786,12 @@ class EmployeeController extends Controller
        DB::connection('applicants')->table('applicants')->where('id',$r->applicantId)->update(['applicant_status'=>'hired']);
        return redirect('/staff/profile/'.$employee->id.'/show');
      }
-
+     public function showTimeoff($id)
+     {
+        $employee = Employee::find($id);
+       
+        return view('employee.profile.leave.index',compact('employee'));
+     }
      
 
 }

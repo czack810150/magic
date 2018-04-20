@@ -116,6 +116,10 @@ Route::post('/hours/employee/year','EmployeeUserController@hourYear');
 Route::get('/clocks/my','EmployeeUserController@clock');
 Route::post('/clocks/employee/year','EmployeeUserController@clockYear');
 Route::get('/training/my','EmployeeUserController@training');
+
+// employee timeoff
+Route::post('/employee/timeoff/{id}/show','EmployeeController@showTimeoff');
+
 //file upload
 Route::post('/file/employee/{id}/picture','FileUploadController@profilePictureUpload');
 
