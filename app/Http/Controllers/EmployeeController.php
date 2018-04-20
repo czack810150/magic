@@ -435,21 +435,25 @@ class EmployeeController extends Controller
             $userAuth->type = $r->type;
             $userAuth->save();
         }
-        $promotion = new JobPromotion;
 
         $employee = Employee::find($r->employee);
+        if($employee->job_id != $r->job){
+             $promotion = new JobPromotion;
+             $promotion->employee_id = $employee->id;
+             $promotion->oldLocation = $employee->location_id;
+                $promotion->newLocation = $employee->location_id;
+                $promotion->oldJob = $employee->job_id;
+                $promotion->newJob = $r->job;
+                $promotion->status = 'approved';
+                $promotion->modifiedBy = Auth::user()->authorization->employee_id;
+                $status = $promotion->save();
+        }
 
-        $promotion->employee_id = $employee->id;
-        $promotion->oldLocation = $employee->location_id;
-        $promotion->newLocation = $employee->location_id;
-        $promotion->oldJob = $employee->job_id;
-        $promotion->newJob = $r->job;
-        $promotion->status = 'approved';
-        $promotion->modifiedBy = Auth::user()->authorization->employee_id;
-        $status = $promotion->save();
         $employee->job_id = $r->job;
         $employee->employeeNumber = $r->employeeNumber;
         $employee->hired = $r->hired;
+
+
         if(!empty($r->termination)){
             $employee->termination = $r->termination;
             $employee->status = 'terminated';
