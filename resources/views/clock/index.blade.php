@@ -226,17 +226,17 @@ var dateStringx = '';
 
 $('#clockDatePikcer').on('hide',function(e){
 	var location = $('#location').val();
-	if(location > 0 ){
+	if(location != '' ){
 		dateStringx = e.format('yyyy-mm-dd');
 		updateTable();
 	} else {
-		alert('Must provide a locatiion.');
+		alert('Must provide a location.');
 	}
 });
 
 function changeLocation(){
 	var location = $('#location').val();
-	if(location > 0 && $('#clockDatePikcer').val() != ''){
+	if( $('#clockDatePikcer').val() != ''){
 		updateTable();
 	}
 }

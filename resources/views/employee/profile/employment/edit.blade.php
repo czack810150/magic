@@ -109,7 +109,7 @@
 
 
 
-@if( in_array($user->authorization->type,['accounting','hr','admin']) )
+@if( in_array($user->authorization->type,['accounting','hr','admin','dm']) )
 <div class="form-group m-form__group row">
 
 <div class="col-3">

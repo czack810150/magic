@@ -83,7 +83,7 @@
 </div> <!-- end of row -->
 @endif
 
-@if( in_array($user->authorization->type,['accounting','hr','admin']) )
+@if( in_array($user->authorization->type,['accounting','hr','admin','dm']) )
 <div class="row">
 
 <div class="col-3">

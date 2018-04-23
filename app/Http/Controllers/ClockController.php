@@ -151,7 +151,7 @@ class ClockController extends Controller
     }
     public function shiftClocks()
     {
-      $locations = Location::Store()->pluck('name','id');
+      $locations = Location::pluck('name','id');
       $dates = Datetime::periods(Carbon::now()->year);
       $subheader = 'Employee Clocks';
       return view('clock.index',compact('subheader','dates','locations'));
