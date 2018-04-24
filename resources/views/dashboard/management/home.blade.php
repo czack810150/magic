@@ -314,19 +314,6 @@
             'json'
             );
     }
-
-// function validateEnlistDate(e,enlistDate){
-//     var newDate = moment(e.date.getTime());
-//     if( enlistDate != null){
-        
-//         alert('validation ' + newDate.format('YYYY-MM-DD') + ' setDate '+ enlistDate);
-//     } else {
-//         alert('validation ' + newDate.format('YYYY-MM-DD'));
-//     }
-
-    
-// }
-
  
 var submitBtn = document.getElementById('submitBtn');
 submitBtn.addEventListener('click',function(e){

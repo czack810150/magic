@@ -9,48 +9,15 @@
 							<i class="flaticon-users m--font-brand"></i>
 						</span>
 						<h3 class="m-portlet__head-text m--font-brand">
-							New Applicants
+						Applicants
 						</h3>
 					</div>			
 				</div>
 				
 			</div>
 			<div class="m-portlet__body">
-				<div id="applicantList">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Date</th><th>Status</th><th>Chinese</th><th>Last Name</th><th>First Name</th><th>Location</th><th>Job</th><th>City</th><th>Phone</th><th>Immigratin</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($applicants as $a)
-                            <tr>
-                                <td>{{ $a->created_at }}</td>
-                                <td>
-                                    {{ Form::select("status$a->id",$status,$a->applicant_status,["class" => "form-control m-input", "onchange" => "updateApplicantStatus($a->id)","id" => "status$a->id"]) }}
-                                    
-                                </td>
-                                <td>{{ $a->cName }}</td>
-                                <td>{{ $a->lastName }}</td>
-                                <td>{{ $a->firstName }}</td>
-                                <td>{{ $a->location }}</td>
-                                <td>{{ $a->job }}</td>
-                                <td>{{ $a->city }}</td>
-                                <td>{{ $a->phone }}</td>
-                                <td>{{ $a->status }}</td>
-                                <td>
-                                    <a class="btn btn-sm btn-primary applicantDetails" href="/applicant/{{$a->id}}/view">Details</a>
-                                    <button type="button" class="btn btn-sm btn-success" onclick="hire('{{$a->id}}')">Hire</button>
-                                    <a class="btn btn-sm btn-danger" href="/applicant/{{$a->id}}/remove">Remove</a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-
-                </div>
+				
+                <div id="applicants"></div>
 			</div>
 		</div>	
 		<!--end::Portlet-->
@@ -181,30 +148,33 @@
                 overflow:'visible',
                 template: function(row){
                     var selection = '';
-                    selection = '{{ Form::select("status",$status,' + row.applicant_status + ',["class" => "form-control m-input", "onchange" => "updateApplicantStatus('+a+')"]) }}';
+                    
 
-                    // switch(row.applicant_status){
-                    //     case 'applied':
-                    //          selection = '<span class="m-badge m-badge--info m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                    //         break;
-                    //     case 'reviewed':
-                    //          selection = '<span class="m-badge m-badge--primary m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                    //         break;
-                    //     case 'phoned':
-                    //          selection = '<span class="m-badge m-badge--accent m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                    //         break;
-                    //     case 'interviewed':
-                    //          selection = '<span class="m-badge m-badge--warning m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                    //         break;
-                    //     case 'offered':
-                    //          selection = '<span class="m-badge m-badge--success m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                    //         break;
-                    //     case 'rejected':
-                    //          selection = '<span class="m-badge m-badge--danger m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                    //         break;
-                    //     default:
-                    //         selection = '<span class="m-badge m-badge--brand m-badge--wide m-badge--rounded">' + row.applicant_status + '</span>';
-                    // }        
+                    selection = '<select id="status'+row.id+'" name="status" class="custom-select m-input" onchange="updateApplicantStatus('+ row.id +')">';
+                   
+                    switch(row.applicant_status){
+                        case 'applied':
+                            selection += '<option value="applied" selected>Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                            break;
+                        case 'reviewed':
+                            selection += '<option value="applied">Applied</option><option value="reviewed" selected>Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                            break;
+                        case 'phoned':
+                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned" selected>Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                            break;
+                        case 'interviewed':
+                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed" selected>Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                            break;
+                        case 'offered':
+                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered" selected>Offered</option><option value="rejected">Rejected</option>';
+                            break;
+                        case 'rejected':
+                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected" selected>Rejected</option>';
+                            break;
+                        default:
+                            selection += '<option value="applied" selected>Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                    }
+                    selection += '</select>';       
                     return selection;
                 }
             },
@@ -221,7 +191,7 @@
         		field: "lastName",
         		title: "Last Name",
         		width: 100,
-        		sortable: true,
+        		sortable: false,
         		selector: false,
         		taxtAlign: 'center'
         	},
@@ -238,7 +208,7 @@
         		field: "location",
         		title: "Location",
         		width: 100,
-        		sortable: false,
+        		sortable: true,
         		selector: false,
         		taxtAlign: 'center'
         	},
@@ -246,7 +216,7 @@
         		field: "job",
         		title: "Job",
         		width: 100,
-        		sortable: false,
+        		sortable: true,
         		selector: false,
         		taxtAlign: 'center'
         	},
@@ -262,7 +232,7 @@
         		field: "phone",
         		title: "Phone",
         		width: 100,
-        		sortable: true,
+        		sortable: false,
         		selector: false,
         		taxtAlign: 'center'
         	},
@@ -283,12 +253,13 @@
         		template: function(row){
         			let button = '<a class="btn btn-sm btn-primary applicantDetails" href="/applicant/' + row.id + '/view">Details</a>';
                     button += '<button type="button" class="btn btn-sm btn-success" onclick="hire(' + row.id + ')">Hire</button>';
+                    button +='<a class="btn btn-sm btn-danger" href="/applicant/'+ row.id +'/remove">Remove</a>';
         			return button;
         		}
         	}
         ]
 	}	
-	//$('#applicantList').mDatatable(options);
+	$('#applicants').mDatatable(options);
 
 function hire(applicant){
     

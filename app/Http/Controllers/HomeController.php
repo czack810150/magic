@@ -9,6 +9,8 @@ use App\Employee;
 use App\Employee_trace;
 use App\Location;
 use App\JobPromotion;
+use App\Shift;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -41,7 +43,10 @@ class HomeController extends Controller
 
             return view('dashboard.management.home',compact('locations','promotions'));
         } else {
-            return view('home');
+            $employee = Employee::find(Auth::user()->authorization->employee_id);
+            $promotions = $employee->promotion;
+            $shifts = $employee->schedule->where('start','>=',Carbon::now()->toDateString())->sortBy('start');
+            return view('dashboard.employee.home',compact('promotions','shifts'));
         }
         
     }

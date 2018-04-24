@@ -143,7 +143,7 @@ class LeaveController extends Controller
             return 'No authorization! You can not reject your own leave request.';
         } else {
             $leave->status = 'rejected';
-            $leave->approved_by = null;
+            $leave->approvedBy = null;
             $leave->save();
             return self::index();
         }
@@ -154,7 +154,7 @@ class LeaveController extends Controller
         $leave = Leave::findOrFail($id);
       
             $leave->status = 'pending';
-            $leave->approved_by = null;
+            $leave->approvedBy = null;
             $leave->save();
             return self::index();
     

@@ -65,7 +65,11 @@
 							      	@default
 							      	<td><span class="m-badge m-badge--secondary m-badge--wide">{{ $l->status }}</span></td>
 							      	@endswitch
+							      	@if($l->approvedBy )
 							      	<td>{{ $l->approvedBy->cName }}</td>
+							      	@else
+							      	<td></td>
+							      	@endif
 							      	<td>{{ $l->comment }}</td>
 							      	<td>
 							      		
