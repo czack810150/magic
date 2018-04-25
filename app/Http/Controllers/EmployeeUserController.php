@@ -9,6 +9,7 @@ use App\Datetime;
 use App\Payroll_log;
 use App\Hour;
 use App\Clock;
+use App\Shift;
 use Carbon\Carbon;
 
 class EmployeeUserController extends Controller
@@ -88,5 +89,31 @@ class EmployeeUserController extends Controller
            
         }
         return view('employeeUser.training.index',compact('logs','subheader'));
+    }
+    public function scheduleHistory()
+    {
+        $subheader = "Schedule History";
+        $currentYear = Carbon::now()->year;
+        $employee = Auth::user()->authorization->employee;
+        $dates = array();
+        $serviceYear = Carbon::createFromFormat('Y-m-d H:i:s',$employee->hired);
+        while($serviceYear->year <= $currentYear){
+            $dates[$serviceYear->year] = $serviceYear->year;
+            $serviceYear->addYear();
+        }
+        $periods = Datetime::calculatedPeriods($currentYear);
+
+       
+       
+        return view('employeeUser.schedule.history.index',compact('periods','dates','currentYear','subheader'));
+    }
+    public function viewScheduleHistory(Request $r)
+    {
+        $end = Carbon::createFromFormat('Y-m-d',$r->period)->addDays(14)->toDateString();
+        $shifts = Shift::where('employee_id',Auth::user()->authorization->employee_id)->
+                    whereBetween('start',[$r->period,$end])->
+                    orderBy('start')->
+                    get();
+        return view('employeeUser.schedule.history.table',compact('shifts'));
     }
 }

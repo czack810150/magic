@@ -289,3 +289,10 @@ Route::get('/promotion/view','PromotionController@index');
 Route::get('/promotion/{id}/approve','PromotionController@approve');
 Route::get('/promotion/{id}/deny','PromotionController@deny');
 Route::get('/promotion/{id}/pending','PromotionController@pending');
+
+// Schedules
+Route::get('/shifts/history','EmployeeUserController@scheduleHistory');
+Route::post('/shifts/history','EmployeeUserController@viewScheduleHistory');
+
+// Utilities
+Route::post('/periodsByYear','UtilityController@periods');

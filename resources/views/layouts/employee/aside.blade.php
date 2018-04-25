@@ -114,6 +114,16 @@
 									<span class="m-menu__arrow"></span>
 									<ul class="m-menu__subnav">
 										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="/shifts/history" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													Past Shifts
+												</span>
+											</a>
+										</li>
+										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/hours/my" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>

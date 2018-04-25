@@ -22,6 +22,23 @@ class Datetime extends Model
     	}
     	return $periodOptions;
     }
+    public static function calculatedPeriods($year)
+    {
+        $dt = Carbon::parse("first monday of january $year");
+        $options = collect();
+        for($i = 0; $i < 26; $i++){
+             // $dates = array();
+             // $dates['start'] = $dt->toDateString();
+             // $dates['end'] = $dt->copy()->addDays(13)->toDateString();
+             $dates = $dt->toDateString(). ' - '.$dt->copy()->addDays(13)->toDateString();
+             $options->put($dt->toDateString(),$dates);
+
+             $dt->addDays(14);
+        }
+       
+
+        return $options;   
+    }
 
     public static function pastYears($past){
         $year = Carbon::now();
