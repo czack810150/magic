@@ -296,3 +296,11 @@ Route::post('/shifts/history','EmployeeUserController@viewScheduleHistory');
 
 // Utilities
 Route::post('/periodsByYear','UtilityController@periods');
+
+// Skills
+Route::get('/skills','SkillController@index');
+Route::get('/skills/create','SkillController@create');
+Route::post('/skills/create','SkillController@store');
+Route::get('/skills/{id}/delete','SkillController@destroy');
+Route::get('/skills/{id}/edit','SkillController@edit');
+Route::post('/skills/{id}/update','SkillController@update');
