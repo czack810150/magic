@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Location;
 use DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmployeeAdded;
+
 class Employee extends Model
 {
     protected $fillable = ['newbie','employeeNumber','email','firstName','lastName','cName','location_id','hired','termination','status','job_id'];
@@ -146,6 +149,11 @@ class Employee extends Model
     public function promotion()
     {
         return $this->hasMany('App\JobPromotion');
+    }
+
+    public static function email()
+    {
+        Mail::to('suhiro@gmail.com')->send(new EmployeeAdded());
     }
     
 
