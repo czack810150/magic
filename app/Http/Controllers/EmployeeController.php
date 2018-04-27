@@ -20,6 +20,7 @@ use App\JobPromotion;
 use App\Authorization;
 use Carbon\Carbon;
 use App\Leave;
+use App\Events\EmployeeAdded;
 
 
 
@@ -144,6 +145,9 @@ class EmployeeController extends Controller
         'pass_interview' => true,
         'result' => 'before'
        ]);
+
+       
+        event(new EmployeeAdded($employee));
         return redirect('/staff/profile/'.$employee->id.'/show');
     }
 

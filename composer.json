@@ -6,12 +6,13 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
+        "dsiddharth2/php-zxing": "dev-master",
         "fideloper/proxy": "~3.3",
+        "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
-        "werneckbh/laravel-qr-code": "^0.1.1",
-        "dsiddharth2/php-zxing": "dev-master"
+        "werneckbh/laravel-qr-code": "^0.1.1"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

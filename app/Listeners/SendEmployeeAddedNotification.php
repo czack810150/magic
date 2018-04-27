@@ -1,19 +1,21 @@
-    <?php
-
+<?php
 namespace App\Listeners;
 
 use App\Events\EmployeeAdded;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Mail\Mailer;
+use App\Mail\EmployeeAddedMail;
+use Illuminate\Support\Facades\Mail;
+use App\Employee;
 
 class SendEmployeeAddedNotification
 {
-    protected $mailer;
+  
 
-    public function __construct(Mailer $mailer)
+    public function __construct()
     {
-        $this->mailer = $mailer;
+        
     }
 
     /**
@@ -24,8 +26,9 @@ class SendEmployeeAddedNotification
      */
     public function handle(EmployeeAdded $event)
     {
-        // $this->mailer->send(
-        //     new EmployeeAddedEmail($event->employee);
-        // );
+       
+        Mail::to('suhiro@gmail.com')
+            ->cc(['haga.gu@magicnoodle.ca','hiro.su@magicnoodle.ca'])
+            ->send(new EmployeeAddedMail($event->employee));
     }
 }

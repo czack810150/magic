@@ -1,8 +1,12 @@
-<html>
-<head>
-	</head>
-	<body>
-<p>
-new employee created
-</p>
-</body></html>
+@component('mail::message')
+# New employee
+
+{{$employee->cName}} has joined us!
+
+@component('mail::button', ['url' => 'www.magicnoodleteam.com'])
+View
+@endcomponent
+
+Thanks,<br>
+{{ config('app.name') }}
+@endcomponent

@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use App\Location;
 use DB;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\EmployeeAdded;
+use App\Mail\EmployeeAddedMail;
 
 class Employee extends Model
 {
@@ -153,7 +153,7 @@ class Employee extends Model
 
     public static function email()
     {
-        Mail::to('suhiro@gmail.com')->send(new EmployeeAdded());
+        Mail::to('suhiro@gmail.com')->send(new EmployeeAddedMail());
     }
     
 

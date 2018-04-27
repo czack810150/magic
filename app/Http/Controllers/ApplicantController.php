@@ -33,6 +33,7 @@ class ApplicantController extends Controller
         foreach($applicants as $a){
             $a->location = Location::where('id',$a->location)->first()->name;
             $a->job = Job::where('id',$a->role)->first()->rank;
+            $a->created_at = Carbon::parse($a->created_at,'UTC')->timezone('America/Toronto')->toDateTimeString();
         }
 
 
