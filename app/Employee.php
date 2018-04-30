@@ -11,7 +11,7 @@ use App\Mail\EmployeeAddedMail;
 
 class Employee extends Model
 {
-    protected $fillable = ['newbie','employeeNumber','email','firstName','lastName','cName','location_id','hired','termination','status','job_id'];
+    protected $fillable = ['newbie','employeeNumber','email','firstName','lastName','name','cName','location_id','hired','termination','status','job_id'];
     public function user()
     {
         return $this->hasOne('App\Authorization');
@@ -150,12 +150,4 @@ class Employee extends Model
     {
         return $this->hasMany('App\JobPromotion');
     }
-
-    public static function email()
-    {
-        Mail::to('suhiro@gmail.com')->send(new EmployeeAddedMail());
-    }
-    
-
-
 }

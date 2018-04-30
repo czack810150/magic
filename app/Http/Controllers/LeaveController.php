@@ -9,6 +9,8 @@ use App\Location;
 use App\Leave;
 use App\LeaveType;
 
+use App\Events\LeaveRequested;
+
 class LeaveController extends Controller
 {
     /**
@@ -67,6 +69,7 @@ class LeaveController extends Controller
         $leave->comment = $request->comment;
         $leave->location_id = $employee->location_id;
         $leave->save();
+        event(new LeaveRequested($leave));
         return redirect('leave');
 
     }

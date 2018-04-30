@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content')
-@if(count($employeeLeaves))
+@if(isset($employeeLeaves) && count($employeeLeaves))
 
 <div class="m-portlet">
 	<div class="m-portlet__head">

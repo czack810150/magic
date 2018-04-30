@@ -9,19 +9,20 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use App\Leave;
 
-class Event
+class LeaveRequested
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
+    public $leave;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Leave $leave)
     {
-        //
+        $this->leave = $leave;
     }
 
     /**

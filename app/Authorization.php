@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Authorization extends Model
 {
@@ -17,5 +18,15 @@ class Authorization extends Model
     public function location()
     {
     	return $this->belongsTo('App\Location');
+    }
+    public static function group(Array $group)
+    {
+        $staffs = new Collection;
+        $auths = self::whereIn('type',$group)->get();
+        foreach($auths as $a)
+        {
+            $staffs->push($a->employee);
+        }
+        return $staffs;
     }
 }

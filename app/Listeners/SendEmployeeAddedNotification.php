@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Mail\Mailer;
 use App\Mail\EmployeeAddedMail;
 use Illuminate\Support\Facades\Mail;
-use App\Employee;
+
 
 class SendEmployeeAddedNotification
 {
