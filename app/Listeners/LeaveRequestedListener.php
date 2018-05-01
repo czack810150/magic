@@ -9,7 +9,7 @@ use Illuminate\Contracts\Mail\Mailer;
 use App\Mail\LeaveRequestedMail;
 use Illuminate\Support\Facades\Mail;
 use App\Authorization;
-use Nexmo\Laravel\Facade\Nexmo;
+// use Nexmo\Laravel\Facade\Nexmo;
 
 
 
@@ -27,12 +27,12 @@ class LeaveRequestedListener implements ShouldQueue
         Mail::to($event->leave->employee)->cc($employees)
             ->send(new LeaveRequestedMail($event->leave));
         Mail::to($manager)->send(new LeaveRequestedMail($event->leave));
-        Nexmo::message()->send([
-    'to'   => '14168348612',
-    'from' => '12266023048',
-    'text' => $event->leave->employee->location->name.'\'s '.$event->leave->employee->cName.' has requested a '.$event->leave->type->cName. ' leave.',
-    'type' => 'unicode',
-    ]);
+    //     Nexmo::message()->send([
+    // 'to'   => '14168348612',
+    // 'from' => '12266023048',
+    // 'text' => $event->leave->employee->location->name.'\'s '.$event->leave->employee->cName.' has requested a '.$event->leave->type->cName. ' leave.',
+    // 'type' => 'unicode',
+    // ]);
 
 
 

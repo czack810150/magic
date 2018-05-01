@@ -11,6 +11,9 @@ use App\Payroll_config;
 use Carbon\Carbon;
 use App\Job;
 use App\JobPromotion;
+use App\Events\PromotionRequested;
+use App\Events\PromotionApproved;
+use App\Events\PromotionRejected;
 
 class PromotionController extends Controller
 {
@@ -72,6 +75,7 @@ class PromotionController extends Controller
              $promotion->status = 'pending';
              $promotion->comment = $request->comment;
              $promotion->save();
+             event(new PromotionRequested($promotion));
              $message = 'Your promotion request has been created!';
              return view('request.success',compact('message','subheader'));  
         } else {
@@ -143,6 +147,8 @@ class PromotionController extends Controller
                  $promotion->status = 'approved';
                  $promotion->modifiedBy = Auth::user()->authorization->employee_id;
                  $promotion->save();
+
+            event(new PromotionApproved($promotion));     
                 return self::index();
             }
             else {
@@ -161,6 +167,7 @@ class PromotionController extends Controller
             $promotion->status = 'rejected';
             $promotion->modifiedBy = Auth::user()->authorization->employee_id;
             $promotion->save();
+            event(new PromotionRejected($promotion)); 
             return self::index();
         }
     }

@@ -28,7 +28,7 @@ class HourController extends Controller
     public function index(Request $r)
     {
         $subheader = "Hours";
-        $locations = Location::NonOffice()->pluck('name','id');
+        $locations = Location::pluck('name','id');
         $dates = Datetime::periods(Carbon::now()->year);
        // $dates = Datetime::periods(2017);
         $location = $r->location;
