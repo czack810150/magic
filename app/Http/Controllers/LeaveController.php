@@ -10,6 +10,8 @@ use App\Leave;
 use App\LeaveType;
 
 use App\Events\LeaveRequested;
+use App\Events\LeaveApproved;
+use App\Events\LeaveRejected;
 
 class LeaveController extends Controller
 {
@@ -135,6 +137,7 @@ class LeaveController extends Controller
             $leave->status = 'approved';
             $leave->approvedBy = Auth::user()->authorization->employee_id;
             $leave->save();
+            event(new LeaveApproved($leave));
             return self::index();
         }
     }
@@ -148,6 +151,7 @@ class LeaveController extends Controller
             $leave->status = 'rejected';
             $leave->approvedBy = null;
             $leave->save();
+            event(new LeaveRejected($leave));
             return self::index();
         }
     }

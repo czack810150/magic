@@ -13,9 +13,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\LeaveRequested' => [
-            'App\Listeners\LeaveRequestedListener',
-        ],
+        
         'App\Events\EmployeeAdded' => [
             'App\Listeners\SendEmployeeAddedNotification',
         ],
@@ -27,6 +25,15 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\PromotionRejected' => [
             'App\Listeners\PromotionRejectedListener',
+        ],
+        'App\Events\LeaveRequested' => [
+            'App\Listeners\LeaveRequestedListener',
+        ],
+        'App\Events\LeaveApproved' => [
+            'App\Listeners\LeaveApprovedListener',
+        ],
+        'App\Events\LeaveRejected' => [
+            'App\Listeners\LeaveRejectedListener',
         ],
     ];
 
