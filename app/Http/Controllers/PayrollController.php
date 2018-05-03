@@ -187,8 +187,11 @@ class PayrollController extends Controller
         
         $deletedRows = Payroll_log::where('startDate',$r->dateRange)->where('location_id',$r->forLocation)->delete();
 
-        $message = Payroll::payrollCompute($r->dateRange,$r->forLocation);
-        // $message = Payroll::payrollEngineX($r->dateRange);
+        if($r->forLocation){
+            $message = Payroll::payrollCompute($r->dateRange,$r->forLocation);  //stores
+        } else {
+            $message = Payroll::payrollComputeKitchen($r->dateRange,$r->forLocation); // central kitchen
+        }
     
         return view('payroll.compute.result',compact('message','subheader'));
   
