@@ -7,6 +7,8 @@ use Illuminate\Support\Collection;
 
 class Authorization extends Model
 {
+    protected $fillable = ['user_id','employee_id','type','location_id','level'];
+
     public function user()
     {
     	return $this->belongsTo('App\User');

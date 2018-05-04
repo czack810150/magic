@@ -147,8 +147,21 @@ class EmployeeController extends Controller
         'result' => 'before'
        ]);
 
-       
-        event(new EmployeeAdded($employee));
+       $newUser = User::create([
+            'name' => strstr($request->email,'@',true),
+            'email' => $request->email,
+            'password' => str_random(5),
+            'email_token' => str_random(32),
+            ]);
+       $newAuthorization = Authorization::create([
+            'employee_id' => $employee->id,
+            'location_id' =>$employee->location_id,
+            'user_id' => $newUser->id,
+            'type' => 'employee',
+            'level' => 2
+       ]);
+
+        event(new EmployeeAdded($employee,$newUser->email_token));
         return redirect('/staff/profile/'.$employee->id.'/show');
     }
 
@@ -700,6 +713,7 @@ class EmployeeController extends Controller
             'firstName' => $applicant->firstName,
             'lastName' => $applicant->lastName,
             'cName' => $r->cName,
+             'name' => empty($applicant->cName)? $applicant->firstName.' '.$applicant->lastName:$applicant->cName,
             'location_id' => $r->employeeLocation,
             'job_id' => $r->job,
             'hired' => $r->hireDate,
@@ -793,6 +807,20 @@ class EmployeeController extends Controller
             'holiday' => $applicant->availability->holiday,
        ]);
        DB::connection('applicants')->table('applicants')->where('id',$r->applicantId)->update(['applicant_status'=>'hired']);
+      $newUser = User::create([
+            'name' => strstr($applicant->email,'@',true),
+            'email' => $applicant->email,
+            'password' => str_random(5),
+            'email_token' => str_random(32),
+            ]);
+       $newAuthorization = Authorization::create([
+            'employee_id' => $employee->id,
+            'location_id' =>$employee->location_id,
+            'user_id' => $newUser->id,
+            'type' => 'employee',
+            'level' => 2
+       ]);
+       event(new EmployeeAdded($employee,$newUser->email_token));
        return redirect('/staff/profile/'.$employee->id.'/show');
      }
      public function showTimeoff($id)

@@ -16,6 +16,7 @@ class EventServiceProvider extends ServiceProvider
         
         'App\Events\EmployeeAdded' => [
             'App\Listeners\SendEmployeeAddedNotification',
+            'App\Listeners\EmployeeWelcomeListener'
         ],
         'App\Events\PromotionRequested' => [
             'App\Listeners\PromotionRequestListener',
@@ -35,6 +36,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\LeaveRejected' => [
             'App\Listeners\LeaveRejectedListener',
         ],
+        'App\Events\EmailConfirmed' => [
+            'App\Listeners\EmailConfirmedListener'
+        ]
     ];
 
     /**

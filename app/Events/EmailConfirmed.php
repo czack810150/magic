@@ -9,24 +9,15 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use App\User;
 
-use App\Employee;
-
-class EmployeeAdded
+class EmailConfirmed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $employee;
-    public $token;
-
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct(Employee $employee,String $token)
+    public $user;
+    public function __construct(User $user)
     {
-        $this->employee = $employee;
-        $this->token = $token;
+        $this->user = $user;
     }
 
     /**
