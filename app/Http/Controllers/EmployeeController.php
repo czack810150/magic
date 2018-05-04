@@ -146,12 +146,13 @@ class EmployeeController extends Controller
         'pass_interview' => true,
         'result' => 'before'
        ]);
-
+       $tempPass = str_random(5);
        $newUser = User::create([
             'name' => strstr($request->email,'@',true),
             'email' => $request->email,
-            'password' => str_random(5),
+            'password' => bcrypt($tempPass),
             'email_token' => str_random(32),
+            'temp_pass' => $tempPass
             ]);
        $newAuthorization = Authorization::create([
             'employee_id' => $employee->id,
@@ -807,11 +808,13 @@ class EmployeeController extends Controller
             'holiday' => $applicant->availability->holiday,
        ]);
        DB::connection('applicants')->table('applicants')->where('id',$r->applicantId)->update(['applicant_status'=>'hired']);
-      $newUser = User::create([
+      $tempPass = str_random(5);
+       $newUser = User::create([
             'name' => strstr($applicant->email,'@',true),
             'email' => $applicant->email,
-            'password' => str_random(5),
+            'password' => bcrypt($tempPass),
             'email_token' => str_random(32),
+            'temp_pass' => $tempPass
             ]);
        $newAuthorization = Authorization::create([
             'employee_id' => $employee->id,

@@ -5,7 +5,7 @@ use App\User;
 use App\Location;
 use App\Authorization;
 use Illuminate\Http\Request;
-use App\Events\EmailConfirmed;
+
 
 class UserController extends Controller
 {
@@ -168,17 +168,5 @@ class UserController extends Controller
     {
         //
     }
-    public function emailConfirm(String $token)
-    {
-        $user = User::where('email_token',$token)->first();
-        if($user){
-            $user->confirmed = true;
-            $user->save();
-            event(new EmailConfirmed($user));
-            return 'Your email has been confirmed. Thank you!';
-        } else {
-            return 'Error 01';
-        }
-        
-    }
+    
 }

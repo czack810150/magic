@@ -5,9 +5,9 @@ Your email has been confirmed.
 <p>Now, you can log into your MagicShift account with following credentials.</p>
 <ul>
 	<li>User Name: {{$user->email}}</li>
-	<li>Password: {{$user->password}}</li>
+	<li>Password: {{$user->temp_pass}}</li>
 </ul>
-@component('mail::button', ['url' => 'http://www.magicnoodleteam.com/login'])
+@component('mail::button', ['url' => url('login')])
 Log in
 @endcomponent
 

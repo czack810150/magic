@@ -172,7 +172,7 @@ Auth::routes();
 Route::get('/users','UserController@index');
 Route::get('/users/new','UserController@create');
 Route::post('/users/save','UserController@store');
-Route::get('/email/{token}/confirm','UserController@emailConfirm');
+Route::get('/email/{id}/confirm','EmailController@emailConfirm');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
