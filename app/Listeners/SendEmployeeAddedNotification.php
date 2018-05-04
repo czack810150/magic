@@ -7,9 +7,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Mail\Mailer;
 use App\Mail\EmployeeAddedMail;
 use Illuminate\Support\Facades\Mail;
+use App\Authorization;
 
 
-class SendEmployeeAddedNotification
+class SendEmployeeAddedNotification implements ShouldQueue
 {
   
 
@@ -18,17 +19,11 @@ class SendEmployeeAddedNotification
         
     }
 
-    /**
-     * Handle the event.
-     *
-     * @param  EmployeeAdded  $event
-     * @return void
-     */
     public function handle(EmployeeAdded $event)
     {
-       
+        $staffs = Authorization::group(['hr','dm','gm','admin']);
         Mail::to('suhiro@gmail.com')
-            ->cc(['haga.gu@magicnoodle.ca','hiro.su@magicnoodle.ca'])
+            ->cc($staffs)
             ->send(new EmployeeAddedMail($event->employee));
     }
 }
