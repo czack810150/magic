@@ -26,7 +26,7 @@
 
       <div class="form-label-group">
         
-         <input class="form-control" type="email" placeholder="Email address" name="email" value="{{ old('email') }}" required id="inputEmail">
+         <input class="form-control" type="email" placeholder="Email address" name="email" value="{{ old('email') }}" required id="inputEmail" autofocus>
          <label for="inputEmail">Email address</label>
               @if ($errors->has('email'))
                                     <span class="help-block">
