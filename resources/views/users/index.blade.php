@@ -53,7 +53,8 @@
 				<th title="Field #5">Location</th>
 				<th title="Field #6">Level</th>
 				<th title="Field #7">Created at</th>
-				<th title="Field #8">Updated at</th>
+				<th title="Field #8">Last Login</th>
+				<th>Last IP</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -71,7 +72,8 @@
 				<td>{{ $u->authorization->location->name }}</td>
 				<td>{{ $u->authorization->level }}</td>
 				<td>{{ $u->created_at }}</td>
-				<td>{{ $u->authorization->updated_at }}</td>
+				<td>{{ $u->last_login }}</td>
+				<td>{{ $u->last_login_ip }}</td>
 			</tr>
 			@endforeach
 			</tbody>
