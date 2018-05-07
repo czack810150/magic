@@ -197,7 +197,7 @@ class PayrollController extends Controller
   
     }
     public function paystubs(){
-        $locations = Location::Store()->pluck('name','id');
+        $locations = Location::pluck('name','id');
         $dates = Datetime::periods(YEAR);
         return view('payroll.paystubs.index',compact('locations','dates'));
     }

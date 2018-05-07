@@ -15,6 +15,8 @@ use App\Exam_template_question;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
+use App\Events\ExamCreated;
+use App\Events\ExamSubmitted;
 
 
 class ExamController extends Controller
@@ -76,6 +78,7 @@ class ExamController extends Controller
         $exam->created_by = Auth::user()->authorization->employee_id;
         $exam->save();
         
+        
         foreach($json->questions as $q){
             $question = Exam_question::create(['question_id'=>$q->id]);
             $exam->question()->save($question);
@@ -94,14 +97,9 @@ class ExamController extends Controller
                 $template->question()->save($question);
             }
         }
+        event(new ExamCreated($exam));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $exam = Exam::find($id);
@@ -210,7 +208,7 @@ class ExamController extends Controller
         $exam->finished = true;
         $exam->score = $score;
         $exam->save();
-
+        event(new ExamSubmitted($exam));
         if(View::exists('exam.exam.finish')){
             return View::make('exam.exam.finish')->render();
         }

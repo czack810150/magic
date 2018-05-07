@@ -63,13 +63,13 @@ p
 	<div class=" col-sm-12">
 		<table class="table table-sm">
 	<thead>
-		<tr><th>Extra Rate</th><th>Extra Hours</th><th>Extra Pay</th><th>岗位津贴</th><th>小费</th><th>夜班</th><th>餐补</th><th>表现</th><th>浮动工资</th><th>应发现金</th>
+		<tr><th>Extra Hours</th><th>Extra Pay</th><th>岗位津贴</th><th>小费</th><th>夜班</th><th>餐补</th><th>表现</th><th>浮动工资</th><th>应发现金</th>
 		</tr>
 	</thead>
 	<tbody>
 		
 			<tr>
-				<td>12</td>
+				
 				<td>{{$e->cashHour }}</td>
 				<td>{{$e->cashPay/100}}</td>
 				<td>{{round($e->position_rate * ($e->week1 + $e->week2 +$e->cashHour),2)}}</td>

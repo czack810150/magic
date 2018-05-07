@@ -38,6 +38,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\EmailConfirmed' => [
             'App\Listeners\EmailConfirmedListener'
+        ],
+        'App\Events\ExamCreated' => [
+            'App\Listeners\ExamCreatedListener',
+        ],
+        'App\Events\ExamSubmitted' => [
+            'App\Listeners\ExamSubmittedListener',
         ]
     ];
 
