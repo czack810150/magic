@@ -202,3 +202,25 @@ ul.stats_list li {
  
   text-align: center;
 }
+
+div.employee-m-tag {
+  /* height:100px;
+  width:200px; */
+  border-left:2px solid #4cb9ff;
+ 
+}
+div.employee-f-tag {
+  /* height:100px;
+  width:200px; */
+  border-left:2px solid #ed549d;
+
+}
+.employee-tag {
+  padding-left:15px;
+}
+.employee-tag:hover {
+  background-color:#f0f1f7;
+  
+}
+
+

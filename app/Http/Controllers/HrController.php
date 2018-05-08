@@ -7,10 +7,11 @@ use App\Location;
 use App\Employee;
 use App\Job;
 use Gate;
+use Auth;
 
 class HrController extends Controller
 {
-        public function __construct()
+    public function __construct()
 {
     $this->middleware('auth');
 }
@@ -39,14 +40,36 @@ class HrController extends Controller
         
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+  
+    public function team()
     {
-        //
+        if(Gate::allows('view-hr')){
+            $subheader = 'Team';
+            $locations = Location::pluck('name','id');
+            $currentTeam = Location::find(Auth::user()->authorization->employee->location_id);
+            
+            // $data['activeEmployees'] = Employee::activeEmployee()->count();
+            // $data['terminatedEmployees'] = Employee::terminatedEmployees()->count();
+            // $data['positionBreakdown'] = Employee::jobBreakdown(null);
+            // $data['totalEmployees'] = Employee::activeAndVacationEmployees()->count();
+            // $data['locationEmployees'] = Employee::locationEmployeesCount();
+
+            // $data['types']['server'] = Job::typeCount('server',null);
+            // $data['types']['cook'] = Job::typeCount('cook',null);
+            // $data['types']['noodle'] = Job::typeCount('noodle',null);
+            // $data['types']['manager'] = Job::typeCount('management',null);
+            // $data['types']['kitchen'] = Job::typeCount('pantry',null) + Job::typeCount('chef',null) + Job::typeCount('driver',null);
+            // $data['types']['office'] = Job::typeCount('office',null) + Job::typeCount('hq',null);
+            return view('hr.team.index',compact('currentTeam','data','locations','subheader'));
+        } else {
+            return view('system.deny',compact('subheader'));
+        }
+    }
+    public function teamChart(Request $r)
+    {
+        $currentTeam = Location::find($r->location);
+
+        return view('hr.team.chart',compact('currentTeam'));
     }
 
     /**
@@ -93,13 +116,6 @@ class HrController extends Controller
     {
         //
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

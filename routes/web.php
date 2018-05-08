@@ -130,6 +130,8 @@ Route::post('/file/employee/{id}/picture','FileUploadController@profilePictureUp
 Route::get('/hr','HrController@index');
 Route::post('/hr/employee/trace','EmployeeTraceController@trace');
 Route::post('/hr/employee/trace/update','EmployeeTraceController@update');
+Route::get('/team','HrController@team');
+Route::post('/team/chart','HrController@teamChart');
 
 //score
 Route::get('/score/category','ScoreCategoryController@index');

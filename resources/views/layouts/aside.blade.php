@@ -51,7 +51,16 @@
 								</a>
 							</li>
 							@endcan
-
+							<li class="m-menu__item  " aria-haspopup="true"  data-menu-submenu-toggle="hover">
+								<a  href="{{ url('team') }}" class="m-menu__link">
+									<i class="m-menu__link-icon flaticon-puzzle"></i>
+									<span class="m-menu__link-text">
+										Team
+									</span>
+									
+								</a>
+								
+							</li>
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">
 									<i class="m-menu__link-icon flaticon-users"></i>
