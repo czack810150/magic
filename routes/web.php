@@ -130,9 +130,13 @@ Route::post('/file/employee/{id}/picture','FileUploadController@profilePictureUp
 Route::get('/hr','HrController@index');
 Route::post('/hr/employee/trace','EmployeeTraceController@trace');
 Route::post('/hr/employee/trace/update','EmployeeTraceController@update');
-Route::get('/team','HrController@team');
-Route::post('/team/chart','HrController@teamChart');
+Route::get('/team/location','HrController@team');
 
+Route::post('/team/chart','HrController@teamChart');
+//Team
+Route::get('/team/taskforce','TeamController@index');
+Route::get('/team/taskforce/create','TeamController@create');
+Route::post('/team/taskforce/create','TeamController@store');
 //score
 Route::get('/score/category','ScoreCategoryController@index');
 Route::get('/score/category/create','ScoreCategoryController@create');
@@ -299,6 +303,7 @@ Route::post('/shifts/history','EmployeeUserController@viewScheduleHistory');
 
 // Utilities
 Route::post('/periodsByYear','UtilityController@periods');
+Route::post('/employeeByLocation','UtilityController@employeeByLocation');
 
 // Skills
 Route::get('/skills','SkillController@index');

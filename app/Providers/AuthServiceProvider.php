@@ -92,5 +92,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('configure-app',function($user){
             return in_array($user->authorization->type,['dm','admin']);
         });
+        Gate::define('create-team',function($user){
+            return in_array($user->authorization->type,['dm','admin']);
+        });
     }
 }

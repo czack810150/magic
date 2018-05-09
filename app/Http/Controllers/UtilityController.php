@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Datetime;
+use App\Employee;
 
 class UtilityController extends Controller
 {
@@ -11,5 +12,10 @@ class UtilityController extends Controller
     {
     	$periods = Datetime::calculatedPeriods($r->year);
     	return view('utility.periods',compact('periods'));
+    }
+    public function employeeByLocation(Request $r)
+    {
+       
+        return Employee::ActiveAndVacationEmployees()->where('location_id',$r->location)->get();
     }
 }

@@ -28,7 +28,7 @@
     
         <div class="m-widget4__item employee-tag">
 						<div class="m-widget4__img m-widget4__img--pic">							 
-							<img src="{{url($currentTeam->manager->employee_profile->img)}}" alt="">   
+							<img src="{{url('storage/'.$currentTeam->manager->employee_profile->img)}}" alt="">   
 						</div>
 						<div class="m-widget4__info">
 							<span class="m-widget4__title">
@@ -47,19 +47,26 @@
     
 
     <div class="row">
-        @foreach($currentTeam->employee as $e)
+        @foreach($currentTeam->employee->sortBy('job_id') as $e)
         @if($currentTeam->manager_id != $e->id)
             @if($e->status != 'terminated')
-        <div class="col-4 m-widget4">
+			<div class="col-md-4 col-sm-6 m-widget4">
         <a href="{{url("staff/profile/$e->id/show")}}">
         <!--begin::Widget 14 Item-->  
-					<div class="m-widget4__item mb-5 employee-tag {{$e->employee_profile->sex=='male'?'employee-m-tag':'employee-f-tag'}}">
+					<div class="m-widget4__item mb-5 employee-tag 
+					@if($e->employee_profile->sex=='male')
+					employee-m-tag
+					@elseif($e->employee_profile->sex == 'female')
+					employee-f-tag
+					@else
+					@endif
+					">
 						<div class="m-widget4__img m-widget4__img--pic">							 
 							<img src="{{url("storage/".$e->employee_profile->img)}}" alt="">   
 						</div>
 						<div class="m-widget4__info">
 							<span class="m-widget4__title">
-							{{$e->name}} {{$e->employee_profile->alias}}
+							{{$e->name}} @if(isset($e->employee_profile->alias)){{$e->employee_profile->alias}} @endif
 							</span><br> 
 							<span class="m-widget4__sub">
 							{{$e->job->rank}} 

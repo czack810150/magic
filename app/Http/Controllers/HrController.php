@@ -68,7 +68,6 @@ class HrController extends Controller
     public function teamChart(Request $r)
     {
         $currentTeam = Location::find($r->location);
-
         return view('hr.team.chart',compact('currentTeam'));
     }
 
