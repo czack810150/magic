@@ -7,6 +7,7 @@ use App\Location;
 use App\Employee;
 use App\Job;
 use App\Team;
+use App\TeamMember;
 use Gate;
 use Auth;
 
@@ -49,7 +50,11 @@ class TeamController extends Controller
             'team_id' => $r->superior,
             'description' => $r->description
         ]);
-        return $team;
+        $leader = TeamMember::create([
+            'team_id' => $team->id,
+            'employee_id' => $r->leader
+        ]);
+        return redirect('team/taskforce');
     }
 
     /**
@@ -60,7 +65,15 @@ class TeamController extends Controller
      */
     public function show($id)
     {
-        //
+        $subheader = 'Teams';
+        if(Gate::allows('view-hr')){
+        $team = Team::findOrFail($id);
+        $locations = Location::pluck('name','id');
+       
+        return view('hr.team.taskforce.show',compact('team','locations','subheader'));
+        } else {
+            return view('system.deny',compact('subheader'));
+        }
     }
 
     /**
@@ -86,14 +99,36 @@ class TeamController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        $team = Team::destroy($id);
+        $members = TeamMember::where('team_id',$id)->delete();
+        $teams = Team::where('team_id',$id)->update(['team_id'=>null]);
+        return redirect('team/taskforce');
+    }
+    public function addMember(Request $r){
+        
+       
+        foreach($r->members as $m)
+        {
+            if(!count(TeamMember::where('team_id',$r->team)->where('employee_id',$m['id'])->get()) )
+            {
+                TeamMember::create([
+                    'team_id' => $r->team,
+                    'employee_id' => $m['id']
+                ]);
+            }
+           
+           
+        }
+        $team = Team::find($r->team);
+        foreach($team->teamMember as $m)
+        {
+            $m->name = $m->employee->name;
+            $m->location = $m->employee->location->name;
+            $m->position = $m->employee->job->rank;
+        }
+
+        return $team->teamMember;
     }
 }

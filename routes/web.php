@@ -137,6 +137,9 @@ Route::post('/team/chart','HrController@teamChart');
 Route::get('/team/taskforce','TeamController@index');
 Route::get('/team/taskforce/create','TeamController@create');
 Route::post('/team/taskforce/create','TeamController@store');
+Route::get('/team/taskforce/{id}/view','TeamController@show');
+Route::get('/team/taskforce/{id}/destroy','TeamController@destroy');
+Route::post('/team/taskforce/addMember','TeamController@addMember');
 //score
 Route::get('/score/category','ScoreCategoryController@index');
 Route::get('/score/category/create','ScoreCategoryController@create');

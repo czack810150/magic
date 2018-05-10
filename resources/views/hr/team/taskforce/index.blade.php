@@ -30,7 +30,9 @@
 					<div class="card-body">
 						<h5 class="card-title">{{$t->name}}</h5>
 						<h6 class="card-subtitle mb-2 text-muted">{{$t->employee->name}}</h6>
+						<p class="card-text">{{$t->teamMember->count()}}名成员</p>
 						<p class="card-text">{{$t->description}}</p>
+						<a href="{{url("team/taskforce/$t->id/view")}}" class="card-link">View</a>
 					</div>
 				</div>
 			</div>
