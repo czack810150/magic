@@ -69,8 +69,9 @@ class TeamController extends Controller
         if(Gate::allows('view-hr')){
         $team = Team::findOrFail($id);
         $locations = Location::pluck('name','id');
+        $teams = Team::pluck('name','id');
        
-        return view('hr.team.taskforce.show',compact('team','locations','subheader'));
+        return view('hr.team.taskforce.show',compact('team','teams','locations','subheader'));
         } else {
             return view('system.deny',compact('subheader'));
         }
@@ -127,6 +128,10 @@ class TeamController extends Controller
             $m->name = $m->employee->name;
             $m->location = $m->employee->location->name;
             $m->position = $m->employee->job->rank;
+            $m->sex = $m->employee->employee_profile->sex;
+            $m->img = '/storage/'.$m->employee->employee_profile->img;
+            $m->alias = $m->employee->employee_profile->alias;
+            $m->link = '/staff/profile/'.$m->employee_id.'/show';
         }
 
         return $team->teamMember;
