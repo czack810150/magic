@@ -111,7 +111,14 @@
         <div class="form-group">
         <label for="teamMembers">团队成员</label>
        
-          <current-member class="mb-3" v-for="member in members" :key="member.id" @click="removeCurrentMember">@{{member.name}}</current-member>
+          <current-members>
+          @foreach($team->teamMember as $m)
+            <current-member name="{{ $m->name }}">
+                {{$m->name}}
+            </current-member>
+          @endforeach
+          
+          </current-members>
       
 
         </div>
@@ -127,12 +134,30 @@
 
 </div>
 		<!--End of Portlet  -->
+        
 <script>
 Vue.component('member-badge',{
   template:'<span class="m-badge m-badge--accent m-badge--wide"><slot></slot></span>',
 })
-Vue.component('current-member',{
-  template:'<div><button type="button" class="btn btn-primary"><slot></slot> <i class="fa fa-remove"></i></button></div>'
+Vue.component('current-members',{
+  template:`
+    <div>
+        <ul>
+            <li v-for="member in members" class="btn btn-info">@{{member.name}}</li>
+        </ul>
+    </div>
+  
+  `,
+  
+    data(){
+        return {
+            members : []
+        }
+    },
+    created(){
+        this.members = this.$children
+    }
+  
 })
 
 
