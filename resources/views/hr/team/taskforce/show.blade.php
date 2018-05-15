@@ -111,14 +111,9 @@
         <div class="form-group">
         <label for="teamMembers">团队成员</label>
        
-          <current-members>
-          @foreach($team->teamMember as $m)
-            <current-member name="{{ $m->name }}">
-                {{$m->name}}
-            </current-member>
-          @endforeach
-          
-          </current-members>
+         <ul class="list-unstyled">
+          <li v-for="member in teamMembers" class="mb-2" ><button class="btn btn-primary btn-sm" @click="removeTeamMember(member)">@{{member.name}} <i class="fa fa-close"></i></button></li>
+         </ul>
       
 
         </div>
@@ -139,26 +134,7 @@
 Vue.component('member-badge',{
   template:'<span class="m-badge m-badge--accent m-badge--wide"><slot></slot></span>',
 })
-Vue.component('current-members',{
-  template:`
-    <div>
-        <ul>
-            <li v-for="member in members" class="btn btn-info">@{{member.name}}</li>
-        </ul>
-    </div>
-  
-  `,
-  
-    data(){
-        return {
-            members : []
-        }
-    },
-    created(){
-        this.members = this.$children
-    }
-  
-})
+
 
 
 
@@ -201,10 +177,27 @@ var vm = new Vue({
                    'img': '{{"/storage/".$m->employee->employee_profile->img}}',
                    'alias': '{{$m->employee->employee_profile->alias}}',
                    'sex': '{{$m->employee->employee_profile->sex}}',
-                   'link': '/staff/profile/'+{{$m->employee->id}}+'/show'
+                   'link': '/staff/profile/'+{{$m->employee->id}}+'/show',
+                   'member_id':{{$m->id}}
                    },
             @endforeach
         ],
+        teamMembers:[
+            @foreach($team->teamMember as $m)
+               { 
+                   'name': '{{$m->employee->name}}',
+                   'location':'{{$m->employee->location->name}}',
+                   'position': '{{$m->employee->job->rank}}',
+                   'id':  '{{$m->employee->id}}',
+                   'img': '{{"/storage/".$m->employee->employee_profile->img}}',
+                   'alias': '{{$m->employee->employee_profile->alias}}',
+                   'sex': '{{$m->employee->employee_profile->sex}}',
+                   'link': '/staff/profile/'+{{$m->employee->id}}+'/show',
+                   'member_id':{{$m->id}}
+                   },
+            @endforeach
+        ],
+        removedMembers:[],
         superior: '{{$team->team?$team->team_id:null}}',
     },
     methods: {
@@ -254,6 +247,15 @@ var vm = new Vue({
             this.selectedMembers.splice(index,1)
 
         },
+         removeTeamMember: function(m)
+        {
+           
+            const index = this.teamMembers.indexOf(m)
+            
+            this.teamMembers.splice(index,1)
+            this.removedMembers.push(m)
+
+        },
         submitMembers: function()
         {
            
@@ -272,6 +274,7 @@ var vm = new Vue({
                         console.log(data);
                          vm.members = data;
                         vm.resetForm()
+
                     }
                 }
             );
@@ -283,22 +286,38 @@ var vm = new Vue({
         },
         resetEdit: function()
         {
+          $('#editModal').modal('hide')
             this.selectedMembers = []
             this.selectedLocation = null
             this.employees = []
-            $('#editModal').modal('hide')
+            this.removedMembers = []
+            this.teamMembers = this.members.slice(0)
+            
         },
         submitEdit(){
-          this.resetEdit()
-        },
-        superiorSelect(){
+          $.post(
+            '/team/taskforce/'+ this.team + '/update',
+            {
+              _token:vm.token,
+               members: vm.removedMembers,
+               superior: vm.superior 
+            },
+            function(data,status){
+              if(status == 'success'){
+                console.log(data)
+                vm.resetEdit()
+                vm.members = data;
+              }
+            }
+            )
 
         },
-        removeCurrentMember()
-        {
-          console.log('remove current')
-        }
-    }
+        superiorSelect(){
+          console.log('superior selected')
+        },
+      },
+
+    
 })
 
 </script>

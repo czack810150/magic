@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TeamMember extends Model
 {
-    protected $fillable = ['team_id','employee_id'];
+    protected $fillable = ['team_id','employee_id','id'];
     public function team(){
         return $this->belongsTo('App\Team');
     }

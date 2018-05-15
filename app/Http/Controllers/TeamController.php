@@ -69,7 +69,7 @@ class TeamController extends Controller
         if(Gate::allows('view-hr')){
         $team = Team::findOrFail($id);
         $locations = Location::pluck('name','id');
-        $teams = Team::pluck('name','id');
+        $teams = Team::where('id','!=',$id)->pluck('name','id');
        
         return view('hr.team.taskforce.show',compact('team','teams','locations','subheader'));
         } else {
@@ -97,7 +97,30 @@ class TeamController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $team = Team::find($id);
+        $team->team_id = $request->superior;
+        $team->save();
+
+        if(count($request->members)){
+        foreach($request->members as $m)
+        {
+           if($team->employee_id != $m['id']){
+             TeamMember::destroy($m['member_id']);
+           } 
+        }
+        }
+        foreach($team->teamMember as $m)
+        {
+            $m->name = $m->employee->name;
+            $m->location = $m->employee->location->name;
+            $m->position = $m->employee->job->rank;
+            $m->sex = $m->employee->employee_profile->sex;
+            $m->img = '/storage/'.$m->employee->employee_profile->img;
+            $m->alias = $m->employee->employee_profile->alias;
+            $m->link = '/staff/profile/'.$m->employee_id.'/show';
+        }
+
+        return $team->teamMember;
     }
 
     public function destroy($id)

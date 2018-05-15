@@ -140,6 +140,7 @@ Route::post('/team/taskforce/create','TeamController@store');
 Route::get('/team/taskforce/{id}/view','TeamController@show');
 Route::get('/team/taskforce/{id}/destroy','TeamController@destroy');
 Route::post('/team/taskforce/addMember','TeamController@addMember');
+Route::post('/team/taskforce/{id}/update','TeamController@update');
 //score
 Route::get('/score/category','ScoreCategoryController@index');
 Route::get('/score/category/create','ScoreCategoryController@create');
