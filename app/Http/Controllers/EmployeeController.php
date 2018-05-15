@@ -469,6 +469,12 @@ class EmployeeController extends Controller
         }
 
         $employee->job_id = $r->job;
+        $trialJobs = Job::where('trial',1)->pluck('id')->toArray();
+        if(!in_array($r->job,$trialJobs)){
+            $employee->job_group = 'employee';
+        } else {
+            $employee->job_group = 'trial';
+        }
         $employee->employeeNumber = $r->employeeNumber;
         $employee->hired = $r->hired;
 

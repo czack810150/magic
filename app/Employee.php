@@ -11,7 +11,7 @@ use App\Mail\EmployeeAddedMail;
 
 class Employee extends Model
 {
-    protected $fillable = ['newbie','employeeNumber','email','firstName','lastName','name','cName','location_id','hired','termination','status','job_id'];
+    protected $fillable = ['newbie','employeeNumber','email','firstName','lastName','name','cName','location_id','hired','termination','status','job_id','job_group'];
     public function user()
     {
         return $this->hasOne('App\Authorization');
