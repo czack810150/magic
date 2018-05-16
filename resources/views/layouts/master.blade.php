@@ -72,6 +72,7 @@
     <!--end::Page Snippets -->
     <script src="{{asset('/js/hr.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/csv.js')}}" type="text/javascript"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 
 

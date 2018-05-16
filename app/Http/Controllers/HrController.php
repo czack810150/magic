@@ -47,19 +47,9 @@ class HrController extends Controller
             $subheader = 'Team';
             $locations = Location::pluck('name','id');
             $currentTeam = Location::find(Auth::user()->authorization->employee->location_id);
+          
             
-            // $data['activeEmployees'] = Employee::activeEmployee()->count();
-            // $data['terminatedEmployees'] = Employee::terminatedEmployees()->count();
-            // $data['positionBreakdown'] = Employee::jobBreakdown(null);
-            // $data['totalEmployees'] = Employee::activeAndVacationEmployees()->count();
-            // $data['locationEmployees'] = Employee::locationEmployeesCount();
-
-            // $data['types']['server'] = Job::typeCount('server',null);
-            // $data['types']['cook'] = Job::typeCount('cook',null);
-            // $data['types']['noodle'] = Job::typeCount('noodle',null);
-            // $data['types']['manager'] = Job::typeCount('management',null);
-            // $data['types']['kitchen'] = Job::typeCount('pantry',null) + Job::typeCount('chef',null) + Job::typeCount('driver',null);
-            // $data['types']['office'] = Job::typeCount('office',null) + Job::typeCount('hq',null);
+           
             return view('hr.team.index',compact('currentTeam','data','locations','subheader'));
         } else {
             return view('system.deny',compact('subheader'));
@@ -67,8 +57,35 @@ class HrController extends Controller
     }
     public function teamChart(Request $r)
     {
+        $team = collect();
         $currentTeam = Location::find($r->location);
-        return view('hr.team.chart',compact('currentTeam'));
+        $manager = $currentTeam->manager;
+        $manager->alias = $manager->employee_profile->alias;
+        $manager->title = $manager->job->rank;
+        $manager->link = "/staff/profile/$manager->id/show";
+        $manager->img = "/storage/".$manager->employee_profile->img;
+        $manager->gender = $manager->employee_profile->sex;
+        $employees = collect();
+        foreach($currentTeam->employee->sortBy('job_id') as $e){
+            if($currentTeam->manager_id != $e->id){
+                if($e->status != 'terminated'){
+                    $e->title = $e->job->rank;
+                    $e->link = "/staff/profile/$e->id/show"; 
+                    if($e->employee_profile){
+                        $e->gender = $e->employee_profile->sex;
+                        $e->img = "/storage/".$e->employee_profile->img;
+                        $e->alias = $e->employee_profile->alias;
+                    }
+                    $employees->push($e);
+               }
+            }
+        }
+
+        $team->put('manager',$manager);
+        $team->put('team',$currentTeam);
+        $team->put('employees',$employees);
+        return $team;
+        // return view('hr.team.chart',compact('currentTeam'));
     }
 
     /**

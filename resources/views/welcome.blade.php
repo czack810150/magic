@@ -85,7 +85,6 @@
 
                 <div class="links">
                     <a href="http://www.magicnoodle.ca">magicnoodle.ca</a>
-                    <a href="http://www.magicnoodle.ca/magicshift">old magicshift</a>
                    
                 </div>
             </div>

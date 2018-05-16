@@ -316,3 +316,8 @@ Route::post('/skills/create','SkillController@store');
 Route::get('/skills/{id}/delete','SkillController@destroy');
 Route::get('/skills/{id}/edit','SkillController@edit');
 Route::post('/skills/{id}/update','SkillController@update');
+
+//TEST
+Route::get('/test',function(){
+	return 'test ok';
+});
