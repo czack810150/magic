@@ -1,6 +1,8 @@
 @extends('layouts.master')
 @section('content')
 
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
 <div class="m-portlet m-portlet--full-height" id="vm">
 	<div class="m-portlet__head">
 		<div class="m-portlet__head-caption">
@@ -24,32 +26,64 @@
 	</div>
 	<div class="m-portlet__body">
         @if(count($teams))
-            @foreach($teams as $t)
-			<div class="col-lg-4 mb-3">
-				<div class="card" style="width:18rem;">
-					<div class="card-body">
-						<h5 class="card-title">{{$t->name}}</h5>
-						<h6 class="card-subtitle mb-2 text-muted">{{$t->employee->name}}</h6>
-						<p class="card-text">{{$t->teamMember->count()}}名成员</p>
-						<p class="card-text">{{$t->description}}</p>
-						<a href="{{url("team/taskforce/$t->id/view")}}" class="card-link">View</a>
-					</div>
-				</div>
-			</div>
-			@endforeach
+		<div id="chart_div"></div>
         @else
             <p>No taskforce teams.</p>
         @endif
    
     
 
-    
+   
 
     </div>
+	
 </div>
 		
 		
 <script>
 
 </script>
+@endsection
+
+@section('pageJS')
+<style>
+.teamBlock {
+	height:40px;
+	width:120px;
+
+}
+.selectedNode {
+	border:none
+}
+</style>
+    <script>
+      google.charts.load('current', {packages:["orgchart"]});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+		
+        data.addColumn('string', 'Name');
+        data.addColumn('string', 'Manager');
+        data.addColumn('string', 'ToolTip');
+		
+		// data.setRowProperty(1,'style', 'border: 1px solid green');
+        // For each orgchart box, provide the name, manager, and tooltip to show.
+        data.addRows([
+          
+		  @foreach($teams as $t)
+		  [ {v:'{{$t->name}}',
+		  f:'<div><a class="text-info" href="/team/taskforce/{{$t->id}}/view"><h5>{{$t->name}}</h5><p>{{$t->employee->name}}</p><small>{{$t->teamMember->count()}}名成员</small></a></div>'},
+		   '{{$t->team? $t->team->name:''}}','{{$t->description}}'  ],
+		  @endforeach
+
+        ]);
+
+        // Create the chart.
+        var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+        // Draw the chart, setting the allowHtml option to true for the tooltips.
+        chart.draw(data, {allowHtml:true,allowCollapse:true,nodeClass:'teamBlock',size:'large',selectedNodeClass:'selectedNode'});
+	
+      }
+   </script>
 @endsection
