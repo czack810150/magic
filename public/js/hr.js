@@ -227,6 +227,12 @@ function editEmployment(employee) {
 		);
 }
 function updateEmployment(employee){
+	var sup;
+	if($('#supervisor').is(':checked')){
+		sup = 1;
+	} else {
+		sup = 0;
+	}
 	$.post(
 		'/employee/employment/update',
 		{
@@ -239,6 +245,7 @@ function updateEmployment(employee){
 			type: $('select[name=type]').val(),
 			location: $('select[name=location]').val(),
 			sin: $('input[name=sin]').val(),
+			supervisor: sup,
 		},
 		function(data,status){
 			if(status == 'success'){

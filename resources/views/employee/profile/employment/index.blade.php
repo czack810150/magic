@@ -80,6 +80,15 @@
 <p>{{ $employee->location->name }} </p>
 </div>
 </div>
+
+<div class="col-3">
+<div class="info-box pl-3">
+<small>Supervisor</small>
+<p>{{ $employee->job_group == 'supervisor'?'Yes':'No' }} </p>
+</div>
+</div>
+
+
 </div> <!-- end of row -->
 @endif
 

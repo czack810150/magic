@@ -477,7 +477,12 @@ class EmployeeController extends Controller
         }
         $employee->employeeNumber = $r->employeeNumber;
         $employee->hired = $r->hired;
-
+        if($r->supervisor == 1)
+        {
+            $employee->job_group = 'supervisor';
+        } else {
+            $employee->job_group = 'employee';
+        }
 
         if(!empty($r->termination)){
             $employee->termination = $r->termination;

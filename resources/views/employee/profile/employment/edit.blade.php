@@ -103,6 +103,22 @@
 </div>
 </div>
 
+<div class="col-md-3">
+<div class="info-box pl-3">
+<small>Supervisor</small>
+<div class=" m-checkbox-list">
+<label class="m-checkbox">
+<input type="checkbox" class="form-control m-input form-control-sm" 
+@if($employee->job_group == 'supervisor' )
+checked
+@endif
+ id="supervisor" name="supervisor">
+ <span></span>
+</label>
+</div>
+</div>
+</div>
+
 
 </div> <!-- end of row -->
 
