@@ -45,33 +45,6 @@
 			</a>
         </div>
     </div>
-    
-
-    <div class="row">
-    	<div class="col-12">
-    		<h4>试用期员工</h4>
-    	</div>
-    	<template v-for="employee in employees">
-        <div class="col-md-4 col-sm-6 m-widget4" v-if="employee.job_group == 'trial'"> 
-
-        	<a :href="employee.link">
-        		<div class="m-widget4__item mb-5 employee-tag" :class="genderClass(employee)">
-        			<div class="m-widget4__img m-widget4__img--pic">							 
-							<img :src="employee.img" alt="">   
-						</div>
-				<div class="m-widget4__info">
-							<span class="m-widget4__title">
-							@{{employee.name}} @{{employee.alias}}
-							</span><br> 
-							<span class="m-widget4__sub">
-							@{{employee.title}} 
-							</span>							 		 
-						</div>
-        		</div>
-        	</a>
-        </div>
-    </template>
-    </div>
 
     <div class="row">
     	<div class="col-12">
@@ -105,6 +78,32 @@
     	</div>
     	<template v-for="employee in employees">
         <div class="col-md-4 col-sm-6 m-widget4" v-if="employee.job_group == 'employee'"> 
+
+        	<a :href="employee.link">
+        		<div class="m-widget4__item mb-5 employee-tag" :class="genderClass(employee)">
+        			<div class="m-widget4__img m-widget4__img--pic">							 
+							<img :src="employee.img" alt="">   
+						</div>
+				<div class="m-widget4__info">
+							<span class="m-widget4__title">
+							@{{employee.name}} @{{employee.alias}}
+							</span><br> 
+							<span class="m-widget4__sub">
+							@{{employee.title}} 
+							</span>							 		 
+						</div>
+        		</div>
+        	</a>
+        </div>
+    </template>
+    </div>
+
+	<div class="row">
+    	<div class="col-12">
+    		<h4>试用期员工</h4>
+    	</div>
+    	<template v-for="employee in employees">
+        <div class="col-md-4 col-sm-6 m-widget4" v-if="employee.job_group == 'trial'"> 
 
         	<a :href="employee.link">
         		<div class="m-widget4__item mb-5 employee-tag" :class="genderClass(employee)">

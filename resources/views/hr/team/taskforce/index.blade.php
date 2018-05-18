@@ -73,7 +73,7 @@
           
 		  @foreach($teams as $t)
 		  [ {v:'{{$t->name}}',
-		  f:'<div><a class="text-info" href="/team/taskforce/{{$t->id}}/view"><h5>{{$t->name}}</h5><p>{{$t->employee->name}}</p><small>{{$t->teamMember->count()}}名成员</small></a></div>'},
+		  f:'<div><a class="text-info" href="/team/taskforce/{{$t->id}}/view"><img src="/storage/{{$t->employee->employee_profile->img}}" width="100" height="100"></a><h5>{{$t->name}}</h5><p>{{$t->employee->name}}</p><small>{{$t->teamMember->count()}}名成员</small></div>'},
 		   '{{$t->team? $t->team->name:''}}','{{$t->description}}'  ],
 		  @endforeach
 

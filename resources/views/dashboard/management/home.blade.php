@@ -37,7 +37,7 @@
                             </thead>
                             <tbody>
                                 @foreach($promotions as $p)
-                                @if(Carbon\Carbon::now()->diffInDays($p->created_at)<=30)
+                                @if(Carbon\Carbon::now()->diffInDays($p->created_at)<=7)
                                 <tr>
                                     <td>{{ $p->newLocation->name }}</td>
                                      <td>{{ $p->employee->cName }}</td>

@@ -17,12 +17,23 @@
   </head>
 
   <body>
+  <div class="container">
+  <div class="row justify-content-md-center">
+    
+    <div class="col-md-auto">
+    <div class="text-center">
+        <img class="" src="{{ url('img/logo.png') }}" alt="logo" width="750">  
+    </div>
+    </div>
+    
+  </div>
+
+
+ 
+
     <form class="form-signin" method="POST" action="{{ route('login') }}">
       {{ csrf_field() }}
-      <div class="text-center mb-4">
-        <img class="mb-4" src="{{ url('img/logo.png') }}" alt="logo" width="360">
-      
-      </div>
+     
 
       <div class="form-label-group">
         
@@ -57,5 +68,6 @@
       <button class="btn btn-lg btn-success btn-block" type="submit">Sign in</button>
       <p class="mt-5 mb-3 text-muted text-center">&copy; {{Carbon\Carbon::now()->year}} Magic Noodle</p>
     </form>
+    </div>
   </body>
 </html>

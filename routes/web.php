@@ -173,9 +173,7 @@ Route::get('/timeclock/inshift','ClockController@inShift');
 Route::post('/clock/edit','ClockController@show');
 Route::post('/clock/update','ClockController@update');
 Route::post('/clock/add','ClockController@store');
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
 
 Auth::routes();
 //Users
