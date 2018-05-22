@@ -34,7 +34,7 @@
 				</div>
 			</div>
 			<div class="m-portlet__body">
-				<h5>类别：{{ $question->question_category->name }} </h5>
+				<h5>类别：{{ $question->question_category?$question->question_category->name:'no category' }} </h5>
 				<h5>难度：<span class="m-badge m-badge--warning">{{ $question->difficulty }}</span> </h5>
 				<br>
 				@if(count($question->answer))

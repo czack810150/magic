@@ -11,6 +11,17 @@
       <div class="col-md-12 col-lg-12 col-xl-4">
         <!--begin:: Widgets/Stats2-1 -->
 <div class="m-widget1">
+<div class="m-widget1__item">
+		<div class="row m-row--no-padding align-items-center">
+			<div class="col">
+				<h3 class="m-widget1__title">Category</h3>
+				<span class="m-widget1__desc">题库类别</span>
+			</div>
+			<div class="col m--align-right">
+				<span class="m-widget1__number m--font-warning">{{ count($stats['categories']) }}</span>
+			</div>
+		</div>
+	</div>
 	<div class="m-widget1__item">
 		<div class="row m-row--no-padding align-items-center">
 			<div class="col">
@@ -18,7 +29,7 @@
 				<span class="m-widget1__desc">题库总量</span>
 			</div>
 			<div class="col m--align-right">
-				<span class="m-widget1__number m--font-brand">{{ $stats['total'] }}</span>
+				<span class="m-widget1__number m--font-info">{{ $stats['total'] }}</span>
 			</div>
 		</div>
 	</div>
@@ -44,6 +55,7 @@
 			</div>
 		</div>
 	</div>
+	
 </div>
 <!--end:: Widgets/Stats2-1 -->      
 		</div>
@@ -58,23 +70,14 @@
 						    	<tr>
 						      		<th>Category</th>
 						      		<th>Questions</th>
-						      		
 						    	</tr>
 						  	</thead>
 						  	<tbody>
 						  		@foreach($stats['categories'] as $key => $val)
-
 						    	<tr>
 							      	<th scope="row">	{{ $key }}</th>
-							    
 							      	<td>{{$val}}</td>
-							      
 						    	</tr>
-
-				
-
-
-
 	@endforeach
 						    
 						  	</tbody>
@@ -88,30 +91,103 @@
 </div>
 <!--End::Main Portlet-->
 
-@if(isset($questions))
+<table id="questionTable">
 
-<table class="table table-sm">
-	<thead><tr><th>id</th><th>Category</th><th>Question</th><th>difficulty</th><th>created by</th><th>created at</th><th>delete</th></tr></thead>
-	<tbody>
-	@foreach($questions as $q)
-	<tr>
-		<td><a href="/question/{{ $q->id }}/show">{{ $q->id }}</a></td>
-		
-		@if($q->question_category)
-		<td><a href="/question_category/{{$q->question_category_id}}">{{ $q->question_category->name}}</a></td>
-		@else
-		<td></td>
-		@endif
-		<td><a href="/question/{{ $q->id }}/show">{{ $q->body }}</a> ({{ $q->mc?'选择题':'简答题' }})</td>
-		<td>{{ $q->difficulty }}</td>
-		<td>{{ $q->created_by }}</td>
-		<td>{{ $q->created_at }}</td>
-		<td><a href="/question/{{$q->id}}/delete">delete</a></td>
-
-	</tr>
-	@endforeach
-	</tbody>
 </table>
-@endif
 
+@endsection
+@section('pageJS')
+<script>
+console.log('pageJS');
+$(document).ready(function(){
+	const jString = '{!! $questions !!}';
+	const dataJSONArray = JSON.parse(jString);
+
+
+	var options = {
+		data: {
+			type:'local',
+			source: dataJSONArray,
+			pageSize: 10
+		},
+	  // layout definition
+         layout: {
+            theme: 'default',
+                // datatable theme
+            class: '',
+                // custom wrapper class
+            scroll: false,
+                // enable/disable datatable scroll both horizontal and vertical when needed.
+                // height: 450, // datatable's body's fixed height
+            footer: false // display/hide footer
+            },
+
+            // column sorting
+        sortable: true,
+        pagination: true,
+
+        columns: [
+        	{
+        		field: "category",
+        		title: "Category",
+        		width: 100,
+        		sortable: true,
+        		selector: false,
+        		taxtAlign: 'center'
+        	},
+			{
+        		field: "type",
+        		title: "Type",
+        		width: 50,
+        		sortable: true,
+        		selector: false,
+        		taxtAlign: 'center'
+        	},
+			{
+        		field: "difficulty",
+        		title: "Difficulty",
+        		width: 100,
+        		sortable: true,
+        		selector: false,
+        		taxtAlign: 'center'
+        	},
+        	{
+        		field: "body",
+        		title: "Question",
+        		width: 500,
+        		sortable: false,
+        		selector: false,
+        		taxtAlign: 'center',
+				template: function(row){
+					return '<a href="/question/'+row.id+'/show">'+row.body+'</a>';
+				}
+        	},
+			{
+        		field: "created_by",
+        		title: "Author",
+        		width: 50,
+        		sortable: true,
+        		selector: false,
+        		taxtAlign: 'center'
+        	},
+			{
+        		field: "created",
+        		title: "Created at",
+        		width: 150,
+        		sortable: true,
+        		selector: false,
+        		taxtAlign: 'center',
+				
+        	},
+        	
+        	
+        ]
+	}
+
+
+	
+	$('#questionTable').mDatatable(options);
+})
+
+</script>
 @endsection

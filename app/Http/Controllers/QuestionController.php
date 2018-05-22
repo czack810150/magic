@@ -9,15 +9,6 @@ use App\Question_category;
 use App\Answer;
 class QuestionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $subheader = 'Employee Training';
@@ -29,7 +20,11 @@ class QuestionController extends Controller
         foreach($categories as $c){
             $stats['categories'][$c->name] = $c->question->count();
         }
-        
+        foreach($questions as $q){
+            $q->category = $q->question_category?$q->question_category->name:'no category';
+            $q->type = $q->mc?'选择':'简答';
+            $q->created = $q->created_at->toFormattedDateString();
+        }
         return view('exam.question.index',compact('questions','subheader','stats'));
     }
 

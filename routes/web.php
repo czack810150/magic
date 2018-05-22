@@ -176,6 +176,49 @@ Route::post('/clock/add','ClockController@store');
 Route::post('/clock/{id}/delete','ClockController@destroy');
 Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
 
+
+//Sales
+Route::get('/sales','SaleController@index');
+
+
+
+
+Route::middleware('auth')->group(function(){
+	//Exams
+	Route::get('/exam','ExamController@index');
+	Route::get('/exam/all','ExamController@all');
+Route::get('/exam/create','ExamController@create');
+Route::post('/exam/store','ExamController@store');
+Route::get('/exam/{exam}/delete','ExamController@destroy');
+Route::get('/exam/{exam}/show','ExamController@show');
+
+Route::get('/exam/{access}/take','ExamController@take');
+Route::post('/exam/attempt','ExamController@attempt');
+Route::post('/question/get','QuestionController@get');
+Route::post('/exam/submission','ExamController@submitExam');
+Route::get('/exam/attemptedExams','ExamController@attemptedExams');
+Route::get('/exam/{id}/mark','ExamController@mark');
+Route::get('/my_exam','ExamController@my');
+// Exam Templates
+Route::get('/exam_templates/','Exam_templateController@index');
+Route::get('/exam_templates/{id}/show','Exam_templateController@show');
+Route::get('/exam_templates/{id}/remove','Exam_templateController@destroy');
+Route::post('/exam_templates/store','Exam_templateController@store');
+Route::get('/question_category/create','QuestionController@newCategory');
+Route::post('/question_category/store','QuestionController@saveCategory');
+Route::get('/question_category/{category}/delete','QuestionController@removeCategory');
+Route::get('/question_category/{id}','QuestionController@showCategoryQuestions');
+
+Route::get('/question','QuestionController@index');
+Route::get('/question/{question}/show','QuestionController@show');
+Route::get('/question/{question}/edit','QuestionController@edit');
+Route::post('/question/{question}/update','QuestionController@update');
+Route::get('/question/{question}/delete','QuestionController@destroy');
+Route::get('/question/create','QuestionController@create');
+Route::post('/question/create','QuestionController@store');
+Route::post('/question/createShortAnswer','QuestionController@storeShortAnswer');
+Route::post('/question/categoryQuestions','QuestionController@questionsByCategory');
+
 Auth::routes();
 //Users
 Route::get('/users','UserController@index');
@@ -222,44 +265,9 @@ Route::get('/payroll/{id}/destroy','PayrollController@destroy');
 Route::get('/payroll/paystubs','PayrollController@paystubs');
 Route::post('/payroll/paystubs','PayrollController@paystubsData');
 Route::post('/payroll/chequeNumber','PayrollController@chequeNumber');
-//Sales
-Route::get('/sales','SaleController@index');
+}); // end of grouped auth
 
-//Exams
-Route::get('/question_category/create','QuestionController@newCategory');
-Route::post('/question_category/store','QuestionController@saveCategory');
-Route::get('/question_category/{category}/delete','QuestionController@removeCategory');
-Route::get('/question_category/{id}','QuestionController@showCategoryQuestions');
 
-Route::get('/question','QuestionController@index');
-Route::get('/question/{question}/show','QuestionController@show');
-Route::get('/question/{question}/edit','QuestionController@edit');
-Route::post('/question/{question}/update','QuestionController@update');
-Route::get('/question/{question}/delete','QuestionController@destroy');
-Route::get('/question/create','QuestionController@create');
-Route::post('/question/create','QuestionController@store');
-Route::post('/question/createShortAnswer','QuestionController@storeShortAnswer');
-Route::post('/question/categoryQuestions','QuestionController@questionsByCategory');
-
-Route::get('/exam','ExamController@index');
-Route::get('/exam/all','ExamController@all');
-Route::get('/exam/create','ExamController@create');
-Route::post('/exam/store','ExamController@store');
-Route::get('/exam/{exam}/delete','ExamController@destroy');
-Route::get('/exam/{exam}/show','ExamController@show');
-
-Route::get('/exam/{access}/take','ExamController@take');
-Route::post('/exam/attempt','ExamController@attempt');
-Route::post('/question/get','QuestionController@get');
-Route::post('/exam/submission','ExamController@submitExam');
-Route::get('/exam/attemptedExams','ExamController@attemptedExams');
-Route::get('/exam/{id}/mark','ExamController@mark');
-Route::get('/my_exam','ExamController@my');
-// Exam Templates
-Route::get('/exam_templates/','Exam_templateController@index');
-Route::get('/exam_templates/{id}/show','Exam_templateController@show');
-Route::get('/exam_templates/{id}/remove','Exam_templateController@destroy');
-Route::post('/exam_templates/store','Exam_templateController@store');
 //Jobs
 Route::get('/jobs','JobController@index');
 // My voice

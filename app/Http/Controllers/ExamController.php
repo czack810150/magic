@@ -21,11 +21,6 @@ use App\Events\ExamSubmitted;
 
 class ExamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $subheader = 'Employee Training';
@@ -37,6 +32,7 @@ class ExamController extends Controller
         $mc = Question::where('mc',1)->get()->count();
         $sa = Question::where('mc',0)->get()->count();
         $templates = Exam_template::get()->count();
+        
         return view('exam.exam.index',compact('subheader','exams','attempted','templates','questions','mc','sa','templates'));
     }
     public function all()
