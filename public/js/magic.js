@@ -86,7 +86,13 @@ function attemptSubmit(){
         _token: $('input[name="_token"]').val(),
       },function(data,status){
  			if(status = 'success'){
- 				window.location.href="/exam/";
+				if(data == '1'){
+					window.location.href="/exam/";
+				} else {
+					
+					notify('The employee has one unattempted exam currently.','danger');
+				}
+ 				
  			}
       });
 

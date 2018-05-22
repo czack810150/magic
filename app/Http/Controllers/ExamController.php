@@ -65,6 +65,11 @@ class ExamController extends Controller
     public function store(Request $request)
     {
         $json = json_decode(request('json'));
+
+        $hasExam = Exam::where('employee_id',$json->employee)->where('taken_at',null)->first();
+        if($hasExam){
+            return 2;
+        }
    
         
         $exam = new Exam;
@@ -94,6 +99,7 @@ class ExamController extends Controller
             }
         }
         event(new ExamCreated($exam));
+        return 1;
     }
 
     public function show($id)
