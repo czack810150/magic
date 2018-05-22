@@ -173,6 +173,7 @@ Route::get('/timeclock/inshift','ClockController@inShift');
 Route::post('/clock/edit','ClockController@show');
 Route::post('/clock/update','ClockController@update');
 Route::post('/clock/add','ClockController@store');
+Route::post('/clock/{id}/delete','ClockController@destroy');
 Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
 
 Auth::routes();
@@ -194,6 +195,7 @@ Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@g
 
 //Clocks
 Route::get('/clocks','ClockController@shiftClocks');
+
 Route::post('/clock/clocksByLocationDate','ClockController@clocksByLocationDate');
 //Hours
 Route::get('/hours','HourController@index');

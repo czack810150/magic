@@ -196,5 +196,10 @@ class ClockController extends Controller
       $clock->save();
       return 'success';
     }
+    public function destroy($id)
+    {
+      Clock::destroy($id);
+      return 1;
+    }
 
 }

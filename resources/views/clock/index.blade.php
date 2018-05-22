@@ -117,7 +117,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="updateClock()">Save changes</button>
+		<button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteClock()">删除</button>
+        <button type="button" class="btn btn-success" onclick="updateClock()">保存</button>
       </div>
     </div>
   </div>
@@ -292,6 +293,21 @@ function updateClock(){
 			if(status == 'success'){
 				$('#clockModal').modal('hide');
 				updateTable();
+			}
+		}
+		);
+}
+function deleteClock(){
+	$.post(
+		'/clock/'+clockID+'/delete',
+		{
+			_token:'{{ csrf_token() }}',
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#clockModal').modal('hide');
+				updateTable();
+				console.log(data);
 			}
 		}
 		);
