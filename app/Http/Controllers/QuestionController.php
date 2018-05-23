@@ -172,4 +172,8 @@ class QuestionController extends Controller
     {
         return Question::find($r->id);
     }
+    public function getCategory()
+    {
+        return Question_category::get();
+    }
 }

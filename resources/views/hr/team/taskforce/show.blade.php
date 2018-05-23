@@ -224,7 +224,7 @@ var vm = new Vue({
         },
         selectedMember: function(e)
         {
-            console.log('selected member:'+e.name)
+            
             if(this.selectedMembers.indexOf(e) == -1){
                 this.selectedMembers.push(e);
             } else {

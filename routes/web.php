@@ -218,6 +218,11 @@ Route::get('/question/create','QuestionController@create');
 Route::post('/question/create','QuestionController@store');
 Route::post('/question/createShortAnswer','QuestionController@storeShortAnswer');
 Route::post('/question/categoryQuestions','QuestionController@questionsByCategory');
+// test training
+Route::get('/exam/learn','ExamTrainingController@index');
+Route::get('/exam/learn/create','ExamTrainingController@create');
+Route::post('/exam/learn/store','ExamTrainingController@store');
+}); // end of grouped auth
 
 Auth::routes();
 //Users
@@ -265,7 +270,7 @@ Route::get('/payroll/{id}/destroy','PayrollController@destroy');
 Route::get('/payroll/paystubs','PayrollController@paystubs');
 Route::post('/payroll/paystubs','PayrollController@paystubsData');
 Route::post('/payroll/chequeNumber','PayrollController@chequeNumber');
-}); // end of grouped auth
+
 
 
 //Jobs
@@ -316,6 +321,7 @@ Route::post('/shifts/history','EmployeeUserController@viewScheduleHistory');
 // Utilities
 Route::post('/periodsByYear','UtilityController@periods');
 Route::post('/employeeByLocation','UtilityController@employeeByLocation');
+Route::get('/questionCategory','QuestionController@getCategory');
 
 // Skills
 Route::get('/skills','SkillController@index');
@@ -324,6 +330,7 @@ Route::post('/skills/create','SkillController@store');
 Route::get('/skills/{id}/delete','SkillController@destroy');
 Route::get('/skills/{id}/edit','SkillController@edit');
 Route::post('/skills/{id}/update','SkillController@update');
+
 
 //TEST
 Route::get('/test',function(){

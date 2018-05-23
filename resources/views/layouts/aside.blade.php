@@ -325,6 +325,16 @@
 										@endif
 										@if(Auth::user()->authorization->level >= 30)
 										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="/exam/learn" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													知识强化训练
+												</span>
+											</a>
+										</li>
+										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/exam" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
