@@ -10,6 +10,7 @@ use App\Question;
 use App\Answer;
 use Faker\Generator as Faker;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 
 class ExamTrainingController extends Controller
@@ -44,7 +45,15 @@ class ExamTrainingController extends Controller
      */
     public function store(Request $request)
     {
-        return $request->cats;
+        $count = 0;
+        foreach($request->cats as $c){
+            $count++;
+        }
+
+        $mock = ExamTraining::create([
+            'employee_id' => Auth::user()->authorization->employee_id,
+        ]);
+        return $count;
     }
 
     /**
