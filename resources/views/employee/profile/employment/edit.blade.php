@@ -27,6 +27,7 @@
 <div class="m-portlet__body">
 
 <div class="form-group m-form__group row">
+@can('promote-employee')
 <div class="col-3">
 <div class="info-box pl-3">
 <small>Job Title</small>
@@ -35,6 +36,7 @@
 </div>
 </div>
 </div>
+@endcan
 
 <div class="col-3">
 <div class="info-box pl-3">

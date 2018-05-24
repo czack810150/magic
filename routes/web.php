@@ -222,6 +222,7 @@ Route::post('/question/categoryQuestions','QuestionController@questionsByCategor
 Route::get('/exam/learn','ExamTrainingController@index');
 Route::get('/exam/learn/create','ExamTrainingController@create');
 Route::post('/exam/learn/store','ExamTrainingController@store');
+Route::get('/exam/learn/{id}/mock','ExamTrainingController@show');
 }); // end of grouped auth
 
 Auth::routes();

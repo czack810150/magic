@@ -138,6 +138,20 @@ var vm = new Vue({
                 cats: vm.selectedCats
             }).then(function(response){
                 console.log(response.data);
+                if(response.data == 1){
+                    $.notify(
+                        {
+                        message:'模拟考试创建成功！'
+                        },
+                        {
+                            type:'success',
+                            placement:{from:'top',align:'center'},
+                            onClosed(){
+                                window.location.replace('/exam/learn');
+                            }
+                        
+                        });
+                }
             })
             } else {
                 alert('You must select at least one category.');
