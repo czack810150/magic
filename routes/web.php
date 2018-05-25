@@ -223,6 +223,9 @@ Route::get('/exam/learn','ExamTrainingController@index');
 Route::get('/exam/learn/create','ExamTrainingController@create');
 Route::post('/exam/learn/store','ExamTrainingController@store');
 Route::get('/exam/learn/{id}/mock','ExamTrainingController@show');
+Route::get('/exam/learn/{id}/destroy','ExamTrainingController@destroy');
+Route::post('/exam/learn/{id}/update','ExamTrainingController@update');
+Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
 }); // end of grouped auth
 
 Auth::routes();

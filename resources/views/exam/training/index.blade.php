@@ -30,23 +30,15 @@
 		<div class="m-widget12">
 			<div class="m-widget12__item">					 	 
 				<span class="m-widget12__text1">Total Mock Tests<br><span>{{$exams->count()}}</span></span> 			 		 
-				<span class="m-widget12__text2">Total Attempted Exams<br><span></span></span> 		 	 
+				<span class="m-widget12__text2">Total Attempted Tests<br><span>{{$exams->where('score','!=',null)->count()}}</span></span> 		 	 
 			</div>
-			<div class="m-widget12__item">					 	 
-				<span class="m-widget12__text1">Exam Templates<br><span></span></span> 			 		 
-				<span class="m-widget12__text2">Total Questions<br><span></span></span> 		 	 
-			</div>
-			<div class="m-widget12__item">
-				<span class="m-widget12__text1">Multiple Choice Questions<br><span></span></span>
-
-				<span class="m-widget12__text2">Short Answer Questions<br><span></span></span> 	
-			</div>
+			
 		</div>
 	<br>
 	@if(count($exams))
 	<table class="table table-sm">
 	<thead>
-	<tr><th>名称</th><th>创建人</th><th>题数</th><th>创建日期</th><th>操作</th></tr>
+	<tr><th>名称</th><th>创建人</th><th>题数</th><th>得分</th><th>正确率</th><th>创建日期</th><th>操作</th></tr>
 	</thead>
 	<tbody>
 	@foreach($exams as $e)
@@ -54,8 +46,14 @@
 	<td>{{$e->name}}</td>
 	<td>{{$e->employee->name}}</td>
 	<td>{{$e->question->count()}}</td>
+	<td>{{$e->score}}</td>
+	<td>{{round($e->score/$e->question->count(),2)*100}}</td>
 	<td>{{$e->created_at}}</td>
+	@if(is_null($e->score))
 	<th><a class="btn btn-primary btn-sm" href="{{url("exam/learn/$e->id/mock")}}">开始练习</a></th>
+	@else
+	<th><a class="btn btn-warning btn-sm" href="{{url("exam/learn/$e->id/view")}}">查看结果</a></th>
+	@endif
 	</tr>
 	@endforeach
 	</tbody>

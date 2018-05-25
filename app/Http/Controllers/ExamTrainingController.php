@@ -91,20 +91,23 @@ class ExamTrainingController extends Controller
         $questions = $exam->question;
         foreach($questions as $q){
             $q->question;
+            $q->question->answer;
+            $q->question->question_category;
         }
-        
         return view('exam.training.take',compact('exam','questions','subheader'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function view($id)
     {
-        //
+        $subheader = 'Training';
+        $exam = ExamTraining::findOrFail($id);
+        $questions = $exam->question;
+        foreach($questions as $q){
+            $q->question;
+            $q->question->answer;
+            $q->question->question_category;
+        }
+        return view('exam.training.view',compact('exam','questions','subheader'));
     }
 
     /**
@@ -116,17 +119,32 @@ class ExamTrainingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $score = 0;
+        foreach($request->questions as $q){
+            $question = ExamTrainingQuestion::find($q['id']);
+            $question->answer_id = $q['answer_id'];
+            $question->save();
+
+            if($question->answer_id == $question->question->answer->where('correct',true)->first()->id)
+            {
+                $score += 1;
+            }
+        }
+        $result = [
+            'score' => $score,
+            'questions' => count($request->questions),
+            'percentage' => round($score/count($request->questions),2)*100
+        ];
+        $exam = ExamTraining::find($id);
+        $exam->score = $score;
+        $exam->start = $request->start;
+        $exam->end = $request->end;
+        $exam->save();
+        return $result;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        return ExamTraining::destroy($id);
     }
 }
