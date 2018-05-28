@@ -19,7 +19,9 @@ class ClockController extends Controller
 
     public function index(){
         if(Gate::allows('can-clockin')){
-          return view('shift.timeclock.inout'); 
+          //return view('shift.timeclock.inout'); 
+          $location = Location::find(Auth::user()->authorization->location_id);
+          return view('shift.timeclock.index',compact('location'));
         } else {
           return 'Not Authorized';
         }

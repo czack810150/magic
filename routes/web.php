@@ -163,7 +163,7 @@ Route::post('/api/newShift','ShiftController@apiCreate');
 Route::post('/api/employee/{id}','EmployeeController@apiGet');
 Route::post('/api/employeeBylocation','EmployeeController@location');
 
-
+// time clock
 Route::get('/timeclock','ClockController@index')->name('timeclock')->middleware('auth');
 Route::get('/timeclock/in','ClockController@in')->middleware('auth');
 Route::get('/timeclock/out','ClockController@out')->middleware('auth');
@@ -338,5 +338,8 @@ Route::post('/skills/{id}/update','SkillController@update');
 
 //TEST
 Route::get('/test',function(){
-	return 'test ok';
+	return 'get test ok';
+});
+Route::post('/test', function(){
+	return 'post ok';
 });
