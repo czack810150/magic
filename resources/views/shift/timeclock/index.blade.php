@@ -39,30 +39,90 @@
         </div>
     </div>
     </div>
+    <div class="container" v-if="forgotten">
+        <div class="columns">
+            <div class="column is-half is-offset-3">
+     <article class="message is-warning" >
+  <div class="message-header">
+    <p>忘记提示</p>
+    
+  </div>
+  <div class="message-body">
+    <p>此上班记录（@{{forgotten.clockIn}}）没有相应的下班记录。请先填写忘记打卡记录表并通知店长。</p>
+  </div>
+  
+</article></div></div></div>
 
-
-
-    <div class="container">
-    <div class="columns" v-show="cardScan">
+    <div class="container" v-show="cardScan">
+        <div class="columns" >
         <div class="column is-half is-offset-3">
             <div class="box">
-
+        <form @submit="submitClock">
             <div class="field">
             <p class="control has-icons-left">
-            <input v-model="employeeId" class="input is-large is-focused" type="password" placeholder="Scan your employee card here" required>
+            <input ref="cardReader" v-model="employeeId" class="input is-large" type="password" placeholder="Scan your employee card here" autofocus required autocomplete="off">
             <span class="icon is-large is-left"><i class="fas fa-barcode"></i></span>
             </p>
             </div>    
 
-        <button type="button" class="button is-large" v-bind:class="inClass" @click="submitClock">@{{inOut?'In':'Out' }}</button>
+        <button type="submit" class="button is-large" v-bind:class="inClass" >@{{inOut?'In':'Out' }}</button>
         <button type="submit" class="button is-light is-large" @click="cancel">Cancel</button>
+       
+        </form>
             </div>
         </div>
+        </div>
     </div>
+
+
+    <div class="container" v-show="showMessage">
+        <div class="columns">
+            <div class="column is-half is-offset-3">
+    <article class="message" :class="messageClass">
+  <div class="message-header">
+    <p v-text="messageTitle"></p>
+    
+  </div>
+  <div class="message-body" v-text="messageBody">
+  </div>
+  <br>
+  <button type="button" class="button is-primary is-large" @click="finish"> OK</button>
+</article>
+<br>
+ <article class="message" v-if="records.length" >
+  <div class="message-header">
+    <p>当日打卡记录</p>
+    
+  </div>
+  <div class="message-body">
+<table class="table">
+<thead><th>ClockIn</th><th>ClockOut</th></thead>
+<tbody>
+<tr v-for="record in records">
+<td v-text="record.clockIn"></td>
+<td v-text="record.clockOut"></td>
+</tr>
+</tbody>
+   
+</table>
+  </div>
+  
+</article>
+            </div>
+        </div>
     </div>
 
 
   </section>
+  <footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p class="has-text-grey-light is-italic has-text-weight-light">
+        Copyright &copy; {{Carbon\Carbon::now()->year}} Jingyi Su
+      </p>
+    </div>
+  </div>
+</footer>
 <!-- development version, includes helpful console warnings -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
@@ -76,7 +136,13 @@
         cardScan:false,
         employeeId:'',
         inOut:false,
-      
+        showMessage:false,
+        messageTitle:null,
+        messageBody:null,
+        messageClass:null,
+        shifts: [],
+        records: [],
+        forgotten: null,
       },
       computed:{
           inClass(){
@@ -92,42 +158,99 @@
       },
         
       methods: {
+          focus(){this.$refs.cardReader.focus();console.log('called focus')},
           clockIn(){
               this.buttons = false
               this.cardScan = true
-              this.inOut=true
+              this.inOut= true
               console.log('clock in')
+              vm.focus();
           },
           clockOut() {
               this.buttons = false
               this.inOut = false
               this.cardScan = true
+              this.$refs.cardReader.focus();
           },
           cancel(){
               this.cardScan = false
               this.buttons = true
               this.employeeId = ''
           },
-          submitClock(){
+          submitClock(e){
               
               if(this.employeeId!=''){
+                e.preventDefault()
+                var link = '';
+                var inOut = '';
+                if(this.inOut)
+                {
+                    link = '/timeclock/in'
+                    inOut = 'in';
+                } else {
+                    link = '/timeclock/out'
+                    inOut = 'out';
+                }
 
-                axios.post('/test',{
-                    _token:'{{csrf_token()}}'
+
+                axios.post(link,{
+                    _token:'{{csrf_token()}}',
+                    employeeCard: this.employeeId,
+                    inOut: this.inOut
                 }).then(response => {
-                    console.log(response.data)
+                    console.log(response.data);
+                    switch(response.data.status){
+                        case 'success':
+                            this.messageClass = 'is-success';
+                            break;
+                        case 'danger':
+                            this.messageClass = 'is-danger';
+                            break;
+                        case 'warning':
+                            this.messageClass = 'is-warning';
+                            break;
+                        case 'info':
+                            this.messageClass = 'is-info';
+                            break;
+                        case 'link':
+                            this.messageClass = 'is-link';
+                            break;
+                        default:
+                            this.messageClass = null;
+                    }
+                  
+                    this.messageTitle = response.data.messageTitle
+                    this.messageBody = response.data.message
+                    this.shifts = response.data.shifts
+                    this.records = response.data.records
+                    this.forgotten = response.data.forgotten
+                    this.showMessage=true
+                    
                 }).catch(error => {
-                    console.log(error)
+                    this.messageClass='is-danger'
+                    this.messageTitle = 'System Error'
+                    this.messageBody = response.error
+                    this.showMessage=true
                 })
 
                 console.log('submit')
                 this.employeeId = ''
                 this.cardScan = false
-                this.buttons = true
+                
 
               } else {
                   alert('You must scan your card!')
               }
+            },
+            finish(){
+                this.employeeId = ''
+                this.showMessage = false
+                this.cardScan = false
+                this.buttons = true
+                this.messageTitle = null
+                this.messageBody = null
+                this.messageClass = null
+                this.forgotten = null
           }
         
       }
