@@ -57,7 +57,7 @@
         <div class="columns" >
         <div class="column is-half is-offset-3">
             <div class="box">
-        <form @submit="submitClock">
+        <form v-on:submit.prevent="submitClock">
             <div class="field">
             <p class="control has-icons-left">
             <input ref="cardReader" v-model="employeeId" class="input is-large" type="password" placeholder="Scan your employee card here" autofocus required autocomplete="off">
@@ -86,7 +86,7 @@
   <div class="message-body is-size-4" >
   <span v-html="messageBody"></span>
   <br>
-  <div v-if="shifts">
+  <div v-if="shifts.length">
   本日排班：
   <br>
   <ul>
@@ -98,6 +98,9 @@
   @{{greeting}}
    </li>
   </ul>
+  </div>
+  <div v-else>
+  Oops.. 系统中没有你今日的排班。请询问店长。
   </div>
   </div>
   <br>
@@ -197,7 +200,7 @@
           submitClock(e){
               
               if(this.employeeId!=''){
-                e.preventDefault()
+                //e.preventDefault()
                 var link = '';
                 var inOut = '';
                 if(this.inOut)

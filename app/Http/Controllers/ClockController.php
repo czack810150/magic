@@ -113,7 +113,7 @@ class ClockController extends Controller
             'shifts' => $shifts,
             'records' => $records,
             'forgotten' => $forgotten,
-            'greeting' => '你好，你是我们团队里的重要一员，让我们一起开始今天的工作吧！ 区域经理Elaine'
+            'greeting' => '你好，你是我们团队里的重要一员，让我们一起开始今天的工作吧！'
           ];
         }
         
