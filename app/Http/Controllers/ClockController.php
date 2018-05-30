@@ -71,7 +71,14 @@ class ClockController extends Controller
       
     	$now = Carbon::now();
     	
-   		$shifts = Shift::where('employee_id',$employee->id)->whereDate('start',$now->toDateString())->get();	
+      $shifts = Shift::where('employee_id',$employee->id)->whereDate('start',$now->toDateString())->get();
+      if(count($shifts)){
+        foreach($shifts as $s){
+          $s->role;
+          $s->duty;
+          
+        }
+      }	
    		$result = false;
 
       $inShift = In::where('employee_id',$employee->id)->first();
@@ -83,15 +90,20 @@ class ClockController extends Controller
    	
     	  $records = Clock::where('employee_id',$employee->id)->whereDate('clockIn',$now->toDateString())->get();
         $forgotten  = Clock::where('employee_id',$employee->id)->whereDate('clockIn','<',$now->toDateString())->where('clockOut',null)->orderby('clockIn','desc')->first();
+
         if($result){
+          $now = Carbon::now();
+          $days = $now->diffInDays($employee->hired);
+          $message = "<strong>$employee->name </strong> 开始了在大槐树第 $days 天的工作。";
           
           return [
             'status' => 'success',
             'messageTitle' => 'Clock In',
-            'message'=> '打卡成功！ 开始上班',
+            'message'=> $message,
             'shifts' => $shifts,
             'records' => $records,
             'forgotten' => $forgotten,
+            'greeting' => '你好，你是我们团队里的重要一员，让我们一起开始今天的工作吧！ 区域经理Elaine'
           ];
         } else {
           return [
@@ -101,6 +113,7 @@ class ClockController extends Controller
             'shifts' => $shifts,
             'records' => $records,
             'forgotten' => $forgotten,
+            'greeting' => '你好，你是我们团队里的重要一员，让我们一起开始今天的工作吧！ 区域经理Elaine'
           ];
         }
         
@@ -146,12 +159,18 @@ class ClockController extends Controller
         $now = Carbon::now();
     	 
    		
-   		 $shifts = Shift::where('employee_id',$employee->id)->whereDate('start',$now->toDateString())->get();
+        $shifts = Shift::where('employee_id',$employee->id)->whereDate('start',$now->toDateString())->get();
+        if(count($shifts)){
+          foreach($shifts as $s){
+            $s->role;
+            $s->duty;
+          }
+        }
     	 $inShift = In::where('employee_id',$employee->id)->first();
     
       if(is_null($inShift)){ // currently not in shift
           // return view('shift.timeclock.noClockIn',compact('employee'));
-          return ['status'=>'info','messageTitle' => '无打卡记录','message'=>"无此员工（$card, $employee->name ）的当日打卡记录."];
+          return ['status'=>'info','messageTitle' => '无打卡记录','message'=>"无此员工（$card, $employee->name ）的当日打卡记录.",'records' => []];
       } else {
             $latest = Clock::find($inShift->clock_id);
             $latest->clockOut = $now;
@@ -164,9 +183,10 @@ class ClockController extends Controller
          return [
           'status' => 'link',
           'messageTitle' => 'Clock Out',
-          'message'=> 'Clocked out！ 结束了当前的工作计时。',
+          'message'=> "Clocked out！ 员工 <strong>$employee->name </strong>结束了当前的工作计时。",
           'shifts' => $shifts,
           'records' => $records,
+          'greeting' => '辛苦了！'
         ];
         // return view('shift.timeclock.result',compact('employee','shifts','inout','result','records'));
     }

@@ -83,15 +83,31 @@
     <p v-text="messageTitle"></p>
     
   </div>
-  <div class="message-body" v-text="messageBody">
+  <div class="message-body is-size-4" >
+  <span v-html="messageBody"></span>
+  <br>
+  <div v-if="shifts">
+  本日排班：
+  <br>
+  <ul>
+  <li v-for="shift in shifts">开始： @{{shift.start}}<br> 
+  结束： @{{shift.end}}<br> 
+  工位： @{{shift.role.c_name}}<br> 
+  职责： @{{shift.duty?shift.duty.cName:'无'}}<br>
+  @{{shift.comment?'Message:'+shift.comment:''}}<br>
+  @{{greeting}}
+   </li>
+  </ul>
+  </div>
   </div>
   <br>
   <button type="button" class="button is-primary is-large" @click="finish"> OK</button>
+  <br>
 </article>
 <br>
  <article class="message" v-if="records.length" >
   <div class="message-header">
-    <p>当日打卡记录</p>
+    <p>本日打卡记录</p>
     
   </div>
   <div class="message-body">
@@ -143,6 +159,7 @@
         shifts: [],
         records: [],
         forgotten: null,
+        greeting:null,
       },
       computed:{
           inClass(){
@@ -224,6 +241,7 @@
                     this.shifts = response.data.shifts
                     this.records = response.data.records
                     this.forgotten = response.data.forgotten
+                    this.greeting = response.data.greeting
                     this.showMessage=true
                     
                 }).catch(error => {
@@ -251,6 +269,8 @@
                 this.messageBody = null
                 this.messageClass = null
                 this.forgotten = null
+                this.greeting = null
+                this.shifts = []
           }
         
       }
