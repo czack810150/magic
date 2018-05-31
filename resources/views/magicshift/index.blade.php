@@ -171,7 +171,7 @@ var fullCalOptions = {
             );
         },
         resourceRender: function(resourceObj,labelTds,bodyTds){
-            console.log(resourceObj);
+            
             var weekTotalStr = '';
             if(resourceObj.weekTotal) {
                 if(Number(resourceObj.weekTotal) <= 44.0){
@@ -229,6 +229,9 @@ var fullCalOptions = {
         eventRender: function(event,element){
             const duration = (event.end.format('X') - event.start.format('X'))/3600;
            
+            if(event.published == "1"){
+                element.find(".fc-time").append(' <i class="fa  fa-check-circle m--font-info"></i>&nbsp;');
+            }
             if(event.special == "1"){
                 element.find(".fc-time").append(' <i class="fa  fa-usd m--font-warning"></i>&nbsp;');
             }
@@ -250,7 +253,6 @@ var fullCalOptions = {
         },
         eventClick: function(event,element){
             currentEvent = event;
-           // console.log(currentEvent);
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role_id = event.role_id;
@@ -283,7 +285,6 @@ var fullCalOptions = {
             currentEvent = event;
             dragEvent = event;
             dragEvent.duration = (event.end.format('X') - event.start.format('X'))/3600;
-
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role_id = event.role_id;
@@ -295,7 +296,6 @@ var fullCalOptions = {
             currentShift.end = event.end;
             currentShift.special = event.special;
             currentShift.note =  event.comment;
-
             updateShift(currentShift);
             showStats();
         },
@@ -306,7 +306,6 @@ var fullCalOptions = {
             
         },
         eventResize: function(event,delta,revertFunc,jsEvent,ui,view){
-         
             currentShift.id = event.id;
             currentShift.employee = event.resourceId;
             currentShift.role_id = event.role_id;
@@ -360,13 +359,11 @@ var fullCalOptions = {
         listDayFormat:true,
         nowIndicator:true,
 
-        // scheduler settings
+        // scheduler resource settings
         resourceAreaWidth:'10%',
         resourceLabelText:'Employees',
 
     
-       
-
         dayClick: function(date,jsEvent,view,resource) {
             $('#shiftTime').val('');
             $('#form-control-feedback').html(''); 
@@ -405,6 +402,46 @@ var fullCalOptions = {
 
         defaultView: 'timelineWorkWeek',
         customButtons:{
+            publish: {
+                text:'Publish',
+                click: function(){
+                    var events = $('#calendar').fullCalendar('clientEvents');
+                    const view = $('#calendar').fullCalendar('getView');
+                    var updateEvents = [];
+                   events.forEach(function(event){
+                       updateEvents.push(event.id);
+                       
+                   })
+                   
+                   axios.post('/shift/publish',{
+                       _token:csrf_token,
+                      events:updateEvents,
+                      start: view.start.format('YYYY-MM-DD'),
+                      end:view.end.format('YYYY-MM-DD')
+                   }).then(response=>{
+                       console.log(response.data)
+                       if(response.data > 0){
+                        $.notify({
+                           message:response.data+' shifts have been published!'
+                       },{
+                           type:'success',
+                           placement:{from:'top',align:'center'},
+                       });
+                       } else {
+                        $.notify({
+                           message:'All shifts are currently published!'
+                       },{
+                           type:'info',
+                           placement:{from:'top',align:'center'},
+                       });
+                       }
+                       $('#calendar').fullCalendar('refetchEvents');
+                       
+                   }).catch(error=>{
+                       console.log(error)
+                   })
+                }
+            },
             borrow: {
                 text:'借用他店员工',
                 click: function(){
@@ -417,7 +454,7 @@ var fullCalOptions = {
             left:   'title  ',
             //center: 'timelineDay,timelineWorkWeek,month,listWeek prev,today,next',
             center: 'timelineDay,timelineWorkWeek, prev,today,next',
-            right:  'borrow',
+            right:  'publish, borrow',
         },
         viewRender: function(view,element)
         {

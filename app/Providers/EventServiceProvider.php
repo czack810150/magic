@@ -44,6 +44,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\ExamSubmitted' => [
             'App\Listeners\ExamSubmittedListener',
+        ],
+        'App\Events\ShiftsPublished' => [
+            'App\Listeners\ShiftsPublishedListener',
         ]
     ];
 

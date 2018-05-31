@@ -54,6 +54,8 @@
     <script src="{{asset('/assets/app/js/dashboard.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/jquery-ui.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/ms.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
  @yield('pageJS')
 

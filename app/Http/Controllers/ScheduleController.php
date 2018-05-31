@@ -7,15 +7,12 @@ use App\Location;
 use App\Role;
 use App\Duty;
 use Auth;
+use App\Shift;
+use App\Events\ShiftsPublished;
 
 
 class ScheduleController extends Controller
-{
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    
+{   
     public function index($location = null)
     {
         $locations = Location::pluck('name','id');
@@ -80,16 +77,20 @@ class ScheduleController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+  
+    public function publish(Request $r)
     {
-        //
+        $counter = 0;
+        foreach($r->events as $e){
+            $shift = Shift::find($e);
+            if(!$shift->published){
+                $shift->published = 1;
+                $shift->save();
+                $counter++;
+            }
+        }
+        event(new ShiftsPublished($r->start,$r->end,$counter));
+        return $counter;
     }
 
     /**
