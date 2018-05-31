@@ -43,10 +43,16 @@ class HomeController extends Controller
 
             return view('dashboard.management.home',compact('locations','promotions'));
         } else {
-            $employee = Employee::find(Auth::user()->authorization->employee_id);
+            //check if this is location account
+            if(Auth::user()->authorization->type == 'location'){
+                return redirect()->route('timeclock');
+            } else 
+            {
+                $employee = Employee::find(Auth::user()->authorization->employee_id);
             $promotions = $employee->promotion;
             $shifts = $employee->schedule->where('start','>=',Carbon::now()->toDateString())->sortBy('start');
             return view('dashboard.employee.home',compact('promotions','shifts'));
+            }
         }
         
     }
