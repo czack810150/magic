@@ -89,7 +89,9 @@ class ScheduleController extends Controller
                 $counter++;
             }
         }
-        event(new ShiftsPublished($r->start,$r->end,$counter));
+        if($counter){
+            event(new ShiftsPublished($r->start,$r->end,$counter,Location::find($r->location)));
+        }
         return $counter;
     }
 

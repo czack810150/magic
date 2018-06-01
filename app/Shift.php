@@ -97,5 +97,16 @@ class Shift extends Model
         return 0;
       }
     }
+
+    public static function storeShifts($location,$start,$end){
+      $tempShifts = self::where('location_id',$location)->whereBetween('start',[$start,$end])->get()->unique('employee_id');
+      $employees = collect();
+      foreach($tempShifts as $t){
+        //$t->employee->schedule->where('published',true)->where('start','>=',$start)->where('start','<',$end);
+        $t->employee->shifts = Shift::where('employee_id',$t->employee->id)->where('location_id',$location)->whereBetween('start',[$start,$end])->get();
+        $employees->push($t->employee);
+      }
+      return $employees;
+    }
    
 }

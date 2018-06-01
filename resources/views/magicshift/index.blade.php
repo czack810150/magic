@@ -417,7 +417,8 @@ var fullCalOptions = {
                        _token:csrf_token,
                       events:updateEvents,
                       start: view.start.format('YYYY-MM-DD'),
-                      end:view.end.format('YYYY-MM-DD')
+                      end:view.end.format('YYYY-MM-DD'),
+                      location:currentLocation
                    }).then(response=>{
                        console.log(response.data)
                        if(response.data > 0){

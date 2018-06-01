@@ -14,12 +14,13 @@ class ShiftsPublished
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $start,$end,$count;
-    public function __construct($start,$end,$count)
+    public $start,$end,$count,$location;
+    public function __construct($start,$end,$count,$location)
     {
         $this->start = $start;
         $this->end = $end;
         $this->count = $count;
+        $this->location = $location;
     }
 
     /**
