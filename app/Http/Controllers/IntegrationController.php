@@ -111,7 +111,7 @@ class IntegrationController extends Controller
 	{	
 		$now = Carbon::now();
 		$dateTo = $now->toDateString();
-		$dateFrom = $now->subDays(2)->toDateString();
+		$dateFrom = $now->subDays(7)->toDateString();
 		$req = '{"CompanyCode" : "MAGIC NOODLE", "UserName" : "API", "UserPassword" : "MynJuSh4zC8QRcd","list":[{"DateFrom":"'.$dateFrom.'","DateTo":"'.$dateTo.'"}]}';
 		$url = 'https://magicnoodlehq.dd.mrsdigi.com/DigiCard.php/ajax/Attendance';
 		$options = array(

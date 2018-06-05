@@ -239,48 +239,49 @@
                             this.messageClass = null;
                     }
                   
-                    this.messageTitle = response.data.messageTitle
-                    this.messageBody = response.data.message
-                    this.shifts = response.data.shifts
-                    this.records = response.data.records
-                    this.forgotten = response.data.forgotten
-                    this.greeting = response.data.greeting
-                    this.showMessage=true
+                    this.messageTitle = response.data.messageTitle;
+                    this.messageBody = response.data.message;
+                    this.shifts = response.data.shifts;
+                    this.records = response.data.records;
+                    this.forgotten = response.data.forgotten;
+                    this.greeting = response.data.greeting;
+                    this.showMessage=true;
                     
                 }).catch(error => {
-                    this.messageClass='is-danger'
-                    this.messageTitle = 'System Error'
-                    this.messageBody = response.error
-                    this.showMessage=true
+                    this.messageClass='is-danger';
+                    this.messageTitle = 'System Error';
+                    this.messageBody = response.error;
+                    this.showMessage=true;
                 })
 
-                console.log('submit')
-                this.employeeId = ''
-                this.cardScan = false
+                console.log('submit');
+                this.employeeId = '';
+                this.cardScan = false;
                 
 
               } else {
-                  alert('You must scan your card!')
+                  alert('You must scan your card!');
               }
             },
             finish(){
-                this.employeeId = ''
-                this.showMessage = false
-                this.cardScan = false
-                this.buttons = true
-                this.messageTitle = null
-                this.messageBody = null
-                this.messageClass = null
-                this.forgotten = null
-                this.greeting = null
-                this.shifts = []
+                this.employeeId = '';
+                this.showMessage = false;
+                this.cardScan = false;
+                this.buttons = true;
+                this.messageTitle = null;
+                this.messageBody = null;
+                this.messageClass = null;
+                this.forgotten = null;
+                this.greeting = null;
+                this.shifts = [];
+                this.recoreds = [];
           }
         
       }
   })
  
 function updateTime() {
-            vm.currentTime =  moment().format('dddd, MMMM Do YYYY, h:mm:ss a')
+            vm.currentTime =  moment().format('dddd, MMMM Do YYYY, h:mm:ss a');
             
           }
 

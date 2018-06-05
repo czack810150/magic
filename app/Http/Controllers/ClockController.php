@@ -59,11 +59,11 @@ class ClockController extends Controller
     	$employee = $this->findEmployee($card);
 
     	if(!$employee){
-        return ['status'=>'danger','messageTitle' => 'Error','message'=>'无此员工'];
+        return ['status'=>'danger','messageTitle' => 'Error','message'=>'无此员工','shifts'=>[],'records' => []];
     		// return view('shift.timeclock.notEmployee');
     	}
     	if($employee->status != 'active'){
-        return ['status'=>'warning','messageTitle' => '此卡已无效','message'=>"此员工卡($card)已无效。 该员工可能已离职或正在休假。如果不是，请联系店长更改员工状态。"];
+        return ['status'=>'warning','messageTitle' => '此卡已无效','message'=>"此员工卡($card)已无效。 该员工可能已离职或正在休假。如果不是，请联系店长更改员工状态。",'shifts'=>[],'records' => []];
     		// return view('shift.timeclock.notActiveEmployee',compact('employee'));
     	}
       
@@ -151,7 +151,7 @@ class ClockController extends Controller
     	  $employee = $this->findEmployee($card);
         
         if(!$employee){
-          return ['status'=>'danger','messageTitle' => 'Error','message'=>'无此员工'];
+          return ['status'=>'danger','messageTitle' => 'Error','message'=>'无此员工','shifts'=>[],'records' => []];
             // return view('shift.timeclock.notEmployee');
         }
     	  $result = false;
@@ -167,19 +167,25 @@ class ClockController extends Controller
           }
         }
     	 $inShift = In::where('employee_id',$employee->id)->first();
-    
+       $records = Clock::where('employee_id',$employee->id)->whereDate('clockIn',$now->toDateString())->get();
       if(is_null($inShift)){ // currently not in shift
           // return view('shift.timeclock.noClockIn',compact('employee'));
-          return ['status'=>'info','messageTitle' => '无打卡记录','message'=>"无此员工（$card, $employee->name ）的当日打卡记录.",'records' => []];
+          return ['status'=>'info','messageTitle' => '无打卡记录','message'=>"无此员工（$card, $employee->name ）的当日打卡记录.",'records' => $records,'shifts'=>[]];
       } else {
             $latest = Clock::find($inShift->clock_id);
-            $latest->clockOut = $now;
-            $latest->save();
-            $result = true;
-            $inShift->delete();
+            if($latest){
+              $latest->clockOut = $now;
+              $latest->save();
+              $result = true;
+              $inShift->delete();
+            } else {
+              $inShift->delete();
+              return ['status'=>'dark','messageTitle' => '打卡记录已丢失','message'=>"请于店内填写打卡记录登记表，并通知店长。",'records' => $records,'shifts'=>[]];
+            }
+            
       }
 
-         $records = Clock::where('employee_id',$employee->id)->whereDate('clockIn',$now->toDateString())->get();
+  
          return [
           'status' => 'link',
           'messageTitle' => 'Clock Out',

@@ -22,13 +22,14 @@
 			<div class="m-portlet__body">	
 				
 			@foreach($inShiftEmployees as $e)
-
+				@if(!is_null($e->shift->clock))
 				@if( $location->id == $e->shift->clock->location_id)
 			<p><span>{{ $e->cName}}</span> 
 				<span class="float-right mr-3" >
 			{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$e->shift->clock->clockIn)->toDateTimeString()}}
 				</span>
 			</p>
+				@endif
 				@endif
 
 			@endforeach
