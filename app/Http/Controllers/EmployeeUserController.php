@@ -30,6 +30,25 @@ class EmployeeUserController extends Controller
        
         return view('employeeUser.payroll.index',compact('logs','dates','currentYear','subheader'));
     }
+    public function paystubs(){
+        $subheader = "Money";
+        $currentYear = Carbon::now()->year;
+        $employee = Auth::user()->authorization->employee;
+        $dates = array();
+        $serviceYear = Carbon::createFromFormat('Y-m-d H:i:s',$employee->hired);
+        while($serviceYear->year <= $currentYear){
+            $dates[$serviceYear->year] = $serviceYear->year;
+            $serviceYear->addYear();
+        }
+
+        $logs = Payroll_log::whereYear('startDate',$currentYear)->where('employee_id',$employee->id)->orderBy('startDate','desc')->get();
+       
+        return view('employeeUser.payroll.paystubs',compact('logs','dates','currentYear','subheader'));
+    }
+     public function paystubsYear(Request $r){
+        $logs = Payroll_log::whereYear('startDate',$r->year)->where('employee_id',Auth::user()->authorization->employee_id)->orderBy('startDate','desc')->get();
+        return view('employeeUser.payroll.stubsTable',compact('logs'));
+    }
     public function payrollYear(Request $r){
     	$logs = Payroll_log::whereYear('startDate',$r->year)->where('employee_id',Auth::user()->authorization->employee_id)->orderBy('startDate','desc')->get();
     	return view('employeeUser.payroll.table',compact('logs'));

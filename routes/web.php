@@ -117,6 +117,8 @@ Route::post('/employee/stats/{id}/show','EmployeeStatsController@show');
 
 // user employee
 Route::get('/payroll/my','EmployeeUserController@payroll');
+Route::get('/payroll/my/paystubs','EmployeeUserController@paystubs');
+Route::post('/payroll/employee/paystub/year','EmployeeUserController@paystubsYear');
 Route::post('/payroll/employee/year','EmployeeUserController@payrollYear');
 Route::get('/hours/my','EmployeeUserController@hour');
 Route::post('/hours/employee/year','EmployeeUserController@hourYear');

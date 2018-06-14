@@ -323,7 +323,7 @@
 										</li>
 
 										@endif
-										@if(Auth::user()->authorization->level >= 30)
+										@if(Auth::user()->authorization->level >= 20)
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/exam/learn" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -334,6 +334,8 @@
 												</span>
 											</a>
 										</li>
+										@endif
+										@if(Auth::user()->authorization->level >= 30)
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/exam" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
