@@ -264,12 +264,22 @@
 											</a>
 										</li>
 										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="/clocks/view" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													View Clocks
+												</span>
+											</a>
+										</li>
+										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/clocks" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>
 												<span class="m-menu__link-text">
-													Clocks
+													Edit Clocks
 												</span>
 											</a>
 										</li>

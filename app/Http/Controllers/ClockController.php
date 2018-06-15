@@ -217,7 +217,7 @@ class ClockController extends Controller
     {
       $locations = Location::pluck('name','id');
       $dates = Datetime::periods(Carbon::now()->year);
-      $subheader = 'Employee Clocks';
+      $subheader = 'Edit Employee Clocks';
       return view('clock.index',compact('subheader','dates','locations'));
     }
     public function clocksByLocationDate(Request $r)
@@ -264,6 +264,36 @@ class ClockController extends Controller
     {
       Clock::destroy($id);
       return 1;
+    }
+    public function viewClocks()
+    {
+      $subheader = 'View Employee Clocks';
+      $locations = Location::pluck('name','id');
+      $dates = Datetime::periods(Carbon::now()->year);
+      $defaultLocation = Auth::user()->authorization->location_id;
+      $employees = Employee::ActiveEmployee()->where('location_id',$defaultLocation)->get();
+      
+      return view('clock.view',compact('subheader','dates','locations','defaultLocation','employees'));
+    }
+    public function employeeClocksByDateRange(Request $r){
+      $endDate = Carbon::createFromFormat('Y-m-d',$r->endDate)->addDay()->toDateString();
+
+      if($r->employee != 'all'){
+        $clocks = Clock::where('employee_id',$r->employee)->whereBetween('clockIn',[$r->startDate,$endDate])->get();
+         foreach($clocks as $c){
+           $c->location;
+           }
+          
+      } else {
+        $clocks = Clock::where('location_id',$r->location)->whereBetween('clockIn',[$r->startDate,$endDate])->get();
+         foreach($clocks as $c){
+           $c->location;
+           $c->employee;
+           }
+          
+      }
+      return $clocks;
+      
     }
 
 }

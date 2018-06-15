@@ -253,8 +253,10 @@ Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@g
 
 //Clocks
 Route::get('/clocks','ClockController@shiftClocks');
+Route::get('/clocks/view','ClockController@viewClocks');
 
 Route::post('/clock/clocksByLocationDate','ClockController@clocksByLocationDate');
+Route::post('/clocks/employeeClocksByDateRange','ClockController@employeeClocksByDateRange');
 //Hours
 Route::get('/hours','HourController@index');
 Route::get('/hours/compute','HourController@compute');
