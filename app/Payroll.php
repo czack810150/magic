@@ -443,7 +443,8 @@ class Payroll extends Model
         $grossPayWithVacationPay = $twoWeekGrossPay->total + $vacationPay ; // vacation pay included for calculating deductibles
         $basicPay = Cra::payStub($grossPayWithVacationPay,null,null,26,$year,'ON',1);
         $variablePay = self::variablePay($hours+$cashHour,0,0,0,0,$nightRate,$nightHours,$performanceIndex,$bonus);
-        $cashPay = self::cashPay($cashHour,$rate);
+        $cashRate = $config->cashPay;
+        $cashPay = self::cashPay($cashHour,$cashRate);
 
         $kitchenPay = new MagicNoodlePay($twoWeekGrossPay,$basicPay,$variablePay,$cashPay);
 
