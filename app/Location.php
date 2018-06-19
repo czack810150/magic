@@ -37,6 +37,10 @@ class Location extends Model
     {
         return $this->hasMany('App\Leave');
     }
+    public function sales()
+    {
+        return $this->hasMany('App\Sale');
+    }
 
 
 }
