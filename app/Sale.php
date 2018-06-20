@@ -78,6 +78,8 @@ class Sale extends Model
     		$count = 0;
     		foreach($sales as $s)
     		{
+                if($s->itemCode != 'ZZ9900'){
+
 
     			switch($s->Location){
     				case 'Store1':
@@ -105,6 +107,7 @@ class Sale extends Model
     			]);
 
     			$count++;	
+                }
     		}
     		return $count;
     	} else {

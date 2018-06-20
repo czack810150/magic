@@ -10,50 +10,62 @@ use App\Employee_trace;
 use App\Location;
 use App\JobPromotion;
 use App\Shift;
+use App\Sale;
 use Carbon\Carbon;
+
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         if(Gate::allows('is-management')){
 
             if(Auth::user()->authorization->type == 'manager'){
-                $locations = Location::where('manager_id',Auth::user()->authorization->employee_id)->get();
+                return self::storeManager();
             } else { 
-                $locations = Location::store()->get();
+                return self::management();
             }            
             
-            $promotions = JobPromotion::get();
-
-            return view('dashboard.management.home',compact('locations','promotions'));
         } else {
             //check if this is location account
             if(Auth::user()->authorization->type == 'location'){
                 return redirect()->route('timeclock');
             } else 
             {
-                $employee = Employee::find(Auth::user()->authorization->employee_id);
-            $promotions = $employee->promotion;
-            $shifts = $employee->schedule->where('start','>=',Carbon::now()->toDateString())->sortBy('start');
-            return view('dashboard.employee.home',compact('promotions','shifts'));
+                return self::employee();
             }
         }
         
+    }
+    private function storeManager()
+    {
+        $locations = Location::where('manager_id',Auth::user()->authorization->employee_id)->get();
+        return view('dashboard.management.home',compact('locations','promotions'));
+    }
+    private function management()
+    {
+        $dt = Carbon::now();
+        $promotions = JobPromotion::get();
+        $locations = Location::store()->get();
+        $data['monthlyTotal'] = Sale::whereYear('from',$dt->year)->whereMonth('from',$dt->month)->where('location_id','!=',0)->sum('amount');
+
+        // $dt2 = Carbon::now()->startOfMonth();
+        // while($dt2->toDateString() != $dt->toDateString())
+        // {
+        //     $data['dailyTotal'] = array();
+        //     $sale = Sale::whereDate('from',$dt2->toDateString())->where('location_id','!=',0)->sum('amount');
+        //     array_push($data['dailyTotal'],$sale);
+        //     $dt2->addDay();
+        // }
+
+        return view('dashboard.management.home',compact('locations','promotions','data'));
+    }
+    private function employee()
+    {
+            $employee = Employee::find(Auth::user()->authorization->employee_id);
+            $promotions = $employee->promotion;
+            $shifts = $employee->schedule->where('start','>=',Carbon::now()->toDateString())->sortBy('start');
+            return view('dashboard.employee.home',compact('promotions','shifts'));
     }
 }

@@ -190,6 +190,9 @@ Route::get('/sales','SaleController@index');
 
 
 Route::middleware('auth')->group(function(){
+	// Home
+	Route::get('/home', 'HomeController@index')->name('home');
+
 	//Exams
 	Route::get('/exam','ExamController@index');
 	Route::get('/exam/all','ExamController@all');
@@ -232,6 +235,8 @@ Route::get('/exam/learn/{id}/mock','ExamTrainingController@show');
 Route::get('/exam/learn/{id}/destroy','ExamTrainingController@destroy');
 Route::post('/exam/learn/{id}/update','ExamTrainingController@update');
 Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
+
+
 }); // end of grouped auth
 
 Auth::routes();
@@ -241,7 +246,7 @@ Route::get('/users/new','UserController@create');
 Route::post('/users/save','UserController@store');
 Route::get('/email/{id}/confirm','EmailController@emailConfirm');
 
-Route::get('/home', 'HomeController@index')->name('home');
+
 
 //Filters
 Route::post('/employee/location','EmployeeController@employeesByLocation');

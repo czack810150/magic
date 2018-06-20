@@ -9,24 +9,17 @@
 
     <title>Magic Noodle Login</title>
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-
-    <!-- Custom styles for this template -->
-    <link href="{{ url('css/floating-labels.css')}}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
   </head>
 
   <body>
-  <div class="container">
-  <div class="row justify-content-md-center">
-    
-    <div class="col-md-auto">
-    <div class="text-center">
-        <img class="" src="{{ url('img/logo.png') }}" alt="logo" width="750">  
-    </div>
-    </div>
-    
-  </div>
+    <section class="section">
+       <div class="container">
+
+        <figure class="image">
+  <img src="{{ url('img/logo.png') }}" width="643" height="228">
+        </figure>
 
 
  
@@ -34,30 +27,31 @@
     <form class="form-signin" method="POST" action="{{ route('login') }}">
       {{ csrf_field() }}
      
-
-      <div class="form-label-group">
-        
-         <input class="form-control" type="email" placeholder="Email address" name="email" value="{{ old('email') }}" required id="inputEmail" autofocus>
-         <label for="inputEmail">Email address</label>
+      <div class="field">
+        <label for="inputEmail" class="label">Email address</label>
               @if ($errors->has('email'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>
                                 @endif
-
-
+        <div class="control">
+          <input class="input" type="email" placeholder="Email address" name="email" value="{{ old('email') }}" required id="inputEmail" autofocus>
+        </div>
       </div>
-
-      <div class="form-label-group">
+   
+      <div class="field">
+        <label for="inputPassword" class="label">Password</label>
+      <div class="control">
        
-        <input class="form-control" type="password" placeholder="Password" name="password" required id="inputPassword">
+        <input class="input" type="password" placeholder="Password" name="password" required id="inputPassword">
             @if ($errors->has('password'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
                                 @endif
-        <label for="inputPassword">Password</label>
+        
       </div>
+    </div>
 
       <div class="checkbox mb-3">
         <label>
@@ -69,5 +63,7 @@
       <p class="mt-5 mb-3 text-muted text-center">&copy; {{Carbon\Carbon::now()->year}} Magic Noodle</p>
     </form>
     </div>
+    </section>
+ 
   </body>
 </html>
