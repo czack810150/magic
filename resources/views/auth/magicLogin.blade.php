@@ -17,13 +17,19 @@
     <section class="section">
        <div class="container">
 
+<div class="columns">
+  <div class="column"></div>
+  <div class="column">
         <figure class="image">
   <img src="{{ url('img/logo.png') }}" width="643" height="228">
         </figure>
+  </div>
+  <div class="column"></div>
+</div>
 
-
- 
-
+<div class="columns">
+<div class="column"></div>
+  <div class="column">
     <form class="form-signin" method="POST" action="{{ route('login') }}">
       {{ csrf_field() }}
      
@@ -53,17 +59,28 @@
       </div>
     </div>
 
-      <div class="checkbox mb-3">
-        <label>
+     
+        <label class="checkbox">
           
           <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember me
         </label>
+      <div class=" has-text-centered">
+      <button class="button is-primary" type="submit">Sign in</button>
       </div>
-      <button class="btn btn-lg btn-success btn-block" type="submit">Sign in</button>
-      <p class="mt-5 mb-3 text-muted text-center">&copy; {{Carbon\Carbon::now()->year}} Magic Noodle</p>
     </form>
+  </div>
+  <div class="column"></div>
+</div>
     </div>
     </section>
+
+    <footer class="footer">
+  <div class="content has-text-centered">
+    <p>&copy; {{Carbon\Carbon::now()->year}} Magic Noodle
+      <strong>Powered</strong> by Hiro Su. 
+    </p>
+  </div>
+</footer>
  
   </body>
 </html>

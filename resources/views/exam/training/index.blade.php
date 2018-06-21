@@ -47,7 +47,11 @@
 	<td>{{$e->employee->name}}</td>
 	<td>{{$e->question->count()}}</td>
 	<td>{{$e->score}}</td>
+	@if($e->question->count())
 	<td>{{round($e->score/$e->question->count(),2)*100}}</td>
+	@else
+	<td></td>
+	@endif
 	<td>{{$e->created_at}}</td>
 	@if(is_null($e->score))
 	<th><a class="btn btn-primary btn-sm" href="{{url("exam/learn/$e->id/mock")}}">开始练习</a></th>

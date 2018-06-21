@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<section>
+<section id="root">
 <div class="m-portlet ">
 <div class="m-portlet__body  m-portlet__body--no-padding">
 <div class="row m-row--no-padding m-row--col-separator-xl">
@@ -10,13 +10,13 @@
                 <div class="m-widget24">                     
                     <div class="m-widget24__item">
                         <h4 class="m-widget24__title">
-                            Monthly Sale
+                            MagicBeefs
                         </h4><br>
                         <span class="m-widget24__desc">
-                            本月销售额
+                            传统牛肉面
                         </span>
                         <span class="m-widget24__stats m--font-success">
-                            ${{number_format($data['monthlyTotal'],0,'.',',')}}
+                            {{$data['magicBeefs']}}碗
                         </span>     
                         <div class="m--space-10"></div>
                         <div class="progress m-progress--sm">
@@ -55,7 +55,9 @@
                 </div>
             </div>
             <div class="m-portlet__body">
-              
+              <ul>
+                <li v-for="item in items" v-text="item.name"> </li>
+            </ul>
             </div>
     </div>
 </div>
@@ -413,5 +415,21 @@ function clearEmployeeTraceData(){
             $('#finishTrainingDate').val('');
             $('#trainingResult').val('');
 }
+
+var app = new Vue({
+    el: '#root',
+    data:{
+        items:[
+        @foreach($items as $i)
+        { 
+            id: {{$i->id}},
+            category: '{{$i->itemCategory_id}}',
+            name: '{{$i->name}}',
+        },
+        @endforeach
+        ],
+    }
+});
+
 </script>
 @endsection

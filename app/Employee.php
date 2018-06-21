@@ -99,7 +99,7 @@ class Employee extends Model
         $locations = Location::get();
         $result = array();
         foreach($locations as $l){
-            $result[$l->name]['totalHeadCount'] = $l->employee->count();
+            $result[$l->name]['totalHeadCount'] = Employee::where('location_id',$l->id)->ActiveAndVacationEmployees()->count();
             $result[$l->name]['totalActive'] = $l->employee->where('status','active')->count();
             $result[$l->name]['activeRate'] = $result[$l->name]['totalActive']/$result[$l->name]['totalHeadCount'];
         }
