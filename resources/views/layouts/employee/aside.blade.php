@@ -247,7 +247,6 @@
 								</a>
 							</li>
 							@endcan
-							
 							<!-- MY VOICE -->
 							<li class="m-menu__item m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
 								<a href="#" class="m-menu__link m-menu__toggle">

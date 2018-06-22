@@ -19,11 +19,11 @@
 											<span class="m-menu__link-text">
 												Dashboard
 											</span>
-											<span class="m-menu__link-badge">
+											<!-- <span class="m-menu__link-badge">
 												<span class="m-badge m-badge--danger">
 													2
 												</span>
-											</span>
+											</span> -->
 										</span>
 									</span>
 								</a>
@@ -472,6 +472,21 @@
 								</a>
 							</li>
 							@endcan
+							@can('is-admin')
+							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+								<a  href="{{ route('products') }}" class="m-menu__link ">
+									<i class="m-menu__link-icon flaticon-up-arrow"></i>
+									<span class="m-menu__link-title">
+										<span class="m-menu__link-wrap">
+											<span class="m-menu__link-text">
+												Products
+											</span>
+											
+										</span>
+									</span>
+								</a>
+							</li>
+							@endcan
 
 
 							<!-- MY VOICE -->
@@ -557,7 +572,7 @@
 							</li>
 
 							@endcan
-							@if( Auth::user()->authorization->type == 'admin' )
+							@if( 'is-admin' )
 							
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">

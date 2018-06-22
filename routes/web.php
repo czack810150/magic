@@ -14,7 +14,7 @@
 // 	App::setLocale($locale);
 // });
 Route::middleware('auth')->group(function(){
-	Route::get('/scheduler','ScheduleController@index');
+	Route::get('/scheduler','ScheduleController@index')->name('home');
 Route::get('/scheduler/{location}/','ScheduleController@index');
 Route::post('/sr/get','ShiftController@getResourcesByLocation');
 Route::post('/shift/{id}/update','ShiftController@update');
@@ -235,6 +235,10 @@ Route::get('/exam/learn/{id}/mock','ExamTrainingController@show');
 Route::get('/exam/learn/{id}/destroy','ExamTrainingController@destroy');
 Route::post('/exam/learn/{id}/update','ExamTrainingController@update');
 Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
+
+	// Products
+	Route::get('/products','ProductController@index')->name('products');
+	Route::post('product/{id}/update','ProductController@update');
 
 
 }); // end of grouped auth
