@@ -59,7 +59,125 @@ Route::post('/employee/hireApplicant','EmployeeController@hireApplicant');
 Route::post('/applicant/updateStatus','ApplicantController@update');
 
 
-//EMPLOYEE
+
+
+//file upload
+Route::post('/file/employee/{id}/picture','FileUploadController@profilePictureUpload');
+
+// HR
+Route::get('/hr','HrController@index');
+Route::post('/hr/employee/trace','EmployeeTraceController@trace');
+Route::post('/hr/employee/trace/update','EmployeeTraceController@update');
+Route::get('/team/location','HrController@team');
+
+Route::post('/team/chart','HrController@teamChart');
+//Team
+Route::get('/team/taskforce','TeamController@index');
+Route::get('/team/taskforce/create','TeamController@create');
+Route::post('/team/taskforce/create','TeamController@store');
+Route::get('/team/taskforce/{id}/view','TeamController@show');
+Route::get('/team/taskforce/{id}/destroy','TeamController@destroy');
+Route::post('/team/taskforce/addMember','TeamController@addMember');
+Route::post('/team/taskforce/{id}/update','TeamController@update');
+//score
+Route::get('/score/category','ScoreCategoryController@index');
+Route::get('/score/category/create','ScoreCategoryController@create');
+Route::post('/score/category/create','ScoreCategoryController@store');
+Route::get('/score/category/{id}/show','ScoreCategoryController@show');
+Route::get('/score/category/{id}/delete','ScoreCategoryController@destroy');
+Route::get('/score/category/{id}/edit','ScoreCategoryController@edit');
+Route::post('/score/category/{id}/update','ScoreCategoryController@update');
+Route::get('/score/item','ScoreItemController@index');
+Route::get('/score/item/create','ScoreItemController@create');
+Route::post('/score/item/store','ScoreItemController@store');
+Route::get('/score/item/{id}/delete','ScoreItemController@destroy');
+Route::get('/score/item/{id}/edit','ScoreItemController@edit');
+Route::post('/score/item/{id}/update','ScoreItemController@update');
+Route::post('/score/item/getItemsByCategory','ScoreItemController@getItemsByCategory');
+Route::get('/api/newShift',function(){
+	return 'API';
+});
+Route::post('/api/newShift','ShiftController@apiCreate');
+Route::post('/api/employee/{id}','EmployeeController@apiGet');
+Route::post('/api/employeeBylocation','EmployeeController@location');
+
+// time clock
+Route::get('/timeclock','ClockController@index')->name('timeclock')->middleware('auth');
+Route::get('/timeclock/in','ClockController@in')->middleware('auth');
+Route::get('/timeclock/out','ClockController@out')->middleware('auth');
+Route::post('/timeclock/in','ClockController@clockIn')->middleware('auth');
+Route::post('/timeclock/out','ClockController@clockOut')->middleware('auth');
+Route::get('/timeclock/inshift','ClockController@inShift');
+Route::post('/clock/edit','ClockController@show');
+Route::post('/clock/update','ClockController@update');
+Route::post('/clock/add','ClockController@store');
+Route::post('/clock/{id}/delete','ClockController@destroy');
+Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
+
+
+
+
+
+
+
+Route::middleware('auth')->group(function(){
+	// Home
+	Route::get('/home', 'HomeController@index')->name('home');
+
+	//Exams
+	Route::get('/exam','ExamController@index');
+	Route::get('/exam/all','ExamController@all');
+Route::get('/exam/create','ExamController@create');
+Route::post('/exam/store','ExamController@store');
+Route::get('/exam/{exam}/delete','ExamController@destroy');
+Route::get('/exam/{exam}/show','ExamController@show');
+
+Route::get('/exam/{access}/take','ExamController@take');
+Route::post('/exam/attempt','ExamController@attempt');
+Route::post('/question/get','QuestionController@get');
+Route::post('/exam/submission','ExamController@submitExam');
+Route::get('/exam/attemptedExams','ExamController@attemptedExams');
+Route::get('/exam/{id}/mark','ExamController@mark');
+Route::get('/my_exam','ExamController@my');
+// Exam Templates
+Route::get('/exam_templates/','Exam_templateController@index');
+Route::get('/exam_templates/{id}/show','Exam_templateController@show');
+Route::get('/exam_templates/{id}/remove','Exam_templateController@destroy');
+Route::post('/exam_templates/store','Exam_templateController@store');
+Route::get('/question_category/create','QuestionController@newCategory');
+Route::post('/question_category/store','QuestionController@saveCategory');
+Route::get('/question_category/{category}/delete','QuestionController@removeCategory');
+Route::get('/question_category/{id}','QuestionController@showCategoryQuestions');
+
+Route::get('/question','QuestionController@index');
+Route::get('/question/{question}/show','QuestionController@show');
+Route::get('/question/{question}/edit','QuestionController@edit');
+Route::post('/question/{question}/update','QuestionController@update');
+Route::get('/question/{question}/delete','QuestionController@destroy');
+Route::get('/question/create','QuestionController@create');
+Route::post('/question/create','QuestionController@store');
+Route::post('/question/createShortAnswer','QuestionController@storeShortAnswer');
+Route::post('/question/categoryQuestions','QuestionController@questionsByCategory');
+// test training
+Route::get('/exam/learn','ExamTrainingController@index');
+Route::get('/exam/learn/create','ExamTrainingController@create');
+Route::post('/exam/learn/store','ExamTrainingController@store');
+Route::get('/exam/learn/{id}/mock','ExamTrainingController@show');
+Route::get('/exam/learn/{id}/destroy','ExamTrainingController@destroy');
+Route::post('/exam/learn/{id}/update','ExamTrainingController@update');
+Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
+
+	// Products
+	Route::get('/products','ProductController@index')->name('products');
+	Route::post('product/{id}/update','ProductController@update');
+	Route::post('/product/category/get','ProductController@getProductByCategory');
+
+	//Sales
+	Route::get('/sales','SaleController@index');
+	Route::post('/sales/item','SaleController@itemSales');
+
+
+	//EMPLOYEE
 
 Route::post('/employee/store','EmployeeController@store');
 Route::post('/filter/employee/list','EmployeeController@filterEmployees');
@@ -129,119 +247,8 @@ Route::get('/training/my','EmployeeUserController@training');
 // employee timeoff
 Route::post('/employee/timeoff/{id}/show','EmployeeController@showTimeoff');
 
-//file upload
-Route::post('/file/employee/{id}/picture','FileUploadController@profilePictureUpload');
 
-// HR
-Route::get('/hr','HrController@index');
-Route::post('/hr/employee/trace','EmployeeTraceController@trace');
-Route::post('/hr/employee/trace/update','EmployeeTraceController@update');
-Route::get('/team/location','HrController@team');
-
-Route::post('/team/chart','HrController@teamChart');
-//Team
-Route::get('/team/taskforce','TeamController@index');
-Route::get('/team/taskforce/create','TeamController@create');
-Route::post('/team/taskforce/create','TeamController@store');
-Route::get('/team/taskforce/{id}/view','TeamController@show');
-Route::get('/team/taskforce/{id}/destroy','TeamController@destroy');
-Route::post('/team/taskforce/addMember','TeamController@addMember');
-Route::post('/team/taskforce/{id}/update','TeamController@update');
-//score
-Route::get('/score/category','ScoreCategoryController@index');
-Route::get('/score/category/create','ScoreCategoryController@create');
-Route::post('/score/category/create','ScoreCategoryController@store');
-Route::get('/score/category/{id}/show','ScoreCategoryController@show');
-Route::get('/score/category/{id}/delete','ScoreCategoryController@destroy');
-Route::get('/score/category/{id}/edit','ScoreCategoryController@edit');
-Route::post('/score/category/{id}/update','ScoreCategoryController@update');
-Route::get('/score/item','ScoreItemController@index');
-Route::get('/score/item/create','ScoreItemController@create');
-Route::post('/score/item/store','ScoreItemController@store');
-Route::get('/score/item/{id}/delete','ScoreItemController@destroy');
-Route::get('/score/item/{id}/edit','ScoreItemController@edit');
-Route::post('/score/item/{id}/update','ScoreItemController@update');
-Route::post('/score/item/getItemsByCategory','ScoreItemController@getItemsByCategory');
-Route::get('/api/newShift',function(){
-	return 'API';
-});
-Route::post('/api/newShift','ShiftController@apiCreate');
-Route::post('/api/employee/{id}','EmployeeController@apiGet');
-Route::post('/api/employeeBylocation','EmployeeController@location');
-
-// time clock
-Route::get('/timeclock','ClockController@index')->name('timeclock')->middleware('auth');
-Route::get('/timeclock/in','ClockController@in')->middleware('auth');
-Route::get('/timeclock/out','ClockController@out')->middleware('auth');
-Route::post('/timeclock/in','ClockController@clockIn')->middleware('auth');
-Route::post('/timeclock/out','ClockController@clockOut')->middleware('auth');
-Route::get('/timeclock/inshift','ClockController@inShift');
-Route::post('/clock/edit','ClockController@show');
-Route::post('/clock/update','ClockController@update');
-Route::post('/clock/add','ClockController@store');
-Route::post('/clock/{id}/delete','ClockController@destroy');
-Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
-
-
-//Sales
-Route::get('/sales','SaleController@index');
-
-
-
-
-Route::middleware('auth')->group(function(){
-	// Home
-	Route::get('/home', 'HomeController@index')->name('home');
-
-	//Exams
-	Route::get('/exam','ExamController@index');
-	Route::get('/exam/all','ExamController@all');
-Route::get('/exam/create','ExamController@create');
-Route::post('/exam/store','ExamController@store');
-Route::get('/exam/{exam}/delete','ExamController@destroy');
-Route::get('/exam/{exam}/show','ExamController@show');
-
-Route::get('/exam/{access}/take','ExamController@take');
-Route::post('/exam/attempt','ExamController@attempt');
-Route::post('/question/get','QuestionController@get');
-Route::post('/exam/submission','ExamController@submitExam');
-Route::get('/exam/attemptedExams','ExamController@attemptedExams');
-Route::get('/exam/{id}/mark','ExamController@mark');
-Route::get('/my_exam','ExamController@my');
-// Exam Templates
-Route::get('/exam_templates/','Exam_templateController@index');
-Route::get('/exam_templates/{id}/show','Exam_templateController@show');
-Route::get('/exam_templates/{id}/remove','Exam_templateController@destroy');
-Route::post('/exam_templates/store','Exam_templateController@store');
-Route::get('/question_category/create','QuestionController@newCategory');
-Route::post('/question_category/store','QuestionController@saveCategory');
-Route::get('/question_category/{category}/delete','QuestionController@removeCategory');
-Route::get('/question_category/{id}','QuestionController@showCategoryQuestions');
-
-Route::get('/question','QuestionController@index');
-Route::get('/question/{question}/show','QuestionController@show');
-Route::get('/question/{question}/edit','QuestionController@edit');
-Route::post('/question/{question}/update','QuestionController@update');
-Route::get('/question/{question}/delete','QuestionController@destroy');
-Route::get('/question/create','QuestionController@create');
-Route::post('/question/create','QuestionController@store');
-Route::post('/question/createShortAnswer','QuestionController@storeShortAnswer');
-Route::post('/question/categoryQuestions','QuestionController@questionsByCategory');
-// test training
-Route::get('/exam/learn','ExamTrainingController@index');
-Route::get('/exam/learn/create','ExamTrainingController@create');
-Route::post('/exam/learn/store','ExamTrainingController@store');
-Route::get('/exam/learn/{id}/mock','ExamTrainingController@show');
-Route::get('/exam/learn/{id}/destroy','ExamTrainingController@destroy');
-Route::post('/exam/learn/{id}/update','ExamTrainingController@update');
-Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
-
-	// Products
-	Route::get('/products','ProductController@index')->name('products');
-	Route::post('product/{id}/update','ProductController@update');
-
-
-}); // end of grouped auth
+								}); // end of grouped auth
 
 Auth::routes();
 //Users

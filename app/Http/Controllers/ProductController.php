@@ -84,4 +84,9 @@ class ProductController extends Controller
     {
         //
     }
+    public function getProductByCategory(Request $r)
+    {
+        $category = ItemCategory::find($r->category);
+        return $category->items;
+    }
 }

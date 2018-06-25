@@ -1,68 +1,72 @@
 @extends('layouts.master')
 @section('content')
 <!--begin::Portlet-->
-								<div class="m-portlet">
-									<div class="m-portlet__head">
-										<div class="m-portlet__head-caption">
-											<div class="m-portlet__head-title">
-												<span class="m-portlet__head-icon">
-													<i class="flaticon-users"></i>
-												</span>
-												<h3 class="m-portlet__head-text">
-													View and manage your staff. Click on any employee name to go to their profile.
-												</h3>
-											</div>
-										</div>
-										<div class="m-portlet__head-tools">
-											<ul class="m-portlet__nav">
-												@can('create-employee')
-												<li class="m-portlet__nav-item">
-													<button type="button" class="btn btn-success"
-													data-toggle="modal" data-target="#create-user"
-													>Create User</button>
-												</li>
-												@endcan
-											</ul>
-										</div>
-									</div>
+<div class="m-portlet" id="root">
+	<div class="m-portlet__head">
+		<div class="m-portlet__head-caption">
+			<div class="m-portlet__head-title">
+				<span class="m-portlet__head-icon">
+					<i class="flaticon-users"></i>
+				</span>
+				<h3 class="m-portlet__head-text">
+					View and manage your staff. Click on any employee name to go to their profile.
+				</h3>
+			</div>
+		</div>
+		<div class="m-portlet__head-tools">
+			<ul class="m-portlet__nav">
+				@can('create-employee')
+				<li class="m-portlet__nav-item">
+					<button type="button" class="btn btn-success"
+					data-toggle="modal" data-target="#create-user"
+					>Create User</button>
+				</li>
+				@endcan
+			</ul>
+		</div>
+	</div>
 
 <!--begin::Form-->
-									<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
-										<div class="m-portlet__body">
-											<div class="form-group m-form__group row">
-												<div class="col-lg-4">
-													<div class="form-group m-form__group">
-													{{ Form::select('location',$locations,-1,['class'=>'custom-select m-input','id'=>'locationSelect'])}}
-												</div>
-													
-												</div>
-												<div class="col-lg-4">
-													<div class="form-group m-form__group">
-													{{ Form::select('status',$status,'active',['class'=>'custom-select m-input','id'=>'statusSelect'])}}
-												</div>
-													
-												</div>
-												<div class="col-lg-4">
-													
-													<div class="form-group m-form__group">
-														
-														<div class="m-input-icon m-input-icon--left">
-														<input type="text" class="form-control m-input" placeholder="Search" id="employeeSearch">
-														<span class="m-input-icon__icon m-input-icon__icon--left">
-														<span>
-															<i class="la la-user"></i>
-														</span>
-														</span>
-														</div>
-													</div>
-												
-												</div>
-											</div>
-											
-										</div>
-										
-									</form>
-									<!--end::Form-->
+	<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
+		<div class="m-portlet__body">
+			<div class="form-group m-form__group row">
+				<div class="col-lg-3">
+					<div class="form-group m-form__group">
+					{{ Form::select('location',$locations,-1,['class'=>'custom-select m-input','v-on:click'=>'locationSelect','v-model'=>'selectedLocation'])}}
+				</div>
+					
+				</div>
+				<div class="col-lg-3">
+					<div class="form-group m-form__group">
+					{{ Form::select('status',$status,'active',['class'=>'custom-select m-input','@change'=>'statusSelect','v-model'=>'selectedStatus'])}}
+				</div>
+				</div>
+				<div class="col-lg-3">
+					<div class="form-group m-form__group">
+					{{ Form::select('job_group',$groups,'all',['class'=>'custom-select m-input','@change'=>'groupSelect','v-model'=>'selectedGroup'])}}
+					</div>
+				</div>
+				<div class="col-lg-3">
+					
+					<div class="form-group m-form__group">
+						
+						<div class="m-input-icon m-input-icon--left">
+						<input type="text" class="form-control m-input" placeholder="Search" id="employeeSearch">
+						<span class="m-input-icon__icon m-input-icon__icon--left">
+						<span>
+							<i class="la la-user"></i>
+						</span>
+						</span>
+						</div>
+					</div>
+				
+				</div>
+			</div>
+			
+		</div>
+		
+	</form>
+<!--end::Form-->
 
 <div class="m-portlet__body" id="staffList">
 
@@ -75,21 +79,19 @@
 		</tr>
 	</thead>
 	<tbody>
-@foreach($employees as $e)
 
-<tr onclick="viewEmployee('{{ $e->id }}')">
-	<td>{{$e->cName}}<br>{{$e->employeeNumber}}<br>{{$e->job->rank}}</td>
-	@if(isset($e->authorization->user->name))
-	<td>{{ $e->authorization->user->name }}</td>
-	<td>{{ $e->authorization->type }}</td>
-	@else
-	<td></td>
-	<td></td>
-	@endif
-	<td>{{$e->hired->toFormattedDateString()}}</td>
+
+<tr v-for="employee in employees" @click="viewEmployee(employee.id)">
+	<td>@{{employee.name}} @{{employee.alias}}<br>@{{employee.employeeNumber}}<br>@{{employee.job_title}}</td>
+	
+	<td>@{{ employee.username }}</td>
+	<td>@{{ employee.job_group }}</td>
+	
+	
+	<td>@{{ employee.hired_date}}  <span class="m--font-danger">@{{employee.termination_date}}</span></td>
 </tr>
 
-@endforeach
+
 	</tbody>
 </table>
 
@@ -202,15 +204,8 @@
 		format:'yyyy-mm-dd',
 	});
 
-		function viewEmployee(employee){
-		window.location.href='/staff/profile/' + employee + '/show';
-	}
-	$('#locationSelect').on('change',function(){
-		filterEmployees();
-	});
-	$('#statusSelect').on('change',function(){
-		filterEmployees();
-	});
+	
+	
 
 function filterEmployees(){
 	$.post(
@@ -251,6 +246,63 @@ function searchEmployee(str)
 			}
 			);
 }
+
+
+
+var app = new Vue({
+	el:'#root',
+	data:{
+		token:'{{csrf_token()}}',
+		selectedLocation:-1,
+		selectedStatus:'active',
+		selectedGroup:'%',
+		employees: [
+			@foreach($employees as $e)
+			{
+				id: {{$e->id}},
+				name: '{{$e->name}}',
+				alias: '{{$e->employee_profile->alias}}',
+				job_title: '{{$e->job->rank}}',
+				employeeNumber: '{{$e->employeeNumber}}',
+				job_group: '{{$e->job_group}}',
+				@if(isset($e->authorization->user->name))
+				username:'{{ $e->authorization->user->name }}',
+				type:'{{ $e->authorization->type }}',
+				@endif
+				hired_date: '{{$e->hired->toFormattedDateString()}}',
+				termination_date: '{{$e->termination}}',
+			},
+			@endforeach
+		]
+	},
+	methods:{
+		viewEmployee: function (employee){
+		window.location.href='/staff/profile/' + employee + '/show';
+		},
+		locationSelect(){
+			
+			this.filterEmployees();
+		},
+		statusSelect(){
+			
+			this.filterEmployees();
+		},
+		groupSelect(){
+			
+			this.filterEmployees();
+		},
+		filterEmployees(){
+			axios.post('/filter/employee/list',{
+				_token: this.token,
+				location: this.selectedLocation,
+				status: this.selectedStatus,
+				group: this.selectedGroup,
+			}).then(function(response){
+				app.employees = response.data;
+			})
+		}
+	}
+})
 
 </script>
 @endsection

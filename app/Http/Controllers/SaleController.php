@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Sale;
 use App\Location;
+use App\Item;
 use Carbon\Carbon;
 
 class SaleController extends Controller
@@ -18,5 +19,11 @@ class SaleController extends Controller
 
     	$sales = Sale::salesBreakDown($now->toDateString(),$now->addDay()->toDateString());
     	return view('sales.index',compact('locations'));
+    }
+    public function itemSales(Request $r)
+    {
+    	$item = Item::find($r->item);
+    	$sales = Sale::where('location_id',$r->location)->where('itemCode',$item->itemCode)->whereDate('from',$r->date)->get();
+    	return $sales;
     }
 }

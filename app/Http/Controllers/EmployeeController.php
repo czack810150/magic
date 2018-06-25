@@ -27,15 +27,15 @@ use App\Events\EmployeeAdded;
 class EmployeeController extends Controller
 {
     
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    
     public function index()
     {
         $subheader = 'Staff Directory';
         if(Gate::allows('view-allEmployee')){
-        $employees = Employee::get();
+        $employees = Employee::activeEmployee()->get();
+
+           
+
         $locations = Location::pluck('name','id');
         $employeeLocations = Location::pluck('name','id');
         $locations[-1] = 'All Locations';
@@ -44,8 +44,15 @@ class EmployeeController extends Controller
             'vacation' => 'On vacation only',
             'terminated' => 'Terminated staffs',
         ); 
+        $groups = array(
+            '%' => 'All Roles',
+            'trial' => '试用期',
+            'employee' => 'Employee',
+            'supervisor' => 'Supervisor',
+            'manager' => 'Manager',
+        );
         $jobs = Job::where('trial',1)->pluck('rank','id');
-        return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations'));
+        return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations','groups'));
 
         } else if(Auth::user()->authorization->type == 'manager'){
 
@@ -80,12 +87,30 @@ class EmployeeController extends Controller
     {
 
         if($r->location != -1){
-            $employees = Employee::where('location_id',$r->location)->where('status',$r->status)->get();
+            $employees = Employee::where('location_id',$r->location)->where('status',$r->status)->where('job_group','like',$r->group)->get();
         } else {
-             $employees = Employee::where('status',$r->status)->get();
+             $employees = Employee::where('status',$r->status)->where('job_group','like',$r->group)->get();
         }
-        
-        return View::make('employee.list',compact('employees'))->render();
+        foreach($employees as $e)
+        {
+            $e->job_title = $e->job->rank;
+           
+            $e->hired_date = $e->hired->toFormattedDateString();
+            if($e->termination)
+            $e->termination_date = $e->termination->toFormattedDateString();
+            if($e->employee_profile){
+                 $e->alias = $e->employee_profile->alias;
+            }
+            if($e->authorization){
+                if($e->authorization->user){
+                    $e->username = $e->authorization->user->name;
+                }
+                
+                $e->type = $e->authorization->type;
+            }
+            
+        } 
+        return $employees;
     }
 
     /**

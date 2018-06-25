@@ -12,6 +12,7 @@ use App\JobPromotion;
 use App\Shift;
 use App\Sale;
 use App\Item;
+use App\ItemCategory;
 use Carbon\Carbon;
 
 
@@ -51,6 +52,7 @@ class HomeController extends Controller
         $locations = Location::store()->get();
         $data['magicBeefs'] = Sale::whereYear('from',$dt->year)->whereMonth('from',$dt->month)->where('location_id','!=',0)->where('itemCode','S01001')->sum('qty');
         $items = Item::menuItems()->get();
+        $categories = ItemCategory::get();
         // $dt2 = Carbon::now()->startOfMonth();
         // while($dt2->toDateString() != $dt->toDateString())
         // {
@@ -60,7 +62,7 @@ class HomeController extends Controller
         //     $dt2->addDay();
         // }
 
-        return view('dashboard.management.home',compact('locations','promotions','data','items'));
+        return view('dashboard.management.home',compact('locations','promotions','data','items','categories'));
     }
     private function employee()
     {

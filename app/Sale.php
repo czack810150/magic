@@ -47,8 +47,8 @@ class Sale extends Model
     	$body = [
     	 "user" => "Dashboard", 
     	 "pswd" => "cXZ278c95j9c8gU",  
-    	 "DateFrom" => $from, 
-    	 "DateTo"=> $to 
+    	 "DateTimeFrom" => $from, 
+    	 "DateTimeTo"=> $to 
     	];
     	return $client->request('POST',$link,['headers' => $headers, 'body' => json_encode($body)]);
 
@@ -78,7 +78,7 @@ class Sale extends Model
     		$count = 0;
     		foreach($sales as $s)
     		{
-                if($s->itemCode != 'ZZ9900'){
+                if(isset($s->ItemCode) && $s->ItemCode != 'ZZ9900'){
 
 
     			switch($s->Location){

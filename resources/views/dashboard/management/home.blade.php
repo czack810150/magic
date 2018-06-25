@@ -39,7 +39,7 @@
 
 <div class="row">
    
-    <div class="col-8">
+    <div class="col-12">
 <!--begin::Portlet Promotions-->
         <div class="m-portlet">
             <div class="m-portlet__head">
@@ -51,13 +51,46 @@
                         <h3 class="m-portlet__head-text">
                             Sales <small>销售情况</small>
                         </h3>
-                    </div>          
+                    </div>
                 </div>
+                    <div class="m-portlet__head-tools">
+                        <ul class="m-portlet__nav">
+                            <li class="m-portlet__nav-item">
+                        <select class="custom-select" v-model="selectedLocation" @change="locationSelected">
+                            <option v-for="location in locations" v-bind:value="location.id" v-text="location.name"></option>
+                        </select>
+                            </li>
+                            <li class="m-portlet__nav-item">
+                                <select class="custom-select" v-model="selectedCategory" @change="categorySelected">
+                                    <option v-for="category in categories" v-bind:value="category.id" v-text="category.name"></option>
+                                </select>
+                            </li>
+                             <li class="m-portlet__nav-item">
+                                <select class="custom-select" v-model="selectedItem" @change="itemSelected">
+                                    <option v-for="item in items" v-bind:value="item.id" v-text="item.name"></option>
+                                </select>
+                            </li>
+                            <li class="m-portlet__nav-item">
+                                <input type="text" name="datepicker" id="datepicker" class="form-control m-input m-input--solid" placeholder="Pick a date">
+                            </li>
+                        </ul>
+                  
+                </div>          
+            
             </div>
             <div class="m-portlet__body">
-              <ul>
-                <li v-for="item in items" v-text="item.name"> </li>
-            </ul>
+              <table class="table">
+                <thead>
+                    <tr><th>from</th><th>to</th><th>qty sold</th></tr>
+                </thead>
+                <tbody>
+                <tr v-for="sale in sales">
+                    <td>@{{sale.from}}</td>
+                    <td>@{{sale.to}}</td>
+                    <td>@{{sale.qty}}</td>
+                </tr>
+                </tbody>
+            </table>
             </div>
     </div>
 </div>
@@ -65,10 +98,6 @@
 
 
 </section>
-
-
-
-
 
 
 <div class="row">
@@ -419,15 +448,98 @@ function clearEmployeeTraceData(){
 var app = new Vue({
     el: '#root',
     data:{
+        token:'{{csrf_token()}}',
+        selectedLocation : 999,
+        selectedCategory:999,
+        selectedItem:null,
+        selectedDate:'',
+        sales:[],
         items:[
         @foreach($items as $i)
         { 
             id: {{$i->id}},
             category: '{{$i->itemCategory_id}}',
             name: '{{$i->name}}',
+            price: '{{$i->price}}',
         },
         @endforeach
         ],
+        locations: [
+        {
+            id:999,
+            'name':'Choose Location'
+        },
+        @foreach($locations as $location)
+        { 
+            id: {{$location->id}},
+            name: '{{$location->name}}',
+        },
+        @endforeach
+        ],
+        categories: [
+        {
+            id:999,
+            name:'Choose Category'
+        },
+        @foreach($categories as $category)
+        { 
+            id: {{$category->id}},
+            name: '{{$category->cName}}',
+        },
+        @endforeach
+        ]
+    },
+    methods:{
+        locationSelected(){
+            if(this.selectedItem != null && this.selectedDate != ''){
+                this.getSalesData();
+            }
+            
+        },
+        categorySelected(){
+            this.getItems();
+        },
+        itemSelected(){
+            this.getSalesData();
+        },
+        getItems(){
+            axios.post('/product/category/get',{
+                _token:this.token,
+                category:this.selectedCategory
+            }).then(function(response){
+                app.items = response.data;
+            })
+        },
+        getSalesData(){
+            axios.post('/sales/item',{
+                _token:this.token,
+                item:this.selectedItem,
+                date:this.selectedDate,
+                location:this.selectedLocation
+            }).then(function(response){
+               
+                app.sales = response.data;
+            })
+        }
+    },
+    mounted(){
+       
+        $('#datepicker').daterangepicker({
+            singleDatePicker:true,
+            minYear:2018,
+            maxYear:moment().format('YYYY'),
+            startDate: moment().subtract(1,'days').format('YYYY-MM-DD'),
+            locale: {
+                format:'YYYY-MM-DD'
+                    }
+        });
+$('#datepicker').on('apply.daterangepicker',function(ev,picker){
+   
+    app.selectedDate = picker.startDate.format('YYYY-MM-DD');
+    app.getSalesData();
+});
+var drp = $('#datepicker').data('daterangepicker');
+        this.selectedDate = drp.startDate.format('YYYY-MM-DD');
     }
 });
 
