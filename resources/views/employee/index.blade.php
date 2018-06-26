@@ -51,7 +51,7 @@
 					<div class="form-group m-form__group">
 						
 						<div class="m-input-icon m-input-icon--left">
-						<input type="text" class="form-control m-input" placeholder="Search" id="employeeSearch">
+						<input type="text" class="form-control m-input" placeholder="Search" v-on:keyup="searchEmployee" v-model="searchString">
 						<span class="m-input-icon__icon m-input-icon__icon--left">
 						<span>
 							<i class="la la-user"></i>
@@ -90,14 +90,12 @@
 	
 	<td>@{{ employee.hired_date}}  <span class="m--font-danger">@{{employee.termination_date}}</span></td>
 </tr>
-
-
 	</tbody>
 </table>
 
-									</div>
-								</div>
-								<!--end::Portlet-->
+	</div>
+</div>
+<!--end::Portlet-->
 
 
 
@@ -200,58 +198,10 @@
 
 <script>
 
-	$('#hireDate').datepicker({
-		format:'yyyy-mm-dd',
-	});
-
-	
-	
-
-function filterEmployees(){
-	$.post(
-			'/filter/employee/list',
-			{
-				_token: '{{ csrf_token() }}',
-				location: $('#locationSelect').val(),
-				status: $('#statusSelect').val(),
-			},
-			function(data,status){
-				if(status == 'success'){
-					$('#staffList').html(data);
-				}
-			}
-			);
-}
-
-var employeeSearch = document.getElementById('employeeSearch');
-employeeSearch.addEventListener('keyup',function(){
-searchEmployee($('#employeeSearch').val());
-
-},false);
-
-function searchEmployee(str)
-{
-	$.post(
-			'/employee/search',
-			{
-				_token: '{{ csrf_token() }}',
-				location: $('#locationSelect').val(),
-				status: $('#statusSelect').val(),
-				searchStr: str,
-			},
-			function(data,status){
-				if(status == 'success'){
-					$('#staffList').html(data);
-				}
-			}
-			);
-}
-
-
-
 var app = new Vue({
 	el:'#root',
 	data:{
+		searchString:'',
 		token:'{{csrf_token()}}',
 		selectedLocation:-1,
 		selectedStatus:'active',
@@ -297,6 +247,16 @@ var app = new Vue({
 				location: this.selectedLocation,
 				status: this.selectedStatus,
 				group: this.selectedGroup,
+			}).then(function(response){
+				app.employees = response.data;
+			})
+		},
+		searchEmployee(){
+			axios.post('/employee/search',{
+				_token: this.token,
+				location: this.selectedLocation,
+				status: this.selectedStatus,
+				searchStr: this.searchString,
 			}).then(function(response){
 				app.employees = response.data;
 			})

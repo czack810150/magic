@@ -1,6 +1,21 @@
 @extends('layouts.master')
 
 @section('content')
+
+<ul class="nav nav-tabs m-tabs-line m-tabs-line--2x m-tabs-line--success" role="tablist">
+                    <li class="nav-item m-tabs__item">
+                        <a class="nav-link m-tabs__link active" data-toggle="tab" href="#sales_tab" role="tab">SALES</a>
+                    </li>
+                   
+                    <li class="nav-item m-tabs__item">
+                        <a class="nav-link m-tabs__link" data-toggle="tab" href="#new_employees_tab" role="tab">NEW EMPLOYEES</a>
+                    </li>
+                    <li class="nav-item m-tabs__item">
+                        <a class="nav-link m-tabs__link" data-toggle="tab" href="#promotions_tab" role="tab">PROMOTIONS</a>
+                    </li>
+                </ul>                        
+                <div class="tab-content">
+                    <div class="tab-pane active" id="sales_tab" role="tabpanel">
 <section id="root">
 <div class="m-portlet ">
 <div class="m-portlet__body  m-portlet__body--no-padding">
@@ -94,12 +109,9 @@
             </div>
     </div>
 </div>
-
-
-
 </section>
-
-
+                    </div>
+                    <div class="tab-pane" id="promotions_tab" role="tabpanel">
 <div class="row">
     @if(count($promotions))
     <div class="col-8">
@@ -170,11 +182,8 @@
 </div>
 @endif
 </div>
-   
-
-
-
-
+                    </div>
+                    <div class="tab-pane" id="new_employees_tab" role="tabpanel">
 <!--begin::Portlet-->
         <div class="m-portlet">
             <div class="m-portlet__head">
@@ -284,6 +293,20 @@
           
         </div>  
         <!--end::Portlet-->
+                    </div>
+                </div>
+
+
+
+
+
+
+   
+
+
+
+
+
 
 
 

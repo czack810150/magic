@@ -885,7 +885,7 @@ class EmployeeController extends Controller
              orWhere('employeeNumber','like',$r->searchStr.'%');
             })->get();
         }
-        return View::make('employee.list',compact('employees'))->render();
+        return $employees;
      }
 
 }
