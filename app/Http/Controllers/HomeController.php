@@ -43,7 +43,12 @@ class HomeController extends Controller
     private function storeManager()
     {
         $locations = Location::where('manager_id',Auth::user()->authorization->employee_id)->get();
-        return view('dashboard.management.home',compact('locations','promotions'));
+        $dt = Carbon::now();
+        $promotions = JobPromotion::get();
+        $data['magicBeefs'] = Sale::whereYear('from',$dt->year)->whereMonth('from',$dt->month)->where('location_id','!=',0)->where('itemCode','S01001')->sum('qty');
+        $items = Item::menuItems()->get();
+        $categories = ItemCategory::get();
+        return view('dashboard.management.home',compact('locations','promotions','data','items','categories'));
     }
     private function management()
     {

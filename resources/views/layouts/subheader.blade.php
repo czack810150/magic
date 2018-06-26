@@ -10,7 +10,7 @@
 								@endif
 								</h3>
 							</div>
-							<div>
+							<!-- <div>
 								<span class="m-subheader__daterange" id="m_dashboard_daterangepicker">
 									<span class="m-subheader__daterange-label">
 										<span class="m-subheader__daterange-title"></span>
@@ -20,7 +20,7 @@
 										<i class="la la-angle-down"></i>
 									</a>
 								</span>
-							</div>
+							</div> -->
 						</div>
 					</div>
 					<!-- END: Subheader -->
