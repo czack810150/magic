@@ -58,14 +58,6 @@ class HomeController extends Controller
         $data['magicBeefs'] = Sale::whereYear('from',$dt->year)->whereMonth('from',$dt->month)->where('location_id','!=',0)->where('itemCode','S01001')->sum('qty');
         $items = Item::menuItems()->get();
         $categories = ItemCategory::get();
-        // $dt2 = Carbon::now()->startOfMonth();
-        // while($dt2->toDateString() != $dt->toDateString())
-        // {
-        //     $data['dailyTotal'] = array();
-        //     $sale = Sale::whereDate('from',$dt2->toDateString())->where('location_id','!=',0)->sum('amount');
-        //     array_push($data['dailyTotal'],$sale);
-        //     $dt2->addDay();
-        // }
 
         return view('dashboard.management.home',compact('locations','promotions','data','items','categories'));
     }

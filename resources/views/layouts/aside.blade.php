@@ -572,7 +572,7 @@
 							</li>
 
 							@endcan
-							@if( 'is-admin' )
+							@can('is-admin')
 							
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
 								<a  href="#" class="m-menu__link m-menu__toggle">
@@ -635,7 +635,7 @@
 									</ul>
 								</div>
 							</li>
-							@endif
+							@endcan
 							
 						</ul>
 					</div>

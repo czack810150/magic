@@ -475,11 +475,14 @@ var app = new Vue({
     el: '#root',
     data:{
         token:'{{csrf_token()}}',
-        selectedLocation : 999,
+        selectedLocation : -2,
         selectedCategory:999,
         selectedItem:null,
         selectedDate:'',
-        sales:[],
+        chart:null,
+        sales:[
+      
+    ],
         items:[
         @foreach($items as $i)
         { 
@@ -492,8 +495,12 @@ var app = new Vue({
         ],
         locations: [
         {
-            id:999,
+            id:-2,
             'name':'Choose Location'
+        },
+        {
+            id:-1,
+            'name':'All Locations'
         },
         @foreach($locations as $location)
         { 
@@ -517,7 +524,7 @@ var app = new Vue({
     },
     methods:{
         locationSelected(){
-            if(this.selectedItem != null && this.selectedDate != ''){
+            if(this.selectedItem != null && this.selectedDate != -2){
                 this.getSalesData();
             }
             
@@ -545,6 +552,8 @@ var app = new Vue({
             }).then(function(response){
                
                 app.sales = response.data;
+                app.chart.dataProvider = app.sales;
+                app.chart.validateData();
             })
         }
     },
@@ -568,19 +577,20 @@ var drp = $('#datepicker').data('daterangepicker');
         this.selectedDate = drp.startDate.format('YYYY-MM-DD');
     
         //chart
-var chart = AmCharts.makeChart("chartdiv", {
+this.chart = AmCharts.makeChart("chartdiv", {
     "type": "serial",
     "theme": "light",
     "marginRight": 40,
     "marginLeft": 40,
     "autoMarginOffset": 20,
     "mouseWheelZoomEnabled":true,
-    "dataDateFormat": "YYYY-MM-DD",
+    "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
     "valueAxes": [{
         "id": "v1",
         "axisAlpha": 0,
         "position": "left",
-        "ignoreAxisWidth":true
+        "ignoreAxisWidth":true,
+        "precision":0,
     }],
     "balloon": {
         "borderThickness": 1,
@@ -636,14 +646,16 @@ var chart = AmCharts.makeChart("chartdiv", {
     },
     "categoryField": "from",
     "categoryAxis": {
-        "parseDates": true,
+        "parseDates": false,
         "dashLength": 1,
-        "minorGridEnabled": true
+        "minorGridEnabled": true,
+        "labelRotation":45,
+
     },
     "export": {
         "enabled": true
     },
-    "dataProvider": app.sales,
+    "dataProvider": this.sales,
     
 });
 

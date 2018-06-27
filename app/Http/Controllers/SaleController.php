@@ -22,8 +22,14 @@ class SaleController extends Controller
     }
     public function itemSales(Request $r)
     {
-    	$item = Item::find($r->item);
-    	$sales = Sale::where('location_id',$r->location)->where('itemCode',$item->itemCode)->whereDate('from',$r->date)->get();
+        if($r->location != -1){
+            $item = Item::find($r->item);
+            $sales = Sale::where('location_id',$r->location)->where('itemCode',$item->itemCode)->whereDate('from',$r->date)->orderBy('from','asc')->get();
+        } else {
+            $item = Item::find($r->item);
+            $sales = Sale::where('itemCode',$item->itemCode)->whereDate('from',$r->date)->orderBy('from','asc')->get();
+        }
+    	
     	return $sales;
     }
 }
