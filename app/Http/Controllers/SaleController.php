@@ -32,4 +32,9 @@ class SaleController extends Controller
     	
     	return $sales;
     }
+
+    public function twoWeekSales(Request $r){
+       
+        return Sale::twoWeekSales($r->location,$r->date);
+    }
 }

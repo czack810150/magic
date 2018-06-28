@@ -52,6 +52,104 @@
 </div>
 
 
+  <!--Begin::Section--> 
+<div class="m-portlet">
+    <div class="m-portlet__body  m-portlet__body--no-padding">
+        <div class="row m-row--no-padding m-row--col-separator-xl">
+            <div class="col-xl-4">
+                <!--begin:: Widgets/Daily Sales-->
+<div class="m-widget14">
+    <div class="m-widget14__header m--margin-bottom-30">
+        <h3 class="m-widget14__title">
+            Daily Sales              
+        </h3>
+        <span class="m-widget14__desc">
+        Check out each collumn for more details
+        </span>
+    </div>
+    <div class="m-widget14__chart" style="height:120px;">
+        <canvas  id="two_week_daily_sales"></canvas>
+    </div>
+</div>
+<!--end:: Widgets/Daily Sales-->            </div>
+            <div class="col-xl-4">
+                <!--begin:: Widgets/Profit Share-->
+<div class="m-widget14">
+    <div class="m-widget14__header">
+        <h3 class="m-widget14__title">
+            Profit Share            
+        </h3>
+        <span class="m-widget14__desc">
+        Profit Share between customers
+        </span>
+    </div>
+    <div class="row  align-items-center">
+        <div class="col">
+            <div id="m_chart_profit_share" class="m-widget14__chart" style="height: 160px">
+                <div class="m-widget14__stat">45</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="m-widget14__legends">
+                <div class="m-widget14__legend">
+                    <span class="m-widget14__legend-bullet m--bg-accent"></span>
+                    <span class="m-widget14__legend-text">37% Sport Tickets</span>
+                </div>
+                <div class="m-widget14__legend">
+                    <span class="m-widget14__legend-bullet m--bg-warning"></span>
+                    <span class="m-widget14__legend-text">47% Business Events</span>
+                </div>
+                <div class="m-widget14__legend">
+                    <span class="m-widget14__legend-bullet m--bg-brand"></span>
+                    <span class="m-widget14__legend-text">19% Others</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end:: Widgets/Profit Share-->           </div>
+            <div class="col-xl-4">
+                <!--begin:: Widgets/Revenue Change-->
+<div class="m-widget14">
+    <div class="m-widget14__header">
+        <h3 class="m-widget14__title">
+            Revenue Change            
+        </h3>
+        <span class="m-widget14__desc">
+            Revenue change breakdown by cities
+        </span>
+    </div>
+    <div class="row  align-items-center">
+        <div class="col">
+            <div id="m_chart_revenue_change" class="m-widget14__chart1" style="height: 180px">
+            </div>
+        </div>  
+        <div class="col">
+            <div class="m-widget14__legends">
+                <div class="m-widget14__legend">
+                    <span class="m-widget14__legend-bullet m--bg-accent"></span>
+                    <span class="m-widget14__legend-text">+10% New York</span>
+                </div>
+                <div class="m-widget14__legend">
+                    <span class="m-widget14__legend-bullet m--bg-warning"></span>
+                    <span class="m-widget14__legend-text">-7% London</span>
+                </div>
+                <div class="m-widget14__legend">
+                    <span class="m-widget14__legend-bullet m--bg-brand"></span>
+                    <span class="m-widget14__legend-text">+20% California</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end:: Widgets/Revenue Change-->         </div>
+        </div>
+    </div>
+</div>
+<!--End::Section-->
+
+
+
 <div class="row">
    
     <div class="col-12">
@@ -475,11 +573,12 @@ var app = new Vue({
     el: '#root',
     data:{
         token:'{{csrf_token()}}',
-        selectedLocation : -2,
+        selectedLocation : -1,
         selectedCategory:999,
         selectedItem:null,
         selectedDate:'',
         chart:null,
+        twoWeekChart:null,
         sales:[
       
     ],
@@ -520,7 +619,9 @@ var app = new Vue({
             name: '{{$category->cName}}',
         },
         @endforeach
-        ]
+        ],
+        labels:[],
+        dailySales:[],
     },
     methods:{
         locationSelected(){
@@ -555,6 +656,26 @@ var app = new Vue({
                 app.chart.dataProvider = app.sales;
                 app.chart.validateData();
             })
+        },
+        getTwoWeekSalesData(){
+            axios.post('/sales/two_week',{
+                _token:this.token,
+                
+                date:this.selectedDate,
+                location:this.selectedLocation
+            }).then(function(response){
+               
+               console.log(response.data);
+               app.labels = response.data.labels;
+               app.dailySales = response.data.totals;
+               app.twoWeekChartUpdateData();
+               
+            });
+        },
+        twoWeekChartUpdateData(){
+            this.twoWeekChart.data.labels = this.labels;
+            this.twoWeekChart.data.datasets[0].data = app.dailySales;
+            this.twoWeekChart.update();
         }
     },
     mounted(){
@@ -576,7 +697,7 @@ $('#datepicker').on('apply.daterangepicker',function(ev,picker){
 var drp = $('#datepicker').data('daterangepicker');
         this.selectedDate = drp.startDate.format('YYYY-MM-DD');
     
-        //chart
+        //chart_single_item_sales
 this.chart = AmCharts.makeChart("chartdiv", {
     "type": "serial",
     "theme": "light",
@@ -657,10 +778,71 @@ this.chart = AmCharts.makeChart("chartdiv", {
     },
     "dataProvider": this.sales,
     
+}); // end chart_single_item_sales
+
+// begin two week daily sales
+
+
+
+var two_week = document.getElementById('two_week_daily_sales').getContext('2d');
+this.twoWeekChart = new Chart(two_week,{
+    type:'bar',
+    data: {
+        labels: this.labels,
+        datasets: [
+        {
+           
+            backgroundColor: '#4ac0a2',
+            data: this.dailySales,
+            borderWidth: 1
+        }, 
+        ],
+    },
+    options: {
+        title:{
+            display:!1,
+        },
+        tooltips:{
+            intersect: false,
+            mode:'nearest',
+            xPadding:10,
+            yPadding:10,
+            caretPadding:10,
+        },
+        legend:{
+            display:0,
+        },
+        maintainAspectRatio:false,
+        barRadius:4,
+        responsive:0,
+        scales: {
+            xAxes:[{
+                display:false,
+                gridLines:false,
+                stacked:true,
+            }],
+            yAxes: [{
+                display:false,
+                stacked:true,
+                gridLines:false
+            }]
+        },
+        layout: {
+                padding: {
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0
+                }
+            },
+    }
+
 });
 
+this.getTwoWeekSalesData();
+// end two seek daily sales
 
-    }
+    } // end of mounted
 
 
 

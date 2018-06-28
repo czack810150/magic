@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use App\Location;
+use App\Sale_total;
 
 class Sale extends Model
 {
@@ -144,6 +146,80 @@ class Sale extends Model
     public function location()
     {
     	return $this->belongsTo('App\Location');
+    }
+
+    public static function twoWeekSales($location,$date){
+
+            $dt = Carbon::createFromFormat('Y-m-d',$date)->startOfDay()->subDays(14);
+            $sales = collect();
+            $result = collect();
+            $labels = collect();
+            $values = collect();
+            if($location == -1){
+                while($dt->toDateString() <= $date){
+                $sale = Sale_total::where('location_id',-1)->where('date',$dt->toDateString())->first()->total;
+                $data = [
+                    'date' => $dt->toDateString(),
+                    'amount' => round($sale,2),
+                ];
+                $labels->push($dt->toDateString());
+                $values->push(round($sale,2));
+                $sales->push($data);
+                $dt->addDay();
+                }
+            } else {
+                while($dt->toDateString() <= $date){
+                $sale = Sale_total::where('location_id',$location)->where('date',$dt->toDateString())->first()->total;
+                 $data = [
+                    'date' => $dt->toDateString(),
+                    'amount' => round($sale,2),
+                ];
+                $labels->push($dt->toDateString());
+                $values->push(round($sale,2));
+                $sales->push($data);
+                $dt->addDay();
+                }
+            }
+            
+            $result->put('sales',$sales);
+            $result->put('labels',$labels);
+            $result->put('totals',$values);
+        return $result;
+    }
+    public static function saveDailySales($date)
+    {
+        $locations = Location::Store()->get();
+        $dt = Carbon::createFromFormat('Y-m-d',$date)->startOfDay();
+        $sale = Sale::whereDate('from',$dt->toDateString())->where('amount','>',0)->sum('amount');
+        Sale_total::create([
+            'location_id' => -1,
+            'date' => $date,
+            'total' => round($sale,2)
+        ]);
+        foreach($locations as $location)
+        {
+            $sale = Sale::where('location_id',$location->id)->whereDate('from',$dt->toDateString())->where('amount','>',0)->sum('amount');
+            Sale_total::create([
+            'location_id' => $location->id,
+            'date' => $date,
+            'total' => round($sale,2)
+            ]);
+        }
+        return true;
+    }
+    public static function saveMonthlySales($year,$month)
+    {
+        $dt = Carbon::createFromDate($year,$month,1)->StartOfDay();
+        $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
+        $count = 0;
+        while($endOfMonth != $dt->toDateString())
+        {
+            self::saveDailySales($dt->toDateString());
+            $dt->addDay();
+            $count++;
+        }
+        return $count;
+
     }
 
 }

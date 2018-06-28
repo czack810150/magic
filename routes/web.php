@@ -175,6 +175,7 @@ Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
 	//Sales
 	Route::get('/sales','SaleController@index');
 	Route::post('/sales/item','SaleController@itemSales');
+	Route::post('/sales/two_week','SaleController@twoWeekSales');
 
 
 	//EMPLOYEE
