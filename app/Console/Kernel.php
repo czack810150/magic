@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('testSchedule:new "10 min test"')
                  ->everyTenMinutes();
         //$schedule->command("import:sales $dt->subDay()->toDateString() 30")->dailyAt('06:10');
-        $schedule->comment("testSchedule:new '5 min test'")->everyFiveMinutes();
+        $schedule->command("testSchedule:new 'Daily test'")->daily();
     }
 
     /**
