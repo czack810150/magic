@@ -37,4 +37,8 @@ class SaleController extends Controller
        
         return Sale::twoWeekSales($r->location,$r->date);
     }
+    public function monthlySales(Request $r){
+       
+        return Sale::monthlySales($r->location);
+    }
 }

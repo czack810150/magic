@@ -18,6 +18,31 @@
                     <div class="tab-pane active" id="sales_tab" role="tabpanel">
 <section id="root">
 <div class="m-portlet ">
+    <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <span class="m-portlet__head-icon">
+                            <i class="flaticon-up-arrow-1"></i>
+                        </span>
+                        <h3 class="m-portlet__head-text">
+                            Sales <small>销售情况</small>
+                        </h3>
+                    </div>
+                </div>
+                    <div class="m-portlet__head-tools">
+                        <ul class="m-portlet__nav">
+                            <li class="m-portlet__nav-item">
+                        <select class="custom-select" v-model="monthlySalesLocation" @change="monthlyLocationSelected">
+                            <option v-for="location in locations" v-bind:value="location.id" v-text="location.name"></option>
+                        </select>
+                            </li>
+                           
+                            
+                        </ul>
+                  
+                </div>          
+            
+            </div>
 <div class="m-portlet__body  m-portlet__body--no-padding">
 <div class="row m-row--no-padding m-row--col-separator-xl">
             <div class="col-md-12 col-lg-6 col-xl-3">
@@ -25,23 +50,23 @@
                 <div class="m-widget24">                     
                     <div class="m-widget24__item">
                         <h4 class="m-widget24__title">
-                            MagicBeefs
+                            Monthly Sales
                         </h4><br>
                         <span class="m-widget24__desc">
-                            传统牛肉面
+                            本月销售额度
                         </span>
                         <span class="m-widget24__stats m--font-success">
-                            {{$data['magicBeefs']}}碗
+                            $@{{monthlySales}}
                         </span>     
                         <div class="m--space-10"></div>
                         <div class="progress m-progress--sm">
-                            <div class="progress-bar m--bg-success" role="progressbar" style="width: 78%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar m--bg-success" role="progressbar" style="width: {{ round($data['monthlySales']/$data['preMonthlySales']*100,1) }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                         <span class="m-widget24__change">
-                            指标完成度
+                            对比上月
                         </span>
                         <span class="m-widget24__number">
-                            78%
+                            @{{ monthlyCompare }}%
                         </span>
                     </div>                    
                 </div>
@@ -238,7 +263,7 @@
                                     <th>Staff</th>
                                     <th>Current Position</th>
                                     <th>New Position</th>
-                                    <th>Status</th>
+                                    <th>Status</th>  
                                     <th>Date applied</th>
                                     <th>Action Taken</th>
                                     <th>Action By</th>
@@ -573,12 +598,16 @@ var app = new Vue({
     el: '#root',
     data:{
         token:'{{csrf_token()}}',
+        monthlySalesLocation:-1,
         selectedLocation : -1,
         selectedCategory:999,
         selectedItem:null,
         selectedDate:'',
         chart:null,
         twoWeekChart:null,
+        monthlySales:'{{number_format($data['monthlySales'],0,'.',',')}}',
+        preMonthlySales:'{{$data['preMonthlySales']}}',
+        monthlyCompare: '{{ round($data['monthlySales']/$data['preMonthlySales']*100,2) }}',
         sales:[
       
     ],
@@ -624,6 +653,9 @@ var app = new Vue({
         dailySales:[],
     },
     methods:{
+        monthlyLocationSelected(){
+            this.updateMonthlyData();
+        },
         locationSelected(){
             if(this.selectedItem != null && this.selectedDate != -2){
                 this.getSalesData();
@@ -676,7 +708,23 @@ var app = new Vue({
             this.twoWeekChart.data.labels = this.labels;
             this.twoWeekChart.data.datasets[0].data = app.dailySales;
             this.twoWeekChart.update();
-        }
+        },
+        updateMonthlyData(){
+             axios.post('/sales/monthly',{
+                _token:this.token,
+                location:this.monthlySalesLocation
+            }).then(function(response){
+               
+               
+              app.monthlySales = response.data.thisMonth;
+              app.preMonthlySales = response.data.lastMonth;
+              app.monthlyCompare = response.data.monthCompare;
+               
+            });
+        },
+    },
+    computed: {
+        
     },
     mounted(){
        

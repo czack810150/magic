@@ -25,9 +25,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('testSchedule:new "only test"')
+        $dt = Carbon::now();
+        $schedule->command('testSchedule:new "10 min test"')
                  ->everyTenMinutes();
-        $schedule->command("import:sales Carbon::now()->subDay()->toDateString() 30")->dailyAt('06:10');
+        //$schedule->command("import:sales $dt->subDay()->toDateString() 30")->dailyAt('06:10');
+        $schedule->comment("testSchedule:new '5 min test'")->everyFiveMinutes();
     }
 
     /**

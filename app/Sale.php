@@ -186,6 +186,16 @@ class Sale extends Model
             $result->put('totals',$values);
         return $result;
     }
+    public static function monthlySales($location){
+        $dt = Carbon::now();
+        
+        $sales = Sale_total::where('location_id',$location)->whereYear('date',$dt->year)->whereMonth('date',$dt->month)->sum('total');
+        $data['thisMonth'] = number_format($sales,0,'.',',');
+        $previousMonth = Sale_total::where('location_id',$location)->whereYear('date',$dt->year)->whereMonth('date',$dt->subMonth()->month)->sum('total');
+        $data['lastMonth'] = number_format($previousMonth,0,'.',',');
+        $data['monthCompare'] = round($sales / $previousMonth*100,2);
+        return $data;
+    }
     public static function saveDailySales($date)
     {
         $locations = Location::Store()->get();
