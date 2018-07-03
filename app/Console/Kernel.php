@@ -28,8 +28,8 @@ class Kernel extends ConsoleKernel
         
 
         //tests
-        $schedule->command('testSchedule:new "10 min test"')
-                 ->everyTenMinutes();
+        // $schedule->command('testSchedule:new "10 min test"')
+        //          ->everyTenMinutes();
         $schedule->command("testSchedule:new 'Daily test'")->daily();
 
         // import daily sales

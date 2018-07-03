@@ -23,6 +23,6 @@ class CalculateTotals extends Command
   
     public function handle()
     {
-        Sale::saveDailySales($this->argument('date'));
+        return Sale::saveDailySales($this->argument('date'));
     }
 }
