@@ -157,27 +157,32 @@ class Sale extends Model
             $values = collect();
             if($location == -1){
                 while($dt->toDateString() <= $date){
-                $sale = Sale_total::where('location_id',-1)->where('date',$dt->toDateString())->first()->total;
-                $data = [
+                $sale = Sale_total::where('location_id',-1)->where('date',$dt->toDateString())->first();
+                if($sale){
+                    $data = [
                     'date' => $dt->toDateString(),
-                    'amount' => round($sale,2),
+                    'amount' => round($sale->total,2),
                 ];
                 $labels->push($dt->toDateString());
-                $values->push(round($sale,2));
+                $values->push(round($sale->total,2));
                 $sales->push($data);
                 $dt->addDay();
                 }
+                }
+                
             } else {
                 while($dt->toDateString() <= $date){
-                $sale = Sale_total::where('location_id',$location)->where('date',$dt->toDateString())->first()->total;
-                 $data = [
+                $sale = Sale_total::where('location_id',$location)->where('date',$dt->toDateString())->first();
+                if($sale){
+                    $data = [
                     'date' => $dt->toDateString(),
-                    'amount' => round($sale,2),
+                    'amount' => round($sale->total,2),
                 ];
                 $labels->push($dt->toDateString());
-                $values->push(round($sale,2));
+                $values->push(round($sale->total,2));
                 $sales->push($data);
                 $dt->addDay();
+                }
                 }
             }
             
