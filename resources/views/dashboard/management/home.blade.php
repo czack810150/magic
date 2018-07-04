@@ -655,6 +655,7 @@ var app = new Vue({
     methods:{
         monthlyLocationSelected(){
             this.updateMonthlyData();
+            this.getTwoWeekSalesData();
         },
         locationSelected(){
             if(this.selectedItem != null && this.selectedDate != -2){
@@ -694,10 +695,8 @@ var app = new Vue({
                 _token:this.token,
                 
                 date:this.selectedDate,
-                location:this.selectedLocation
+                location:this.monthlySalesLocation,
             }).then(function(response){
-               
-               console.log(response.data);
                app.labels = response.data.labels;
                app.dailySales = response.data.totals;
                app.twoWeekChartUpdateData();
