@@ -166,8 +166,9 @@ class Sale extends Model
                 $labels->push($dt->toDateString());
                 $values->push(round($sale->total,2));
                 $sales->push($data);
-                $dt->addDay();
+                
                 }
+                $dt->addDay();
                 }
                 
             } else {
@@ -181,8 +182,8 @@ class Sale extends Model
                 $labels->push($dt->toDateString());
                 $values->push(round($sale->total,2));
                 $sales->push($data);
-                $dt->addDay();
                 }
+                $dt->addDay();
                 }
             }
             

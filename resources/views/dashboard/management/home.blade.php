@@ -110,8 +110,8 @@
     </div>
     <div class="row  align-items-center">
         <div class="col">
-            <div class="m-widget14__chart" style="height: 160px">
-                <canvas id="sales_share" >45</canvas>
+            <div class="m-widget14__chart" style="height: 120px">
+                <canvas id="sales_share"></canvas>
             </div>
         </div>
         <div class="col">
