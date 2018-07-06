@@ -102,32 +102,22 @@
 <div class="m-widget14">
     <div class="m-widget14__header">
         <h3 class="m-widget14__title">
-            Profit Share            
+            Sales Share            
         </h3>
         <span class="m-widget14__desc">
-        Profit Share between customers
+        Sales by categories
         </span>
     </div>
     <div class="row  align-items-center">
         <div class="col">
-            <div id="m_chart_profit_share" class="m-widget14__chart" style="height: 160px">
-                <div class="m-widget14__stat">45</div>
+            <div class="m-widget14__chart" style="height: 160px">
+                <canvas id="sales_share" >45</canvas>
             </div>
         </div>
         <div class="col">
             <div class="m-widget14__legends">
-                <div class="m-widget14__legend">
-                    <span class="m-widget14__legend-bullet m--bg-accent"></span>
-                    <span class="m-widget14__legend-text">37% Sport Tickets</span>
-                </div>
-                <div class="m-widget14__legend">
-                    <span class="m-widget14__legend-bullet m--bg-warning"></span>
-                    <span class="m-widget14__legend-text">47% Business Events</span>
-                </div>
-                <div class="m-widget14__legend">
-                    <span class="m-widget14__legend-bullet m--bg-brand"></span>
-                    <span class="m-widget14__legend-text">19% Others</span>
-                </div>
+                <m-widget14__legend v-for="legend in mWidget14Legends" v-bind:key="legend.id" :color="legend.color" :legend="legend.legend"></m-widget14__legend>
+              
             </div>
         </div>
     </div>
@@ -151,6 +141,7 @@
         </div>  
         <div class="col">
             <div class="m-widget14__legends">
+                
                 <div class="m-widget14__legend">
                     <span class="m-widget14__legend-bullet m--bg-accent"></span>
                     <span class="m-widget14__legend-text">+10% New York</span>
@@ -594,6 +585,16 @@ function clearEmployeeTraceData(){
             $('#trainingResult').val('');
 }
 
+Vue.component('m-widget14__legend',{
+    props:['legend','color'],
+    template:`
+    <div class="m-widget14__legend">
+        <span class="m-widget14__legend-bullet" :class="color"></span>
+        <span class="m-widget14__legend-text" v-text="legend"></span>
+    </div>
+    `
+})
+
 var app = new Vue({
     el: '#root',
     data:{
@@ -605,6 +606,7 @@ var app = new Vue({
         selectedDate:'',
         chart:null,
         twoWeekChart:null,
+        
         monthlySales:'{{number_format($data['monthlySales'],0,'.',',')}}',
         preMonthlySales:'{{$data['preMonthlySales']}}',
         monthlyCompare: '{{ round($data['monthlySales']/$data['preMonthlySales']*100,2) }}',
@@ -651,6 +653,64 @@ var app = new Vue({
         ],
         labels:[],
         dailySales:[],
+        'mWidget14Legends':[
+        {
+            id:1,
+            color:'m--bg-accent',
+            legend:'50% 拉面',
+            value: 50,
+            className:"custom",
+            meta:{
+                color:'m--bg-accent'
+            }
+        },
+        {
+            id:2,
+            color:'m--bg-danger',
+            legend:'25% 烧烤',
+            value: 25,
+            className:"custom",
+            meta:{
+                color:'m--bg-danger'
+            }
+
+        },
+        {
+            id:3,
+            color:'m--bg-primary',
+            legend:'15% 凉菜',
+            value: 15,
+            className:"custom",
+            meta:{
+                color:'m--bg-primary'
+            }
+        },
+        {
+            id:4,
+            color:'m--bg-warning',
+            legend:'10% 饮料',
+            value: 10,
+            className:"custom",
+            meta:{
+                color:'m--bg-warning'
+            }
+        },
+        ],
+        salesShareChart:null,
+        salesShareData:{
+             datasets: [{
+                data: [50,25,15,10],
+                backgroundColor:[mUtil.getColor('accent'),mUtil.getColor('danger'),mUtil.getColor('primary'),mUtil.getColor('warning')],
+    }],
+
+    // These labels appear in the legend and in the tooltips when hovering different arcs
+    labels: [
+        'Red',
+        'Yellow',
+        'Blue'
+    ]
+    },
+        
     },
     methods:{
         monthlyLocationSelected(){
@@ -888,6 +948,22 @@ this.twoWeekChart = new Chart(two_week,{
 
 this.getTwoWeekSalesData();
 // end two seek daily sales
+
+// begin sales share chart
+
+var salesShare = document.getElementById('sales_share').getContext('2d');
+this.salesShareChart = new Chart(salesShare,{
+    type:'doughnut',
+    data:this.salesShareData,
+    options:{
+        cutoutPercentage:70,
+        rotation:15,
+        legend:{
+            display:false,
+        }
+    },
+});
+// end sales share chart
 
     } // end of mounted
 
