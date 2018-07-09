@@ -222,28 +222,9 @@ class Payroll extends Model
             $holidayPay = 0;
             $holidays = Holiday::whereBetween('date',[$wk1Start,$wk2End])->get();
             if(count($holidays)){
-                $previousPayPeriodStartDate = Carbon::createFromFormat('Y-m-d',$wk1Start)->startOfDay()->subDays(14)->toDateString();
                 foreach($holidays as $holiday){
-                    $days = 0;
-                    $regularPay = 0;
+                    $holidayPay += self::fourWeekHolidayPay($e->employee_id,$e->location_id,$config->minimumPay/100,$holiday->date,$periodStart); 
 
-                    $previousPayPeriodDaysWorked = Hour::where('start',$previousPayPeriodStartDate)->
-                    where('location_id',$e->location_id)->
-                    where('employee_id',$e->employee_id)->
-                    first();
-                    if($previousPayPeriodDaysWorked){
-                        $days = $previousPayPeriodDaysWorked->days;
-                    } 
-                    $previousPayPeriodRegularIncome = Payroll_log::where('startDate',$previousPayPeriodStartDate)->
-                    where('location_id',$e->location_id)->
-                    where('employee_id',$e->employee_id)->
-                    first();
-                    if($previousPayPeriodRegularIncome){
-                        $regularPay = $previousPayPeriodRegularIncome->regularPay;
-                    } 
-                    if($days > 0 && $regularPay > 0){
-                        $holidayPay += $regularPay / $days;
-                    }     
                 }
             } 
 
@@ -338,28 +319,8 @@ class Payroll extends Model
             $holidayPay = 0;
             $holidays = Holiday::whereBetween('date',[$wk1Start,$wk2End])->get();
             if(count($holidays)){
-                $previousPayPeriodStartDate = Carbon::createFromFormat('Y-m-d',$wk1Start)->startOfDay()->subDays(14)->toDateString();
                 foreach($holidays as $holiday){
-                    $days = 0;
-                    $regularPay = 0;
-
-                    $previousPayPeriodDaysWorked = Hour::where('start',$previousPayPeriodStartDate)->
-                    where('location_id',$e->location_id)->
-                    where('employee_id',$e->employee_id)->
-                    first();
-                    if($previousPayPeriodDaysWorked){
-                        $days = $previousPayPeriodDaysWorked->days;
-                    } 
-                    $previousPayPeriodRegularIncome = Payroll_log::where('startDate',$previousPayPeriodStartDate)->
-                    where('location_id',$e->location_id)->
-                    where('employee_id',$e->employee_id)->
-                    first();
-                    if($previousPayPeriodRegularIncome){
-                        $regularPay = $previousPayPeriodRegularIncome->regularPay;
-                    } 
-                    if($days > 0 && $regularPay > 0){
-                        $holidayPay += $regularPay / $days;
-                    }     
+                        $holidayPay += self::fourWeekHolidayPay($e->employee_id,$e->location_id,$e->employee->job->rate/100,$holiday->date,$periodStart);
                 }
             } 
 
@@ -464,6 +425,53 @@ class Payroll extends Model
 
         return new GrossIncome($wk1Hr,$wk2Hr,$rate,$overtime1,$overtime2,$rp,$op,$total,$holidayPay);
         
+    }
+
+    public static function fourWeekHolidayPay($employee,$location,$rate,$holidayDate,$currentPeriodStart){
+        $cps = Carbon::createFromFormat('Y-m-d',$currentPeriodStart)->startOfDay();
+        $dt = Carbon::createFromFormat('Y-m-d',$holidayDate)->startOfDay();
+        if( $dt->lte($cps->copy()->addDays(6)) ){
+            $p1 = Hour::where('start',$cps->copy()->subDays(14))->where('employee_id',$employee)->where('location_id',$location)->first();
+            $p2 = Hour::where('start',$cps->copy()->subDays(28))->where('employee_id',$employee)->where('location_id',$location)->first();
+            if($p1){
+                $wk1 = $p1->wk1Effective;
+                $wk2 = $p1->wk2Effective;
+            } else {
+                $wk1 = 0;
+                $wk2 = 0;
+            }
+            if($p2){
+                $wk3 = $p2->wk1Effective;
+                $wk4 = $p2->wk2Effective;
+            } else {
+                $wk3 = 0;
+                $wk4 = 0;
+            }
+        } else { // holiday in second week of the current period
+            $p1 = Hour::where('start',$cps->toDateString())->where('employee_id',$employee)->where('location_id',$location)->first();
+            $p2 = Hour::where('start',$cps->copy()->subDays(14))->where('employee_id',$employee)->where('location_id',$location)->first();
+            $p3 = Hour::where('start',$cps->copy()->subDays(28))->where('employee_id',$employee)->where('location_id',$location)->first();
+            if($p1){
+                $wk1 = $p1->wk1Effective;
+            } else {
+                $wk1 = 0;
+            }
+            if($p2){
+                $wk2 = $p2->wk1Effective;
+                $wk3 = $p2->wk2Effective;
+            } else {
+                $wk2 = 0;
+                $wk3 = 0;
+            }
+            if($p3){
+                $wk4 = $p3->wk2Effective;
+            } else {
+                $wk4 = 0;
+            }
+        }
+        $regularWage = round(($wk1 + $wk2 + $wk3+ $wk4) * $rate, 2);
+        $vacationPay = round($regularWage * 0.04,2);
+        return round(($regularWage + $vacationPay) / 20, 2);
     }
 
 }
