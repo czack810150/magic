@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Training_item;
 use App\Training_log;
 use App\Skill;
+use App\Skill_category;
 
 class SkillController extends Controller
 {
@@ -35,7 +36,8 @@ class SkillController extends Controller
     {
         if(Gate::allows('configure-app')){
             $subheader = 'Skills';
-            return view('skill.create',compact('subheader'));
+            $categories = Skill_category::pluck('cName','id');
+            return view('skill.create',compact('subheader','categories'));
         } else {
             return view('request.fail')->with('message','You are not authorized to view this content.');
         }
@@ -51,6 +53,7 @@ class SkillController extends Controller
     {
         if(Gate::allows('configure-app')){
         $skill = new Skill;
+        $skill->skill_category_id = $request->category;
         $skill->name = $request->name;
         $skill->cName = $request->cName;
         $skill->description = $request->description;
@@ -85,7 +88,8 @@ class SkillController extends Controller
     {
         if(Gate::allows('configure-app')){
           $skill = Skill::findOrFail($id);
-          return view('skill.edit',compact('subheader','skill'));
+          $categories = Skill_category::pluck('cName','id');
+          return view('skill.edit',compact('subheader','skill','categories'));
         
         } else {
             return view('request.fail')->with('message','You are not authorized to view this content.');
@@ -109,6 +113,10 @@ class SkillController extends Controller
         $skill->cName = $request->cName;
         if( $skill->description != $request->description)
         $skill->description = $request->description;
+
+        if( $skill->skill_category_id != $request->category)
+            $skill->skill_category_id = $request->category;
+
         $skill->save();
         return redirect('skills');
         } else {

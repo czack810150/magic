@@ -16,6 +16,11 @@
 			<form class="m-form" method="POST" action="{{url('skills/create')}}">
 				{{csrf_field()}}
 				<div class="m-portlet__body" >
+					<div class="form-group m-form__group">
+							<label>Category</label>
+{{Form::select('category',$categories,null,['class'=>'form-control m-input','placeholder'=>'Choose category'])}}
+							
+						</div>
 
 					<div class="m-form__section m-form__section--first">
 

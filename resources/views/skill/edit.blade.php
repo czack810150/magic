@@ -20,6 +20,12 @@
 					<div class="m-form__section m-form__section--first">
 
 						<div class="form-group m-form__group">
+							<label>Category</label>
+{{Form::select('category',$categories,$skill->skill_category_id,['class'=>'form-control m-input'])}}
+							
+						</div>
+
+						<div class="form-group m-form__group">
 							<label>Skill English Name</label>
 {{Form::text('name',$skill->name,['class'=>'form-control m-input'])}}
 							

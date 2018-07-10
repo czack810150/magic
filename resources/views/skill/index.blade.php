@@ -36,11 +36,11 @@
 @if(count($skills))
 
 <table class="table table-sm table-hover">
-	<thead><tr><th>Name</th><th>中文名</th><th>Description</th><th>created at</th><th>updated at</th><th>Action</th></tr></thead>
+	<thead><tr><th>Category</th><th>Name</th><th>中文名</th><th>Description</th><th>created at</th><th>updated at</th><th>Action</th></tr></thead>
 	<tbody>
 	@foreach($skills as $s)
 	<tr>
-		
+		<td>{{ $s->skill_category->cName }}</td>
 		<td>{{ $s->name }}</td>
 		<td>{{ $s->cName }}</td>
 	<td>{{ $s->description }}</td>
