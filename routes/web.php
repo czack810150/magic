@@ -249,6 +249,10 @@ Route::get('/training/my','EmployeeUserController@training');
 // employee timeoff
 Route::post('/employee/timeoff/{id}/show','EmployeeController@showTimeoff');
 
+// Employee Skills
+Route::get('/employee_skill','EmployeeSkillController@index');
+
+
 
 								}); // end of grouped auth
 

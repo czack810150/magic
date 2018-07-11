@@ -150,4 +150,8 @@ class Employee extends Model
     {
         return $this->hasMany('App\JobPromotion');
     }
+    public function skill()
+    {
+        return $this->hasMany('App\EmployeeSkill');
+    }
 }

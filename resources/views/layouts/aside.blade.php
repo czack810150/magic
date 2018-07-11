@@ -381,42 +381,33 @@
 									</ul>
 								</div>
 							</li>
-							
-							@if(Auth::user()->authorization->level >= 30)
+							@can('assign-skill')
 							<li class="m-menu__item m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
 								<a href="#" class="m-menu__link m-menu__toggle">
-									<i class="m-menu__link-icon flaticon-list-2"></i>
-									<span class="m-menu__link-text">Score Settings</span>
+									<i class="m-menu__link-icon flaticon-list-3"></i>
+									<span class="m-menu__link-text">Skills</span>
 									<i class="m-menu__ver-arrow la la-angle-right"></i>
 								</a>
 									<div class="m-menu__submenu">
 									<span class="m-menu__arrow"></span>
 									<ul class="m-menu__subnav">
 										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="/score/category" class="m-menu__link ">
+											<a  href="/employee_skill" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>
 												<span class="m-menu__link-text">
-													Category
+													Employee Skills
 												</span>
 											</a>
 										</li>
-										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="/score/item" class="m-menu__link ">
-												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
-													<span></span>
-												</i>
-												<span class="m-menu__link-text">
-													Items
-												</span>
-											</a>
-										</li>
+										
 								
 									</ul>
 								</div>
 							</li>
-							@endif
+							@endcan
+							
 							@if(Auth::user()->authorization->level >= 50)
 							<li class="m-menu__item m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
 								<a href="#" class="m-menu__link m-menu__toggle">
@@ -565,10 +556,48 @@
 												</span>
 											</a>
 										</li>
+
+							<li class="m-menu__item m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+								<a href="#" class="m-menu__link m-menu__toggle">
+									<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+									<span class="m-menu__link-text">Score Settings</span>
+									<i class="m-menu__ver-arrow la la-angle-right"></i>
+								</a>
+									<div class="m-menu__submenu">
+									<span class="m-menu__arrow"></span>
+									<ul class="m-menu__subnav">
+										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="/score/category" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													Category
+												</span>
+											</a>
+										</li>
+										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="/score/item" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													Items
+												</span>
+											</a>
+										</li>
+								
+									</ul>
+								</div>
+							</li>
+							
 									
 								
 									</ul>
 								</div>
+
 							</li>
 
 							@endcan
@@ -619,18 +648,7 @@
 								</a>
 								<div class="m-menu__submenu">
 									<span class="m-menu__arrow"></span>
-									<ul class="m-menu__subnav">
-										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="/api/fixShared" class="m-menu__link ">
-												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
-													<span></span>
-												</i>
-												<span class="m-menu__link-text">
-													Fix Shared Employees' Shifts
-												</span>
-											</a>
-										</li>
-										
+									<ul class="m-menu__subnav">		
 								
 									</ul>
 								</div>
