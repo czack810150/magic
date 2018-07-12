@@ -87,9 +87,9 @@ class EmployeeController extends Controller
     {
 
         if($r->location != -1){
-            $employees = Employee::where('location_id',$r->location)->where('status',$r->status)->where('job_group','like',$r->group)->get();
+            $employees = Employee::where('location_id',$r->location)->where('status',$r->status)->where('job_group','like',$r->group)->with('skill.skill')->get();
         } else {
-             $employees = Employee::where('status',$r->status)->where('job_group','like',$r->group)->get();
+             $employees = Employee::where('status',$r->status)->where('job_group','like',$r->group)->with('skill.skill')->get();
         }
         foreach($employees as $e)
         {
@@ -107,6 +107,12 @@ class EmployeeController extends Controller
                 }
                 
                 $e->type = $e->authorization->type;
+            }
+            if($e->skill){
+                foreach($e->skill as $s){
+                    $s->name = $s->skill->cName;
+                }
+                $e->skills = $e->skill;
             }
             
         } 
@@ -885,6 +891,31 @@ class EmployeeController extends Controller
              orWhere('employeeNumber','like',$r->searchStr.'%');
             })->get();
         }
+        foreach($employees as $e)
+        {
+            $e->job_title = $e->job->rank;
+           
+            $e->hired_date = $e->hired->toFormattedDateString();
+            if($e->termination)
+            $e->termination_date = $e->termination->toFormattedDateString();
+            if($e->employee_profile){
+                 $e->alias = $e->employee_profile->alias;
+            }
+            if($e->authorization){
+                if($e->authorization->user){
+                    $e->username = $e->authorization->user->name;
+                }
+                
+                $e->type = $e->authorization->type;
+            }
+            if($e->skill){
+                foreach($e->skill as $s){
+                    $s->name = $s->skill->cName;
+                }
+                $e->skills = $e->skill;
+            }
+            
+        } 
         return $employees;
      }
 

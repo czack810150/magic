@@ -3,25 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Gate;
 use App\Employee;
 use App\Location;
 use App\Job;
 use App\Skill;
+use App\EmployeeSkill;
 
 class EmployeeSkillController extends Controller
 {
     public function index()
     {
         $subheader = 'Employee Skills';
-        if(Gate::allows('view-allEmployee')){
-        $employees = Employee::activeEmployee()->with('skill.skill')->get();
-        $skills = Skill::orderBy('skill_category_id')->get();
-           
 
-        $locations = Location::pluck('name','id');
+
+        if(Gate::allows('view-allEmployee')){
+            $employees = Employee::activeEmployee()->with('skill.skill')->get();
+            $locations = Location::pluck('name','id');
+            $locations[-1] = 'All Locations';
+
+        } else if(Auth::user()->authorization->type == 'manager'){
+
+            $employees = Employee::where('location_id',Auth::user()->authorization->employee->location_id)->with('skill.skill')->get();
+            $locations = Location::where('id',Auth::user()->authorization->employee->location_id)->pluck('name','id');
+            
+        }
+
+        $skills = Skill::orderBy('skill_category_id')->get();
         $employeeLocations = Location::pluck('name','id');
-        $locations[-1] = 'All Locations';
+        
         $status = array(
             'active' => 'Active staffs only',
             'vacation' => 'On vacation only',
@@ -34,23 +45,7 @@ class EmployeeSkillController extends Controller
             'supervisor' => 'Supervisor',
             'manager' => 'Manager',
         );
-        $jobs = Job::where('trial',1)->pluck('rank','id');
-        return view('employee.skill.index',compact('employees','subheader','locations','status','jobs','employeeLocations','groups','skills'));
-
-        } else if(Auth::user()->authorization->type == 'manager'){
-
-            $employees = Employee::where('location_id',Auth::user()->authorization->employee->location_id)->get();
-            $locations = Location::where('id',Auth::user()->authorization->employee->location_id)->pluck('name','id');
-            $employeeLocations = Location::pluck('name','id');
-            
-            $status = array(
-            'active' => 'Active staffs only',
-            'vacation' => 'On vacation only',
-            'terminated' => 'Terminated staffs',
-        ); 
-        $jobs = Job::where('trial',1)->pluck('rank','id');
-        return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations'));
-        }
+        return view('employee.skill.index',compact('employees','subheader','locations','status','employeeLocations','groups','skills'));
     }
 
     /**
@@ -63,15 +58,36 @@ class EmployeeSkillController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(Request $request)
     {
-        //
+        if(count(EmployeeSkill::where('employee_id',$request->employee)->where('skill_id',$request->skill)->get()))
+        {
+            return [
+                'status' => 'failed',
+                'message' => 'Skill already exists'
+            ];
+        } else {
+            $skill = EmployeeSkill::create([
+                'employee_id' => $request->employee,
+                'skill_id' => $request->skill,
+                'level' => $request->level,
+                'assigned_by' => $request->assignedBy,
+            ]);
+            if($skill){
+                return [
+                'status' => 'success',
+                'message' => 'Skill has been saved',
+            ];
+            } else {
+                return [
+                'status' => 'failed',
+                'message' => 'Skill saving error'
+            ];
+            }
+            
+        }
+        
     }
 
     /**

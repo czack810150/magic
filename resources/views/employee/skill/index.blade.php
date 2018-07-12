@@ -74,14 +74,14 @@
 	<tbody>
 
 
-<tr v-for="employee in employees" @click="viewEmployee(employee.id)">
+<tr v-for="employee in employees" >
 	<td>@{{employee.name}} @{{employee.alias}}<br>@{{employee.employeeNumber}}<br>@{{employee.job_title}}</td>
 	
 	
 	<td>@{{ employee.job_group }}</td>
 	<td>
 		<span class="m-badge  m-badge--wide"  v-for="skill in employee.skills" v-text="skill.name + ' ' + skill.level"></span>
-		<button type="button" class="btn m-btn--pill btn-secondary m-btn--custom m-btn--label-metal m-btn--border btn-sm">Add</button>
+		<button v-on:click="assignSkill(employee.id)" type="button" class="btn m-btn--pill btn-secondary m-btn--custom m-btn--label-metal m-btn--border btn-sm">Add</button>
 	</td>
 	
 	
@@ -90,106 +90,82 @@
 	</tbody>
 </table>
 
-	</div>
-</div>
-<!--end::Portlet-->
+	</div> <!--end::Portlet body-->
 
 
 
 
-@can('create-employee')
+
+@can('assign-skill')
 <!-- Modal -->
-<div class="modal fade" id="create-user" tabindex="-1" role="dialog" aria-labelledby="create-userLabel" aria-hidden="true">
+<div class="modal fade" id="assign-skill" tabindex="-1" role="dialog" aria-labelledby="assign-skillLabel" aria-hidden="true">
   <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="create-userLabel"><i class="flaticon-user-add"></i> Create User</h5>
+        <h5 class="modal-title" id="assign-skillLabel"><i class="flaticon-user-add"></i> Assign Skill</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
 
-      <!--begin::Form-->
-			<form class="m-form m-form--fit m-form--label-align-right" method="POST" action="/employee/store">
-				{{ csrf_field() }}
+      
       <div class="modal-body">	
 
 			
 			
 				<div class="m-portlet__body">
 					<div class="form-group m-form__group row">
-						<label for="employeeLocation" class="col-4 col-form-label">Location</label>
+						<label for="employeeSkills" class="col-4 col-form-label">Skill</label>
 						<div class="col-8">
-							{{ Form::select('employeeLocation',$employeeLocations,1,['class'=>'form-control m-input','id'=>'employeeLocation'])}}
+							<select v-model="newSkill" class="form-control m-input">
+								<option value="null" disabled>Select Skill</option>
+								<option v-for="skill in skills" :value="skill.id" v-text="skill.name"></option>
+							</select>
 						</div>
 					</div>
 					
 					<div class="form-group m-form__group row">
-						<label for="employeeRole" class="col-4 col-form-label">Role</label>
+						<label for="skillLevel" class="col-4 col-form-label">Level</label>
 						<div class="col-8">
-							<select class="form-control m-input" id="employeeRole" name="employeeRole">
-								<option value="2" selected>Employee</option>
-								<option value="20">Manager</option>
+							<select class="form-control m-input" id="skillLevel" v-model="skillLevel">
+		
+								<option value="A">A</option>
+								<option value="B">B</option>
+								<option value="C">C</option>
+								<option value="D">D</option>
+								<option value="E">E</option>
+								<option value="F">F</option>
 							</select>
 						</div>
 					</div>
+					
+					
 					<div class="form-group m-form__group row">
-						<label for="firstName" class="col-4 col-form-label">First Name</label>
+						<label for="assignedBy" class="col-4 col-form-label">Assigned By</label>
 						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="First Name" ="" id="firstName" name="firstName" required>
+							<input class="form-control m-input m-input--solid" disabled :placeholder="user.name"></input>
 						</div>
 					</div>
-					<div class="form-group m-form__group row">
-						<label for="lastName" class="col-4 col-form-label">Last Name</label>
-						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="Last Name" ="" id="lastName" name="lastName" required>
-						</div>
-					</div>
-					<div class="form-group m-form__group row">
-						<label for="cName" class="col-4 col-form-label">中文名</label>
-						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="Chinese Name" ="" id="cName" name="cName">
-						</div>
-					</div>
-					<div class="form-group m-form__group row">
-						<label for="job" class="col-4 col-form-label">Job Title</label>
-						<div class="col-8">
-							{{Form::select('job',$jobs,null,['class'=>'form-control m-input','id'=>'job'])}}
-						</div>
-					</div>
-					<div class="form-group m-form__group row">
-						<label for="employeeNumber" class="col-4 col-form-label">Employee ID</label>
-						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="Employee Number" id="employeeNumber" name="employeeNumber" required>
-						</div>
-					</div>
-					<div class="form-group m-form__group row">
-						<label for="hireDate" class="col-4 col-form-label">Date Hired</label>
-						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="Pick a Date" id="hireDate" name="hireDate" required>
-						</div>
-					</div>
-					<div class="form-group m-form__group row">
-						<label for="email" class="col-4 col-form-label">Email</label>
-						<div class="col-8">
-							<input class="form-control m-input" type="email" placeholder="Email Address" id="email" name="email" required>
-							<span class="m-form__help">The email must be unique among all users.</span>
-						</div>
-					</div>
+					
 					
 				</div>
 			
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" v-on:click="submitSkill">Save</button>
       </div>
-      </form>
+    
     </div>
   </div>
 </div>
 @endcan		
-						
+				
+
+
+
+</div>
+<!--end::Portlet-->						
 @endsection
 @section('pageJS')
 
@@ -198,8 +174,16 @@
 var app = new Vue({
 	el:'#root',
 	data:{
+		user:{
+			id:{{Auth::user()->authorization->employee_id}},
+			name:'{{Auth::user()->authorization->employee->name}}',
+			location:{{Auth::user()->authorization->location_id}},
+		},
 		searchString:'',
 		token:'{{csrf_token()}}',
+		currentEmployee:null,
+		newSkill:null,
+		skillLevel:'F',
 		selectedLocation:-1,
 		selectedStatus:'active',
 		selectedGroup:'%',
@@ -275,6 +259,56 @@ var app = new Vue({
 			}).then(function(response){
 				app.employees = response.data;
 			})
+		},
+		assignSkill(e){
+			this.currentEmployee = e;
+			$('#assign-skill').modal('show');
+		},
+		submitSkill(){
+			
+			if(this.newSkill != null){
+				axios.post('/employee_skill/assign',{
+				employee: this.currentEmployee,
+				skill: this.newSkill,
+				level: this.skillLevel,
+				assignedBy: this.user.id
+				}).then(function(response){
+					if(response.data.status == 'success'){
+						app.assignSkillReset();
+						$('#assign-skill').modal('hide');
+						$.notify({
+							title: 'Success!',
+							message: response.data.message
+						},{
+							type:'success',
+							placement: { from:'top',align:'center'}
+						});
+						app.updateEmployeeSkillView();
+					} else {
+						app.assignSkillReset();
+						$('#assign-skill').modal('hide');
+						$.notify({
+							title: 'Failed!',
+							message: response.data.message
+						},{
+							type:'danger',
+							placement: { from:'top',align:'center'}
+						});
+					}
+				});
+				
+			} else {
+				alert('You must choose a skill to submit.')
+			}
+			
+		},
+		assignSkillReset(){
+			this.currentEmployee = null;
+			this.newSkill = null;
+			this.skillLevel = 'F';
+		},
+		updateEmployeeSkillView(){
+			this.filterEmployees();
 		}
 	}
 })
