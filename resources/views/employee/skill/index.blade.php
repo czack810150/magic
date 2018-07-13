@@ -80,7 +80,7 @@
 	
 	<td>@{{ employee.job_group }}</td>
 	<td>
-		<span class="m-badge  m-badge--wide"  v-for="skill in employee.skills" v-text="skill.name + ' ' + skill.level"></span>
+		<span class="m-badge  m-badge--wide"  v-for="skill in employee.skills" v-text="skill.name + ' ' + skill.level" v-on:click="editEmployeeSkill(skill,employee)"></span>
 		<button v-on:click="assignSkill(employee.id)" type="button" class="btn m-btn--pill btn-secondary m-btn--custom m-btn--label-metal m-btn--border btn-sm">Add</button>
 	</td>
 	
@@ -99,7 +99,7 @@
 @can('assign-skill')
 <!-- Modal -->
 <div class="modal fade" id="assign-skill" tabindex="-1" role="dialog" aria-labelledby="assign-skillLabel" aria-hidden="true">
-  <div class="modal-dialog modal-md" role="document">
+  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="assign-skillLabel"><i class="flaticon-user-add"></i> Assign Skill</h5>
@@ -159,6 +159,69 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="change-skill" tabindex="-1" role="dialog" aria-labelledby="change-skillLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assign-skillLabel"><i class="flaticon-user-add"></i> Modify Skill</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      
+      <div class="modal-body">	
+
+			
+			
+				<div class="m-portlet__body">
+					<div class="form-group m-form__group row">
+						<label for="currentSkill" class="col-4 col-form-label">Skill</label>
+						<div class="col-8">
+							<input class="form-control m-input m-input--solid" disabled :placeholder="currentSkill.name"></input>
+						</div>
+					</div>
+					
+					<div class="form-group m-form__group row">
+						<label for="skillLevelUpdate" class="col-4 col-form-label">Level</label>
+						<div class="col-8">
+							<select class="form-control m-input" id="skillLevel" v-model="skillLevelUpdate">
+		
+								<option value="A">A</option>
+								<option value="B">B</option>
+								<option value="C">C</option>
+								<option value="D">D</option>
+								<option value="E">E</option>
+								<option value="F">F</option>
+							</select>
+						</div>
+					</div>
+					
+					
+					<div class="form-group m-form__group row">
+						<label for="assignedBy" class="col-4 col-form-label">By</label>
+						<div class="col-8">
+							<input class="form-control m-input m-input--solid" disabled :placeholder="user.name"></input>
+						</div>
+					</div>
+					
+					
+				</div>
+			
+      </div>
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-danger" v-on:click="removeSkill">Remove</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" v-on:click="submitEditSkill">Update</button>
+      </div>
+    
+    </div>
+  </div>
+</div>
+
 @endcan		
 				
 
@@ -182,8 +245,10 @@ var app = new Vue({
 		searchString:'',
 		token:'{{csrf_token()}}',
 		currentEmployee:null,
+		currentSkill: {id:null,name:'',level:null},
 		newSkill:null,
 		skillLevel:'F',
+		skillLevelUpdate:'',
 		selectedLocation:-1,
 		selectedStatus:'active',
 		selectedGroup:'%',
@@ -309,6 +374,54 @@ var app = new Vue({
 		},
 		updateEmployeeSkillView(){
 			this.filterEmployees();
+		},
+		editEmployeeSkill(skill,employee){
+			$('#change-skill').modal('show');
+			this.skillLevelUpdate = skill.level;
+			this.currentSkill = skill;
+			this.currentEmployee = employee;
+		},
+		removeSkill(){
+			axios.post('/employee_skill/' + app.currentSkill.id + '/destroy',{
+
+			}).then(function(response){
+				if(response.data){
+					
+					$('#change-skill').modal('hide');
+					app.assignSkillReset()
+					app.currentSkill = {id:null,name:'',level:null}
+					app.skillLevelUpdate = '',
+					$.notify({
+							title: 'Skill Removed!',
+							message: 'The Skill has been successfully removed.'
+						},{
+							type:'warning',
+							placement: { from:'top',align:'center'}
+						});
+					app.updateEmployeeSkillView();
+
+				}
+			});
+		},
+		submitEditSkill(){
+			axios.post('/employee_skill/' + app.currentSkill.id + '/update',{
+				level: app.skillLevelUpdate
+			}).then(function(response){
+				if(response.data){
+					$('#change-skill').modal('hide');
+					app.assignSkillReset()
+					app.currentSkill = {id:null,name:'',level:null}
+					app.skillLevelUpdate = '',
+					$.notify({
+							title: 'Success!',
+							message: 'The Skill Level has been successfully updated!'
+						},{
+							type:'info',
+							placement: { from:'top',align:'center'}
+						});
+					app.updateEmployeeSkillView();
+				}
+			});
 		}
 	}
 })

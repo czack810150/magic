@@ -252,7 +252,8 @@ Route::post('/employee/timeoff/{id}/show','EmployeeController@showTimeoff');
 // Employee Skills
 Route::get('/employee_skill','EmployeeSkillController@index');
 Route::post('/employee_skill/assign','EmployeeSkillController@store');
-
+Route::post('/employee_skill/{id}/destroy','EmployeeSkillController@destroy');
+Route::post('/employee_skill/{id}/update','EmployeeSkillController@update');
 
 
 								}); // end of grouped auth

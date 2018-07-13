@@ -121,7 +121,10 @@ class EmployeeSkillController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $skill = EmployeeSkill::find($id);
+        $skill->level = $request->level;
+        $skill->save();
+        return 1;
     }
 
     /**
@@ -132,6 +135,7 @@ class EmployeeSkillController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return EmployeeSkill::destroy($id);
+        
     }
 }
