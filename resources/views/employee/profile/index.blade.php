@@ -76,7 +76,7 @@
   	     <a class="nav-link" href="javascript:employeePerformance('{{ $staff->id }}')">Performance</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="javascript:employeeTraining('{{ $staff->id }}')">Training</a>
+    <a class="nav-link" href="javascript:employeeTraining('{{ $staff->id }}');">Training & Skills</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="javascript:employeeTimeoff({{ $staff->id }})">Time off</a>

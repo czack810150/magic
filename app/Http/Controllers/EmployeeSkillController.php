@@ -138,4 +138,9 @@ class EmployeeSkillController extends Controller
         return EmployeeSkill::destroy($id);
         
     }
+    public function getSkillsByEmployee(Request $r)
+    {
+        $employee = Employee::with('skill.skill')->find($r->employee);
+        return $employee->skill;
+    }
 }

@@ -1,5 +1,41 @@
 <!--begin::Portlet-->
 <div class="m-portlet">
+
+<div class="m-portlet__head">
+    <div class="m-portlet__head-caption">
+        <div class="m-portlet__head-title">
+            
+            <h3 class="m-portlet__head-text">
+                Skills <small>业务技能</small>
+            </h3>
+        </div>
+    </div>
+
+    
+</div>
+
+<div class="m-portlet__body" id="employeeSkills">
+    
+                           
+    <div class="m-list__content">
+        <div class="m-list-badge m--margin-bottom-20">
+            
+            <div class="m-list-badge__items">                                            
+               
+                <span class="m-list-badge__item" :class="classObject" v-for="skill in skills"  v-text="skill.skill.cName + ' ' + skill.level"></span>                                      
+            </div>
+        </div>
+       
+    </div>    
+                          
+    
+</div>
+<!-- end of employee skills -->
+
+
+
+
+
 <div id="employeeTraining">
 									<div class="m-portlet__head">
 										<div class="m-portlet__head-caption">
@@ -31,7 +67,7 @@ Assign New Skill
 <div class="m-portlet__body" id="employeeTrainingLog"></div>
 
 
-</div><!-- end of employeeNotes -->																	
+</div><!-- end of employeeTraining -->																	
 </div>
 <!--end::Portlet-->
 
@@ -267,4 +303,29 @@ function assignSkill(){
         assignSkill();
     },false);
     $('#finishDate').datetimepicker();
+
+var app = new Vue({
+    el:'#employeeSkills',
+    data:{
+        skills:[
+        ],
+        classObject:'m-list-badge__item--danger',
+        
+    },
+    methods:{
+        getEmployeeSkills(){
+            axios.post('/employee_skill/get_skills',{
+                employee:'{{ $employee->id }}',
+            }).then(function(response){
+               
+                app.skills = response.data;
+            });
+        },
+
+    },
+    mounted(){
+        this.getEmployeeSkills();
+    }
+})
+
 </script>
