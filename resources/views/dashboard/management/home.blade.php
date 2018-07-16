@@ -56,11 +56,11 @@
                             本月销售额度
                         </span>
                         <span class="m-widget24__stats m--font-success">
-                            $@{{monthlySales}}
+                            $ @{{monthlySales}}
                         </span>     
                         <div class="m--space-10"></div>
                         <div class="progress m-progress--sm">
-                            <div class="progress-bar m--bg-success" role="progressbar" style="width: {{ round($data['monthlySales']/$data['preMonthlySales']*100,1) }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar m--bg-success" role="progressbar" style="width: {{ round($data['monthlySales']/$data['preMonthlySales']*100,1) }} %;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                         <span class="m-widget24__change">
                             对比上月

@@ -242,4 +242,16 @@ class Datetime extends Model
        
         return $data;
     }
+    public static function hours($interval)
+    {
+        $dt = Carbon::now()->startOfDay();
+        $date = $dt->toDateString();
+        $arr = [];
+        while($date == $dt->toDateString()){
+            array_push($arr,$dt->toTimeString());
+            $dt->addMinutes($interval);
+        }
+        array_push($arr,"24:00:00");
+        return $arr;
+    }
 }

@@ -256,6 +256,8 @@ Route::post('/employee_skill/{id}/destroy','EmployeeSkillController@destroy');
 Route::post('/employee_skill/{id}/update','EmployeeSkillController@update');
 Route::post('/employee_skill/get_skills','EmployeeSkillController@getSkillsByEmployee');
 
+//employee Availability
+Route::get('/employee_availability','AvailabilityController@index');
 
 								}); // end of grouped auth
 

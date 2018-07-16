@@ -87,9 +87,9 @@ class EmployeeController extends Controller
     {
 
         if($r->location != -1){
-            $employees = Employee::where('location_id',$r->location)->where('status',$r->status)->where('job_group','like',$r->group)->with('skill.skill')->get();
+            $employees = Employee::where('location_id',$r->location)->where('status',$r->status)->where('job_group','like',$r->group)->with('skill.skill')->with('availability')->get();
         } else {
-             $employees = Employee::where('status',$r->status)->where('job_group','like',$r->group)->with('skill.skill')->get();
+             $employees = Employee::where('status',$r->status)->where('job_group','like',$r->group)->with('skill.skill')->with('availability')->get();
         }
         foreach($employees as $e)
         {
