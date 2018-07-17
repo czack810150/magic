@@ -14,7 +14,7 @@
 // 	App::setLocale($locale);
 // });
 Route::middleware('auth')->group(function(){
-	Route::get('/scheduler','ScheduleController@index')->name('home');
+	Route::get('/scheduler','ScheduleController@index');
 Route::get('/scheduler/{location}/','ScheduleController@index');
 Route::post('/sr/get','ShiftController@getResourcesByLocation');
 Route::post('/shift/{id}/update','ShiftController@update');
@@ -123,7 +123,7 @@ Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
 Route::middleware('auth')->group(function(){
 	// Home
 	Route::get('/home', 'HomeController@index')->name('home');
-
+	// Route::get('/home', 'MaintenanceController@index')->name('home');
 	//Exams
 	Route::get('/exam','ExamController@index');
 	Route::get('/exam/all','ExamController@all');

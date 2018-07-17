@@ -23,7 +23,6 @@ class HomeController extends Controller
     public function index()
     {
         if(Gate::allows('is-management')){
-
             if(Auth::user()->authorization->type == 'manager'){
                 return self::storeManager();
             } else { 
