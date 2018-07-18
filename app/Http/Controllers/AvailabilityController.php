@@ -11,6 +11,7 @@ use App\Job;
 use App\Skill;
 use App\EmployeeSkill;
 use App\Datetime;
+use App\Availability;
 
 class AvailabilityController extends Controller
 {
@@ -63,7 +64,27 @@ class AvailabilityController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       
+        $availability = Availability::create([
+            'employee_id' => $request->employee,
+            'monFrom' => $request->availability['mon']['from'],
+            'monTo' => $request->availability['mon']['to'],
+            'tueFrom' => $request->availability['tue']['from'],
+            'tueTo' => $request->availability['tue']['to'],
+            'wedFrom' => $request->availability['wed']['from'],
+            'wedTo' => $request->availability['wed']['to'],
+            'thuFrom' => $request->availability['thu']['from'],
+            'thuTo' => $request->availability['thu']['to'],
+            'friFrom' => $request->availability['fri']['from'],
+            'friTo' => $request->availability['fri']['to'],
+            'satFrom' => $request->availability['sat']['from'],
+            'satTo' => $request->availability['sat']['to'],
+            'sunFrom' => $request->availability['sun']['from'],
+            'sunTo' => $request->availability['sun']['to'],
+            'hours' => $request->availability['hourLimit'],
+            'holiday' => $request->availability['holiday']
+        ]);
+        return $availability;
     }
 
     /**

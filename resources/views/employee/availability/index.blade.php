@@ -146,7 +146,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addAvailabilityLabel"><i class="flaticon-user-add"></i> Add Availability</h5>
+        <h5 class="modal-title" id="addAvailabilityLabel">Availability</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -156,46 +156,151 @@
       <div class="modal-body">	
 
 				<div class="m-portlet__body">
-					<div class="form-group m-form__group row">
-						<label  class="col-4 col-form-label">Hour</label>
-						<div class="col-8">
-							<select v-model="newSkill" class="form-control m-input">
+
+					<table class="table">
+						<thead>
+						<tr><th>Day</th><th style="width:30%">From</th><th style="width:30%">To</th></tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>Monday</th>
+							<td>
+								<select v-model="availability.mon.from" class="form-control m-input">
 								<option value="null" disabled>Choose Time</option>
 								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
-							</select>
-						</div>
-					</div>
-					
-					<div class="form-group m-form__group row">
-						<label for="skillLevel" class="col-4 col-form-label">Level</label>
-						<div class="col-8">
-							<select class="form-control m-input" id="skillLevel" v-model="skillLevel">
+								</select>
+							</td>
+							<td>
+								<select v-model="availability.mon.to" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>Tuesday</th>
+							<td>
+								<select v-model="availability.tue.from" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							<td>
+								<select v-model="availability.tue.to" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+						</tr>
+							<tr>
+							<th>Wednesday</th>
+							<td>
+								<select v-model="availability.wed.from" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							<td>
+								<select v-model="availability.wed.to" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>Thursday</th>
+							<td>
+								<select v-model="availability.thu.from" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							<td>
+								<select v-model="availability.thu.to" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							</tr>
+							<tr>
+							<th>Friday</th>
+							<td>
+								<select v-model="availability.fri.from" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							<td>
+								<select v-model="availability.fri.to" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							<tr>
+							<th>Saturday</th>
+							<td>
+								<select v-model="availability.sat.from" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							<td>
+								<select v-model="availability.sat.to" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							</tr>
+							<tr>
+							<th>Sunday</th>
+							<td>
+								<select v-model="availability.sun.from" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							<td>
+								<select v-model="availability.sun.to" class="form-control m-input">
+								<option value="null" disabled>Choose Time</option>
+								<option v-for="hour in hours" :value="hour" v-text="hour"></option>
+								</select>
+							</td>
+							</tr>
+							<tr>
+								<th>Hour Limit</th>
+								<td>
+									<select class="form-control m-input" v-model="availability.hourLimit">
 		
-								<option value="A">A</option>
-								<option value="B">B</option>
-								<option value="C">C</option>
-								<option value="D">D</option>
-								<option value="E">E</option>
-								<option value="F">F</option>
+								<option value="10">10 Hours</option>
+								<option value="20">20 Hours</option>
+								<option value="44">44 Hours</option>
+								<option value="44+">More than 44 Hours</option>
+								
 							</select>
-						</div>
-					</div>
-					
-					
-					<div class="form-group m-form__group row">
-						<label for="assignedBy" class="col-4 col-form-label">Assigned By</label>
-						<div class="col-8">
-							<input class="form-control m-input m-input--solid" disabled :placeholder="user.name"></input>
-						</div>
-					</div>
-					
-					
+								</td>
+							</tr>
+
+							<tr>
+								<th>Holiday</th>
+								<td>
+									<div class="m-checkbox-list">
+												<label class="m-checkbox">
+												<input type="checkbox" v-model="availability.holiday"> Ok to work on holidays
+												<span></span>
+												</label>
+												
+											</div>
+								</td>
+							</tr>
+						
+					</tbody>
+					</table>
 				</div>
 			
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" v-on:click="submitSkill">Save</button>
+        <button type="button" class="btn btn-success" v-on:click="submitAvailability">Save</button>
       </div>
     
     </div>
@@ -255,9 +360,9 @@
 			
       </div>
       <div class="modal-footer">
-      	<button type="button" class="btn btn-danger" v-on:click="removeSkill">Remove</button>
+      	<button type="button" class="btn btn-danger" >Remove</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" v-on:click="submitEditSkill">Update</button>
+        <button type="button" class="btn btn-primary" >Update</button>
       </div>
     
     </div>
@@ -302,22 +407,36 @@ var app = new Vue({
 
 		employees: [],
 		availability:{
-			monFrom:null,
-			monTo:null,
-			tueFrom:null,
-			tueTo:null,
-			wedFrom:null,
-			wedTo:null,
-			thuFrom:null,
-			thuTo:null,
-			friFrom:null,
-			friTo:null,
-			satFrom:null,
-			satTo:null,
-			sunTo:null,
-			sunFrom:null,
-			limit:null,
-			holiday:null,
+			mon:{
+				from:null,
+				to:null,
+			},
+			tue:{
+				from:null,
+				to:null,
+			},
+			wed:{
+				from:null,
+				to:null,
+			},
+			thu:{
+				from:null,
+				to:null,
+			},
+			fri:{
+				from:null,
+				to:null,
+			},
+			sat:{
+				from:null,
+				to:null,
+			},
+			sun:{
+				from:null,
+				to:null,
+			},
+			hourLimit:44,
+			holiday:true,
 		},
 	},
 	methods:{
@@ -398,10 +517,39 @@ var app = new Vue({
 			}
 			
 		},
-		assignSkillReset(){
-			this.currentEmployee = null;
-			this.newSkill = null;
-			this.skillLevel = 'F';
+		availabilityReset(){
+			this.availability = {
+			mon:{
+				from:null,
+				to:null,
+			},
+			tue:{
+				from:null,
+				to:null,
+			},
+			wed:{
+				from:null,
+				to:null,
+			},
+			thu:{
+				from:null,
+				to:null,
+			},
+			fri:{
+				from:null,
+				to:null,
+			},
+			sat:{
+				from:null,
+				to:null,
+			},
+			sun:{
+				from:null,
+				to:null,
+			},
+			hourLimit:44,
+			holiday:true,
+			}
 		},
 		updateEmployeeSkillView(){
 			this.filterEmployees();
@@ -410,47 +558,19 @@ var app = new Vue({
 			$('#edit-availability').modal('show');
 			this.currentEmployee = employee;
 		},
-		removeSkill(){
-			axios.post('/employee_skill/' + app.currentSkill.id + '/destroy',{
-
+		
+		submitAvailability(){
+			axios.post('/employee_availability/add',{
+				employee:app.currentEmployee,
+				availability: app.availability
 			}).then(function(response){
-				if(response.data){
-					
-					$('#change-skill').modal('hide');
-					app.assignSkillReset()
-					app.currentSkill = {id:null,name:'',level:null}
-					app.skillLevelUpdate = '',
-					$.notify({
-							title: 'Skill Removed!',
-							message: 'The Skill has been successfully removed.'
-						},{
-							type:'warning',
-							placement: { from:'top',align:'center'}
-						});
-					app.updateEmployeeSkillView();
+				console.log(response.data)
+			});
 
-				}
-			});
-		},
-		submitEditSkill(){
-			axios.post('/employee_skill/' + app.currentSkill.id + '/update',{
-				level: app.skillLevelUpdate
-			}).then(function(response){
-				if(response.data){
-					$('#change-skill').modal('hide');
-					app.assignSkillReset()
-					app.currentSkill = {id:null,name:'',level:null}
-					app.skillLevelUpdate = '',
-					$.notify({
-							title: 'Success!',
-							message: 'The Skill Level has been successfully updated!'
-						},{
-							type:'info',
-							placement: { from:'top',align:'center'}
-						});
-					app.updateEmployeeSkillView();
-				}
-			});
+			this.filterEmployees();
+			this.availabilityReset();
+			$('#add-availability').modal('hide');
+
 		},
 		formattedTime(tm){
 			if(tm != null){
