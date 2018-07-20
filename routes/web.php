@@ -260,6 +260,7 @@ Route::post('/employee_skill/get_skills','EmployeeSkillController@getSkillsByEmp
 Route::get('/employee_availability','AvailabilityController@index');
 Route::post('/employee_availability/add','AvailabilityController@store');
 Route::post('/employee/availability/{id}/show','AvailabilityController@employeeTab');
+Route::get('/my_availability','AvailabilityController@my');
 
 								}); // end of grouped auth
 

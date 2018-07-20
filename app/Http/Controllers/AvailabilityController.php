@@ -119,15 +119,12 @@ class AvailabilityController extends Controller
         return view('employee.profile.availability.index',compact('a'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function my()
     {
-        //
+        $subheader = "Availability";
+        $hours = Datetime::hours(60);
+        $availability = Availability::where('employee_id',Auth::user()->authorization->employee_id)->first();
+        return view('employeeUser.availability.index',compact('subheader','hours','availability'));
     }
 
     /**
