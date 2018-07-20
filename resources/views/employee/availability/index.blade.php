@@ -58,9 +58,7 @@
 	</form>
 <!--end::Form-->
 
-<div class="m-portlet__body" id="staffList">
-
-@include('layouts.errors')
+<div class="m-portlet__body">
 
 <table class="table">
 	<thead>
@@ -85,7 +83,7 @@
 	<td>@{{employee.name}} @{{employee.alias}}<br>@{{employee.employeeNumber}}<br>@{{employee.job_title}}</td>
 	<td>
 	<button v-if="employee.availability == null" v-on:click="addAvailability(employee.id)" type="button" class="btn m-btn--pill btn-secondary m-btn--custom m-btn--label-metal m-btn--border btn-sm">Add</button>
-	<button v-else type="button" @click="editAvailability(employee.id)" class="btn m-btn--pill btn-secondary m-btn--custom m-btn--label-metal m-btn--border btn-sm">Edit</button>
+	<button v-else type="button" @click="editAvailability(employee)" class="btn m-btn--pill btn-secondary m-btn--custom m-btn--label-metal m-btn--border btn-sm">Edit</button>
 	</td>
 	<template v-if="employee.availability != null">
 	<td>
@@ -308,67 +306,6 @@
 </div>
 
 
-<!-- Modal -->
-<div class="modal fade" id="edit-availability" tabindex="-1" role="dialog" aria-labelledby="editAvailabilityLabel" aria-hidden="true">
-  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="assign-skillLabel"><i class="flaticon-user-add"></i> Change Availability</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-      
-      <div class="modal-body">	
-
-			
-			
-				<div class="m-portlet__body">
-					<div class="form-group m-form__group row">
-						<label for="currentSkill" class="col-4 col-form-label">Skill</label>
-						<div class="col-8">
-							<input class="form-control m-input m-input--solid" disabled :placeholder="currentSkill.name"></input>
-						</div>
-					</div>
-					
-					<div class="form-group m-form__group row">
-						<label for="skillLevelUpdate" class="col-4 col-form-label">Level</label>
-						<div class="col-8">
-							<select class="form-control m-input" id="skillLevel" v-model="skillLevelUpdate">
-		
-								<option value="A">A</option>
-								<option value="B">B</option>
-								<option value="C">C</option>
-								<option value="D">D</option>
-								<option value="E">E</option>
-								<option value="F">F</option>
-							</select>
-						</div>
-					</div>
-					
-					
-					<div class="form-group m-form__group row">
-						<label for="assignedBy" class="col-4 col-form-label">By</label>
-						<div class="col-8">
-							<input class="form-control m-input m-input--solid" disabled :placeholder="user.name"></input>
-						</div>
-					</div>
-					
-					
-				</div>
-			
-      </div>
-      <div class="modal-footer">
-      	<button type="button" class="btn btn-danger" >Remove</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" >Update</button>
-      </div>
-    
-    </div>
-  </div>
-</div>
-
 @endcan		
 				
 
@@ -479,44 +416,7 @@ var app = new Vue({
 			this.currentEmployee = e;
 			$('#add-availability').modal('show');
 		},
-		submitSkill(){
-			
-			if(this.newSkill != null){
-				axios.post('/employee_skill/assign',{
-				employee: this.currentEmployee,
-				skill: this.newSkill,
-				level: this.skillLevel,
-				assignedBy: this.user.id
-				}).then(function(response){
-					if(response.data.status == 'success'){
-						app.assignSkillReset();
-						$('#assign-skill').modal('hide');
-						$.notify({
-							title: 'Success!',
-							message: response.data.message
-						},{
-							type:'success',
-							placement: { from:'top',align:'center'}
-						});
-						app.updateEmployeeSkillView();
-					} else {
-						app.assignSkillReset();
-						$('#assign-skill').modal('hide');
-						$.notify({
-							title: 'Failed!',
-							message: response.data.message
-						},{
-							type:'danger',
-							placement: { from:'top',align:'center'}
-						});
-					}
-				});
-				
-			} else {
-				alert('You must choose a skill to submit.')
-			}
-			
-		},
+		
 		availabilityReset(){
 			this.availability = {
 			mon:{
@@ -555,8 +455,41 @@ var app = new Vue({
 			this.filterEmployees();
 		},
 		editAvailability(employee){
-			$('#edit-availability').modal('show');
+			
 			this.currentEmployee = employee;
+			this.availability = {
+			mon:{
+				from:employee.availability.monFrom,
+				to:employee.availability.monTo,
+			},
+			tue:{
+				from:employee.availability.tueFrom,
+				to:employee.availability.tueTo,
+			},
+			wed:{
+				from:employee.availability.wedFrom,
+				to:employee.availability.wedTo,
+			},
+			thu:{
+				from:employee.availability.thuFrom,
+				to:employee.availability.thuTo,
+			},
+			fri:{
+				from:employee.availability.friFrom,
+				to:employee.availability.friTo,
+			},
+			sat:{
+				from:employee.availability.satFrom,
+				to:employee.availability.satTo,
+			},
+			sun:{
+				from:employee.availability.sunFrom,
+				to:employee.availability.sunTo,
+			},
+			hourLimit:employee.availability.hours,
+			holiday:employee.availability.holiday,
+			}
+			$('#add-availability').modal('show');
 		},
 		
 		submitAvailability(){
@@ -564,7 +497,17 @@ var app = new Vue({
 				employee:app.currentEmployee,
 				availability: app.availability
 			}).then(function(response){
-				console.log(response.data)
+				if(response.data == 'success'){
+					$.notify({
+							title: 'Success!',
+							message: 'Availability has been updated!'
+						},{
+							type:'success',
+							placement: { from:'top',align:'center'}
+						});
+				}
+
+				
 			});
 
 			this.filterEmployees();
@@ -583,6 +526,9 @@ var app = new Vue({
 	},
 	mounted(){
 		this.filterEmployees();
+		$('#add-availability').on('hidden.bs.modal', function (e) {
+			app.availabilityReset();
+})
 	}
 })
 

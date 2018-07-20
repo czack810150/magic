@@ -179,7 +179,6 @@
 							<span class="m-form__help">The email must be unique among all users.</span>
 						</div>
 					</div>
-					
 				</div>
 			
       </div>

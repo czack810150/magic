@@ -65,7 +65,30 @@ class AvailabilityController extends Controller
     public function store(Request $request)
     {
        
-        $availability = Availability::create([
+        $availability = Availability::where('employee_id',$request->employee)->first();
+        
+        if($availability){
+            $availability->update([
+            'monFrom' => $request->availability['mon']['from'],
+            'monTo' => $request->availability['mon']['to'],
+            'tueFrom' => $request->availability['tue']['from'],
+            'tueTo' => $request->availability['tue']['to'],
+            'wedFrom' => $request->availability['wed']['from'],
+            'wedTo' => $request->availability['wed']['to'],
+            'thuFrom' => $request->availability['thu']['from'],
+            'thuTo' => $request->availability['thu']['to'],
+            'friFrom' => $request->availability['fri']['from'],
+            'friTo' => $request->availability['fri']['to'],
+            'satFrom' => $request->availability['sat']['from'],
+            'satTo' => $request->availability['sat']['to'],
+            'sunFrom' => $request->availability['sun']['from'],
+            'sunTo' => $request->availability['sun']['to'],
+            'hours' => $request->availability['hourLimit'],
+            'holiday' => $request->availability['holiday']
+            ]);
+
+        } else {
+            $availability = Availability::create([
             'employee_id' => $request->employee,
             'monFrom' => $request->availability['mon']['from'],
             'monTo' => $request->availability['mon']['to'],
@@ -84,18 +107,16 @@ class AvailabilityController extends Controller
             'hours' => $request->availability['hourLimit'],
             'holiday' => $request->availability['holiday']
         ]);
-        return $availability;
+        }
+
+        
+        return 'success';
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function employeeTab($id)
     {
-        //
+        $a = Availability::where('employee_id',$id)->first();
+        return view('employee.profile.availability.index',compact('a'));
     }
 
     /**

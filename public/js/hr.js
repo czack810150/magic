@@ -590,3 +590,18 @@ function employeeTimeoff(employee)
 		}
 		);
 }
+
+function employeeAvailability(employee)
+{
+	$.post(
+		'/employee/availability/'+ employee + '/show',
+		{
+			_token: $("input[name=_token]").val(),
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);
+}

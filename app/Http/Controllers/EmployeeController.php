@@ -882,14 +882,14 @@ class EmployeeController extends Controller
                 $query->where('firstName','like',$r->searchStr.'%')->
              orWhere('lastName','like',$r->searchStr.'%')->
              orWhere('employeeNumber','like',$r->searchStr.'%');
-            })->get();
+            })->with('skill.skill')->with('availability')->get();
         } else {
             $employees = Employee::where('status',$r->status)->
              where(function ($query) use($r){
                 $query->where('firstName','like',$r->searchStr.'%')->
              orWhere('lastName','like',$r->searchStr.'%')->
              orWhere('employeeNumber','like',$r->searchStr.'%');
-            })->get();
+            })->with('skill.skill')->with('availability')->get();
         }
         foreach($employees as $e)
         {
