@@ -16,38 +16,19 @@
 		
 	</div>
 
-
+<!--begin::Form-->
+<form class="m-form ">
 
 <div class="m-portlet__body">
+<div class="form-group m-form__group m--margin-top-10">
+	<div class="alert m-alert m-alert--default" role="alert">
+		If you can work ANYTIME for a day, just set the "From" to 00:00:00 and "To" to 24:00:00.
+	</div>
+</div>
 
-{{$availability}}
-
-</div> <!--end::Portlet body-->
-
-
-
-
-
-@can('assign-skill')
-<!-- Modal -->
-<div class="modal fade" id="add-availability" tabindex="-1" role="dialog" aria-labelledby="addAvailabilityLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addAvailabilityLabel">Availability</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-      
-      <div class="modal-body">	
-
-				<div class="m-portlet__body">
-
-					<table class="table">
+<table class="table">
 						<thead>
-						<tr><th>Day</th><th style="width:30%">From</th><th style="width:30%">To</th></tr>
+						<tr><th>Day</th><th style="width:40%">From</th><th style="width:40%">To</th></tr>
 					</thead>
 					<tbody>
 						<tr>
@@ -155,52 +136,35 @@
 							</td>
 							</tr>
 							<tr>
-								<th>Hour Limit</th>
-								<td>
-									<select class="form-control m-input" v-model="availability.hourLimit">
-		
-								<option value="10">10 Hours</option>
-								<option value="20">20 Hours</option>
-								<option value="44">44 Hours</option>
-								<option value="44+">More than 44 Hours</option>
 								
-							</select>
+								<th>Hour Limit</th>
+								<td >
+									@{{availability.hourLimit}} (You can ask your store manager to change this.)
 								</td>
 							</tr>
 
 							<tr>
 								<th>Holiday</th>
-								<td>
-									<div class="m-checkbox-list">
-												<label class="m-checkbox">
-												<input type="checkbox" v-model="availability.holiday"> Ok to work on holidays
-												<span></span>
-												</label>
-												
-											</div>
+								<td v>
+									@{{ availability.holiday }} (You can ask your store manager to change this.)
 								</td>
 							</tr>
 						
 					</tbody>
 					</table>
-				</div>
-			
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-success" v-on:click="submitAvailability">Save</button>
-      </div>
-    
-    </div>
-  </div>
+
+</div> <!--end::Portlet body-->
+
+
+
+<div class="m-portlet__foot m-portlet__foot--fit">
+					<div class="m-form__actions">
+						<button type="button" class="btn btn-info" @click="submitAvailability">Update my availability</button>
+						<button type="button" class="btn btn-secondary" @click="availabilityReset" >Cancel</button>
+					</div>
 </div>
-
-
-@endcan		
-				
-
-
-
+</form>
+<!--end::Form-->
 </div>
 <!--end::Portlet-->						
 @endsection
@@ -211,14 +175,8 @@
 var app = new Vue({
 	el:'#root',
 	data:{
-		user:{
-			id:{{Auth::user()->authorization->employee_id}},
-			name:'{{Auth::user()->authorization->employee->name}}',
-			location:{{Auth::user()->authorization->location_id}},
-		},
-	
 		token:'{{csrf_token()}}',
-		currentEmployee:null,
+		currentEmployee:{{Auth::user()->authorization->employee_id}},
 		hours:[
 			@foreach($hours as $h)
 				'{{$h}}',
@@ -227,153 +185,73 @@ var app = new Vue({
 
 		availability:{
 			mon:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->monFrom)?'null':$availability->monFrom}}',
+				to:'{{is_null($availability->monTo)?'null':$availability->monTo}}',
 			},
 			tue:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->tueFrom)?'null':$availability->tueFrom}}',
+				to:'{{is_null($availability->tueTo)?'null':$availability->tueTo}}',
 			},
 			wed:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->wedFrom)?'null':$availability->wedFrom}}',
+				to:'{{is_null($availability->wedTo)?'null':$availability->wedTo}}',
 			},
 			thu:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->thuFrom)?'null':$availability->thuFrom}}',
+				to:'{{is_null($availability->thuTo)?'null':$availability->thuTo}}',
 			},
 			fri:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->friFrom)?'null':$availability->friFrom}}',
+				to:'{{is_null($availability->friTo)?'null':$availability->friTo}}',
 			},
 			sat:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->satFrom)?'null':$availability->satFrom}}',
+				to:'{{is_null($availability->satTo)?'null':$availability->satTo}}',
 			},
 			sun:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->sunFrom)?'null':$availability->sunFrom}}',
+				to:'{{is_null($availability->sunTo)?'null':$availability->sunTo}}',
 			},
-			hourLimit:44,
-			holiday:true,
-		},
+			hourLimit:'{{ empty($availability->hours)?'No information':"I can work up to $availability->hours hours per week" }}',
+			holiday:'{{ empty($availability->holiday)? 'I can not work on holidays':'I can work on holidays'}}',
+		}
 	},
 	methods:{
-		viewEmployee: function (employee){
-		window.location.href='/staff/profile/' + employee + '/show';
-		},
-		locationSelect(){
-			
-			this.filterEmployees();
-		},
-		statusSelect(){
-			
-			this.filterEmployees();
-		},
-		groupSelect(){
-			
-			this.filterEmployees();
-		},
-		filterEmployees(){
-			axios.post('/filter/employee/list',{
-				_token: this.token,
-				location: this.selectedLocation,
-				status: this.selectedStatus,
-				group: this.selectedGroup,
-			}).then(function(response){
-				app.employees = response.data;
-			})
-		},
-		searchEmployee(){
-			axios.post('/employee/search',{
-				_token: this.token,
-				location: this.selectedLocation,
-				status: this.selectedStatus,
-				searchStr: this.searchString,
-			}).then(function(response){
-				app.employees = response.data;
-			})
-		},
-		addAvailability(e){
-			this.currentEmployee = e;
-			$('#add-availability').modal('show');
-		},
 		
 		availabilityReset(){
 			this.availability = {
 			mon:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->monFrom)?'null':$availability->monFrom}}',
+				to:'{{is_null($availability->monTo)?'null':$availability->monTo}}',
 			},
 			tue:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->tueFrom)?'null':$availability->tueFrom}}',
+				to:'{{is_null($availability->tueTo)?'null':$availability->tueTo}}',
 			},
 			wed:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->wedFrom)?'null':$availability->wedFrom}}',
+				to:'{{is_null($availability->wedTo)?'null':$availability->wedTo}}',
 			},
 			thu:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->thuFrom)?'null':$availability->thuFrom}}',
+				to:'{{is_null($availability->thuTo)?'null':$availability->thuTo}}',
 			},
 			fri:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->friFrom)?'null':$availability->friFrom}}',
+				to:'{{is_null($availability->friTo)?'null':$availability->friTo}}',
 			},
 			sat:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->satFrom)?'null':$availability->satFrom}}',
+				to:'{{is_null($availability->satTo)?'null':$availability->satTo}}',
 			},
 			sun:{
-				from:null,
-				to:null,
+				from:'{{is_null($availability->sunFrom)?'null':$availability->sunFrom}}',
+				to:'{{is_null($availability->sunTo)?'null':$availability->sunTo}}',
 			},
-			hourLimit:44,
-			holiday:true,
-			}
+			hourLimit:'{{ empty($availability->hours)?'No information':"I can work up to $availability->hours hours per week" }}',
+			holiday:'{{ empty($availability->holiday)? 'I can not work on holidays':'I can work on holidays'}}',
+		}
 		},
-		updateEmployeeSkillView(){
-			this.filterEmployees();
-		},
-		editAvailability(employee){
-			
-			this.currentEmployee = employee;
-			this.availability = {
-			mon:{
-				from:employee.availability.monFrom,
-				to:employee.availability.monTo,
-			},
-			tue:{
-				from:employee.availability.tueFrom,
-				to:employee.availability.tueTo,
-			},
-			wed:{
-				from:employee.availability.wedFrom,
-				to:employee.availability.wedTo,
-			},
-			thu:{
-				from:employee.availability.thuFrom,
-				to:employee.availability.thuTo,
-			},
-			fri:{
-				from:employee.availability.friFrom,
-				to:employee.availability.friTo,
-			},
-			sat:{
-				from:employee.availability.satFrom,
-				to:employee.availability.satTo,
-			},
-			sun:{
-				from:employee.availability.sunFrom,
-				to:employee.availability.sunTo,
-			},
-			hourLimit:employee.availability.hours,
-			holiday:employee.availability.holiday,
-			}
-			$('#add-availability').modal('show');
-		},
-		
 		submitAvailability(){
 			axios.post('/employee_availability/add',{
 				employee:app.currentEmployee,
@@ -391,21 +269,7 @@ var app = new Vue({
 
 				
 			});
-
-			this.filterEmployees();
-			this.availabilityReset();
-			$('#add-availability').modal('hide');
-
-		},
-		formattedTime(tm){
-			if(tm != null){
-				return moment(tm,'HH:mm:ss').format('HH:mm');
-			} else {
-				return null;
-			}
-			
 		}
-	},
 
 	}
 })

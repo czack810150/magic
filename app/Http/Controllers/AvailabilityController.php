@@ -123,7 +123,26 @@ class AvailabilityController extends Controller
     {
         $subheader = "Availability";
         $hours = Datetime::hours(60);
-        $availability = Availability::where('employee_id',Auth::user()->authorization->employee_id)->first();
+        $availability = Availability::firstOrCreate([
+            'employee_id' => Auth::user()->authorization->employee_id
+        ],[
+            'monFrom' => '00:00:00',
+            'monTo' => '00:00:00',
+            'tueFrom' => '00:00:00',
+            'tueTo' => '00:00:00',
+            'wedFrom' => '00:00:00',
+            'wedTo' => '00:00:00',
+            'thuFrom' => '00:00:00',
+            'thuTo' => '00:00:00',
+            'friFrom' => '00:00:00',
+            'friTo' => '00:00:00',
+            'satFrom' => '00:00:00',
+            'satTo' => '00:00:00',
+            'sunFrom' => '00:00:00',
+            'sunTo' => '00:00:00',
+            'hours' => '44+',
+            'holiday' => '1',
+        ]);
         return view('employeeUser.availability.index',compact('subheader','hours','availability'));
     }
 
