@@ -149,6 +149,7 @@ class EmployeeController extends Controller
                   'hireDate' => 'required|date_format:Y-m-d'
                 ]);
        $employee = Employee::create([
+            'job_group' => 'trial',
             'employeeNumber' => $request->employeeNumber,
             'email' => $request->email,
             'firstName' => $request->firstName,
@@ -751,6 +752,7 @@ class EmployeeController extends Controller
                   'hireDate' => 'required|date_format:Y-m-d'
                 ]);
        $employee = Employee::create([
+            'job_group' => 'trial',
             'employeeNumber' => $r->employeeNumber,
             'email' => $applicant->email,
             'firstName' => $applicant->firstName,

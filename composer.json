@@ -14,6 +14,7 @@
         "laravelcollective/html": "^5.4.0",
         "nesbot/carbon": "^1.32",
         "nexmo/laravel": "^1.1",
+        "swiftmailer/swiftmailer": "^6.0",
         "werneckbh/laravel-qr-code": "^0.1.1"
     },
     "require-dev": {
