@@ -100,7 +100,7 @@
   </ul>
   </div>
   <div v-else>
-  Oops.. 系统中没有你今日的排班。请询问店长。
+  
   </div>
   </div>
   <br>
@@ -178,12 +178,12 @@
       },
         
       methods: {
-          focus(){this.$refs.cardReader.focus();console.log('called focus')},
+          focus(){this.$refs.cardReader.focus();},
           clockIn(){
               this.buttons = false
               this.cardScan = true
               this.inOut= true
-              console.log('clock in')
+              // console.log('clock in')
               vm.focus();
           },
           clockOut() {
@@ -218,7 +218,7 @@
                     employeeCard: this.employeeId,
                     inOut: this.inOut
                 }).then(response => {
-                    console.log(response.data);
+                    // console.log(response.data);
                     switch(response.data.status){
                         case 'success':
                             this.messageClass = 'is-success';
@@ -254,7 +254,7 @@
                     this.showMessage=true;
                 })
 
-                console.log('submit');
+                // console.log('submit');
                 this.employeeId = '';
                 this.cardScan = false;
                 

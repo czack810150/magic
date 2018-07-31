@@ -159,13 +159,13 @@ class ClockController extends Controller
         $now = Carbon::now();
     	 
    		
-        $shifts = Shift::where('employee_id',$employee->id)->whereDate('start',$now->toDateString())->get();
-        if(count($shifts)){
-          foreach($shifts as $s){
-            $s->role;
-            $s->duty;
-          }
-        }
+        // $shifts = Shift::where('employee_id',$employee->id)->whereDate('start',$now->toDateString())->get();
+        // if(count($shifts)){
+        //   foreach($shifts as $s){
+        //     $s->role;
+        //     $s->duty;
+        //   }
+        // }
     	 $inShift = In::where('employee_id',$employee->id)->first();
        $records = Clock::where('employee_id',$employee->id)->whereDate('clockIn',$now->toDateString())->get();
       if(is_null($inShift)){ // currently not in shift
@@ -190,7 +190,7 @@ class ClockController extends Controller
           'status' => 'link',
           'messageTitle' => 'Clock Out',
           'message'=> "Clocked out！ 员工 <strong>$employee->name </strong>结束了当前的工作计时。",
-          'shifts' => $shifts,
+          'shifts' => [],
           'records' => $records,
           'greeting' => '辛苦了！'
         ];

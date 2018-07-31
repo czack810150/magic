@@ -102,16 +102,19 @@ Route::post('/api/employee/{id}','EmployeeController@apiGet');
 Route::post('/api/employeeBylocation','EmployeeController@location');
 
 // time clock
-Route::get('/timeclock','ClockController@index')->name('timeclock')->middleware('auth');
-Route::get('/timeclock/in','ClockController@in')->middleware('auth');
-Route::get('/timeclock/out','ClockController@out')->middleware('auth');
-Route::post('/timeclock/in','ClockController@clockIn')->middleware('auth');
-Route::post('/timeclock/out','ClockController@clockOut')->middleware('auth');
-Route::get('/timeclock/inshift','ClockController@inShift');
-Route::post('/clock/edit','ClockController@show');
-Route::post('/clock/update','ClockController@update');
-Route::post('/clock/add','ClockController@store');
-Route::post('/clock/{id}/delete','ClockController@destroy');
+Route::middleware('auth')->group(function(){
+	Route::get('/timeclock','ClockController@index')->name('timeclock');
+	Route::get('/timeclock/in','ClockController@in');
+	Route::get('/timeclock/out','ClockController@out');
+	Route::post('/timeclock/in','ClockController@clockIn');
+	Route::post('/timeclock/out','ClockController@clockOut');
+	Route::get('/timeclock/inshift','ClockController@inShift');
+	Route::post('/clock/edit','ClockController@show');
+	Route::post('/clock/update','ClockController@update');
+	Route::post('/clock/add','ClockController@store');
+	Route::post('/clock/{id}/delete','ClockController@destroy');
+	
+});
 Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
 
 
