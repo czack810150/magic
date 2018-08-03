@@ -8,6 +8,7 @@ use App\Employee;
 use App\Location;
 use App\Leave;
 use App\LeaveType;
+use App\EmployeePending;
 
 use App\Events\LeaveRequested;
 use App\Events\LeaveApproved;
@@ -137,8 +138,18 @@ class LeaveController extends Controller
             $leave->status = 'approved';
             $leave->approvedBy = Auth::user()->authorization->employee_id;
             $leave->save();
+
+            // add to EmployeePending
+            $pending = EmployeePending::create([
+                'employee_id' => $leave->employee_id,
+                'status' => 'vacation',
+                'start' => $leave->from,
+                'end' => $leave->to
+            ]);
+           
+
             event(new LeaveApproved($leave));
-            return self::index();
+            return redirect('leave');
         }
     }
     public function deny($id)
@@ -152,7 +163,7 @@ class LeaveController extends Controller
             $leave->approvedBy = null;
             $leave->save();
             event(new LeaveRejected($leave));
-            return self::index();
+            return redirect('leave');
         }
     }
      public function pending($id)
@@ -163,7 +174,7 @@ class LeaveController extends Controller
             $leave->status = 'pending';
             $leave->approvedBy = null;
             $leave->save();
-            return self::index();
+            return redirect('leave');
     
     }
 }

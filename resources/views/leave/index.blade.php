@@ -72,10 +72,27 @@
 							      	@endif
 							      	<td>{{ $l->comment }}</td>
 							      	<td>
-							      		
-							      			<a href="{{ url("leave/$l->id/approve") }}" class="btn btn-success btn-sm">Approve</a>
+
+
+							      	@switch($l->status)
+							      	@case('pending')
+							      	<a href="{{ url("leave/$l->id/approve") }}" class="btn btn-success btn-sm">Approve</a>
+							      	<a href="{{ url("leave/$l->id/deny") }}" class="btn btn-danger btn-sm">Reject</a>
+							      	@break
+							      	@case('approved')
+							      	
+							      	@break
+							      	@case('rejected')
+							      	<a href="{{ url("leave/$l->id/approve") }}" class="btn btn-success btn-sm">Approve</a>
+							      			<a href="{{ url("leave/$l->id/pending") }}" class="btn btn-info btn-sm">Pending</a>
+							      	@break
+							      	@default
+							      	<a href="{{ url("leave/$l->id/approve") }}" class="btn btn-success btn-sm">Approve</a>
 							      			<a href="{{ url("leave/$l->id/pending") }}" class="btn btn-info btn-sm">Pending</a>
 							      			<a href="{{ url("leave/$l->id/deny") }}" class="btn btn-danger btn-sm">Reject</a>
+							      	@endswitch
+							      		
+							      			
 
 							      		
 							      	</td>

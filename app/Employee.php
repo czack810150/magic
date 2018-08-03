@@ -154,4 +154,8 @@ class Employee extends Model
     {
         return $this->hasMany('App\EmployeeSkill');
     }
+    public function pending()
+    {
+        return $this->hasMany('App\EmployeePending');
+    }
 }
