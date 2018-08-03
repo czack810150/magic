@@ -93,7 +93,7 @@ let overviewChart = AmCharts.makeChart('overviewChart',{
 <!--end:: Widgets/Finance Summary--> 
 
 <!--begin::Portlet-->
-		<div class="m-portlet m-portlet--responsive-mobile">
+		<div class="m-portlet m-portlet--responsive-mobile" id="root">
 			<div class="m-portlet__head">
 				<div class="m-portlet__head-caption">
 					<div class="m-portlet__head-title">
@@ -108,7 +108,7 @@ let overviewChart = AmCharts.makeChart('overviewChart',{
 
 											<ul class="m-portlet__nav">
 												<li class="m-portlet__nav-item">
-{{ Form::select('location',$locations,999,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','id'=>'location'])}}											
+{{ Form::select('location',$locations,999,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','id'=>'location','onchange'=>'storeRefresh()'])}}											
 												</li>								
 											</ul>
 			</div>
@@ -116,6 +116,7 @@ let overviewChart = AmCharts.makeChart('overviewChart',{
 			<div class="m-portlet__body" >				
 				<div id="details">
 
+					<div id="storeStaffs">
 					<div class="row">
 							<div class="col-6">
 								<h4>服务员 Servers</h4>
@@ -132,15 +133,17 @@ let overviewChart = AmCharts.makeChart('overviewChart',{
 								<h4>拉面师 Noodle</h4>
 							<div id="noodleChart" class="chartdiv"></div>
 							</div>
-							<div class="col-6">
-								<h4>管理人员 Management</h4>
-							<div id="managerChart" class="chartdiv"></div>
-							</div>
+						
+					</div>
 					</div>
 
 
 
 					<div class="row">
+							<div class="col-6">
+								<h4>管理人员 Management</h4>
+							<div id="managerChart" class="chartdiv"></div>
+							</div>
 
 						<div class="col-3">
 							<h6>厨房工人 Central Kitchen</h6>
@@ -320,6 +323,18 @@ let managerChart = AmCharts.makeChart('managerChart',{
 		'fixedPosition':true
 	},
 });
+
+
+
+function storeRefresh(){
+	$('#storeStaffs').html($('#location').val());
+	axios.post('/hr/location/breakdown',{
+		_token: '{{csrf_token()}}',
+		location: $('#location').val(),	
+	}).then(function(response){
+		$('#storeStaffs').html(response.data);
+	})
+}
 
 </script>	
 

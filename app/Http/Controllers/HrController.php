@@ -19,7 +19,7 @@ class HrController extends Controller
     {
         $subheader = 'Human Resources';
         if(Gate::allows('view-hr')){
-            $locations = Location::pluck('name','id');
+            $locations = Location::store()->pluck('name','id');
             $locations['999'] = 'All';
             $data['activeEmployees'] = Employee::activeEmployee()->count();
             $data['terminatedEmployees'] = Employee::terminatedEmployees()->count();
@@ -135,5 +135,15 @@ class HrController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function locationBreakdown(Request $r)
+    {   
+        if($r->location == 999){
+            $data['positionBreakdown'] = Employee::jobBreakdown(null);
+        } else {
+            $data['positionBreakdown'] = Employee::jobBreakdown($r->location);
+        }
+        
+        return view('hr.location.breakdown',compact('data'));
     }
 }
