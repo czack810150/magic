@@ -41,6 +41,14 @@
 	</h2>
 	<div>{{ $staff->job->rank }} | {{ $staff->location->name }} </div>
 	<div>Joined since {{ $staff->hired->toFormattedDateString() }}   ({{ $staff->hired->diffForHumans() }})</div>
+	
+		@can('update-profile-picture',$staff->id)
+	<button class="btn btn-metal btn-sm" data-toggle="modal" data-target="#uploadModal">
+		Upload a file
+	</button>
+	@endcan
+	
+
 </div>
 
 <div class="hr-contact-list col-md-4">
@@ -441,12 +449,6 @@
 				
 				<div class="col-12">
 					<input type="file" name="file">
-					<!-- <div class="m-dropzone dropzone"  id="m-dropzone-one">
-						<div class="m-dropzone__msg dz-message needsclick">
-						    <h3 class="m-dropzone__msg-title">Drop your picture file here or click to upload.</h3>
-						    <span class="m-dropzone__msg-desc">jpeg file is supported with max size of 2MB.</span>
-						</div>
-					</div> -->
 				</div>
 			</div>
 			
@@ -470,9 +472,66 @@
       
     </div>
   </div>
-</div>
+</div> 
+<!-- end of modal -->
 
-{{ csrf_field() }}			
+<!-- Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+<!--begin::Portlet-->
+<div class="m-portlet">
+	<div class="m-portlet__head">
+		<div class="m-portlet__head-caption">
+			<div class="m-portlet__head-title">
+				<h3 class="m-portlet__head-text">
+					Upload Employee Files <small>Resumes, CVs, Certificates</small>
+				</h3>
+			</div>
+		</div>
+	</div>
+	<!--begin::Form-->
+	<form class="m-form m-form--fit m-form--label-align-right" method="post" action="/file/employee/{{ $staff->id }}/file" enctype="multipart/form-data">
+		{{ csrf_field() }}
+		<div class="m-portlet__body">
+			<div class="form-group m-form__group">
+						<label for="file_type">Type</label>
+						<select class="form-control m-input" id="file_type" name="file_type">
+							<option value="resume">Resume</option>
+							<option value="certificate">Certificate</option>
+							<option value="other">Other</option>
+						</select>
+					</div>
+			<div class="form-group m-form__group row">
+				
+				<div class="col-12">
+					<input type="file" name="file">
+				</div>
+			</div>
+			
+			
+		</div>
+		<div class="m-portlet__foot m-portlet__foot--fit">
+			<div class="m-form__actions m-form__actions">
+				<div class="row">
+					<div class="col-lg-9 ml-lg-auto">
+						<button type="submit" class="btn btn-brand">Upload</button>
+						<button type="reset" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!--end::Form-->
+</div>
+<!--end::Portlet-->
+  
+      
+    </div>
+  </div>
+</div> 
+<!-- end of modal -->
+		
 @endsection
 
 

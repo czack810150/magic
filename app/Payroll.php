@@ -434,15 +434,19 @@ class Payroll extends Model
             $p1 = Hour::where('start',$cps->copy()->subDays(14))->where('employee_id',$employee)->where('location_id',$location)->first();
             $p2 = Hour::where('start',$cps->copy()->subDays(28))->where('employee_id',$employee)->where('location_id',$location)->first();
             if($p1){
-                $p1->wk1Effective > 44.0 ? $wk1 = 44.0:$wk1 = $p1->wk1Effective;
-                $p1->wk2Effective > 44.0 ? $wk2 = 44.0:$wk2 = $p1->wk2Effective;
+                // $p1->wk1Effective > 44.0 ? $wk1 = 44.0:
+                $wk1 = $p1->wk1Effective;
+                // $p1->wk2Effective > 44.0 ? $wk2 = 44.0:
+                $wk2 = $p1->wk2Effective;
             } else {
                 $wk1 = 0;
                 $wk2 = 0;
             }
             if($p2){
-                $p2->wk1Effective > 44.0 ? $wk3 = 44.0:$wk3 = $p2->wk1Effective;
-                $p2->wk2Effective > 44.0 ? $wk4 = 44.0:$wk4 = $p2->wk2Effective;
+                // $p2->wk1Effective > 44.0 ? $wk3 = 44.0:
+                $wk3 = $p2->wk1Effective;
+                // $p2->wk2Effective > 44.0 ? $wk4 = 44.0:
+                $wk4 = $p2->wk2Effective;
             } else {
                 $wk3 = 0;
                 $wk4 = 0;
@@ -452,19 +456,23 @@ class Payroll extends Model
             $p2 = Hour::where('start',$cps->copy()->subDays(14))->where('employee_id',$employee)->where('location_id',$location)->first();
             $p3 = Hour::where('start',$cps->copy()->subDays(28))->where('employee_id',$employee)->where('location_id',$location)->first();
             if($p1){
-                $p1->wk1Effective > 44.0 ? $wk1 = 44.0:$wk1 = $p1->wk1Effective;
+                // $p1->wk1Effective > 44.0 ? $wk1 = 44.0:
+                $wk1 = $p1->wk1Effective;
             } else {
                 $wk1 = 0;
             }
             if($p2){
-                $p2->wk1Effective > 44.0 ? $wk2 = 44.0:$wk2 = $p2->wk1Effective;
-                $p2->wk2Effective > 44.0 ? $wk3 = 44.0:$wk3 = $p2->wk2Effective;
+                // $p2->wk1Effective > 44.0 ? $wk2 = 44.0:
+                $wk2 = $p2->wk1Effective;
+                // $p2->wk2Effective > 44.0 ? $wk3 = 44.0:
+                $wk3 = $p2->wk2Effective;
             } else {
                 $wk2 = 0;
                 $wk3 = 0;
             }
             if($p3){
-                $p3->wk2Effective > 44.0 ? $wk4 = 44.0:$wk4 = $p3->wk2Effective;
+                // $p3->wk2Effective > 44.0 ? $wk4 = 44.0:
+                $wk4 = $p3->wk2Effective;
             } else {
                 $wk4 = 0;
             }

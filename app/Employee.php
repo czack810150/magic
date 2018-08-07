@@ -158,4 +158,8 @@ class Employee extends Model
     {
         return $this->hasMany('App\EmployeePending');
     }
+    public function file()
+    {
+        return $this->hasMany('App\EmployeeFile');
+    }
 }

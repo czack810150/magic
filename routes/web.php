@@ -63,6 +63,8 @@ Route::post('/applicant/updateStatus','ApplicantController@update');
 
 //file upload
 Route::post('/file/employee/{id}/picture','FileUploadController@profilePictureUpload');
+Route::post('/file/employee/{id}/file','FileUploadController@fileUpload');
+Route::get('/storage/{id}/delete','FileUploadController@destroy');
 
 // HR
 Route::get('/hr','HrController@index');

@@ -229,6 +229,38 @@
 
 </div><!-- m-portlet__body -->
 
-</div><!-- end of work history detailes -->																	
+</div><!-- end of work history detailes -->		
+
+
+<div id="employeeFiles">
+									<div class="m-portlet__head">
+										<div class="m-portlet__head-caption">
+											<div class="m-portlet__head-title">
+												
+												<h3 class="m-portlet__head-text">
+													Files <small>Resumes, CVs, Certificates</small>
+												</h3>
+											</div>
+										</div>
+										
+									</div>
+<div class="m-portlet__body">
+
+<div class="row">
+	<div class="col-12">
+		@if(count($employee->file))
+		<ul>
+		@foreach($employee->file as $f)
+			<li>{{$f->type}} <a href="{{url('storage/'.$f->path)}}" target="_blank">{{$f->name}}</a> <a href="{{url("storage/$f->id/delete")}}">Remove</a></li>
+		@endforeach
+		</ul>
+		@endif
+	</div>
+</div> <!-- end of row -->
+
+</div><!-- m-portlet__body -->
+</div><!-- end of employee files -->	
+
+
 </div>
 <!--end::Portlet-->

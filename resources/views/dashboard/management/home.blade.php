@@ -1,7 +1,5 @@
 @extends('layouts.master')
-
 @section('content')
-
 <ul class="nav nav-tabs m-tabs-line m-tabs-line--2x m-tabs-line--success" role="tablist">
                     <li class="nav-item m-tabs__item">
                         <a class="nav-link m-tabs__link active" data-toggle="tab" href="#sales_tab" role="tab">SALES</a>
