@@ -202,7 +202,7 @@ var app = new Vue({
 	data:{
 		searchString:'',
 		token:'{{csrf_token()}}',
-		selectedLocation:-1,
+		selectedLocation:{{ Auth::user()->authorization->location_id }},
 		selectedStatus:'active',
 		selectedGroup:'%',
 		employees: [

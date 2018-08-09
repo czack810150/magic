@@ -73,7 +73,7 @@ class EmployeeController extends Controller
             'manager' => 'Manager',
         );
         $jobs = Job::where('trial',1)->pluck('rank','id');
-        return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations'));
+        return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations','groups'));
         }
         
     }
