@@ -65,6 +65,13 @@ class EmployeeController extends Controller
             'vacation' => 'On vacation only',
             'terminated' => 'Terminated staffs',
         ); 
+        $groups = array(
+            '%' => 'All Roles',
+            'trial' => '试用期',
+            'employee' => 'Employee',
+            'supervisor' => 'Supervisor',
+            'manager' => 'Manager',
+        );
         $jobs = Job::where('trial',1)->pluck('rank','id');
         return view('employee.index',compact('employees','subheader','locations','status','jobs','employeeLocations'));
         }
