@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Sale;
+use App\SaleAmount;
 
 
 class CalculateTotals extends Command
@@ -23,6 +23,6 @@ class CalculateTotals extends Command
   
     public function handle()
     {
-        return Sale::saveDailySales($this->argument('date'));
+        return SaleAmount::saveDailySales($this->argument('date'));
     }
 }

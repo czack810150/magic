@@ -108,4 +108,25 @@ class SaleAmount extends Model
     	}
     	return $count;
     }
+    public static function saveDailySales($date)
+    {
+        $locations = Location::Store()->get();
+        $dt = Carbon::createFromFormat('Y-m-d',$date)->startOfDay();
+        $sale = SaleAmount::whereDate('from',$dt->toDateString())->sum('invoiceAmt');
+        Sale_total::create([
+            'location_id' => -1,
+            'date' => $date,
+            'total' => round($sale,2)
+        ]);
+        foreach($locations as $location)
+        {
+            $sale = SaleAmount::where('location_id',$location->id)->whereDate('from',$dt->toDateString())->sum('invoiceAmt');
+            Sale_total::create([
+            'location_id' => $location->id,
+            'date' => $date,
+            'total' => round($sale,2)
+            ]);
+        }
+        return true;
+    }
 }
