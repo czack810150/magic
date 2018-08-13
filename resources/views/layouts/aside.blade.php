@@ -34,7 +34,21 @@
 								</h4>
 								<i class="m-menu__section-icon flaticon-more-v3"></i>
 							</li>
-
+							@can('view-sales')
+							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+								<a  href="{{ url('/sales_dashboard') }}" class="m-menu__link ">
+									<i class="m-menu__link-icon flaticon-graph"></i>
+									<span class="m-menu__link-title">
+										<span class="m-menu__link-wrap">
+											<span class="m-menu__link-text">
+												Sales
+											</span>
+											
+										</span>
+									</span>
+								</a>
+							</li>
+							@endcan
 							
 							@can('use-scheduler')
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">

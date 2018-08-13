@@ -202,6 +202,22 @@ class Sale extends Model
         $data['monthCompare'] = round($sales / $previousMonth*100,2);
         return $data;
     }
+    public static function monthlySalesByYearMonthLocation($year,$month,$location)
+    {
+        $dt = Carbon::createFromDate($year,$month,1);
+        $sales = Sale_total::where('location_id',$location)->whereYear('date',$year)->whereMonth('date',$month)->sum('total');
+        $data['selectedMonth'] = number_format($sales,0,'.',',');
+        $previousMonth = Sale_total::where('location_id',$location)->whereYear('date',$dt->year)->whereMonth('date',$dt->subMonth()->month)->sum('total');
+        $data['prevMonth'] = number_format($previousMonth,0,'.',',');
+        if($data['prevMonth']){
+            $data['monthCompare'] = round($sales / $previousMonth*100,2);
+        } else {
+            $data['monthCompare'] = 0;
+        }
+        
+        return $data;
+
+    }
     public static function saveDailySales($date)
     {
         $locations = Location::Store()->get();

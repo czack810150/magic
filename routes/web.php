@@ -183,6 +183,7 @@ Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
 	Route::post('/sales/item','SaleController@itemSales');
 	Route::post('/sales/two_week','SaleController@twoWeekSales');
 	Route::post('/sales/monthly','SaleController@monthlySales');
+	Route::post('/sales/monthlyByYearMonthLocation','SaleController@monthlyByYearMonthLocation');
 
 
 	//EMPLOYEE
@@ -267,6 +268,8 @@ Route::get('/employee_availability','AvailabilityController@index');
 Route::post('/employee_availability/add','AvailabilityController@store');
 Route::post('/employee/availability/{id}/show','AvailabilityController@employeeTab');
 Route::get('/my_availability','AvailabilityController@my');
+
+	Route::get('/sales_dashboard','SaleController@dashboard');
 
 								}); // end of grouped auth
 

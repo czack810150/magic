@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Sale;
+use Illuminate\Support\Facades\Auth;
 use App\Location;
+use App\Sale;
+use App\Sale_total;
+use App\SaleAmount;
 use App\Item;
+use App\ItemCategory;
 use Carbon\Carbon;
 
 class SaleController extends Controller
@@ -40,5 +44,27 @@ class SaleController extends Controller
     public function monthlySales(Request $r){
        
         return Sale::monthlySales($r->location);
+    }
+    public function dashboard()
+    {
+        $subheader = 'Sales';
+
+        $locations = Location::Store()->get();
+        $dt = Carbon::now();
+     
+        $data['magicBeefs'] = Sale::whereYear('from',$dt->year)->whereMonth('from',$dt->month)->where('location_id','!=',0)->where('itemCode','S01001')->sum('qty');
+        $data['monthlySales'] = Sale_total::whereYear('date',$dt->year)->whereMonth('date',$dt->month)->where('location_id',-1)->sum('total');
+        $data['preMonthlySales'] = Sale_total::whereYear('date',$dt->year)->whereMonth('date',$dt->copy()->subMonth()->month)->where('location_id',-1)->sum('total');
+      
+        $items = Item::menuItems()->get();
+        $categories = ItemCategory::get();
+        
+
+
+        return view('sales.dashboard',compact('subheader','locations','data','items','categories'));
+    }
+    public function monthlyByYearMonthLocation(Request $r)
+    {
+        return Sale::monthlySAlesByYearMonthLocation($r->year,$r->month,$r->location);
     }
 }
