@@ -67,4 +67,8 @@ class SaleController extends Controller
     {
         return Sale::monthlySAlesByYearMonthLocation($r->year,$r->month,$r->location);
     }
+    public function monthDailySales(Request $r){
+       
+        return $r->all();
+    }
 }

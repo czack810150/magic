@@ -182,6 +182,7 @@ Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
 	Route::get('/sales','SaleController@index');
 	Route::post('/sales/item','SaleController@itemSales');
 	Route::post('/sales/two_week','SaleController@twoWeekSales');
+	Route::post('/sales/month_daily','SaleController@monthDailySales');
 	Route::post('/sales/monthly','SaleController@monthlySales');
 	Route::post('/sales/monthlyByYearMonthLocation','SaleController@monthlyByYearMonthLocation');
 

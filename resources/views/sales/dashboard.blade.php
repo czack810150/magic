@@ -41,7 +41,7 @@
             </div>
 <div class="m-portlet__body  m-portlet__body--no-padding">
 <div class="row m-row--no-padding m-row--col-separator-xl">
-            <div class="col-md-12 col-lg-6 col-xl-3">
+            <div class="col-md-12 col-lg-6 col-xl-4">
                 <!--begin::Total Profit-->
                 <div class="m-widget24">                     
                     <div class="m-widget24__item">
@@ -68,6 +68,23 @@
                 </div>
                 <!--end::Total Profit-->
             </div>
+ <div class="col-md-12 col-lg-6 col-xl-6">
+                <!--begin:: Widgets/Daily Sales-->
+<div class="m-widget14">
+    <div class="m-widget14__header m--margin-bottom-30">
+        <h3 class="m-widget14__title">
+            Daily Sales              
+        </h3>
+        <span class="m-widget14__desc">
+        Check out each collumn for more details
+        </span>
+    </div>
+    <div class="m-widget14__chart" style="height:120px;">
+        <canvas  id="month_daily_sales"></canvas>
+    </div>
+</div>
+<!--end:: Widgets/Daily Sales-->            
+</div>
 </div>
 </div>
 </div>
@@ -119,9 +136,8 @@ var app = new Vue({
         	value:moment().month()+1,
         	name:moment().format('MMMM'),
         	},
-        sales:[
-      
-    ],
+        sales:[],
+        dailySales:[],
         items:[
         @foreach($items as $i)
         { 
@@ -203,23 +219,23 @@ var app = new Vue({
                 app.chart.validateData();
             })
         },
-        getTwoWeekSalesData(){
-            axios.post('/sales/two_week',{
+        getMonthDailyData(){
+            axios.post('/sales/month_daily',{
                 _token:this.token,
-                
-                date:this.selectedDate,
+                year: this.selectedYear,
+                month:this.selectedMonth.value,
                 location:this.monthlySalesLocation,
             }).then(function(response){
                app.labels = response.data.labels;
                app.dailySales = response.data.totals;
-               app.twoWeekChartUpdateData();
+               app.monthDailyChartUpdateData();
                
             });
         },
-        twoWeekChartUpdateData(){
-            this.twoWeekChart.data.labels = this.labels;
-            this.twoWeekChart.data.datasets[0].data = app.dailySales;
-            this.twoWeekChart.update();
+        monthDailyChartUpdateData(){
+            this.monthDailyChart.data.labels = this.labels;
+            this.monthDailyChart.data.datasets[0].data = app.dailySales;
+            this.monthDailyChart.update();
         },
         updateMonthlyData(){
              axios.post('/sales/monthlyByYearMonthLocation',{
@@ -257,6 +273,65 @@ var app = new Vue({
                 format:'YYYY-MM-DD'
                     }
         });
+
+ // begin month daily sales
+var monthDaily = document.getElementById('month_daily_sales').getContext('2d');
+this.twoWeekChart = new Chart(monthDaily,{
+    type:'bar',
+    data: {
+        labels: this.labels,
+        datasets: [
+        {
+           
+            backgroundColor: '#4ac0a2',
+            data: this.dailySales,
+            borderWidth: 1
+        }, 
+        ],
+    },
+    options: {
+        title:{
+            display:!1,
+        },
+        tooltips:{
+            intersect: false,
+            mode:'nearest',
+            xPadding:10,
+            yPadding:10,
+            caretPadding:10,
+        },
+        legend:{
+            display:0,
+        },
+        maintainAspectRatio:false,
+        barRadius:4,
+        responsive:0,
+        scales: {
+            xAxes:[{
+                display:false,
+                gridLines:false,
+                stacked:true,
+            }],
+            yAxes: [{
+                display:false,
+                stacked:true,
+                gridLines:false
+            }]
+        },
+        layout: {
+                padding: {
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0
+                }
+            },
+    }
+
+});
+
+this.getMonthDailyData();
+// end month daily sales
     }
  });
 </script>
