@@ -55,6 +55,14 @@ class SaleController extends Controller
         $data['magicBeefs'] = Sale::whereYear('from',$dt->year)->whereMonth('from',$dt->month)->where('location_id','!=',0)->where('itemCode','S01001')->sum('qty');
         $data['monthlySales'] = Sale_total::whereYear('date',$dt->year)->whereMonth('date',$dt->month)->where('location_id',-1)->sum('total');
         $data['preMonthlySales'] = Sale_total::whereYear('date',$dt->year)->whereMonth('date',$dt->copy()->subMonth()->month)->where('location_id',-1)->sum('total');
+        $data['yearSales'] = Sale_total::whereYear('date',$dt->year)->where('location_id',-1)->sum('total');
+        $data['preYearSales'] = Sale_total::whereYear('date',$dt->year-1)->where('location_id',-1)->sum('total');
+        if(!$data['preYearSales']) {
+            $data['preYearSales'] = 1;
+            $data['yearlyCompare'] = 0;
+        } else {
+            $data['yearlyCompare'] = $data['yearSales'] / $data['preYearSales'];
+        }
       
         $items = Item::menuItems()->get();
         $categories = ItemCategory::get();
@@ -69,6 +77,20 @@ class SaleController extends Controller
     }
     public function monthDailySales(Request $r){
        
-        return $r->all();
+        return SaleAmount::monthDailySales($r->location,$r->year,$r->month);
+    }
+    public function yearlyByLocation(Request $r){
+       
+        $data['yearSales'] = Sale_total::where('location_id',$r->location)->whereYear('date',$r->year)->sum('total');
+        $data['preYearSales'] = Sale_total::where('location_id',$r->location)->whereYear('date',$r->year-1)->sum('total');
+        if(!$data['preYearSales']) {
+            $data['preYearSales'] = 1;
+            $data['yearlyCompare'] = 0;
+        } else {
+            $data['yearlyCompare'] = $data['yearSales'] / $data['preYearSales'];
+        }
+        
+        $data['yearSales'] = number_format($data['yearSales'],0,'.',',');
+        return $data;
     }
 }

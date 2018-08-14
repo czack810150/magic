@@ -42,6 +42,33 @@
 <div class="m-portlet__body  m-portlet__body--no-padding">
 <div class="row m-row--no-padding m-row--col-separator-xl">
             <div class="col-md-12 col-lg-6 col-xl-4">
+                <!--begin::Year to date sales-->
+                <div class="m-widget24">                     
+                    <div class="m-widget24__item">
+                        <h4 class="m-widget24__title">
+                            Year to Date Sales
+                        </h4><br>
+                        <span class="m-widget24__desc">
+                             @{{selectedYear}}
+                        </span>
+                        <span class="m-widget24__stats m--font-danger">
+                            $ @{{yearToDateSales}}
+                        </span>     
+                        <div class="m--space-10"></div>
+                        <div class="progress m-progress--sm">
+                            <div class="progress-bar m--bg-danger" role="progressbar" v-bind:style="{'width': yearlyCompare+'%'}" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span class="m-widget24__change">
+                            Last Year
+                        </span>
+                        <span class="m-widget24__number">
+                            @{{ yearlyCompare }}%
+                        </span>
+                    </div>                    
+                </div>
+                <!--end::Total Profit-->
+            </div>
+            <div class="col-md-12 col-lg-6 col-xl-4">
                 <!--begin::Total Profit-->
                 <div class="m-widget24">                     
                     <div class="m-widget24__item">
@@ -68,7 +95,7 @@
                 </div>
                 <!--end::Total Profit-->
             </div>
- <div class="col-md-12 col-lg-6 col-xl-6">
+ <div class="col-md-12 col-lg-6 col-xl-4">
                 <!--begin:: Widgets/Daily Sales-->
 <div class="m-widget14">
     <div class="m-widget14__header m--margin-bottom-30">
@@ -109,11 +136,12 @@ var app = new Vue({
         selectedItem:null,
         selectedDate:'',
         chart:null,
-        twoWeekChart:null,
+        monthDailyChart:null,
         
         monthlySales:'{{number_format($data['monthlySales'],0,'.',',')}}',
         preMonthlySales:'{{$data['preMonthlySales']}}',
         monthlyCompare: '{{ round($data['monthlySales']/$data['preMonthlySales']*100,2) }}',
+        yearlyCompare: '{{ $data['yearlyCompare'] }}',
         years:[
         	2018,
         ],
@@ -137,6 +165,7 @@ var app = new Vue({
         	name:moment().format('MMMM'),
         	},
         sales:[],
+        labels:[],
         dailySales:[],
         items:[
         @foreach($items as $i)
@@ -176,7 +205,9 @@ var app = new Vue({
         },
         @endforeach
         ],
-        labels:[],
+        yearToDateSales:'{{number_format($data['yearSales'],0,'.',',')}}',
+        preYearSales: {{ $data['preYearSales']}},
+        
        
 
         
@@ -184,7 +215,8 @@ var app = new Vue({
     methods:{
         monthlyLocationSelected(){
             this.updateMonthlyData();
-            //this.getTwoWeekSalesData();
+            this.getMonthDailyData();
+            this.updateYearlyData();
         },
         locationSelected(){
             if(this.selectedItem != null && this.selectedDate != -2){
@@ -252,11 +284,25 @@ var app = new Vue({
                
             });
         },
+        updateYearlyData(){
+            axios.post('/sales/yearlyByLocation',{
+                _token:this.token,
+                location: this.monthlySalesLocation,
+                year: this.selectedYear,
+            }).then(function(response){
+                app.yearToDateSales = response.data.yearSales;
+                app.yearlyCompare = response.data.yearlyCompare;
+        
+            });
+            
+        },
         yearSelected(){
         	this.updateMonthlyData();
+            this.getMonthDailyData();
         },
         monthSelected(){
         	this.updateMonthlyData();
+            this.getMonthDailyData();
         }
     },
     computed: {
@@ -276,7 +322,7 @@ var app = new Vue({
 
  // begin month daily sales
 var monthDaily = document.getElementById('month_daily_sales').getContext('2d');
-this.twoWeekChart = new Chart(monthDaily,{
+this.monthDailyChart = new Chart(monthDaily,{
     type:'bar',
     data: {
         labels: this.labels,
@@ -323,7 +369,7 @@ this.twoWeekChart = new Chart(monthDaily,{
                     left: 0,
                     right: 0,
                     top: 0,
-                    bottom: 0
+                    bottom: 20
                 }
             },
     }

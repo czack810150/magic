@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use App\Location;
+use App\Sale_total;
 
 class SaleAmount extends Model
 {
@@ -100,7 +101,7 @@ class SaleAmount extends Model
     	$from = Carbon::createFromFormat('Y-m-d',$fromDate)->startOfDay();
     	$to = Carbon::createFromFormat('Y-m-d',$toDate)->startOfDay();
     	$count = 0;
-    	while($from->toDateString() != $to->toDateString())
+    	while($from->toDateString() <= $to->toDateString())
     	{
     		
     		$count += self::daySales($from->toDateString(),$interval);
@@ -128,5 +129,64 @@ class SaleAmount extends Model
             ]);
         }
         return true;
+    }
+    public static function saveMonthlySales($year,$month)
+    {
+        $dt = Carbon::createFromDate($year,$month,1)->StartOfDay();
+        $endOfMonth = $dt->copy()->endOfMonth()->toDateString();
+        $count = 0;
+        while($endOfMonth >= $dt->toDateString())
+        {
+            self::saveDailySales($dt->toDateString());
+            $dt->addDay();
+            $count++;
+        }
+        return $count;
+    }
+
+    public static function monthDailySales($location,$year,$month){
+
+            $dt = Carbon::createFromDate($year,$month,1);
+            $endOfMonth = $dt->copy()->endOfMonth()->toDateString();
+            $sales = collect();
+            $result = collect();
+            $labels = collect();
+            $values = collect();
+            if($location == -1){
+                while($dt->toDateString() <= $endOfMonth){
+                $sale = Sale_total::where('location_id',-1)->where('date',$dt->toDateString())->first();
+                if($sale){
+                    $data = [
+                    'date' => $dt->toDateString(),
+                    'amount' => round($sale->total,2),
+                ];
+                $labels->push($dt->toDateString());
+                $values->push(round($sale->total,2));
+                $sales->push($data);
+                
+                }
+                $dt->addDay();
+                }
+                
+            } else {
+                while($dt->toDateString() <= $endOfMonth){
+                $sale = Sale_total::where('location_id',$location)->where('date',$dt->toDateString())->first();
+                if($sale){
+                    $data = [
+                    'date' => $dt->toDateString(),
+                    'amount' => round($sale->total,2),
+                ];
+                $labels->push($dt->toDateString());
+                $values->push(round($sale->total,2));
+                $sales->push($data);
+                }
+                $dt->addDay();
+                }
+            }
+            
+            $result->put('sales',$sales);
+            $result->put('labels',$labels);
+            $result->put('totals',$values);
+        return $result;
     }
 }

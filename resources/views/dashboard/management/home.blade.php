@@ -94,7 +94,8 @@
         <canvas  id="two_week_daily_sales"></canvas>
     </div>
 </div>
-<!--end:: Widgets/Daily Sales-->            </div>
+<!--end:: Widgets/Daily Sales-->            
+</div>
             <div class="col-xl-4">
                 <!--begin:: Widgets/Profit Share-->
 <div class="m-widget14">
