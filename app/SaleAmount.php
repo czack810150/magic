@@ -66,9 +66,11 @@ class SaleAmount extends Model
     					$location = 9;
     			}
 
+                $s->TableClass == null ? $tableClass = 'UNDEFINED': $tableClass = $s->TableClass; 
+
     			$data = self::create([
     				'location_id' => $location,
-    				'tableClass' => $s->TableClass,
+    				'tableClass' => $tableClass,
     				'salesAmt' => $s->SalesAmt,
     				'tax' => $s->Taxes,
     				'invoiceAmt' => $s->InvoiceAmt,

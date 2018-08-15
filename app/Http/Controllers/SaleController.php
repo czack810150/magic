@@ -93,4 +93,8 @@ class SaleController extends Controller
         $data['yearSales'] = number_format($data['yearSales'],0,'.',',');
         return $data;
     }
+    public function hourlySalesAmt(Request $r)
+    {
+        return SaleAmount::select('from','invoiceAmt')->where('location_id',$r->location)->whereIn('tableClass',['TABLE','UNDEFINED'])->whereYear('from',$r->year)->whereMonth('from',$r->month)->get();
+    }
 }

@@ -11,7 +11,7 @@
                             <i class="flaticon-up-arrow-1"></i>
                         </span>
                         <h3 class="m-portlet__head-text">
-                            Sales <small>销售情况</small>
+                            Overview <small>销售情况</small>
                         </h3>
                     </div>
                 </div>
@@ -115,6 +115,56 @@
 </div>
 </div>
 </div>
+
+
+
+<div class="m-portlet ">
+    <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <span class="m-portlet__head-icon">
+                            <i class="flaticon-up-arrow-1"></i>
+                        </span>
+                        <h3 class="m-portlet__head-text">
+                            Hourly Sales <small>小时销售</small>
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                        <ul class="m-portlet__nav">
+                            <li class="m-portlet__nav-item">
+                        <select class="custom-select" v-model="selectedYear" @change="yearSelected">
+                            <option v-for="year in years" v-bind:value="year" v-text="year"></option>
+                        </select>
+                            </li>
+                            <li class="m-portlet__nav-item">
+                        <select class="custom-select" v-model="selectedMonth" @change="monthSelected">
+                            <option v-for="month in months" v-bind:value="month" v-text="month.name"></option>
+                        </select>
+                            </li>
+                            <li class="m-portlet__nav-item">
+                        <select class="custom-select" v-model="monthlySalesLocation" @change="monthlyLocationSelected">
+                            <option v-for="location in locations" v-bind:value="location.id" v-text="location.name"></option>
+                        </select>
+                            </li>
+                           
+                            
+                        </ul>
+                  
+                </div>          
+                        
+            
+            </div>
+<div class="m-portlet__body  m-portlet__body--no-padding">
+    <div id="hourlyChartDiv"></div>
+</div>
+</div>
+
+
+
+
+
+
 </section>
 
 
@@ -135,7 +185,7 @@ var app = new Vue({
         selectedCategory:999,
         selectedItem:null,
         selectedDate:'',
-        chart:null,
+        
         monthDailyChart:null,
         
         monthlySales:'{{number_format($data['monthlySales'],0,'.',',')}}',
@@ -167,6 +217,8 @@ var app = new Vue({
         sales:[],
         labels:[],
         dailySales:[],
+        hourlySalesAmt:[{'from':'2018-08-01','invoiceAmt':"100"},],
+        hourlySalesAmtChart:null,
         items:[
         @foreach($items as $i)
         { 
@@ -217,10 +269,13 @@ var app = new Vue({
             this.updateMonthlyData();
             this.getMonthDailyData();
             this.updateYearlyData();
+            this.getHourlySalesAmount();
+
         },
         locationSelected(){
             if(this.selectedItem != null && this.selectedDate != -2){
                 this.getSalesData();
+                
             }
             
         },
@@ -299,11 +354,27 @@ var app = new Vue({
         yearSelected(){
         	this.updateMonthlyData();
             this.getMonthDailyData();
+            this.getHourlySalesAmount();
         },
         monthSelected(){
         	this.updateMonthlyData();
             this.getMonthDailyData();
-        }
+            this.getHourlySalesAmount();
+        },
+        getHourlySalesAmount(){
+            axios.post('/sales/hourlySalesAmt',{
+                _token:this.token,
+                location:this.monthlySalesLocation,
+                year:this.selectedYear,
+                month:this.selectedMonth.value
+            }).then(function(response){
+                console.log(response.data[0]);
+                app.hourlySalesAmt = response.data;
+                app.hourlySalesAmtChart.dataProvider = app.hourlySalesAmt;
+                app.hourlySalesAmtChart.validateData();
+               
+            });
+        },
     },
     computed: {
         
@@ -377,8 +448,114 @@ this.monthDailyChart = new Chart(monthDaily,{
 });
 
 this.getMonthDailyData();
+
 // end month daily sales
+// begin hourly sales amount chart
+
+this.getHourlySalesAmount();
+
+this.hourlySalesAmtChart = AmCharts.makeChart("hourlyChartDiv", {
+    "type": "serial",
+    "theme": "light",
+    "marginRight": 80,
+    "autoMarginOffset": 20,
+    "marginTop": 7,
+    "dataProvider": this.hourlySalesAmt,
+    "valueAxes": [{
+        "axisAlpha": 0.2,
+        "dashLength": 1,
+        "position": "left"
+    }],
+    "mouseWheelZoomEnabled": true,
+    "graphs": [{
+        "id": "g1",
+        "balloonText": "[[value]]",
+        "bullet": "round",
+        "bulletBorderAlpha": 1,
+        "bulletColor": "#FFFFFF",
+        "hideBulletsCount": 50,
+        "title": "red line",
+        "valueField": "invoiceAmt",
+        "useLineColorForBulletBorder": true,
+        "balloon":{
+            "drop":true
+        }
+    }],
+    "chartScrollbar": {
+        "autoGridCount": true,
+        "graph": "g1",
+        "scrollbarHeight": 40
+    },
+    "chartCursor": {
+       "limitToGraph":"g1"
+    },
+    "categoryField": "from",
+    "categoryAxis": {
+        "parseDates": true,
+        "axisColor": "#DADADA",
+        "dashLength": 1,
+        "minorGridEnabled": true
+    },
+    "export": {
+        "enabled": true
+    }
+});
+// this.hourlySalesAmtChart.addListener("rendered", zoomChart);
+
+
     }
  });
+
+
+</script>
+
+<!-- Styles -->
+<style>
+#hourlyChartDiv {
+    width   : 100%;
+    height  : 500px;
+}                                                                   
+</style>
+
+<!-- Resources -->
+
+
+<!-- Chart code -->
+<script>
+// var hourlySalesAmtData = generateChartData();
+
+
+
+// zoomChart();
+
+
+
+
+// generate some random data, quite different range
+
+// generate some random data, quite different range
+function generateChartData() {
+    var chartData = [];
+    var firstDate = new Date();
+    firstDate.setDate(firstDate.getDate() - 5);
+    var visits = 1200;
+    for (var i = 0; i < 1000; i++) {
+        // we create date objects here. In your data, you can have date strings
+        // and then set format of your dates using chart.dataDateFormat property,
+        // however when possible, use date objects, as this will speed up chart rendering.
+        var newDate = new Date(firstDate);
+        newDate.setDate(newDate.getDate() + i);
+        
+        visits += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
+
+        chartData.push({
+            date: newDate,
+            visits: visits
+        });
+    }
+    return chartData;
+}
+
+
 </script>
 @endsection
