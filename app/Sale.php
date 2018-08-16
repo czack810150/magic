@@ -7,10 +7,16 @@ use GuzzleHttp\Client;
 use Carbon\Carbon;
 use App\Location;
 use App\Sale_total;
+use App\Item;
+use App\SalesItemsTotal;
 
 class Sale extends Model
 {
-	protected $fillable = ['location_id','itemCode','name','qty','amount','from','to'];
+	protected $fillable = ['location_id','itemCode','item_category_id','name','qty','amount','from','to'];
+    public function item()
+    {
+        return $this->belongsTo('App\Item','itemCode','itemCode');
+    }
 
     public static function totalSales($start,$end)
     {
@@ -97,16 +103,23 @@ class Sale extends Model
     				default:
     					$location = 9;
     			}
+                $item = Item::where('itemCode',$s->ItemCode)->first();
+                if($item){
+                    $category = $item->item_category_id;
+                } else {
+                    $category = null;
+                }
 
-    			$data = self::create([
-    				'location_id' => $location,
-    				'itemCode' => $s->ItemCode,
-    				'name' => $s->ItemDesc,
-    				'qty' => $s->QtySold,
-    				'amount' => $s->AmtSold,
-    				'from' => $from,
-    				'to' => $to,
-    			]);
+    			 $data = self::create([
+                    'location_id' => $location,
+                    'item_category_id' => $category,
+                    'itemCode' => $s->ItemCode,
+                    'name' => $s->ItemDesc,
+                    'qty' => $s->QtySold,
+                    'amount' => $s->AmtSold,
+                    'from' => $from,
+                    'to' => $to,
+                ]);
 
     			$count++;	
                 }
@@ -128,6 +141,57 @@ class Sale extends Model
     	}
     	return $count;
     }
+    // sale daliy items count
+    public static function dayItemQty($date){
+        $dt = Carbon::createFromFormat('Y-m-d',$date)->startOfDay();
+        $sales = self::sales($dt->toDateString(),$dt->addDay()->toDateString());
+        if(!isset($sales->result) && !isset($sales['result']))
+        {
+            $count = 0;
+            foreach($sales as $s)
+            {
+                if(isset($s->ItemCode) && $s->ItemCode != 'ZZ9900'){
+
+
+                switch($s->Location){
+                    case 'Store1':
+                        $location = 1; break;
+                    case 'Store2':
+                        $location = 2; break;
+                    case 'Store3':
+                        $location = 3; break;
+                    case 'Store4':
+                        $location = 4; break;
+                    case 'Main': 
+                        $location = 0; break;
+                    default:
+                        $location = 9;
+                }
+                $item = Item::where('itemCode',$s->ItemCode)->first();
+                if($item){
+                    $category = $item->item_category_id;
+                } else {
+                    $category = null;
+                }
+                $data = SalesItemsTotal::create([
+                    'location_id' => $location,
+                    'item_category_id' => $category,
+                    'itemCode' => $s->ItemCode,
+                    'name' => $s->ItemDesc,
+                    'qty' => $s->QtySold,
+                    'amount' => $s->AmtSold,
+                    'date' => $date,
+                ]);
+
+                $count++;   
+                }
+            }
+            return $count;
+        } else {
+            return ['result' => false, 'error' => 'API error'];
+        }
+    }
+
 
     public static function importSales($fromDate,$toDate,$interval)
     {
