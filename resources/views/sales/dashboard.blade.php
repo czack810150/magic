@@ -147,6 +147,11 @@
                             <option v-for="location in locations" v-bind:value="location.id" v-text="location.name"></option>
                         </select>
                             </li>
+                             <li class="m-portlet__nav-item">
+                        <select class="custom-select" v-model="selectedHourlyType" @change="hourlyTypeSelected">
+                            <option v-for="type in hourlyTypes" v-bind:value="type.value" v-text="type.name"></option>
+                        </select>
+                            </li>
                            
                             
                         </ul>
@@ -217,18 +222,15 @@ var app = new Vue({
         sales:[],
         labels:[],
         dailySales:[],
-        hourlySalesAmt:[{'from':'2018-08-01','invoiceAmt':"100"},],
+        hourlySalesAmt:[],
         hourlySalesAmtChart:null,
-        items:[
-        @foreach($items as $i)
-        { 
-            id: {{$i->id}},
-            category: '{{$i->itemCategory_id}}',
-            name: '{{$i->name}}',
-            price: '{{$i->price}}',
-        },
-        @endforeach
+        hourlyTypes:[
+            {name:'Dine-in',value:'TABLE'},
+            {name:'Pick up',value:'TAKEOUT'},
+            {name:'Delivery',value:'DELIVERY'},
         ],
+        selectedHourlyType:'TABLE',
+        
         locations: [
         {
             id:-2,
@@ -245,18 +247,7 @@ var app = new Vue({
         },
         @endforeach
         ],
-        categories: [
-        {
-            id:999,
-            name:'Choose Category'
-        },
-        @foreach($categories as $category)
-        { 
-            id: {{$category->id}},
-            name: '{{$category->cName}}',
-        },
-        @endforeach
-        ],
+        
         yearToDateSales:'{{number_format($data['yearSales'],0,'.',',')}}',
         preYearSales: {{ $data['preYearSales']}},
         
@@ -366,7 +357,8 @@ var app = new Vue({
                 _token:this.token,
                 location:this.monthlySalesLocation,
                 year:this.selectedYear,
-                month:this.selectedMonth.value
+                month:this.selectedMonth.value,
+                type:this.selectedHourlyType,
             }).then(function(response){
                 console.log(response.data[0]);
                 app.hourlySalesAmt = response.data;
@@ -375,6 +367,9 @@ var app = new Vue({
                
             });
         },
+        hourlyTypeSelected(){
+            this.getHourlySalesAmount();
+        }
     },
     computed: {
         
@@ -452,14 +447,16 @@ this.getMonthDailyData();
 // end month daily sales
 // begin hourly sales amount chart
 
-this.getHourlySalesAmount();
+// this.getHourlySalesAmount();
 
 this.hourlySalesAmtChart = AmCharts.makeChart("hourlyChartDiv", {
+
     "type": "serial",
     "theme": "light",
     "marginRight": 80,
     "autoMarginOffset": 20,
     "marginTop": 7,
+    "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
     "dataProvider": this.hourlySalesAmt,
     "valueAxes": [{
         "axisAlpha": 0.2,
@@ -468,8 +465,9 @@ this.hourlySalesAmtChart = AmCharts.makeChart("hourlyChartDiv", {
     }],
     "mouseWheelZoomEnabled": true,
     "graphs": [{
+        "lineColor":"#41b197",
         "id": "g1",
-        "balloonText": "[[value]]",
+        "balloonText": '$'+"[[value]]",
         "bullet": "round",
         "bulletBorderAlpha": 1,
         "bulletColor": "#FFFFFF",
@@ -484,17 +482,20 @@ this.hourlySalesAmtChart = AmCharts.makeChart("hourlyChartDiv", {
     "chartScrollbar": {
         "autoGridCount": true,
         "graph": "g1",
-        "scrollbarHeight": 40
+        "scrollbarHeight": 80
     },
     "chartCursor": {
        "limitToGraph":"g1"
     },
     "categoryField": "from",
     "categoryAxis": {
-        "parseDates": true,
+        "parseDates": false,
         "axisColor": "#DADADA",
         "dashLength": 1,
-        "minorGridEnabled": true
+        "minorGridEnabled": true,
+        "labelRotation": 45,
+        "labelFunction":function(valueText,serialDateItem,categoryAxis){return moment(valueText).format('MMM D, ha');},
+        
     },
     "export": {
         "enabled": true
@@ -517,45 +518,5 @@ this.hourlySalesAmtChart = AmCharts.makeChart("hourlyChartDiv", {
 }                                                                   
 </style>
 
-<!-- Resources -->
 
-
-<!-- Chart code -->
-<script>
-// var hourlySalesAmtData = generateChartData();
-
-
-
-// zoomChart();
-
-
-
-
-// generate some random data, quite different range
-
-// generate some random data, quite different range
-function generateChartData() {
-    var chartData = [];
-    var firstDate = new Date();
-    firstDate.setDate(firstDate.getDate() - 5);
-    var visits = 1200;
-    for (var i = 0; i < 1000; i++) {
-        // we create date objects here. In your data, you can have date strings
-        // and then set format of your dates using chart.dataDateFormat property,
-        // however when possible, use date objects, as this will speed up chart rendering.
-        var newDate = new Date(firstDate);
-        newDate.setDate(newDate.getDate() + i);
-        
-        visits += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-
-        chartData.push({
-            date: newDate,
-            visits: visits
-        });
-    }
-    return chartData;
-}
-
-
-</script>
 @endsection

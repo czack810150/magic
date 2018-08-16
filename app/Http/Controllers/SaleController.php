@@ -95,6 +95,12 @@ class SaleController extends Controller
     }
     public function hourlySalesAmt(Request $r)
     {
-        return SaleAmount::select('from','invoiceAmt')->where('location_id',$r->location)->whereIn('tableClass',['TABLE','UNDEFINED'])->whereYear('from',$r->year)->whereMonth('from',$r->month)->get();
+        switch($r->type){
+            case 'TABLE': $type = ['TABLE','UNDEFINED','FASTFOOD']; break;
+            case 'TAKEOUT': $type = ['TAKEOUT']; break;
+            case 'DELIVERY': $type = ['DELIVERY']; break;
+            default: $type = ['TABLE','UNDEFINED','FASTFOOD'];
+        }
+        return SaleAmount::where('location_id',$r->location)->whereIn('tableClass',$type)->whereYear('from',$r->year)->whereMonth('from',$r->month)->get();
     }
 }
