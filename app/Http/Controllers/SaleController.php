@@ -10,6 +10,7 @@ use App\Sale_total;
 use App\SaleAmount;
 use App\Item;
 use App\ItemCategory;
+use App\SalesItemsTotal;
 use Carbon\Carbon;
 
 class SaleController extends Controller
@@ -102,5 +103,9 @@ class SaleController extends Controller
             default: $type = ['TABLE','UNDEFINED','FASTFOOD'];
         }
         return SaleAmount::where('location_id',$r->location)->whereIn('tableClass',$type)->whereYear('from',$r->year)->whereMonth('from',$r->month)->get();
+    }
+    public function categoryBreakdown(Request $r)
+    {
+        return SalesItemsTotal::categoryBreakdown($r->year,$r->month,$r->location);
     }
 }

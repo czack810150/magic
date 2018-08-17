@@ -187,6 +187,7 @@ Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
 	Route::post('/sales/monthlyByYearMonthLocation','SaleController@monthlyByYearMonthLocation');
 	Route::post('/sales/yearlyByLocation','SaleController@yearlyByLocation');
 	Route::post('/sales/hourlySalesAmt','SaleController@hourlySalesAmt');
+	Route::post('/sales/categoryBreakdown','SaleController@categoryBreakdown');
 
 
 	//EMPLOYEE
