@@ -16,7 +16,7 @@ class SalesItemsTotal extends Model
     	if($location == -1){
     		$location = '%';
     	}
-    	return SalesItemsTotal::selectRaw('item_category_id,sum(qty) as qty,sum(amount) as amount')->with('item_category')->where('location_id','like',$location)->whereYear('date',$year)->whereMonth('date',$month)->groupBy('item_category_id')->having('item_category_id','!=',9)->get();
+    	return SalesItemsTotal::selectRaw('item_category_id,sum(qty) as qty,ROUND(sum(amount),0) as amount')->with('item_category')->where('location_id','like',$location)->whereYear('date',$year)->whereMonth('date',$month)->groupBy('item_category_id')->having('item_category_id','!=',9)->get();
     }
 
 }

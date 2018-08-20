@@ -115,17 +115,13 @@
 </div>
 
 <div class="row m-row--no-padding m-row--col-separator-xl">
-            <div class="col-md-12 col-lg-6 col-xl-4">
-                <ul>
-                    <li v-for="category in categorySales">@{{category.item_category.cName}} @{{ category.qty }} @{{ category.amount }}</li>
-                </ul>
-            </div>
+          
 <div class="col-xl-4">
 <!--begin:: Widgets/Profit Share-->
 <div class="m-widget14">
     <div class="m-widget14__header">
         <h3 class="m-widget14__title">
-            Sales Share            
+            Quantity Sales Share             
         </h3>
         <span class="m-widget14__desc">
         Sales by categories
@@ -133,20 +129,43 @@
     </div>
     <div class="row  align-items-center">
         <div class="col">
-            <div class="m-widget14__chart" style="height: 120px">
+            <div class="m-widget14__chart" style="height: 240px">
                 <canvas id="sales_share"></canvas>
             </div>
         </div>
-        <div class="col">
+        <!-- <div class="col">
             <div class="m-widget14__legends">
                 <m-widget14__legend v-for="legend in mWidget14Legends" v-bind:key="legend.id" :color="legend.color" :legend="legend.legend"></m-widget14__legend>
               
+            </div>
+        </div> -->
+    </div>
+</div>
+<!--end:: Widgets/Profit Share-->           
+</div>
+
+<div class="col-xl-4">
+<!--begin:: Widgets/Profit Share-->
+<div class="m-widget14">
+    <div class="m-widget14__header">
+        <h3 class="m-widget14__title">
+            Amount Sales Share             
+        </h3>
+        <span class="m-widget14__desc">
+        Sales by categories
+        </span>
+    </div>
+    <div class="row  align-items-center">
+        <div class="col">
+            <div class="m-widget14__chart" style="height: 240px">
+                <canvas id="sales_share_amount"></canvas>
             </div>
         </div>
     </div>
 </div>
 <!--end:: Widgets/Profit Share-->           
 </div>
+
 
 </div>
 
@@ -336,10 +355,19 @@ var app = new Vue({
         categoryShareQtyChart:null,
         categoryShareQtyData:{
              datasets: [{
-                data: [50,25,15,10],
-                backgroundColor:[mUtil.getColor('accent'),mUtil.getColor('danger'),mUtil.getColor('primary'),mUtil.getColor('warning')],
-    }],},
-       
+                data: [],
+                backgroundColor:[],
+                }],
+            labels:[],
+        },
+        categoryShareAmtChart:null,
+        categoryShareAmtData:{
+             datasets: [{
+                data: [],
+                backgroundColor:[],
+                }],
+            labels:[],
+        },
 
         
     },
@@ -451,7 +479,7 @@ var app = new Vue({
                 month:this.selectedMonth.value,
                 type:this.selectedHourlyType,
             }).then(function(response){
-                console.log(response.data[0]);
+               
                 app.hourlySalesAmt = response.data;
                 app.hourlySalesAmtChart.dataProvider = app.hourlySalesAmt;
                 app.hourlySalesAmtChart.validateData();
@@ -468,12 +496,27 @@ var app = new Vue({
                 year:this.selectedYear,
                 month:this.selectedMonth.value,
             }).then(function(response){
-                console.log(response.data);
+                
                 app.categorySales = response.data;
+               
+                app.categoryShareQtyData.datasets[0].data = [];
+                app.categoryShareQtyData.datasets[0].backgroundColor = [];
+                app.categoryShareQtyData.labels = [];
+                app.categoryShareAmtData.datasets[0].data = [];
+                app.categoryShareAmtData.datasets[0].backgroundColor = [];
+                app.categoryShareAmtData.labels = [];
+
                 for(var i in response.data){
+                    
                     app.categoryShareQtyData.datasets[0].data.push(response.data[i].qty);
+                    app.categoryShareQtyData.datasets[0].backgroundColor.push(response.data[i].item_category.color);
+                    app.categoryShareQtyData.labels.push(response.data[i].item_category.cName);
+                    app.categoryShareAmtData.datasets[0].data.push(response.data[i].amount);
+                    app.categoryShareAmtData.datasets[0].backgroundColor.push(response.data[i].item_category.color);
+                    app.categoryShareAmtData.labels.push(response.data[i].item_category.cName);
                 }
                 app.categoryShareQtyChart.update();
+                app.categoryShareAmtChart.update();
             });
         },
     },
@@ -611,7 +654,7 @@ this.hourlySalesAmtChart = AmCharts.makeChart("hourlyChartDiv", {
 // this.hourlySalesAmtChart.addListener("rendered", zoomChart);
 
 
-// begin sales share chart
+// begin sales share quantity chart
 
 var salesShare = document.getElementById('sales_share').getContext('2d');
 this.categoryShareQtyChart = new Chart(salesShare,{
@@ -625,7 +668,23 @@ this.categoryShareQtyChart = new Chart(salesShare,{
         }
     },
 });
-// end sales share chart
+// end sales share chart quantity
+
+// begin sales share amount chart
+
+var salesShareAmt = document.getElementById('sales_share_amount').getContext('2d');
+this.categoryShareAmtChart = new Chart(salesShareAmt,{
+    type:'doughnut',
+    data:this.categoryShareAmtData,
+    options:{
+        cutoutPercentage:70,
+        rotation:15,
+        legend:{
+            display:true,
+        }
+    },
+});
+// end sales share chart amount
 
 
     }
