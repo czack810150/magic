@@ -12,10 +12,6 @@ A new ({{$leave->type->cName}}) leave has been requested by {{$leave->employee->
 @endcomponent
 
 
-@component('mail::button', ['url' => url('leave')])
-View
-@endcomponent
-
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

@@ -24,9 +24,11 @@ class LeaveRequestedListener implements ShouldQueue
     {
         $employees = Authorization::group(['admin','dm','hr']);
         $manager = $event->leave->location->manager;
-        Mail::to($event->leave->employee)->cc($employees)
+       
+            Mail::to($event->leave->employee)->cc($employees)
             ->send(new LeaveRequestedMail($event->leave));
-        Mail::to($manager)->send(new LeaveRequestedMail($event->leave));
+            Mail::to($manager)->send(new LeaveRequestedMail($event->leave));
+       
     //     Nexmo::message()->send([
     // 'to'   => '14168348612',
     // 'from' => '12266023048',
