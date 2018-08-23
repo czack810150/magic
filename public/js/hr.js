@@ -249,7 +249,6 @@ function updateEmployment(employee){
 		},
 		function(data,status){
 			if(status == 'success'){
-				console.log(data);
 				notify('Employment details have been saved!','primary');
 				employment(employee);
 			}

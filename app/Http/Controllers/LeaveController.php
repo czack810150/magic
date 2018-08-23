@@ -142,7 +142,7 @@ class LeaveController extends Controller
             // add to EmployeePending
             $pending = EmployeePending::create([
                 'employee_id' => $leave->employee_id,
-                'status' => 'vacation',
+                'status' => $leave->type->name,
                 'start' => $leave->from,
                 'end' => $leave->to
             ]);

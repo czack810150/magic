@@ -47,6 +47,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\ShiftsPublished' => [
             'App\Listeners\ShiftsPublishedListener',
+        ],
+        'App\Events\EmployeeToBeTerminated' => [
+            'App\Listeners\EmployeeToBeTerminatedListener',
         ]
     ];
 

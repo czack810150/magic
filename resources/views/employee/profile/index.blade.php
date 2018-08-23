@@ -35,10 +35,25 @@
 </div>
 <div class="col-7 col-md-5 ml-3">
 	<h2>{{ $staff->firstName }} {{ $staff->lastName }} {{ $staff->cName }}  
-		@if($staff->status == 'terminated')
-		<span class="m--font-danger">Terminated</span> 
-		@endif
+
+		@switch($staff->status)
+			@case('terminated')
+				<small><span class="m--font-danger">Terminated</span></small> 
+			@break
+			@case('sick')
+				<small><span class="m--font-info">Sick Leave</span> </small> 
+			@break
+			@case('vacation')
+				<small><span class="m--font-warning">On Vacation</span> </small> 
+			@break
+			@default
+				<small><span class="m--font-success">Active</span> </small> 
+		@endswitch
 	</h2>
+	@if($staff->termination && $staff->status != 'terminated')
+		<div><span class="m--font-danger">To be terminated on {{$staff->termination->toFormattedDateString()}}</span></div> 
+		@endif
+
 	<div>{{ $staff->job->rank }} | {{ $staff->location->name }} </div>
 	<div>Joined since {{ $staff->hired->toFormattedDateString() }}   ({{ $staff->hired->diffForHumans() }})</div>
 	

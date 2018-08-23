@@ -162,4 +162,8 @@ class Employee extends Model
     {
         return $this->hasMany('App\EmployeeFile');
     }
+    public function hours()
+    {
+        return $this->hasMany(Hour::class);
+    }
 }

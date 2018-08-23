@@ -21,6 +21,8 @@ use App\Authorization;
 use Carbon\Carbon;
 use App\Leave;
 use App\Events\EmployeeAdded;
+use App\Events\EmployeeToBeTerminated;
+use App\EmployeePending;
 
 
 
@@ -525,9 +527,23 @@ class EmployeeController extends Controller
 
         if(!empty($r->termination)){
             $employee->termination = $r->termination;
-            $employee->status = 'terminated';
+            $employee->save();
+            //$employee->status = 'terminated';  do not change the staus yet.
+
+            $employeePending = EmployeePending::create([
+                'employee_id' => $employee->id,
+                'status' => 'terminated',
+                'start' => $r->termination
+            ]);
+           event(new EmployeeToBeTerminated($employee));
         } else {
             $employee->termination = null;
+            $employeePending = EmployeePending::where('employee_id',$employee->id)->where('status','terminated')->first();
+            if($employeePending){
+                $employeePending->delete();
+            }
+            $employee->status = 'active';
+            
         }
         $employee->location_id = $r->location;
         $employee->save();
