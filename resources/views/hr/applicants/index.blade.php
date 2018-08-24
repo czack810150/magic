@@ -15,19 +15,7 @@
 				</div>
 				
 			</div>
-			<div class="m-portlet__body">
-                <section id="root">
-                    <div class="row">
-                       
-                        <applicant-card v-for="a in applicants" 
-                        :firstName="a.firstName"
-                        :lastname="a.lastName"
-                        :cname="a.cName"
-                        ></applicant-card>
-                    </div>
-                    
-                </section>
-				
+			<div class="m-portlet__body">	
                 <div id="applicants"></div>
 			</div>
 		</div>	
@@ -111,6 +99,41 @@
 </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="applicant-note" tabindex="-1" role="dialog" aria-labelledby="applicant-noteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="hire-applicantLabel"><i class="flaticon-note"></i>Applicant Note</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="row">
+        <div class="col-12">
+            <div class="m-portlet m-portlet--tab">
+            
+            <!--begin::Form-->
+            <form class="m-form m-form--fit m-form--label-align-right">
+                <div class="m-portlet__body">
+            <div class="form-group m-form__group">
+                        <textarea class="form-control m-input" id="noteTextarea" rows="4" autofocus></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+</div>
+</div>
+            
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-success" onclick="saveNote()">Save</button>
+      </div>
+      </div>
+  </div>
+</div>
+
+
 @endsection
 @section('pageJS')
 <script>
@@ -155,7 +178,7 @@
                 field: "applicant_status",
                 title: "Status",
                 width: 100,
-                sortable:false,
+                sortable:true,
                 overflow:'visible',
                 template: function(row){
                     var selection = '';
@@ -165,25 +188,28 @@
                    
                     switch(row.applicant_status){
                         case 'applied':
-                            selection += '<option value="applied" selected>Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                            selection += '<option value="applied" selected>Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="scheduled">Scheduled</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
                             break;
                         case 'reviewed':
-                            selection += '<option value="applied">Applied</option><option value="reviewed" selected>Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                            selection += '<option value="applied">Applied</option><option value="reviewed" selected>Reviewed</option><option value="phoned">Phoned</option><option value="scheduled">Scheduled</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
                             break;
                         case 'phoned':
-                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned" selected>Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned" selected>Phoned</option><option value="scheduled">Scheduled</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
                             break;
                         case 'interviewed':
-                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed" selected>Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="scheduled">Scheduled</option><option value="interviewed" selected>Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
                             break;
                         case 'offered':
-                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered" selected>Offered</option><option value="rejected">Rejected</option>';
+                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="scheduled">Scheduled</option><option value="interviewed">Interviewed</option><option value="offered" selected>Offered</option><option value="rejected">Rejected</option>';
                             break;
                         case 'rejected':
-                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected" selected>Rejected</option>';
+                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="scheduled">cheduled</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected" selected>Rejected</option>';
+                            break;
+                        case 'scheduled':
+                            selection += '<option value="applied">Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="scheduled" selected>Scheduled</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
                             break;
                         default:
-                            selection += '<option value="applied" selected>Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
+                            selection += '<option value="applied" selected>Applied</option><option value="reviewed">Reviewed</option><option value="phoned">Phoned</option><option value="scheduled">Scheduled</option><option value="interviewed">Interviewed</option><option value="offered">Offered</option><option value="rejected">Rejected</option>';
                     }
                     selection += '</select>';       
                     return selection;
@@ -265,6 +291,7 @@
         			let button = '<a class="btn btn-sm btn-primary applicantDetails" href="/applicant/' + row.id + '/view">Details</a>';
                     button += '<button type="button" class="btn btn-sm btn-success" onclick="hire(' + row.id + ')">Hire</button>';
                     button +='<a class="btn btn-sm btn-danger" href="/applicant/'+ row.id +'/remove">Remove</a>';
+                    button += '<button type="button" class="btn btn-sm btn-warning" onclick="note(' + row.id +')">Note</button>';
         			return button;
         		}
         	}
@@ -326,30 +353,31 @@ function updateApplicantStatus(applicant)
         },
         );
 }
+var currentApplicant = 0;
+function note(applicant){
+    currentApplicant = applicant;
+    axios.get('/applicant/'+applicant+'/getNote').then(response => {
+        $('#noteTextarea').val(response.data);
+    });
+    
+    $('#applicant-note').modal('show');
+}
+function saveNote(){
+    axios.post('/applicant/saveNote',{
+        _token: '{{ csrf_token() }}',
+        applicant: currentApplicant,
+        note: $('#noteTextarea').val()
+    }).then(response => {
+        $('#applicant-note').modal('hide');
+        // if(response.data.status === 'success'){
+        //     alert('Sucess');
+        // } else {
+        //     alert('Failed');
+        // }
+    });
 
-Vue.component('applicant-card',{
-    props:['firstname','lastname','cname'],
-    template:`
-    <div class="col-sm-12 col-md-6 col-lg-4 mb-2">
-    <div class="card">
-  <div class="card-body">
-    <h5 class="card-title">@{{ firstname }} @{{ lastname }}</h5>
-    <h6 class="card-subtitle mb-2 text-muted">@{{ cname }}</h6>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="card-link">Card link</a>
-    <a href="#" class="card-link">Another link</a>
-  </div>
-</div>
-</div>`
-});
+   // $('#noteTextarea').val('');
+}
 
-var app = new Vue({
-    el:'#root',
-    data:{
-        applicants: dataJSONArray,
-
-    }
-
-});
  </script>
 @endsection

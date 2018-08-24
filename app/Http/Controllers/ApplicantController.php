@@ -88,6 +88,10 @@ class ApplicantController extends Controller
         $result['hireDate'] = Carbon::now()->toDateString();
         return $result;
     }
+    public function getNote($id)
+    {
+        return DB::connection('applicants')->table('applicants')->find($id)->note;   
+    }
 
 
     /**
@@ -138,6 +142,15 @@ class ApplicantController extends Controller
             return redirect('/applicant');
         } else {
             return 'failed to remove this applicant';
+        }
+    }
+    public function saveNote(Request $r)
+    {
+        $status = DB::connection('applicants')->table('applicants')->where('id',$r->applicant)->update(['note'=>$r->note]);
+        if($status){
+            return ['status'=>'success','message'=>'Note has been save. '];
+        } else {
+            return ['status'=>'failed','message'=>'Failed.'];
         }
     }
 }

@@ -55,8 +55,10 @@ Route::get('/applicant','ApplicantController@index');
 Route::get('/applicant/{id}/view','ApplicantController@show');
 Route::get('/applicant/{id}/remove','ApplicantController@destroy');
 Route::post('/applicant/{id}/get','ApplicantController@fetch');
+Route::get('/applicant/{id}/getNote','ApplicantController@getNote');
 Route::post('/employee/hireApplicant','EmployeeController@hireApplicant');
 Route::post('/applicant/updateStatus','ApplicantController@update');
+Route::post('/applicant/saveNote','ApplicantController@saveNote');
 
 
 
