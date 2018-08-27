@@ -166,4 +166,21 @@ class Employee extends Model
     {
         return $this->hasMany(Hour::class);
     }
+    public static function onboardCheck($employee,$date)
+    {
+        $employee =  self::find($employee);
+        if($employee->status == 'terminated'){
+            return false;
+        }
+        if($employee->status == 'active')
+        {
+            if(is_null($employee->termination)) {
+                return true;
+            } else  if($employee->termination->toDateString() > $date){
+                return  true;
+            } else {
+                return false;
+            }
+        } 
+    }
 }

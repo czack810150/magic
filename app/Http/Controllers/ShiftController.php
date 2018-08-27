@@ -209,16 +209,21 @@ class ShiftController extends Controller
        
        if($dFrom->greaterThanOrEqualTo($from)){
         foreach($shifts as $s){
-            Shift::create([
+            $shiftStartDate = Carbon::createFromFormat('Y-m-d H:i:s',$s->start)->addDays($diff);
+            if(Employee::onboardCheck($s->employee_id,$shiftStartDate->toDateString()))
+            {
+                Shift::create([
                 'location_id' => $r->location,
                 'employee_id' => $s->employee_id,
                 'role_id' => $s->role_id,
                 'duty_id' => $s->duty_id,
                 'special' => $s->special,
-                'start' => Carbon::createFromFormat('Y-m-d H:i:s',$s->start)->addDays($diff)->toDateTimeString(),
+                'start' => $shiftStartDate->toDateTimeString(),
                 'end' => Carbon::createFromFormat('Y-m-d H:i:s',$s->end)->addDays($diff)->toDateTimeString(),
                 'published'=> false,
             ]);
+            }
+            
         }
         $msg = 'copied from past';
        } else {

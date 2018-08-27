@@ -2,7 +2,7 @@
 @section('content')
 
 <!--begin::Portlet-->
-		<div class="m-portlet m-portlet--responsive-mobile" id="root">
+		<div class="m-portlet m-portlet--responsive-mobile">
 			<div class="m-portlet__head">
 				<div class="m-portlet__head-caption">
 					<div class="m-portlet__head-title">
@@ -32,7 +32,6 @@
                       </div>
                      
                       {{Form::select('location',$locations,$defaultLocation,['class'=>'selectpicker','id'=>'location'])}}
-                     
                         
                     </div>
                 </div>
@@ -65,17 +64,6 @@
 </form>
 
 </div>
-
-<section id="test">
-    
-    <select v-model="selectedLocation" class="selectpicker">
-  <option disabled value="">Please select one</option>
-  <option v-for="location in locations" :value="location.id" v-text="location.name"></option>
-
-</select>
-<span>Selected: @{{ selectedLocation }}</span>
-
-</section>
 
 @endsection
 
@@ -788,57 +776,6 @@ printBtn.addEventListener('click',function(){
 },false);
 //print btn end
 
-var app = new Vue({
-    el: '#test',
-    data:{
-        csrf_toeken: '{{csrf_token()}}',
-        currentEvent : {},
-        currentDate : moment(),
-        selectedLocation:"{{$defaultLocation}}",
-        locations: [
-        @foreach($locations as $k => $v)
-           { id:'{{$k}}', name: '{{$v}}' },
-        @endforeach
-        ],
-        events: {},
-        
-                // type:'post',
-                // url: '/shifts/fetchWeek',
-                // dataType:'json',
-                // data:{
-                //     _token: csrf_token,
-                //     location:currentLocation,
-                // },
-                // success: function(result){
-                // },
-                // error: function(){
-                //     alert('there was an error while fetching events!');
-                // },
-                // color:'#d3eefd',
-                // textColor: 'black',
-            
-                // },
-    },
-    methods:{
-        refreshEvents(){
-            console.log('fetching events');
-            axios.post('/shifts/fetchWeek',{
-                _token: this.csrf_token,
-                location:this.selectedLocation,
-                start:'2018-08-01',
-                end:'2018-08-10',
-            }).then(response => {
-                console.log(response.data);
-            }).catch(error => {
-                console.log(error);
-            });
-        },
-    },
-    mounted(){
-
-    }
-
-});
 
 </script>
 @endsection
