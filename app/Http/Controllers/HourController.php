@@ -60,7 +60,7 @@ class HourController extends Controller
        }
      
    
-        return view('hour.index',compact('index','locations','dates','hours','scheduledEmployees','stats','subheader'));
+        return view('hour.index',compact('index','locations','dates','hours','scheduledEmployees','stats','subheader','location','date'));
    
     }
     public function compute()

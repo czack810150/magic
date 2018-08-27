@@ -10,12 +10,12 @@
 	
 		<div class="form-group">
 		<label class="mr-sm-2" for="location">Location</label>
-{{ Form::select('location',$locations,null,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','placeholder' => 'Choose a location','id'=>'location'])}}
+{{ Form::select('location',$locations,$location,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','placeholder' => 'Choose a location','id'=>'location'])}}
 		</div>
 
 		<div class="form-group mx-sm-3">
 			{{ Form::label('dateRange','Date range',['class'=>'mx-sm-3'])}}
-			{{ Form::select('dateRange',$dates,null,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','placeholder'=>'Choose date range']) }}
+			{{ Form::select('dateRange',$dates,$date,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','placeholder'=>'Choose date range']) }}
 		</div>
 		{{ Form::submit('Submit',['class'=>'btn btn-primary']) }}
 		{{csrf_field()}}
@@ -164,7 +164,8 @@
 		el: '#hours',
 		data: {
 			shifts: [
-			]
+			],
+			dates:[],
 		},
 		methods: {
 			hoursBreakDown: function(e) {
@@ -178,6 +179,8 @@
 					},
 					function(data,status){
 						if(status == 'success'){
+							console.log(data);
+							app.dates = data;
 							html = '';
 							for(i in data){
 								html += '<tr><td>' + data[i]['shiftDate'] + '</td>';
@@ -185,6 +188,7 @@
 								html += '<td>' + data[i]['scheduleOut'] + '</td>';
 								html += '<td>' + data[i]['scheduledHour'] + '</td>';
 								html += '<td>' + data[i]['effectiveHours']['hours'] + '</td><td class="text-muted">';
+								
 
 								for(j in data[i]['clocks']){
 									var clockIn = moment(data[i]['clocks'][j]['clockIn']);
