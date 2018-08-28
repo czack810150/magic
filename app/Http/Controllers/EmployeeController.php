@@ -943,5 +943,9 @@ class EmployeeController extends Controller
         } 
         return $employees;
      }
+     public function pendingReview(){
+        $pendings = Employee::reviewPending(180,420);
+        return view('employee.metrics.pendingReview',compact('pendings'));
+     }
 
 }

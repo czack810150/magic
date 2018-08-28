@@ -277,6 +277,9 @@ Route::get('/my_availability','AvailabilityController@my');
 
 	Route::get('/sales_dashboard','SaleController@dashboard');
 
+// Employee Metrics
+	Route::get('/pendingReview','EmployeeController@pendingReview')->name('pendingReview');	
+
 								}); // end of grouped auth
 
 Auth::routes();

@@ -308,12 +308,12 @@
 															</li>
 															@endif
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
-																<a  href="header/actions.html" class="m-menu__link ">
+																<a  href="{{ route('pendingReview') }}" class="m-menu__link ">
 																	<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 																		<span></span>
 																	</i>
 																	<span class="m-menu__link-text">
-																		Corporate Expenses
+																		Pending Reviews
 																	</span>
 																</a>
 															</li>
