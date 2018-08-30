@@ -556,6 +556,7 @@ class EmployeeController extends Controller
             'location_id' => $r->location,
             'job_id' => $r->job,
             'start' => Carbon::now()->toDateString(),
+            'review' => Carbon::now()->addDays(180)->toDateString(),
         ]);
 
         return 1;

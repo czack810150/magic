@@ -186,16 +186,18 @@ class Employee extends Model
     }
     public static function reviewPending($days,$minimumHours)
     {
-        $employees = self::where('status','!=','terminated')->where('termination',null)->with('promotion')->get();
+        $locations = Location::store()->pluck('id');
+
+        $employees = self::whereIn('location_id',$locations)->where('status','!=','terminated')->where('termination',null)->with('job_location')->get();
         $today = Carbon::now()->startOfDay();
         $pendings = collect();
         foreach($employees as $e)
         {
-            if(count($e->promotion)){ // check if the employee has been promoted before ( not new employee)
-                $lastReviewDate = $e->promotion->last()->created_at->startOfDay();
+            if(count($e->job_location)){ // check if the employee has been promoted before ( not new employee)
+                $lastReviewDate = $e->job_location->last()->review->startOfDay();
 
-                if( $lastReviewDate->copy()->addDays($days)->lt($today) ){
-                    $hours = $e->hours->where('start','>=',$lastReviewDate->toDateString());
+                if( $lastReviewDate->lt($today) ){
+                    $hours = $e->hours->where('start','>=',$lastReviewDate->copy()->subDays(180)->toDateString());
                     $e->effectiveHours = $hours->sum('wk1Effective') + $hours->sum('wk2Effective') + $hours->sum('wk1EffectiveCash') + $hours->sum('wk2EffectiveCash');
                     $e->effectiveHours >= $minimumHours? $e->reviewable = true:$e->reviewable = false;
                     $pendings->push($e);
@@ -203,7 +205,7 @@ class Employee extends Model
                 
             } else {  // check if new employees are due for reivew
                 if( $e->hired->startOfDay()->copy()->addDays($days)->lt($today) ){
-                    $hours = $e->hours->where('start','>=',$lastReviewDate->toDateString());
+                    $hours = $e->hours->where('start','>=',$lastReviewDate->copy()->subDays(180)->toDateString());
                     $e->effectiveHours = $hours->sum('wk1Effective') + $hours->sum('wk2Effective') + $hours->sum('wk1EffectiveCash') + $hours->sum('wk2EffectiveCash');
                     $e->effectiveHours >= $minimumHours? $e->reviewable = true:$e->reviewable = false;
                     $pendings->push($e);
