@@ -68,9 +68,15 @@
 				@else
 				<td>Not a person</td>
 				@endif
+				@if($u->authorization)
 				<td>{{ $u->authorization->type }}</td>
 				<td>{{ $u->authorization->location->name }}</td>
 				<td>{{ $u->authorization->level }}</td>
+				@else
+				<td>N/A</td>
+				<td>N/A</td>
+				<td>N/A</td>
+				@endif
 				<td>{{ $u->created_at }}</td>
 				<td>{{ $u->last_login }}</td>
 				<td>{{ $u->last_login_ip }}</td>
