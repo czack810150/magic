@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class Employee_location extends Model
 {
-	protected $fillable = ['employee_id','location_id','job_id','start','end','review'];
+	protected $fillable = ['employee_id','location_id','job_id','start','end','review','notifield'];
 
     public function job(){
     	return $this->belongsTo('App\Job');

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Employee;
+use App\Employee_location;
 use App\Events\EmployeePendingReview;
 
 
@@ -42,12 +43,32 @@ class CheckEmployeePendingReviews extends Command
     {
         $conditions = $this->argument('conditions');
         $pendings = Employee::reviewPending($conditions[0],$conditions[1])->where('reviewable',true)->where('notified',false);
-        // foreach($pendings as $p)
-        // {
-        //     $this->info("$p->name,$p->location.name,$p->effectiveHours");
-        // }
+       
         if(count($pendings)){
             event(new EmployeePendingReview($pendings));
+
+             foreach($pendings as $p)
+                {
+                    if(count($p->job_location))
+                    {
+                        $row = $p->job_location->last();
+                        $row->notified = true;
+                        $row->save();
+                    } else {
+                        $EL = Employee_location::create([
+                            'employee_id' => $p->id,
+                            'location_id' => $p->location_id,
+                            'job_id' => $p->job_id,
+                            'start' => $p->hired->toDateString(),
+                            'end' => null,
+                            'review' =>$p->hired->toDateString(),
+                            'notified' => true,
+                        ]);
+                    }
+                    
+                }
+
+
              $this->info($pendings->count());
         } else {
             $this->info('There is no pending review employee.');
