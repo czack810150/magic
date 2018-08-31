@@ -41,6 +41,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("import:salesAmount $yesterday 60")->dailyAt('01:00');
         $schedule->command("calculate:total $yesterday")->dailyAt('01:30');
         $schedule->command("pendingStatus:update")->dailyAt('00:10');
+        $schedule->command('employee:pendingReview 180 420')->dailyAt('00:05');
     }
 
     /**
