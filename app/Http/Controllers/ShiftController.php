@@ -165,7 +165,7 @@ class ShiftController extends Controller
     }
     public function getResourcesByLocation(Request $r)
      {
-        $employees =  Employee::where('location_id',$r->location)->ActiveEmployee()->get();
+        $employees =  Employee::where('location_id',$r->location)->ActiveAndVacationEmployees()->get();
         $borrowed = collect();
         $shifts = Shift::where('location_id',$r->location)->whereBetween('start',[$r->start,$r->end])->get();
         foreach($shifts as $s){

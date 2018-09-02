@@ -55,6 +55,7 @@
   </div>
 
 <h4>Availability</h4>
+@if($applicant->availability)
 <table class="table table-bordered table-sm">
 <thead>
 	<tr><th></th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr>
@@ -87,6 +88,9 @@
 	<li>Work on holidays: {{ $applicant->availability->holiday?'Yes':'No'}}</li>
 
 </ul>
+@else
+<p>No availability information</p>
+@endif
 
 <h4>Emergency Contact</h4>
  <div class="row mb-3">
@@ -106,6 +110,7 @@
   </div>
 
 <h4>Most Recent Employment</h4>
+@if($applicant->pastwork)
  <div class="row mb-3">
   	<div class="col-sm">Business Name: {{ $applicant->pastwork->company}}</div>
   	<div class="col-sm">Address: {{ $applicant->pastwork->address}}</div>
@@ -120,6 +125,9 @@
 
   	
   </div>
+  @else
+  <p>No past work information</p>
+  @endif
 
 
 
