@@ -196,8 +196,8 @@ class Employee extends Model
             if(count($e->job_location)){ // check if the employee has been promoted before ( not new employee)
                 $lastReviewDate = $e->job_location->last()->review->startOfDay();
 
-                if( $lastReviewDate->lt($today) ){
-                    $hours = $e->hours->where('start','>=',$lastReviewDate->copy()->subDays(180)->toDateString());
+                if( $lastReviewDate->copy()->addDays($days)->lt($today) ){
+                    $hours = $e->hours->where('start','>=',$lastReviewDate->copy()->toDateString());
                     $e->effectiveHours = $hours->sum('wk1Effective') + $hours->sum('wk2Effective') + $hours->sum('wk1EffectiveCash') + $hours->sum('wk2EffectiveCash');
                     $e->effectiveHours >= $minimumHours? $e->reviewable = true:$e->reviewable = false;
                     $pendings->push($e);
@@ -205,7 +205,7 @@ class Employee extends Model
                 
             } else {  // check if new employees are due for reivew
                 if( $e->hired->startOfDay()->copy()->addDays($days)->lt($today) ){
-                    $hours = $e->hours->where('start','>=',$lastReviewDate->copy()->subDays(180)->toDateString());
+                    $hours = $e->hours->where('start','>=',$e->hired->copy()->toDateString());
                     $e->effectiveHours = $hours->sum('wk1Effective') + $hours->sum('wk2Effective') + $hours->sum('wk1EffectiveCash') + $hours->sum('wk2EffectiveCash');
                     $e->effectiveHours >= $minimumHours? $e->reviewable = true:$e->reviewable = false;
                     $pendings->push($e);

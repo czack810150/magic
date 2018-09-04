@@ -12,8 +12,8 @@
                 <td>{{$p->effectiveHours}}</td>
                 <td>@if($p->reviewable)<span class="m--font-success">Yes</span>@else<span class="m--font-danger">No</span>@endif</td>
                 @if(count($p->job_location))
-                <td>{{$p->job_location->last()->review->copy()->subDays(180)->toFormattedDateString()}}</td>
-                 <td>{{Carbon\Carbon::now()->diffInDays($p->job_location->last()->review->subDays(180))}}</td>
+                <td>{{$p->job_location->last()->review->toFormattedDateString()}}</td>
+                 <td>{{Carbon\Carbon::now()->diffInDays($p->job_location->last()->review)}}</td>
                 @else
                 <td>
                     {{$p->hired->toFormattedDateString()}} (Date Hired)
