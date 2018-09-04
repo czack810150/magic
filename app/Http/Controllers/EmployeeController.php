@@ -174,6 +174,7 @@ class EmployeeController extends Controller
         'location_id' => $request->employeeLocation,
         'job_id' => $employee->job_id,
         'start' => $request->hireDate,
+        'review' => Carbon::now()->addDays(180)->toDateString(),
        ]);
        $employee_profile = Employee_profile::create([
         'employee_id' => $employee->id,

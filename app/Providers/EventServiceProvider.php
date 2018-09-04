@@ -50,6 +50,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\EmployeeToBeTerminated' => [
             'App\Listeners\EmployeeToBeTerminatedListener',
+        ],
+        'App\Events\EmployeePendingReview' => [
+            'App\Listeners\EmployeePendingReviewListener',
         ]
     ];
 
