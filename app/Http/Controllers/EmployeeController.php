@@ -783,7 +783,7 @@ class EmployeeController extends Controller
             'firstName' => $applicant->firstName,
             'lastName' => $applicant->lastName,
             'cName' => $r->cName,
-             'name' => empty($applicant->cName)? $applicant->firstName.' '.$applicant->lastName:$applicant->cName,
+            'name' => empty($applicant->cName)? $applicant->firstName.' '.$applicant->lastName:$applicant->cName,
             'location_id' => $r->employeeLocation,
             'job_id' => $r->job,
             'hired' => $r->hireDate,
@@ -793,6 +793,7 @@ class EmployeeController extends Controller
         'location_id' => $r->employeeLocation,
         'job_id' => $employee->job_id,
         'start' => $r->hireDate,
+        'review' => Carbon::now()->addDays(180)->toDateString(),
        ]);
        switch($applicant->gender){
         case 0:
