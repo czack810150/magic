@@ -17,6 +17,10 @@ class Employee extends Model
     {
         return $this->hasOne('App\Authorization');
     }
+    public function rate()
+    {
+        return $this->hasMany(EmployeeRate::class);
+    }
     public function employee_profile()
     {
         return $this->hasOne('App\Employee_profile');
