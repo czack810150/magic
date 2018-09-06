@@ -23,6 +23,7 @@ use App\Leave;
 use App\Events\EmployeeAdded;
 use App\Events\EmployeeToBeTerminated;
 use App\EmployeePending;
+use App\EmployeeRate;
 
 
 
@@ -950,5 +951,31 @@ class EmployeeController extends Controller
         $pendings = Employee::reviewPending(180,420);
         return view('employee.metrics.pendingReview',compact('pendings'));
      }
+     public function rateSubmit(Request $r)
+     {
+        $e = Employee::find($r->employee);
+        
+        if(count($e->rate)){
+            $old = $e->rate->last();
+            $old->end = $r->startDate;
+            $old->save();
+            $change = $r->rate*100 - $old->rate;
+        } else {
+            $change = 0;
+        }
 
+        $rate = EmployeeRate::create([
+            'employee_id' => $r->employee,
+            'type' => $r->type,
+            'cheque' => $r->cheque == 'true'? true:false,
+            'rate' => $r->rate*100,
+            'change' => $change,
+            'start' => $r->startDate
+        ]);
+        return $rate;
+     }
+     public function rateGet(Request $r)
+     {
+        return Employee::find($r->employee)->rate;
+     }
 }
