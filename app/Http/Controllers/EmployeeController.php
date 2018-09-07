@@ -170,6 +170,16 @@ class EmployeeController extends Controller
             'job_id' => $request->job,
             'hired' => $request->hireDate,
        ]);
+       $config = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
+
+       $employeeRate = EmployeeRate::create([
+        'employee_id' => $employee->id,
+        'type' => 'hour',
+        'cheque' => true,
+        'rate' => $config->minimumPay,
+        'change' => 0,
+        'start' => $request->hireDate,
+       ]);
        $employee_location = Employee_location::create([
         'employee_id' => $employee->id,
         'location_id' => $request->employeeLocation,
@@ -788,6 +798,16 @@ class EmployeeController extends Controller
             'location_id' => $r->employeeLocation,
             'job_id' => $r->job,
             'hired' => $r->hireDate,
+       ]);
+       $config = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
+
+       $employeeRate = EmployeeRate::create([
+        'employee_id' => $employee->id,
+        'type' => 'hour',
+        'cheque' => true,
+        'rate' => $config->minimumPay,
+        'change' => 0,
+        'start' => $request->hireDate,
        ]);
        $employee_location = Employee_location::create([
         'employee_id' => $employee->id,
