@@ -315,6 +315,19 @@ class Sale extends Model
             $count++;
         }
         return $count;
+    }
+    public static function saveMonthlyItemsSales($year,$month)
+    {
+        $dt = Carbon::createFromDate($year,$month,1)->StartOfDay();
+        $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
+        $count = 0;
+        while($endOfMonth != $dt->toDateString())
+        {
+            self::dayItemQty($dt->toDateString());
+            $dt->addDay();
+            $count++;
+        }
+        return $count;
 
     }
 
