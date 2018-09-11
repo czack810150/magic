@@ -807,7 +807,7 @@ class EmployeeController extends Controller
         'cheque' => true,
         'rate' => $config->minimumPay,
         'change' => 0,
-        'start' => $request->hireDate,
+        'start' => $r->hireDate,
        ]);
        $employee_location = Employee_location::create([
         'employee_id' => $employee->id,
