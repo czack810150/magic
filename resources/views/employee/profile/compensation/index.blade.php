@@ -9,6 +9,7 @@
 				</h3>
 			</div>
 		</div>
+	@can('update-salary')
 	<div class="m-portlet__head-tools">
 		<ul class="m-portlet__nav">
 			<li class="m-portlet__nav-item">
@@ -20,6 +21,7 @@
 			</li>
 		</ul>
 	</div>
+	@endcan
 	</div>
 	
 <!--begin::Form-->
@@ -68,7 +70,7 @@
 		<p>No rate history</p>
 	</section>
 </div>
-
+@can('update-salary')
 <!-- Modal -->
 <div class="modal fade" id="newRateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -122,7 +124,7 @@
   </div>
 </div>
 <!-- Modal end -->
-
+@endcan
 															
 </div><!--end::Portlet-->
 

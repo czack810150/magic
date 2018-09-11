@@ -12,8 +12,8 @@ class Item extends Model
     public function item_category(){
     	return $this->belongsTo('App\ItemCategory');
     }
-    public function totalQty()
+    public function totalQty($location)
     {
-    	return $this->hasMany('App\SalesItemsTotal','itemCode','itemCode');
+    	return $this->hasMany('App\SalesItemsTotal','itemCode','itemCode')->where('location_id',$location);
     }
 }

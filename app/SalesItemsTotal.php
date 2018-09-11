@@ -24,12 +24,12 @@ class SalesItemsTotal extends Model
         return $this->belongsTo('App\Item','itemCode','itemCode');
     }
 
-    public static function getItemsTotalQty()
+    public static function getItemsTotalQty($location)
     {
         $items = Item::select('itemCode','name','price')->where('menu',1)->orderBy('item_category_id')->get();
         foreach($items as $i)
         {
-            $i->qty = $i->totalQty()->sum('qty');
+            $i->qty = $i->totalQty($location)->sum('qty');
         }
         return $items;
     }
