@@ -306,7 +306,7 @@ class Sale extends Model
     public static function saveMonthlySales($year,$month)
     {
         $dt = Carbon::createFromDate($year,$month,1)->StartOfDay();
-        $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
+        $endOfMonth = Carbon::$dt->copy()->endOfMonth()->toDateString();
         $count = 0;
         while($endOfMonth != $dt->toDateString())
         {
@@ -319,7 +319,7 @@ class Sale extends Model
     public static function saveMonthlyItemsSales($year,$month)
     {
         $dt = Carbon::createFromDate($year,$month,1)->StartOfDay();
-        $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
+        $endOfMonth = Carbon::$dt->copy()->endOfMonth()->toDateString();
         $count = 0;
         while($endOfMonth != $dt->toDateString())
         {

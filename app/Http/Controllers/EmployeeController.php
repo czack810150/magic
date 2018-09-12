@@ -996,6 +996,12 @@ class EmployeeController extends Controller
      }
      public function rateGet(Request $r)
      {
-        return Employee::find($r->employee)->rate;
+        $config = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
+        $rates =  Employee::find($r->employee)->rate;
+        foreach($rates as $rate)
+        {
+            $rate->basicRate = $config->minimumPay;
+        }
+        return $rates;
      }
 }

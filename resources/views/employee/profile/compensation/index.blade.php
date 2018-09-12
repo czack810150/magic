@@ -31,8 +31,11 @@
 <div class="form-group m-form__group row">
 
 	<compensation-item title="Pay Style" :body="type"></compensation-item>
-	<compensation-item title="Rate" :body="formattedRate"></compensation-item>
-	<compensation-item title="Basic Rate" body="${{ number_format($basicRate->minimumPay/100,2,'.',',') }} / Hour"></compensation-item>
+	<compensation-item v-if="type=='hour'" title="Basic Rate" body="${{ number_format($basicRate->minimumPay/100,2,'.',',') }} / Hour"></compensation-item>
+	<compensation-item v-if="type=='hour'" title="Variable Rate" :body="formattedRate"></compensation-item>
+	<compensation-item v-if="type=='month'" title="Monthly Rate" :body="formattedRate"></compensation-item>
+
+	
 	<compensation-item title="Position Rate" body="${{ number_format($employee->job->rate/100,2,'.',',') }} / Hour"></compensation-item>
 	<div class="col-md-2">
 <div class="info-box pl-3">
@@ -94,7 +97,7 @@
 				
 					<div class="form-group m-form__group">
 						<label>Rate</label>
-						<input type="number" v-model="selectedRate" class="form-control m-input" min="0" step="0.25" required>
+						<input type="number" v-model="selectedRate" class="form-control m-input" min="-.5" step="0.25" required>
 					</div>
 					<div class="form-group m-form__group">
 						<label>Effective Date</label>
@@ -153,6 +156,7 @@ Vue.component('compensation-table',{
 						    	:type="rate.type"
 						    	:cheque="rate.cheque"
 						    	:rate="rate.rate"
+						    	:basicRate="rate.basicRate"
 						    	:start="rate.start"
 						    	:end="rate.end"
 						    	:change="rate.change"
@@ -167,9 +171,9 @@ Vue.component('compensation-table',{
 });
 
 Vue.component('compensation-table-row',{
-	props:['type','cheque','rate','start','end','change'],
+	props:['type','cheque','rate','start','end','change','basicRate'],
 	template:`
-	<tr><td>@{{type}}</td>@{{start}}<td>@{{end}}</td><td>@{{rate/100}}</td><td>@{{change/100}}</td><td></td><td></td></tr>
+	<tr><td>@{{type}}</td>@{{start}}<td>@{{end}}</td><td>@{{(rate + basicRate)/100}}</td><td>@{{change/100}}</td><td></td><td></td></tr>
 	`
 });
 
@@ -196,7 +200,9 @@ var app = new Vue({
 		rates: [
 			@if(count($employee->rate))
 				@foreach($employee->rate as $r)
-					{ type: '{{$r->type}}',cheque: '{{$r->cheque}}', rate: {{$r->rate}}, start:'{{$r->start}}',end:'{{$r->end}}',change:{{$r->change}} },
+					{ type: '{{$r->type}}',cheque: '{{$r->cheque}}', rate: {{$r->rate}}, start:'{{$r->start}}',end:'{{$r->end}}',change:{{$r->change}},
+						basicRate:1400,
+					 },
 				@endforeach
 			@endif
 		],

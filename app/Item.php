@@ -14,6 +14,11 @@ class Item extends Model
     }
     public function totalQty($location)
     {
-    	return $this->hasMany('App\SalesItemsTotal','itemCode','itemCode')->where('location_id',$location);
+        if($location != 'all'){
+            return $this->hasMany('App\SalesItemsTotal','itemCode','itemCode')->where('location_id',$location);
+        } else {
+            return $this->hasMany('App\SalesItemsTotal','itemCode','itemCode');
+        }
+    	
     }
 }
