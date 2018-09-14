@@ -8,7 +8,7 @@ use App\Location;
 
 class EmployeeRate extends Model
 {
-    protected $fillable = ['employee_id','type','cheque','rate','change','start','end'];
+    protected $fillable = ['employee_id','type','cheque','rate','variableRate','extraRate','start','end'];
     public function employee()
     {
     	return $this->belongsTo(Employee::class);

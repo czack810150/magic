@@ -805,7 +805,7 @@ class EmployeeController extends Controller
         'employee_id' => $employee->id,
         'type' => 'hour',
         'cheque' => true,
-        'rate' => $config->minimumPay,
+        'rate' => 0,//$config->minimumPay,
         'change' => 0,
         'start' => $r->hireDate,
        ]);
@@ -979,17 +979,15 @@ class EmployeeController extends Controller
             $old = $e->rate->last();
             $old->end = $r->startDate;
             $old->save();
-            $change = $r->rate*100 - $old->rate;
-        } else {
-            $change = 0;
-        }
+        } 
 
         $rate = EmployeeRate::create([
             'employee_id' => $r->employee,
             'type' => $r->type,
             'cheque' => $r->cheque == 'true'? true:false,
             'rate' => $r->rate*100,
-            'change' => $change,
+            'variableRate' => $r->variableRate*100,
+            'extraRate' => $r->extraRate*100,
             'start' => $r->startDate
         ]);
         return $rate;
@@ -998,10 +996,7 @@ class EmployeeController extends Controller
      {
         $config = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
         $rates =  Employee::find($r->employee)->rate;
-        foreach($rates as $rate)
-        {
-            $rate->basicRate = $config->minimumPay;
-        }
+       
         return $rates;
      }
 }

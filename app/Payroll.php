@@ -229,20 +229,21 @@ class Payroll extends Model
             } 
 
             // Performance index
-            $performance = Score_log::where('location_id',$e->location_id)->where('employee_id',$e->employee_id)->
-                            whereBetween('date',[$periodStart,$wk2End])->sum('value') + 100;
-            if($performance > 110)
-                $performance = 110; 
+            // $performance = Score_log::where('location_id',$e->location_id)->where('employee_id',$e->employee_id)->
+            //                 whereBetween('date',[$periodStart,$wk2End])->sum('value') + 100;
+            // if($performance > 110)
+            //     $performance = 110; 
 
-            $performance /= 100;
+            // $performance /= 100;
+            $performance = 1.0;
             $bonus = 0;
-
+            $variableRate = $e->employee->rate->last()->rate/100;
             $e->magicNoodlePay = self::magicNoodlePay(
                                         Carbon::now()->year,
                                         $e->wk1Effective,
                                         $e->wk2Effective,
                                         $e->cashHour,
-                                        $e->employee->job->rate/100,
+                                        $variableRate,
                                         $e->employee->job->tip,
                                         $hourlyTip,
                                         $e->nightHour,

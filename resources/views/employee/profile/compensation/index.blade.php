@@ -31,25 +31,18 @@
 <div class="form-group m-form__group row">
 
 	<compensation-item title="Pay Style" :body="type"></compensation-item>
-	<compensation-item v-if="type=='hour'" title="Basic Rate" body="${{ number_format($basicRate->minimumPay/100,2,'.',',') }} / Hour"></compensation-item>
+	<compensation-item v-if="type=='hour'" title="时薪" :body="overallRate"></compensation-item>
+	<compensation-item v-if="type=='hour'" title="Basic Rate" :body="formattedBasicRate"></compensation-item>
 	<compensation-item v-if="type=='hour'" title="Variable Rate" :body="formattedRate"></compensation-item>
 	<compensation-item v-if="type=='month'" title="Monthly Rate" :body="formattedRate"></compensation-item>
 
 	
-	<compensation-item title="Position Rate" body="${{ number_format($employee->job->rate/100,2,'.',',') }} / Hour"></compensation-item>
-	<div class="col-md-2">
-<div class="info-box pl-3">
-<small>Tipping
-</small>
-@if($employee->job->tip)
-<p>{{ $employee->job->tip*100 }}%</p>
-@else
-<p>Receives no tips</p>
-@endif
-</div>
-</div>
-	<compensation-item title="Meal Rate" body="${{ number_format($basicRate->mealRate,2,'.',',') }} / Hour"></compensation-item>
-	<compensation-item title="Night Rate" body="${{ number_format($basicRate->nightRate,2,'.',',') }} / Hour"></compensation-item>
+	<compensation-item v-if="employeeRole == 'noodle' " title="Skill Rate" :body="formattedExtraRate"></compensation-item>
+	
+	<compensation-item  v-if="employeeType == 'store'" title="Tipping" :body="tipping"></compensation-item>
+
+	<compensation-item  v-if="employeeType == 'store'" title="Meal Rate" body="${{ number_format($basicRate->mealRate,2,'.',',') }} / Hour"></compensation-item>
+	<compensation-item v-if="employeeType == 'store'" title="Night Rate" body="${{ number_format($basicRate->nightRate,2,'.',',') }} / Hour"></compensation-item>
 
 </div> <!--end of row-->
 </div>
@@ -96,8 +89,16 @@
 					</div>
 				
 					<div class="form-group m-form__group">
-						<label>Rate</label>
+						<label>基本工资</label>
 						<input type="number" v-model="selectedRate" class="form-control m-input" min="-.5" step="0.25" required>
+					</div>
+					<div class="form-group m-form__group">
+						<label>浮动工资</label>
+						<input type="number" v-model="selectedVariableRate" class="form-control m-input" min="-.5" step="0.25" max="4" required>
+					</div>
+					<div class="form-group m-form__group">
+						<label>技能工资</label>
+						<input type="number" v-model="selectedExtraRate" class="form-control m-input" min="0" step="1" max="6" required>
 					</div>
 					<div class="form-group m-form__group">
 						<label>Effective Date</label>
@@ -144,10 +145,11 @@ Vue.component('compensation-table',{
 						  	<thead>
 						    	<tr>
 						    		<th>Style</th>
+						    		<th>打税</th>
 						      		<th>From</th>
 						      		<th>To</th>
 						      		<th>Rate</th>
-						      		<th>Change</th>
+						      		
 						    	</tr>
 						  	</thead>
 						  	<tbody>
@@ -156,10 +158,11 @@ Vue.component('compensation-table',{
 						    	:type="rate.type"
 						    	:cheque="rate.cheque"
 						    	:rate="rate.rate"
-						    	:basicRate="rate.basicRate"
+						    	:variableRate="rate.variableRate"
+						    	:extraRate="rate.extraRate"
 						    	:start="rate.start"
 						    	:end="rate.end"
-						    	:change="rate.change"
+					
 						    	></compensation-table-row>
 						  	</tbody>
 						</table>
@@ -171,9 +174,9 @@ Vue.component('compensation-table',{
 });
 
 Vue.component('compensation-table-row',{
-	props:['type','cheque','rate','start','end','change','basicRate'],
+	props:['type','cheque','rate','variableRate','extraRate','start','end','change'],
 	template:`
-	<tr><td>@{{type}}</td>@{{start}}<td>@{{end}}</td><td>@{{(rate + basicRate)/100}}</td><td>@{{change/100}}</td><td></td><td></td></tr>
+	<tr><td>@{{type}}</td><td>@{{ cheque }}</td>@{{start}}<td>@{{end}}</td><td>@{{(rate + variableRate + extraRate)/100}}</td><td></td><td></td></tr>
 	`
 });
 
@@ -193,15 +196,21 @@ Vue.component('compensation-item',{
 var app = new Vue({
 	el:'#employee-compensation',
 	data:{
+		employeeType: '{{ $employee->location->type }}',
+		employeeRole: '{{ $employee->job->type }}',
+		tipping : '{{$employee->job->tip? ($employee->job->tip*100)." %":"Receives no tips"}}',
+
 		type: '{{ count($employee->rate)?$employee->rate->last()->type:"Not Available" }}',
-		rate: '{{ count($employee->rate)?$employee->rate->last()->rate:"No Information" }}',
+		variableRate: '{{ count($employee->rate)?$employee->rate->last()->variableRate:"No Information" }}',
 		cheque: '{{ count($employee->rate)?$employee->rate->last()->cheque:1 }}',
-		minimumRate: {{$basicRate->minimumPay }},
+		basicRate: {{ $employee->rate->last()->rate }},
+		extraRate: {{ $employee->rate->last()->extraRate }},
 		rates: [
 			@if(count($employee->rate))
 				@foreach($employee->rate as $r)
-					{ type: '{{$r->type}}',cheque: '{{$r->cheque}}', rate: {{$r->rate}}, start:'{{$r->start}}',end:'{{$r->end}}',change:{{$r->change}},
-						basicRate:1400,
+					{ type: '{{$r->type}}',cheque: '{{$r->cheque}}', rate: {{$r->rate}}, start:'{{$r->start}}',end:'{{$r->end}}',
+						variableRate:{{$r->variableRate}},
+						extraRate:{{$r->extraRate}},
 					 },
 				@endforeach
 			@endif
@@ -215,18 +224,34 @@ var app = new Vue({
 		},
 		],
 		selectedType: '{{ count($employee->rate)?$employee->rate->last()->type:"hour" }}',
-		selectedRate: {{ count($employee->rate)?$employee->rate->last()->rate/100:0 }},
+		selectedRate: {{ count($employee->rate)? $employee->rate->last()->rate/100:0 }},
+		selectedVariableRate: {{ $employee->rate->last()->variableRate }}/100,
+		selectedExtraRate:{{ $employee->rate->last()->extraRate }}/100,
 		effectiveDate: moment().add(1,'d').format('YYYY-MM-DD'),
 	},
 	computed:{
 		formattedRate(){
-			if(!$.isNumeric(this.rate)) {
-				return this.rate;
+			if(!$.isNumeric(this.variableRate)) {
+				return this.variableRate;
 			} else {
-				return '$' + this.rate / 100 + ' /' + this.type;
+				return '$' + parseInt(this.variableRate) / 100 + ' /' + this.type;
 			}
 			
+		},
+		overallRate(){
+			if(!$.isNumeric(this.variableRate)) {
+				return (this.basicRate + this.extraRate)/100
+			} else {
+				return '$' + (this.basicRate + this.extraRate + parseInt(this.variableRate))/100 + ' /' + this.type;
+			}
+		},
+		formattedBasicRate(){
+			return '$' + this.basicRate / 100 + ' /' + this.type;
+		},
+		formattedExtraRate(){
+			return '$' + this.extraRate / 100 + ' /' + this.type;
 		}
+
 	},
 	methods:{
 		submitRate(){
@@ -234,12 +259,16 @@ var app = new Vue({
 				employee:{{$employee->id}},
 				type: this.selectedType,
 				rate: this.selectedRate,
+				variableRate: this.selectedVariableRate,
+				extraRate:this.selectedExtraRate,
 				cheque:this.cheque,
 				startDate:this.effectiveDate,
 			}).then(response => {
 				$('#newRateModal').modal('hide');
 				this.updateRates();
-				this.rate = this.selectedRate*100;
+				this.basicRate = this.selectedRate*100;
+				this.variableRate = this.selectedVariableRate*100;
+				this.extraRate = this.selectedExtraRate*100;
 				this.type = this.selectedType;
 			});
 			
