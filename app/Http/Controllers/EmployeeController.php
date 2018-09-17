@@ -281,7 +281,7 @@ class EmployeeController extends Controller
     public function employeesByLocation()
     {
         $location = request('location');
-        return Employee::where('location_id',$location)->get();
+        return Employee::where('location_id',$location)->where('status','!=','terminated')->get();
     }
     public function apiGet(Request $request, $id)
     {

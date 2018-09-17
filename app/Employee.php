@@ -201,7 +201,9 @@ class Employee extends Model
                 $lastReviewDate = $e->job_location->last()->review->startOfDay();
 
                 if( $lastReviewDate->copy()->addDays($days)->lt($today) ){
-                    $hours = $e->hours->where('start','>=',$lastReviewDate->copy()->toDateString());
+                    // $hours = $e->hours->where('start','>=',$lastReviewDate->copy()->toDateString());
+                    $hours = Hour::where('employee_id',$e->id)->where('start','>=',$lastReviewDate->copy()->toDateString())
+                    ->where('start','<',$lastReviewDate->copy()->addDays($days))->get();
                     $e->effectiveHours = $hours->sum('wk1Effective') + $hours->sum('wk2Effective') + $hours->sum('wk1EffectiveCash') + $hours->sum('wk2EffectiveCash');
                     $e->effectiveHours >= $minimumHours? $e->reviewable = true:$e->reviewable = false;
                     $e->notified = $e->job_location->last()->notified;
