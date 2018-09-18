@@ -577,6 +577,18 @@ class EmployeeController extends Controller
     {
         $basicRate = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
         $employee = Employee::find($r->employee);
+        if(!count($employee->rate)){
+            $config = DB::table('payroll_config')->where('year',Carbon::now()->year)->first();
+            EmployeeRate::create([
+                'employee_id' => $employee->id,
+                'type' => 'hour',
+                'cheque' => true,
+                'rate' => $config->minimumPay,
+                'variableRate' => $employee->job->rate,
+                'extraRate' => 0,
+                'start' => Carbon::now()->toDateString(),
+            ]);
+        }
         return view('employee.profile.compensation.index',compact('basicRate','employee'));
     }
     public function account(Request $r)
