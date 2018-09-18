@@ -36,12 +36,11 @@
 @if($logs)
 <table class="table table-sm">
 	<thead>
-		<tr><th>card</th><th>name</th><th>legal</th><th>cash hours</th><th>cheque hours</th><th>regular</th><th>overtime</th><th>Holiday</th><th>Gross</th>
+		<tr><th>员工号</th><th>名字</th><th>legal</th><th>时薪</th><th>现金时</th><th>支票时</th><th>基本工资</th><th>加班</th><th>Holiday</th><th>Gross</th>
 			<th>Vacation</th>
-			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>Cheque</th><th>CashSalary</th>
-			<th>Position rate</th><th>Tips</th><th>nightHrs</th><th>Meal</th>
-			<th>P</th>
-			<th>Variable Pay</th><th>发现</th><th>Total</th>
+			<th>EI</th><th>CPP</th><th>FedTax</th><th>Prov.Tax</th><th>Tax</th><th>支票额度</th><th>现金工资</th>
+			<th>浮动时薪</th><th>小费</th><th>夜班时</th><th>餐补</th>
+			<th>浮动工资</th><th>发现</th><th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -52,6 +51,7 @@
 				<td>{{$e->employee->employeeNumber}}</td>
 				<td>{{$e->employee->cName}}</td>
 				<td>{{$e->employee->firstName.' '.$e->employee->lastName}}</td>
+				<td>{{ round($e->rate/100,2) }}</td>
 				
 				<td>{{$e->cashHour}}</td>
 				<td>{{$e->week1 + $e->week2}}</td>
@@ -66,7 +66,7 @@
 				<td>{{$e->federalTax}}</td>
 				<td>{{$e->provincialTax}}</td>
 				<td>{{$e->provincialTax + $e->federalTax }}</td>
-				<td>{{$e->cheque}}</td>
+				<td><strong>{{$e->cheque}}</strong></td>
 				<td>{{$e->cashPay/100}}</td>
 
 				<td>{{$e->position_rate}}</td>
@@ -74,9 +74,8 @@
 				
 				<td>{{$e->nightHours}}</td>
 				<td>{{ round($e->mealRate * ($e->week1 + $e->week2 + $e->cashHour),2) }}</td>
-				<td>{{$e->performance}}</td>
 				<td>{{$e->variablePay}}</td>
-				<th>{{$e->variablePay + $e->cashPay/100}}</th>
+				<th><strong>{{$e->variablePay + $e->cashPay/100}}</strong></th>
 				<td>{{$e->totalPay}}</td>
 
 
