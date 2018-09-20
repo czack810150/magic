@@ -171,6 +171,10 @@ class Employee extends Model
     {
         return $this->hasMany(Hour::class);
     }
+    public function review()
+    {
+        return $this->hasMany(EmployeeReview::class);
+    }
     public static function onboardCheck($employee,$date)
     {
         $employee =  self::find($employee);
