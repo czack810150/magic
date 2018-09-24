@@ -71,6 +71,9 @@
 						<div class="col-2">
 							<input v-model="performance" class="form-control m-input" type="number" min="0" max="70">
 						</div>
+						<div class="col-2">
+							<button class="btn btn-info" type="button" @click="getPerformance">Get Score</button>
+						</div>
 					</div>
 					<div class="form-group m-form__group row">
 						<label class="col-2 col-form-label">店长评分</label>
@@ -155,9 +158,20 @@
 			} 
 		},
 		nextDate(){
-			return this.reviewDate.add(180,'d')
+			return moment(this.reviewDate).add(180,'d')
 		}
 	},
+	methods:{
+		getPerformance(){
+		
+			axios.post('/employeeReview/getPerformance',{
+				employee: this.employee,
+				reviewDate:this.reviewDate.format('YYYY-MM-DD'),
+			}).then(res => {
+				this.performance = res.data
+			})
+		}
+	}
 
 })
 </script>

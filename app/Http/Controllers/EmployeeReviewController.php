@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Employee;
+use App\Score_log;
 
 class EmployeeReviewController extends Controller
 {
@@ -76,5 +77,11 @@ class EmployeeReviewController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function getPerformance(Request $r){
+        // return $r->reviewDate;
+        $performance =  Score_log::reviewScore($r->employee,$r->reviewDate);
+        $score = round($performance['score']*.7,0);
+        return $score;
     }
 }

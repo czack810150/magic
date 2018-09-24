@@ -245,8 +245,8 @@ class Payroll extends Model
                 $variableRate = $employeeRates->variableRate / 100;
             }
             
-
-            $e->magicNoodlePay = self::magicNoodlePay(
+            if($location){
+                $e->magicNoodlePay = self::magicNoodlePay(
                                         Carbon::now()->year,
                                         $e->wk1Effective,
                                         $e->wk2Effective,
@@ -263,6 +263,26 @@ class Payroll extends Model
                                         $bonus,$holidayPay,
                                         $premiumPay
                                         );
+            } else {
+                $e->magicNoodlePay = self::magicNoodlePay(
+                                        Carbon::now()->year,
+                                        $e->wk1Effective,
+                                        $e->wk2Effective,
+                                        $e->cashHour,
+                                        $employeeRates->rate,
+                                        $variableRate,
+                                        0,
+                                        0,
+                                        $config->vacation_pay,
+                                        0,
+                                        0,
+                                        $e->nightHour,
+                                        $performance,
+                                        $bonus,$holidayPay,
+                                        $premiumPay
+                                        );
+            }
+            
             // save to payroll log
             if($e->effectiveHour > 0 || $e->cashHour > 0){
                 // save to db
