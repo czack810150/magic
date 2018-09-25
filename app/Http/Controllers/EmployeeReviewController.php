@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Employee;
 use App\Score_log;
+use App\EmployeeReview;
+use App\Employee_location;
 
 class EmployeeReviewController extends Controller
 {
@@ -23,23 +25,55 @@ class EmployeeReviewController extends Controller
         $subheader = 'Employee Review';
         return view('employee/review/create',compact('employee','subheader'));
     }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+   
     public function store(Request $request)
     {
-        //
+        
+        $employee = Employee::find($request->employee);
+        if(count($employee->exam)){
+            $exam = $employee->exam->last()->id;
+        } else {
+            $exam = 'null';
+        }
+        
+        $review = EmployeeReview::create([
+            'employee_id' => $request->employee,
+            'manager_id' => $request->manager,
+            'reviewed' => true,
+            'exam_id' => $exam,
+            'pass' => $request->examPassed == 'true'? true:false,
+            'reviewDate' => $request->reviewDate,
+            'nextReview' => $request->nextReview,
+            'manager_score' => $request->managerScore,
+            'self_score' => $request->selfScore,
+            'performace' => $request->performance,
+            'hr_score' => 0,
+            'org_score' => 0,
+            'result' => $request->pass == 'true'? true:false,
+            'description' => $request->resultDescription,
+            'manager_note' => $request->managerNote,
+            'self_note' => $request->selfNote
+        ]);
+        if($review){
+            $employee_location_old = Employee_location::where('employee_id',$request->employee)->latest()->first();
+            $employee_location_old->end = $request->reviewDate;
+            $employee_location_old->save();
+            Employee_location::create([
+            'employee_id' => $request->employee,
+            'location_id' => $employee_location_old->location_id,
+            'job_id' => $employee_location_old->job_id,
+            'start' => $request->reviewDate,
+            'review' => $request->nextReview,
+        ]);
+
+            return ['status'=>'success','message'=>'Employee Review Saved.'];
+        } else {
+            return ['status'=>'danger','message'=>'Employee Review Failed.'];
+        }
+
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function show($id)
     {
         //

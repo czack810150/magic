@@ -44,7 +44,7 @@
 					</div>
 					<div class="m-widget_content-item">
 				 		<span>店长评分（20%）</span>
-				 		<span>@{{manager}}</span>
+				 		<span>@{{managerScore}}</span>
 					</div>
 					<div class="m-widget_content-item">
 				 		<span>员工自评（10%）</span>
@@ -63,7 +63,17 @@
 		</div>
 		<!--end::Widget 29--> 
 
-
+		<div class="m-form__group form-group row">
+				<label class="col-2 col-form-label">知识考试通过</label>
+										<div class="col-2">
+											<span class="m-switch">
+												<label>
+						                        <input type="checkbox" v-model="examPassed"/>
+						                        <span></span>
+						                        </label>
+						                    </span>
+										</div>
+		</div>
 		
 					
 					<div class="form-group m-form__group row">
@@ -78,7 +88,7 @@
 					<div class="form-group m-form__group row">
 						<label class="col-2 col-form-label">店长评分</label>
 						<div class="col-2">
-							<input v-model="manager" class="form-control m-input" type="number"  min="0" max="20" step="1">
+							<input v-model="managerScore" class="form-control m-input" type="number"  min="0" max="20" step="1">
 						</div>
 					</div>
 					<div class="form-group m-form__group row">
@@ -92,11 +102,11 @@
 					<div class="form-group m-form__group row">
 						<label class="col-2 col-form-label">考核日期</label>
 						<div class="col-2">
-							<input v-model="reviewDate.format('YYYY-MM-DD')"  class="form-control m-input" type="date">
+							<input v-model="reviewDate"  id="reviewDate" class="form-control m-input" type="date">
 						</div>
 						<label class="col-2 col-form-label">下次考核</label>
 						<div class="col-2">
-							<input v-model="nextDate.format('YYYY-MM-DD')" class="form-control m-input" type="date">
+							<input v-model="nextDate" id="nextDate" class="form-control m-input" type="date">
 						</div>
 					</div>
 					<div class="form-group m-form__group row">
@@ -113,6 +123,17 @@
 					</div>
 				
 		</div><!-- end of body -->
+		<div class="m-portlet__foot m-portlet__foot--fit">
+					<div class="m-form__actions">
+						<div class="row">
+							<div class="col-lg-9 ml-lg-auto">
+								<button type="button" class="btn btn-success" @click="passReview">考核通过</button>
+								<button type="button" class="btn btn-danger" @click="failReview">考核不过</button>
+								<button type="reset" class="btn btn-secondary">取消</button>
+							</div>
+						</div>
+					</div>
+				</div>
 	</form>
 </div>
 @endsection
@@ -122,55 +143,128 @@
 	el:'#root',
 	data:{
 		employee: {{ $employee->id }},
+		manager_id: {{ $employee->location->manager->id}},
 		performance: 0,
-		manager: 0,
+		managerScore: 0,
 		selfScore: 0,
 		action: null,
-		reviewDate:moment(),
+		reviewDate:moment().format('YYYY-MM-DD'),
+		nextDate:moment().add(180,'days').format('YYYY-MM-DD'),
 		managerNote:null,
 		selfNote:null,
+		examPassed:false,
+		resultDescription:null,
+		pass:null,
 		
 
 	},
 	computed:{
 		total(){ 
-			return +(this.performance) + +(this.manager) + +(this.selfScore)
+			return +(this.performance) + +(this.managerScore) + +(this.selfScore)
 		},
 		result(){
-			if(this.total >= 100) {
+			if(this.total >= 100 && this.examPassed) {
 				this.action = '+$ 1.00'
+				this.resultDescription = '极度卓越'
 				return '极度卓越'
-			} else if(this.total >= 95){
+			} else if(this.total >= 95 && this.examPassed){
 				this.action = '+$ 0.75'
+				this.resultDescription = '卓越'
 				return '卓越'
-			} else if(this.total >= 85){
+			} else if(this.total >= 85 && this.examPassed){
 				this.action = '+$ 0.50'
+				this.resultDescription = '优秀'
 				return '优秀'
-			} else if(this.total >= 70){
+			} else if(this.total >= 70 && this.examPassed) {
 				this.action = '+$ 0.25'
+				this.resultDescription = '良好'
 				return '良好'
-			} else if(this.total >= 50){
+			} else if(this.total >= 50 && this.examPassed){
 				this.action = '薪资不变'
+				this.resultDescription = '合格'
 				return '合格'
 			} else {
 				this.action = '-$ 0.50 或辞退'
+				this.resultDescription = '不合格'
 				return '不合格'
 			} 
 		},
-		nextDate(){
-			return moment(this.reviewDate).add(180,'d')
-		}
+		
 	},
 	methods:{
 		getPerformance(){
 		
 			axios.post('/employeeReview/getPerformance',{
 				employee: this.employee,
-				reviewDate:this.reviewDate.format('YYYY-MM-DD'),
+				reviewDate:this.reviewDate,
 			}).then(res => {
 				this.performance = res.data
 			})
+		},
+		passReview(){
+			console.log('pass')
+			this.pass = true
+			this.submitReview()
+		},
+		failReview(){
+			console.log('fail')
+			this.pass = false
+			this.submitReview()
+		},
+		submitReview()
+		{
+			axios.post('/employeeReview/submitReview',{
+				employee: this.employee,
+				manager: this.manager_id,
+				reviewDate: this.reviewDate,
+				nextReview: this.nextDate,
+				performance: this.performance,
+				managerScore: this.managerScore,
+				selfScore: this.selfScore,
+		
+				managerNote: this.managerNote,
+				selfNote: this.selfNote,
+				examPassed: this.examPassed,
+				resultDescription: this.resultDescription,
+				pass: this.pass,
+
+
+			}).then(res => {
+				console.log(res.data)
+				$.notify({
+					message: res.data.message
+				},{
+					type:res.data.status,
+					placement:{
+						from:'top',
+						align:'center',
+					},
+					animate: {
+					enter: 'animated bounce',
+					exit: 'animated fadeOutUp'
+					}
+				})
+				if(res.data.status === 'success'){
+					setTimeout(function(){
+    					window.location.replace("/pendingReview");
+						}, 2000);
+				}
+				
+			}).catch(e => {
+				console.log(e)
+			})
 		}
+	},
+	mounted(){
+		$('#reviewDate').datepicker({
+			autoclose:true,
+			todayBtn:'linked',
+			format:'yyyy-mm-dd'
+		}).on('changeDate',e => {
+			this.reviewDate = e.format('yyyy-mm-dd')
+			this.nextDate = moment(e.format('yyyy-mm-dd')).add(180,'d').format('YYYY-MM-DD');
+		});
+		console.log('mounted')
 	}
 
 })

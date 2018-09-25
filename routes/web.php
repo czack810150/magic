@@ -285,6 +285,7 @@ Route::get('/my_availability','AvailabilityController@my');
 // Employee Review
 	Route::get('/employeeReview/{employee}','EmployeeReviewController@create')->name('employeeReview');
 	Route::post('/employeeReview/getPerformance','EmployeeReviewController@getPerformance');
+	Route::post('/employeeReview/submitReview','EmployeeReviewController@store');
 								}); // end of grouped auth
 
 Auth::routes();
