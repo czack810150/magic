@@ -10,14 +10,11 @@ use App\Employee_location;
 
 class EmployeeReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+   
     public function index()
     {
-        //
+        $subheader = 'Employee Review';
+        return view('employee/review/index',compact('subheader'));
     }
 
     public function create(Employee $employee)
@@ -46,7 +43,7 @@ class EmployeeReviewController extends Controller
             'nextReview' => $request->nextReview,
             'manager_score' => $request->managerScore,
             'self_score' => $request->selfScore,
-            'performace' => $request->performance,
+            'performance' => $request->performance,
             'hr_score' => 0,
             'org_score' => 0,
             'result' => $request->pass == 'true'? true:false,
@@ -117,5 +114,9 @@ class EmployeeReviewController extends Controller
         $performance =  Score_log::reviewScore($r->employee,$r->reviewDate);
         $score = round($performance['score']*.7,0);
         return $score;
+    }
+    public function getAllReviews()
+    {
+        return EmployeeReview::with('employee.location')->with('manager')->get();
     }
 }

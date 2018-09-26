@@ -283,6 +283,8 @@ Route::get('/my_availability','AvailabilityController@my');
 	Route::post('rateSubmit','EmployeeController@rateSubmit');		
 	Route::post('rateGet','EmployeeController@rateGet');
 // Employee Review
+	Route::get('/employeeReview','EmployeeReviewController@index');
+	Route::get('/employeeReview/getAllReviews','EmployeeReviewController@getAllReviews');
 	Route::get('/employeeReview/{employee}','EmployeeReviewController@create')->name('employeeReview');
 	Route::post('/employeeReview/getPerformance','EmployeeReviewController@getPerformance');
 	Route::post('/employeeReview/submitReview','EmployeeReviewController@store');
@@ -379,6 +381,7 @@ Route::get('/promotion/view','PromotionController@index');
 Route::get('/promotion/{id}/approve','PromotionController@approve');
 Route::get('/promotion/{id}/deny','PromotionController@deny');
 Route::get('/promotion/{id}/pending','PromotionController@pending');
+//
 
 // Schedules
 Route::get('/shifts/history','EmployeeUserController@scheduleHistory');
