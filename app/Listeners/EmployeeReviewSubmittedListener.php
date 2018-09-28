@@ -18,6 +18,6 @@ class EmployeeReviewSubmittedListener implements ShouldQueue
     public function handle(EmployeeReviewSubmitted $event)
     {
         $group = Authorization::group(['admin','hr','dm']);
-        Mail::to('suhiro@gmail.com')->send(new EmployeeReviewSubmittedMail($event->review));
+        Mail::to($group)->send(new EmployeeReviewSubmittedMail($event->review));
     }
 }

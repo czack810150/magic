@@ -283,7 +283,7 @@ Route::get('/my_availability','AvailabilityController@my');
 	Route::post('rateSubmit','EmployeeController@rateSubmit');		
 	Route::post('rateGet','EmployeeController@rateGet');
 // Employee Review
-	Route::get('/employeeReview','EmployeeReviewController@index');
+	Route::get('/employeeReview','EmployeeReviewController@index')->name('employeeReview.index');
 	Route::get('/employeeReview/getAllReviews','EmployeeReviewController@getAllReviews');
 	Route::get('/employeeReview/{employee}','EmployeeReviewController@create')->name('employeeReview');
 	Route::post('/employeeReview/getPerformance','EmployeeReviewController@getPerformance');
