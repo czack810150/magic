@@ -45,14 +45,14 @@ Vue.component('review-table',{
 						<th>店长评分</th>
 						<th>自评分</th>
 						<th>结果</th>
-						<th>级别</th>
-						<th>店长评语</th>
-						<th>自我评语</th>
+						<th>成绩</th>
+						<th>Actions</th>
+					
 					</tr>
 				</thead>
 				<tbody>
 					
-					<review-row-component v-for="review in reviews" :key="review.id"
+					<review-row-component v-for="review in reviews" :key="review.id" :id="review.id"
 						:location="review.employee.location.name"
 						:employee="review.employee.name"
 						:reviewed="review.reviewed"
@@ -67,6 +67,7 @@ Vue.component('review-table',{
 						:description="review.description"
 						:manager_note="review.manager_note"
 						:self_note="review.self_note"
+						:verified="review.verified"
 					></review-row-component>
 					
 				</tbody>
@@ -74,7 +75,7 @@ Vue.component('review-table',{
 			</table>`
 });	
 Vue.component('review-row-component',{
-	props:['location','employee','reviewed','review_date','next_review','exam_pass','manager','manager_score','self_score','result','description','manager_note','self_note','performance'],
+	props:['id','location','employee','reviewed','review_date','next_review','exam_pass','manager','manager_score','self_score','result','description','manager_note','self_note','performance','verified'],
 	template:
 	`
 	<tr>
@@ -90,10 +91,34 @@ Vue.component('review-row-component',{
 		<td>@{{ self_score }}</td>
 		<td>@{{ result?"通过":'不过' }}</td>
 		<td>@{{ description }}</td>
-		<td>@{{ manager_note }}</td>
-		<td>@{{ self_note }}</td>
+		<td><a class="btn btn-warning btn-sm" :href="'/employeeReview/'+id+'/view'">查看</a>
+		<button v-if="!verified" class="btn btn-success btn-sm" type="button" @click="verifyReview">批准</button></td>
 	</tr>
-	`
+	`,
+	methods:{
+		verifyReview(){
+			axios.post('/employeeReview/verify',{
+				review:this.id
+			}).then(res => {
+				
+					app.getReviews();
+					$.notify({
+					message: res.data.message
+				},{
+					type:res.data.status,
+					placement:{
+						from:'top',
+						align:'center',
+					},
+					animate: {
+					enter: 'animated bounce',
+					exit: 'animated fadeOutUp'
+					}
+				});
+				
+			});
+		}
+	}
 })
 var app =  new Vue({
 	el: '#root',
@@ -108,12 +133,14 @@ var app =  new Vue({
 		}
 	},
 	methods:{
-
-	},
-	mounted(){
-		axios.get('/employeeReview/getAllReviews').then(res => {
+		getReviews(){
+			axios.get('/employeeReview/getAllReviews').then(res => {
 			this.reviews = res.data;
 		})
+		}
+	},
+	mounted(){
+		this.getReviews();
 	}
 })
  

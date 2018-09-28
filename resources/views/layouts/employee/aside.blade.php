@@ -259,12 +259,12 @@
 							</li>
 							@can('canBePromoted')
 							<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
-								<a  href="{{ url('request/promotion') }}" class="m-menu__link ">
+								<a  href="{{ url('my/performanceReview') }}" class="m-menu__link ">
 									<i class="m-menu__link-icon flaticon-up-arrow"></i>
 									<span class="m-menu__link-title">
 										<span class="m-menu__link-wrap">
 											<span class="m-menu__link-text">
-												Apply Promotion
+												Performance Review
 											</span>
 											
 										</span>

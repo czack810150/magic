@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Employee;
 use App\Score_log;
 use App\EmployeeReview;
 use App\Employee_location;
 use App\Events\EmployeeReviewSubmitted;
+use App\Events\EmployeeReviewVerified;
+
 
 class EmployeeReviewController extends Controller
 {
@@ -73,9 +76,17 @@ class EmployeeReviewController extends Controller
     }
 
     
-    public function show($id)
+    public function show(EmployeeReview $review)
     {
-        //
+        $user = Auth::user()->authorization->employee_id;
+        if($user == $review->employee_id || in_array(Auth::user()->authorization->type,['hr','dm','admin','manager'])){
+            $subheader = 'Employee Review';
+            $employee = $review->employee;
+            return view('employee/review/view',compact('employee','subheader','review'));
+        } else {
+            return 'not authorized.';
+        }
+        
     }
 
     /**
@@ -89,27 +100,36 @@ class EmployeeReviewController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $review = EmployeeReview::find($request->review);
+        $review->verified = true;
+        if($review->save()){
+            event(new EmployeeReviewVerified($review));
+           return ['status'=>'success','message'=>$review->employee->name."的考核结果已被批准！"]; 
+       } else {
+        return ['status'=>'danger','message'=>"Error!"]; 
+       }
+        
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+
+    public function updateReview(Request $request)
     {
-        //
+        $review = EmployeeReview::find($request->id);
+        $review->pass = $request->examPassed == 'true'? true:false;
+        $review->reviewDate = $request->reviewDate;
+        $review->nextReview = $request->nextReview;
+        $review->manager_score = $request->managerScore;
+        $review->self_score = $request->selfScore;
+        $review->performance = $request->performance;
+           
+        $review->result = $request->pass == 'true'? true:false;
+        $review->description = $request->resultDescription;
+        $review->manager_note = $request->managerNote;
+        $review->self_note = $request->selfNote;
+        $review->save();
+        return ['status'=>'success','message'=>'Employee Review Updated.'];
     }
     public function getPerformance(Request $r){
         // return $r->reviewDate;
@@ -120,5 +140,14 @@ class EmployeeReviewController extends Controller
     public function getAllReviews()
     {
         return EmployeeReview::with('employee.location')->with('manager')->get();
+    }
+    public function myReview()
+    {
+        $subheader = 'My Performance Reviews';
+        $employee = Auth::user()->authorization->employee;
+        $reviews = $employee->review->where('verified',true);
+        
+        return view('employeeUser/myReviews',compact('employee','subheader','reviews'));
+        
     }
 }
