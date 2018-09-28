@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @section('content')
 <!--begin::Portlet-->
-<div class="m-portlet" id="root">
+<div class="m-portlet">
 	<div class="m-portlet__head">
 		<div class="m-portlet__head-caption">
 			<div class="m-portlet__head-title">
@@ -17,9 +17,21 @@
 			
 		</div>
 	</div>
-		<div class="m-portlet__body">
+	<div class="m-portlet__body" id="root">
 			
-			<table class="table" >
+			<review-table :reviews="sortedReviews"></review-table>
+			
+	</div>			
+</div>
+
+@endsection
+@section('pageJS')
+<script>
+Vue.component('review-table',{
+	props:['reviews'],
+	template:
+	`<table class="table">
+
 				<thead>
 					<tr>
 						<th>Location</th>
@@ -38,53 +50,49 @@
 						<th>自我评语</th>
 					</tr>
 				</thead>
-				<tbody  v-for="review in sortedReviews" :key="review.id">
-					<review-row-component
-						location="review.employee.location.name"
-						employee="review.employee.name"
-						reviewed="review.reviewed"
-						review_ date="review.reviewDate"
-						next_review="review.nextReview"
-						exam_pass="review.pass"
-						manager="review.manager.name"
-						performance="review.performance"
-						manager_score="review.manager_score"
-						self_score="review.self_score"
-						result="review.result"
-						description="review.description"
-						manager_note="review.manager_note"
-						self_note="review.self_note"
+				<tbody>
 					
-					>
-					</review-row-component>
+					<review-row-component v-for="review in reviews" :key="review.id"
+						:location="review.employee.location.name"
+						:employee="review.employee.name"
+						:reviewed="review.reviewed"
+						:review_date="review.reviewDate"
+						:next_review="review.nextReview"
+						:exam_pass="review.pass"
+						:manager="review.manager.name"
+						:performance="review.performance"
+						:manager_score="review.manager_score"
+						:self_score="review.self_score"
+						:result="review.result"
+						:description="review.description"
+						:manager_note="review.manager_note"
+						:self_note="review.self_note"
+					></review-row-component>
+					
 				</tbody>
-			</table>
-			
-		</div>			
-</div>
-@endsection
-@section('pageJS')
-<script>
+
+			</table>`
+});	
 Vue.component('review-row-component',{
 	props:['location','employee','reviewed','review_date','next_review','exam_pass','manager','manager_score','self_score','result','description','manager_note','self_note','performance'],
 	template:
 	`
 	<tr>
-						<td>@{{ location}}</td>
-						<td>@{{ employee }}</td>
-						<td>@{{ reviewed? '已考核':'未考核' }}</td>
-						<td>@{{ review_date }}</td>
-						<td>@{{ next_review }}</td>
-						<td>@{{ exam_pass? '通过':'不过' }}</td>
-						<td>@{{ manager }}</td>
-						<td>@{{ performance }}</td>
-						<td>@{{ manager_score }}</td>
-						<td>@{{ self_score }}</td>
-						<td>@{{ result?"通过":'不过' }}</td>
-						<td>@{{ description }}</td>
-						<td>@{{ manager_note }}</td>
-						<td>@{{ self_note }}</td>
-					</tr>
+		<td>@{{ location}}</td>
+		<td>@{{ employee }}</td>
+		<td>@{{ reviewed? '已考核':'未考核' }}</td>
+		<td>@{{ review_date }}</td>
+		<td>@{{ next_review }}</td>
+		<td>@{{ exam_pass? '通过':'不过' }}</td>
+		<td>@{{ manager }}</td>
+		<td>@{{ performance }}</td>
+		<td>@{{ manager_score }}</td>
+		<td>@{{ self_score }}</td>
+		<td>@{{ result?"通过":'不过' }}</td>
+		<td>@{{ description }}</td>
+		<td>@{{ manager_note }}</td>
+		<td>@{{ self_note }}</td>
+	</tr>
 	`
 })
 var app =  new Vue({

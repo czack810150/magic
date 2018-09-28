@@ -7,6 +7,7 @@ use App\Employee;
 use App\Score_log;
 use App\EmployeeReview;
 use App\Employee_location;
+use App\Events\EmployeeReviewSubmitted;
 
 class EmployeeReviewController extends Controller
 {
@@ -63,6 +64,7 @@ class EmployeeReviewController extends Controller
             'review' => $request->nextReview,
         ]);
 
+            event(new EmployeeReviewSubmitted($review));
             return ['status'=>'success','message'=>'Employee Review Saved.'];
         } else {
             return ['status'=>'danger','message'=>'Employee Review Failed.'];
