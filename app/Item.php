@@ -12,4 +12,13 @@ class Item extends Model
     public function item_category(){
     	return $this->belongsTo('App\ItemCategory');
     }
+    public function totalQty($location)
+    {
+        if($location != 'all'){
+            return $this->hasMany('App\SalesItemsTotal','itemCode','itemCode')->where('location_id',$location);
+        } else {
+            return $this->hasMany('App\SalesItemsTotal','itemCode','itemCode');
+        }
+    	
+    }
 }

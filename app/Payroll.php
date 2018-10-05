@@ -14,22 +14,23 @@ use App\Employee;
 use App\Payroll_log;
 use App\Payroll_tip;
 use App\Holiday;
+use App\EmployeeRate;
 
 class Payroll extends Model
 {
     
-	public static function twoWeekGrossPay($wk1Hr,$wk2Hr,$year,$holidayPay = 0,$premiumPay = 0){
+	public static function twoWeekGrossPay($wk1Hr,$wk2Hr,$year,$rate,$holidayPay = 0,$premiumPay = 0){
 		$config = DB::table('payroll_config')->where('year',$year)->first();
 		$regular = 0; // regular hours worked
 		$overtime1 = self::overtime($wk1Hr,$year);
 		$overtime2 = self::overtime($wk2Hr,$year);
 		$regular += $wk1Hr - $overtime1;
 		$regular += $wk2Hr - $overtime2;
-		$rp = round($regular * $config->minimumPay/100,2); // pay for regular hours
-		$op =  round(($overtime1 + $overtime2) * $config->minimumPay/100 * $config->overtime_pay,2); // pay for overtime hours
+		$rp = round($regular * $rate/100,2); // pay for regular hours
+		$op =  round(($overtime1 + $overtime2) * $rate/100 * $config->overtime_pay,2); // pay for overtime hours
 		$total = $rp + $op + $holidayPay + $premiumPay;
 
-		$grossIncome = new GrossIncome($wk1Hr,$wk2Hr,$config->minimumPay/100,$overtime1,$overtime2,$rp,$op,$total,$holidayPay);
+		$grossIncome = new GrossIncome($wk1Hr,$wk2Hr,$rate/100,$overtime1,$overtime2,$rp,$op,$total,$holidayPay);
 		return  $grossIncome;
 	}
 	public static function oneWeekGrossPay($hour,$year,$holidayPay = 0){
@@ -97,21 +98,15 @@ class Payroll extends Model
         return $hours*$rate;
     }
 
-    public static function magicNoodlePay($year,$wk1Hr,$wk2Hr,$cashHour = 0,$positionRate,$tipRate,$hourlyTip,$nightHours,$performanceIndex,$bonus,$holidayPay = 0,$premiumPay = 0){
-
-    	$config = DB::table('payroll_config')->where('year',$year)->first();
-        $cashRate = $config->cashPay;
-    	$mealRate = $config->mealRate;
-    	$nightRate = $config->nightRate;
-        $vacationPayRate = $config->vacation_pay;
+    public static function magicNoodlePay($year,$wk1Hr,$wk2Hr,$cashHour = 0,$baseRate,$variableRate,$mealRate,$nightRate,$vacationPayRate,$tipRate,$hourlyTip,$nightHours,$performanceIndex,$bonus,$holidayPay = 0,$premiumPay = 0){
 
     	$hours = $wk1Hr + $wk2Hr;
-    	$twoWeekGrossPay = self::twoWeekGrossPay($wk1Hr,$wk2Hr,$year,$holidayPay,$premiumPay);
+    	$twoWeekGrossPay = self::twoWeekGrossPay($wk1Hr,$wk2Hr,$year,$baseRate,$holidayPay,$premiumPay);
         $vacationPay = round($twoWeekGrossPay->total * $vacationPayRate,2);
         $grossPayWithVacationPay = $twoWeekGrossPay->total + $vacationPay ; // vacation pay included for calculating deductibles
     	$basicPay = Cra::payStub($grossPayWithVacationPay,null,null,26,$year,'ON',1);
-    	$variablePay = self::variablePay($hours+$cashHour,$positionRate,$tipRate,$hourlyTip,$mealRate,$nightRate,$nightHours,$performanceIndex,$bonus);
-    	$cashPay = self::cashPay($cashHour,$cashRate);
+    	$variablePay = self::variablePay($hours+$cashHour,$variableRate,$tipRate,$hourlyTip,$mealRate,$nightRate,$nightHours,$performanceIndex,$bonus);
+    	$cashPay = self::cashPay($cashHour,$baseRate);
 
         $magicPay = new MagicNoodlePay($twoWeekGrossPay,$basicPay,$variablePay,$cashPay);
 
@@ -221,28 +216,46 @@ class Payroll extends Model
             $premiumPay = 0;
             $holidayPay = 0;
             $holidays = Holiday::whereBetween('date',[$wk1Start,$wk2End])->get();
+            if(count($e->employee->rate)){
+                $employeeRates = $e->employee->rate->last();
+            } else {
+                $employeeRates = EmployeeRate::create([
+                    'employee_id' => $e->employee_id,
+                    'type' => 'hour',
+                    'cheque' => true,
+                    'rate' => $config->minimumPay,
+                    'variableRate' => 0,
+                    'extraRate' => 0,
+                    'start' => Carbon::now()->toDateString(), 
+                ]);
+            }
+            
             if(count($holidays)){
                 foreach($holidays as $holiday){
-                    $holidayPay += self::fourWeekHolidayPay($e->employee_id,$e->location_id,$config->minimumPay/100,$holiday->date,$periodStart); 
+                    $holidayPay += self::fourWeekHolidayPay($e->employee_id,$e->location_id,$employeeRates->rate/100,$holiday->date,$periodStart); 
 
                 }
             } 
 
-            // Performance index
-            $performance = Score_log::where('location_id',$e->location_id)->where('employee_id',$e->employee_id)->
-                            whereBetween('date',[$periodStart,$wk2End])->sum('value') + 100;
-            if($performance > 110)
-                $performance = 110; 
-
-            $performance /= 100;
+            $performance = 1.0;
             $bonus = 0;
-
-            $e->magicNoodlePay = self::magicNoodlePay(
+            if($employeeRates->extraRate > 0){
+                $variableRate = $employeeRates->variableRate / 100 + $employeeRates->extraRate / 100;
+            } else {
+                $variableRate = $employeeRates->variableRate / 100;
+            }
+            
+            if($location){
+                $e->magicNoodlePay = self::magicNoodlePay(
                                         Carbon::now()->year,
                                         $e->wk1Effective,
                                         $e->wk2Effective,
                                         $e->cashHour,
-                                        $e->employee->job->rate/100,
+                                        $employeeRates->rate,
+                                        $variableRate,
+                                        $config->mealRate,
+                                        $config->nightRate,
+                                        $config->vacation_pay,
                                         $e->employee->job->tip,
                                         $hourlyTip,
                                         $e->nightHour,
@@ -250,6 +263,26 @@ class Payroll extends Model
                                         $bonus,$holidayPay,
                                         $premiumPay
                                         );
+            } else {
+                $e->magicNoodlePay = self::magicNoodlePay(
+                                        Carbon::now()->year,
+                                        $e->wk1Effective,
+                                        $e->wk2Effective,
+                                        $e->cashHour,
+                                        $employeeRates->rate,
+                                        $variableRate,
+                                        0,
+                                        0,
+                                        $config->vacation_pay,
+                                        0,
+                                        0,
+                                        $e->nightHour,
+                                        $performance,
+                                        $bonus,$holidayPay,
+                                        $premiumPay
+                                        );
+            }
+            
             // save to payroll log
             if($e->effectiveHour > 0 || $e->cashHour > 0){
                 // save to db
@@ -294,138 +327,7 @@ class Payroll extends Model
     }
    
 
-     public static function payrollComputeKitchen($startDate,$location){
-      
-        $periodStart =  $startDate;
-        $startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
-        $config = DB::table('payroll_config')->where('year',$startDate->year)->first();
      
-        $wk1Start = $startDate->toDateString();
-        $wk1End = $startDate->addDays(6)->toDateString();
-        $wk2Start = $startDate->addDay()->toDateString();
-        $wk2End = $startDate->addDays(6)->toDateString();
-        $employeeHours = Hour::where('start',$periodStart)->where('location_id',$location)->get();
-        $count = 0;
-        foreach($employeeHours as $e){
-         
-            $hourlyTip = 0;
-           
-            $e->effectiveHour = $e->wk1Effective + $e->wk2Effective; // effective hours
-            $e->nightHour = $e->wk1Night + $e->wk2Night + $e->wk1NightCash + $e->wk2NightCash; // night hours
-            $e->cashHour = $e->wk1EffectiveCash + $e->wk2EffectiveCash; // cash hours
-
-            //holidays
-            $premiumPay = 0;
-            $holidayPay = 0;
-            $holidays = Holiday::whereBetween('date',[$wk1Start,$wk2End])->get();
-            if(count($holidays)){
-                foreach($holidays as $holiday){
-                        $holidayPay += self::fourWeekHolidayPay($e->employee_id,$e->location_id,$e->employee->job->rate/100,$holiday->date,$periodStart);
-                }
-            } 
-
-            // Performance index
-            $performance = Score_log::where('location_id',$e->location_id)->where('employee_id',$e->employee_id)->
-                            whereBetween('date',[$periodStart,$wk2End])->sum('value') + 100;
-            if($performance > 110)
-                $performance = 110; 
-
-            $performance /= 100;
-            $bonus = 0;
-
-            $e->kitchenPay = self::kitchenPay(
-                                        Carbon::now()->year,
-                                        $e->employee->job->rate,
-                                        $e->wk1Effective,
-                                        $e->wk2Effective,
-                                        $e->cashHour,
-                                        $e->nightHour,
-                                        $performance,
-                                        $bonus,$holidayPay,
-                                        $premiumPay
-                                        );
-            // save to payroll log
-            if($e->effectiveHour > 0 || $e->cashHour > 0){
-                // save to db
-                $log = new Payroll_log();
-                $log->startDate = $e->start;
-                $log->endDate = $e->end;
-                $log->location_id = $e->location_id;
-                $log->employee_id = $e->employee_id;
-
-                $log->rate = $e->employee->job->rate;
-
-                $log->week1 = $e->wk1Effective;
-                $log->week2 = $e->wk2Effective;
-                $log->ot1 = $e->wk1Overtime;
-                $log->ot2 = $e->wk2Overtime;
-                $log->regularPay = $e->kitchenPay->grossPay->regularPay*100;
-                $log->overtimePay = $e->kitchenPay->grossPay->overtimePay*100;
-                $log->grossIncome = $e->kitchenPay->grossPay->total*100;
-
-                $log->vacationPay = $e->kitchenPay->grossPay->total * 0.04 * 100;
-                $log->EI = $e->kitchenPay->basicPay->EI *100;
-                $log->CPP = $e->kitchenPay->basicPay->CPP *100;
-                $log->federalTax = $e->kitchenPay->basicPay->federalTax *100;
-                $log->provincialTax = $e->kitchenPay->basicPay->provincialTax *100;
-                $log->cheque = $e->kitchenPay->basicPay->net *100;
-                $log->position_rate = 0;
-                $log->tip = 0;
-                $log->hourlyTip = 0;
-                $log->mealRate = 0;
-                $log->nightRate = $e->kitchenPay->variablePay->nightRate *100;
-                $log->nightHours = $e->kitchenPay->variablePay->nightHours;
-                $log->performance = $e->kitchenPay->variablePay->performanceIndex;
-                $log->bonus = $e->kitchenPay->variablePay->bonus *100;
-                $log->variablePay = $e->kitchenPay->variablePay->total *100;
-                $log->totalPay = $log->cheque*100 + $log->variablePay*100 + $e->kitchenPay->cashPay;
-                $log->holidayPay = $holidayPay*100;
-                $log->premiumPay = $premiumPay*100;
-                $log->cashPay = $e->kitchenPay->cashPay;
-                $log->cashHour = $e->cashHour;
-                $log->save();
-                $count += 1;
-            }
-        }
-        return $count;
-    }
-
-
-    private static function  kitchenPay($year,$rate,$wk1Hr,$wk2Hr,$cashHour,$nightHours,$performanceIndex,$bonus,$holidayPay,$premiumPay){
-
-        $config = DB::table('payroll_config')->where('year',$year)->first();
-        $mealRate = 0;
-        $nightRate = $config->nightRate;
-        $vacationPayRate = $config->vacation_pay;
-
-        $hours = $wk1Hr + $wk2Hr;
-        $twoWeekGrossPay = self::twoWeekGrossPayKitchen($year,$rate/100,$wk1Hr,$wk2Hr,$holidayPay,$premiumPay);
-        $vacationPay = round($twoWeekGrossPay->total * $vacationPayRate,2);
-        $grossPayWithVacationPay = $twoWeekGrossPay->total + $vacationPay ; // vacation pay included for calculating deductibles
-        $basicPay = Cra::payStub($grossPayWithVacationPay,null,null,26,$year,'ON',1);
-        $variablePay = self::variablePay($hours+$cashHour,0,0,0,0,$nightRate,$nightHours,$performanceIndex,$bonus);
-        //$cashRate = $config->cashPay;
-        $cashPay = self::cashPay($cashHour,$rate);
-
-        $kitchenPay = new MagicNoodlePay($twoWeekGrossPay,$basicPay,$variablePay,$cashPay);
-
-        return $kitchenPay;
-    }
-    public static function twoWeekGrossPayKitchen($year,$rate,$wk1Hr,$wk2Hr,$holidayPay,$premiumPay){
-        $config = DB::table('payroll_config')->where('year',$year)->first();
-        $regular = 0; // regular hours worked
-        $overtime1 = self::overtime($wk1Hr,$year);
-        $overtime2 = self::overtime($wk2Hr,$year);
-        $regular += $wk1Hr - $overtime1;
-        $regular += $wk2Hr - $overtime2;
-        $rp = round($regular * $rate,2); // pay for regular hours
-        $op =  round(($overtime1 + $overtime2) * $rate * $config->overtime_pay,2); // pay for overtime hours
-        $total = $rp + $op + $holidayPay + $premiumPay;
-        // $total = $rp + $op;
-
-        return new GrossIncome($wk1Hr,$wk2Hr,$rate,$overtime1,$overtime2,$rp,$op,$total,$holidayPay);
-        
-    }
 
     public static function fourWeekHolidayPay($employee,$location,$rate,$holidayDate,$currentPeriodStart){
         $cps = Carbon::createFromFormat('Y-m-d',$currentPeriodStart)->startOfDay();

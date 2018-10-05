@@ -14,6 +14,7 @@ use App\JobPromotion;
 use App\Events\PromotionRequested;
 use App\Events\PromotionApproved;
 use App\Events\PromotionRejected;
+use App\Employee_location;
 
 class PromotionController extends Controller
 {
@@ -147,6 +148,22 @@ class PromotionController extends Controller
                  $promotion->status = 'approved';
                  $promotion->modifiedBy = Auth::user()->authorization->employee_id;
                  $promotion->save();
+
+
+                 if(count($employee->job_location)){
+                    $employee_location_old = Employee_location::where('employee_id',$employee->id)->latest()->first();
+                 $employee_location_old->end = Carbon::now()->toDateString();
+                 $employee_location_old->save();
+                 }
+                 
+                 Employee_location::create([
+                    'employee_id' => $employee->id,
+                    'location_id' => $employee->location_id,
+                    'job_id' => $employee->job_id,
+                    'start' => Carbon::now()->toDateString(),
+                    'review' => Carbon::now()->addDays(180)->toDateString(),
+                 ]);
+
 
             event(new PromotionApproved($promotion));     
                 return self::index();

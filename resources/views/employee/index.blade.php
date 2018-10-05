@@ -210,7 +210,9 @@ var app = new Vue({
 			{
 				id: {{$e->id}},
 				name: '{{$e->name}}',
+				@if($e->employee_profile)
 				alias: '{{$e->employee_profile->alias}}',
+				@endif
 				job_title: '{{$e->job->rank}}',
 				employeeNumber: '{{$e->employeeNumber}}',
 				job_group: '{{$e->job_group}}',

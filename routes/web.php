@@ -278,7 +278,19 @@ Route::get('/my_availability','AvailabilityController@my');
 	Route::get('/sales_dashboard','SaleController@dashboard');
 
 // Employee Metrics
-	Route::get('/pendingReview','EmployeeController@pendingReview')->name('pendingReview');	
+	Route::get('/pendingReview','EmployeeController@pendingReview')->name('pendingReview');
+// Employee Rates
+	Route::post('rateSubmit','EmployeeController@rateSubmit');		
+	Route::post('rateGet','EmployeeController@rateGet');
+// Employee Review
+	Route::get('/employeeReview','EmployeeReviewController@index')->name('employeeReview.index');
+	Route::get('/employeeReview/getAllReviews','EmployeeReviewController@getAllReviews');
+	Route::get('/employeeReview/{employee}','EmployeeReviewController@create')->name('employeeReview');
+	Route::post('/employeeReview/getPerformance','EmployeeReviewController@getPerformance');
+	Route::post('/employeeReview/submitReview','EmployeeReviewController@store');
+	Route::post('/employeeReview/verify','EmployeeReviewController@update');
+	Route::get('/employeeReview/{review}/view','EmployeeReviewController@show');
+	Route::post('/employeeReview/updateReview','EmployeeReviewController@updateReview');
 
 								}); // end of grouped auth
 
@@ -366,13 +378,15 @@ Route::get('/leave/{id}/approve','LeaveController@approve');
 Route::get('/leave/{id}/deny','LeaveController@deny');
 Route::get('/leave/{id}/pending','LeaveController@pending');
 
-// Promotion
-Route::get('/request/promotion','PromotionController@apply');
-Route::post('/promotion/apply','PromotionController@store');
-Route::get('/promotion/view','PromotionController@index');
-Route::get('/promotion/{id}/approve','PromotionController@approve');
-Route::get('/promotion/{id}/deny','PromotionController@deny');
-Route::get('/promotion/{id}/pending','PromotionController@pending');
+Route::get('/my/performanceReview','EmployeeReviewController@myReview');
+// // Promotion
+// Route::get('/request/promotion','PromotionController@apply');
+// Route::post('/promotion/apply','PromotionController@store');
+// Route::get('/promotion/view','PromotionController@index');
+// Route::get('/promotion/{id}/approve','PromotionController@approve');
+// Route::get('/promotion/{id}/deny','PromotionController@deny');
+// Route::get('/promotion/{id}/pending','PromotionController@pending');
+//
 
 // Schedules
 Route::get('/shifts/history','EmployeeUserController@scheduleHistory');
