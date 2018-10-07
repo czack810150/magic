@@ -10,6 +10,28 @@
 	</div>
 
 	<div class="m-portlet__body">
+		<div class="row m-row--no-padding m-row--col-separator-xl">
+			<div class="col-md-12 col-lg-6 col-xl-3">
+				<!--begin::Total Profit-->
+				<div class="m-widget24">					 
+				    <div class="m-widget24__item">
+				        <h4 class="m-widget24__title">
+				            Total Hours
+				        </h4><br>
+				        <span class="m-widget24__desc">
+				            打卡记录
+				        </span>
+				        <span class="m-widget24__stats m--font-brand">
+				            @{{ totalHours }} Hours 
+				        </span>		
+				       
+				    </div>				      
+				</div>
+				<!--end::Total Profit-->
+			</div>
+		</div>
+
+
 				<!--begin: Search Form -->
 		<div class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
 			<div class="row align-items-center">
@@ -89,7 +111,7 @@
 
 <script>
 
-
+ 
 var app = new Vue({
 	el:'#root',
 	data:{
@@ -111,6 +133,22 @@ var app = new Vue({
 		startDate: '',
 		endDate : '',
 		clocks: [],
+
+	},
+	computed:{
+		totalHours(){
+			if(this.clocks.length){
+				var total = 0;
+				for(var i in this.clocks){
+					if(this.clocks[i].clockIn != null && this.clocks[i].clockOut != null){
+						total += (moment(this.clocks[i].clockOut).unix() - moment(this.clocks[i].clockIn).unix())/3600;
+					}
+				}
+				return total.toFixed(2);
+			} else {
+				return 0;
+			}
+		}
 	},
 	methods:{
 		changeLocation: function(){
@@ -135,7 +173,7 @@ var app = new Vue({
 				endDate:this.endDate,
 				location:this.selectedLocation
 			}).then(function(response){
-				console.log(response.data)
+				
 				app.clocks = response.data;
 			})
 		}
@@ -149,8 +187,7 @@ $('#dateRangePicker').daterangepicker({
 	}
 });
 $('#dateRangePicker').on('apply.daterangepicker',function(ev,picker){
-	console.log(picker.startDate.format('YYYY-MM-DD'));
-	console.log(picker.endDate.format('YYYY-MM-DD'));
+	
 	app.startDate = picker.startDate.format('YYYY-MM-DD');
 	app.endDate = picker.endDate.format('YYYY-MM-DD');
 	if(app.selectedEmployee != ''){
