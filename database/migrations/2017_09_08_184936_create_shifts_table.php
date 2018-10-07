@@ -17,14 +17,29 @@ class CreateShiftsTable extends Migration
             $table->increments('id');
             $table->integer('location_id')->unsigned();
             $table->integer('employee_id')->unsigned();
-            $table->dateTime('scheduleIn')->nullable();
-            $table->dateTime('scheduleOut')->nullable();
-            $table->dateTime('clockIn')->nullable();
-            $table->dateTime('clockOut')->nullable();
+            $table->integer('role_id')->unsigned();
+            $table->dateTime('start');
+            $table->dateTime('end');
             $table->boolean('published')->default(false);
-            $table->string('comment');
+            $table->string('comment')->nullable();
             $table->timestamps();
             $table->integer('created_by')->unsigned();
+        });
+         Schema::create('clocks', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('location_id')->unsigned();
+            $table->integer('employee_id')->unsigned();
+            $table->dateTime('clockIn');
+            $table->dateTime('clockOut')->nullable();
+            $table->string('comment')->nullable;
+            $table->timestamps();
+        });
+           Schema::create('ins', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('clock_id');
+            $table->integer('employee_id');
+            $table->timestamps();
+           
         });
     }
 
@@ -36,5 +51,7 @@ class CreateShiftsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('shifts');
+        Schema::dropIfExists('clocks');
+        Schema::dropIfExists('ins');
     }
 }

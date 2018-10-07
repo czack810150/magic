@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,8 +25,23 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        
+
+        //tests
+        // $schedule->command('testSchedule:new "10 min test"')
+        //          ->everyTenMinutes();
+        $schedule->command("testSchedule:new 'Daily test'")->daily();
+
+        // import daily sales
+        $dt = Carbon::now();
+        $today = $dt->toDateString();
+        $yesterday = $dt->copy()->subDay()->toDateString();
+        $schedule->command("import:sales $yesterday 30")->dailyAt('06:10');
+        $schedule->command("import:salesItemsTotal $yesterday")->dailyAt('06:30');
+        $schedule->command("import:salesAmount $yesterday 60")->dailyAt('01:00');
+        $schedule->command("calculate:total $yesterday")->dailyAt('01:30');
+        $schedule->command("pendingStatus:update")->dailyAt('00:10');
+        $schedule->command('employee:pendingReview 180 420')->dailyAt('00:05');
     }
 
     /**

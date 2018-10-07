@@ -35,6 +35,7 @@ class CreateLocationsTable extends Migration
             $table->date('start')->nullable();
             $table->date('end')->nullable();
             $table->timestamps();
+         
         });
     }
 

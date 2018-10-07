@@ -13,8 +13,52 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        
+        'App\Events\EmployeeAdded' => [
+            'App\Listeners\SendEmployeeAddedNotification',
+            'App\Listeners\EmployeeWelcomeListener'
+        ],
+        'App\Events\PromotionRequested' => [
+            'App\Listeners\PromotionRequestListener',
+        ],
+        'App\Events\PromotionApproved' => [
+            'App\Listeners\PromotionApprovedListener',
+        ],
+        'App\Events\PromotionRejected' => [
+            'App\Listeners\PromotionRejectedListener',
+        ],
+        'App\Events\LeaveRequested' => [
+            'App\Listeners\LeaveRequestedListener',
+        ],
+        'App\Events\LeaveApproved' => [
+            'App\Listeners\LeaveApprovedListener',
+        ],
+        'App\Events\LeaveRejected' => [
+            'App\Listeners\LeaveRejectedListener',
+        ],
+        'App\Events\EmailConfirmed' => [
+            'App\Listeners\EmailConfirmedListener'
+        ],
+        'App\Events\ExamCreated' => [
+            'App\Listeners\ExamCreatedListener',
+        ],
+        'App\Events\ExamSubmitted' => [
+            'App\Listeners\ExamSubmittedListener',
+        ],
+        'App\Events\ShiftsPublished' => [
+            'App\Listeners\ShiftsPublishedListener',
+        ],
+        'App\Events\EmployeeToBeTerminated' => [
+            'App\Listeners\EmployeeToBeTerminatedListener',
+        ],
+        'App\Events\EmployeePendingReview' => [
+            'App\Listeners\EmployeePendingReviewListener',
+        ],
+        'App\Events\EmployeeReviewSubmitted' => [
+            'App\Listeners\EmployeeReviewSubmittedListener',
+        ],
+        'App\Events\EmployeeReviewVerified' => [
+            'App\Listeners\EmployeeReviewVerifiedListener',
         ],
     ];
 

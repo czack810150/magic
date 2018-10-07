@@ -1,0 +1,1 @@
+{{ Form::select('shiftRole',$roles,$default,['id'=>'shiftRole','class'=>'form-control']) }}

@@ -30,9 +30,10 @@ $factory->define(App\Employee::class, function (Faker $faker) {
     return [
     	'newbie' => false,
     	'employeeNumber' => str_random(6),
-        'firstName' => $faker->name,
-        'lastName' => $faker->name,
-        'cName' => $faker->word,
+        'firstName' => $faker->firstName,
+        'lastName' => $faker->LastName,
+        'cName' => $faker->name,
+        'location_id' => $faker->randomDigitNotNull,
         'email' => $faker->unique()->safeEmail,
         'hired' => $faker->date(),
         'termination' => $faker->date(),

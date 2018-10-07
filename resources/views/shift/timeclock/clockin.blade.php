@@ -22,7 +22,9 @@
     <small id="emailHelp" class="form-text text-muted">请确认光标在当前输入项</small>
   </div>
  
-  <div style="text-align:center;"><button type="submit" class="btn btn-primary">打卡上班</button></div>
+  <div style="text-align:center;"><button type="submit" class="btn btn-primary">打卡上班</button>
+    <a class="btn btn-secondary" href="/timeclock/" role="button">返回</a>
+  </div>
 </form>
 <br>
 

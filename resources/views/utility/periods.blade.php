@@ -1,0 +1,1 @@
+{{ Form::select('period',$periods,null,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','id'=>'period']) }}
