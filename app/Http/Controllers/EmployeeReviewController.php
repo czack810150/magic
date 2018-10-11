@@ -150,4 +150,9 @@ class EmployeeReviewController extends Controller
         return view('employeeUser/myReviews',compact('employee','subheader','reviews'));
         
     }
+    public function employeeReviews(Request $r)
+    {
+        $employee = Employee::with('review')->findOrFail($r->employee);
+        return view('employee.profile.review.index',compact('employee'));
+    }
 }

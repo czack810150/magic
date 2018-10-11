@@ -235,6 +235,9 @@ Route::post('/score/view/employeePeriod','EmployeePerformanceController@employee
 Route::post('/score/remove','EmployeePerformanceController@destroy');
 Route::post('/employee/performance','EmployeePerformanceController@employee');
 
+// employee profile reviews
+Route::post('/employee/reviews','EmployeeReviewController@employeeReviews');
+
 // compensation
 Route::post('/employee/compensation','EmployeeController@compensation');
 // Account

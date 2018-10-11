@@ -32,7 +32,7 @@
 			<div class="form-group m-form__group row">
 				<div class="col-lg-3">
 					<div class="form-group m-form__group">
-					{{ Form::select('location',$locations,-1,['class'=>'custom-select m-input','v-on:click'=>'locationSelect','v-model'=>'selectedLocation'])}}
+					{{ Form::select('location',$locations,-1,['class'=>'custom-select m-input','v-on:change'=>'locationSelect','v-model'=>'selectedLocation'])}}
 				</div>
 					
 				</div>
@@ -82,7 +82,9 @@
 
 
 <tr v-for="employee in employees" @click="viewEmployee(employee.id)">
-	<td>@{{employee.name}} @{{employee.alias}}<br>@{{employee.employeeNumber}}<br>@{{employee.job_title}}</td>
+	<td>@{{employee.name}} @{{employee.alias}} 
+		<span v-if="(employee.job_group =='trial' && employee.effectiveHours >= 180)" class="m-badge m-badge--warning m-badge--wide m-badge--rounded">试用期满</span>
+	<br>@{{employee.employeeNumber}}<br>@{{employee.job_title}}</td>
 	
 	<td>@{{ employee.username }}</td>
 	<td>@{{ employee.job_group }}</td>

@@ -124,6 +124,9 @@ class EmployeeController extends Controller
                 }
                 $e->skills = $e->skill;
             }
+            if($e->job_group == 'trial'){
+                $e->effectiveHours = $e->effectiveHours; 
+            }
             
         } 
         return $employees;
