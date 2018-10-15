@@ -226,4 +226,11 @@ class Employee extends Model
         }
         return $pendings;
     }
+    public function getEffectiveHoursAttribute()
+    {
+        $hours =  $this->hours;
+        $effective =  $hours->sum('wk1Effective') + $hours->sum('wk2Effective') + $hours->sum('wk1EffectiveCash') + $hours->sum('wk2EffectiveCash');
+        return $effective;
+
+    }
 }

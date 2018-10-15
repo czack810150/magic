@@ -49,6 +49,9 @@
 			@default
 				<small><span class="m--font-success">Active</span> </small> 
 		@endswitch
+		@if($staff->job_group == 'trial' && $staff->effectiveHours >= 180 )
+		<span class="m-badge m-badge--warning m-badge--wide m-badge--rounded">试用期满</span>
+		@endif
 	</h2>
 	@if($staff->termination && $staff->status != 'terminated')
 		<div><span class="m--font-danger">To be terminated on {{$staff->termination->toFormattedDateString()}}</span></div> 
@@ -94,6 +97,9 @@
   </li>
   <li class="nav-item">
   	     <a class="nav-link" href="javascript:employeeStats('{{ $staff->id }}')">Stats</a>
+  </li>
+  <li class="nav-item">
+  	     <a class="nav-link" href="javascript:employeeReviews('{{ $staff->id }}')">Reviews</a>
   </li>
   <li class="nav-item">
   	     <a class="nav-link" href="javascript:employeePerformance('{{ $staff->id }}')">Performance</a>

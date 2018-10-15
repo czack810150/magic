@@ -604,3 +604,18 @@ function employeeAvailability(employee)
 		}
 		);
 }
+function employeeReviews(employee)
+{
+	$.post(
+		'/employee/reviews',
+		{
+			_token: $("input[name=_token]").val(),
+			employee: employee
+		},
+		function(data,status){
+			if(status == 'success'){
+				$('#employee').html(data);
+			}
+		}
+		);
+}
