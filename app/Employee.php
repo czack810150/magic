@@ -233,4 +233,9 @@ class Employee extends Model
         return $effective;
 
     }
+
+    public static function activeTrialEmployee()
+    {
+        return self::where('job_group','trial')->where('status','active')->get();
+    }
 }
