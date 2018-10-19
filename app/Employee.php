@@ -234,8 +234,8 @@ class Employee extends Model
 
     }
 
-    public static function activeTrialEmployee()
+    public static function activeTrialEmployee($location_id)
     {
-        return self::where('job_group','trial')->where('status','active')->get();
+        return self::where('job_group','trial')->where('location_id',$location_id)->where('status','active')->get();
     }
 }

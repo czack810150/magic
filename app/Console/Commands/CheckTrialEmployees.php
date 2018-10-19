@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Mail\TrialEmployeeReviewMail;
 use Illuminate\Support\Facades\Mail;
 use App\Authorization;
+use App\Location;
 
 class CheckTrialEmployees extends Command implements ShouldQueue
 {
@@ -44,20 +45,23 @@ class CheckTrialEmployees extends Command implements ShouldQueue
     public function handle()
     {
         $minimumHour = $this->argument('hours');
+        $locations = Location::all();
 
-        $employees = Employee::activeTrialEmployee()->sortBy('location_id');
-        $reviews = collect();
-        foreach($employees as $e){
-            if($e->effectiveHours >= $minimumHour){
-                $reviews->push($e);
-            }
-
+        foreach($locations as $location)
+        {
+            $employees = Employee::activeTrialEmployee($location->id)->sortBy('hired');
+            $reviews = collect();
+            foreach($employees as $e){
+                if($e->effectiveHours >= $minimumHour){
+                    $reviews->push($e);
+                }
+        }
+        $group = Authorization::group(['admin','hr','dm']);
+        if(count($reviews)){
+            Mail::to($location->manager)->cc($group)->send(new TrialEmployeeReviewMail($reviews));
+        $this->info('Minimum hours: '.$minimumHour.' Employees: '.$reviews->count().' Location:'.$location->name);
+        }
         }
 
-        
-
-        $group = Authorization::group(['admin','hr','dm']);
-        Mail::to($group)->send(new TrialEmployeeReviewMail($reviews));
-        $this->info('Minimum hours: '.$minimumHour.' Employees: '.$reviews->count());
     }
 }

@@ -14,12 +14,8 @@
 			<td>{{$c->clockOut}}</td>
 			<td>{{$c->comment}}</td>
 			<td><button type="button" class="btn btn-primary" onclick="editClock('{{ $c->id }}')">Edit</button></td>
-
-			
-
-			
-
 		</tr>
 		@endforeach
 	</tbody>
 </table>
+
