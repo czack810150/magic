@@ -230,12 +230,15 @@ class Payroll extends Model
                 ]);
             }
             
-            if(count($holidays)){
+            if($employeeRates->cheque){
+                if(count($holidays)){
                 foreach($holidays as $holiday){
                     $holidayPay += self::fourWeekHolidayPay($e->employee_id,$e->location_id,$employeeRates->rate/100,$holiday->date,$periodStart); 
 
                 }
-            } 
+                }    
+            }
+            
 
             $performance = 1.0;
             $bonus = 0;
