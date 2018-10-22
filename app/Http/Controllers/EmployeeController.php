@@ -999,7 +999,7 @@ class EmployeeController extends Controller
         $rate = EmployeeRate::create([
             'employee_id' => $r->employee,
             'type' => $r->type,
-            'cheque' => $r->cheque == 'true'? true:false,
+            'cheque' => !empty($r->cheque)? true:false,
             'rate' => $r->rate*100,
             'variableRate' => $r->variableRate*100,
             'extraRate' => $r->extraRate*100,

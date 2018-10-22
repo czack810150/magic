@@ -202,7 +202,7 @@ var app = new Vue({
 
 		type: '{{ count($employee->rate)?$employee->rate->last()->type:"Not Available" }}',
 		variableRate: '{{ count($employee->rate)?$employee->rate->last()->variableRate:"No Information" }}',
-		cheque: '{{ count($employee->rate)?$employee->rate->last()->cheque:1 }}',
+		cheque: {{ count($employee->rate)?$employee->rate->last()->cheque:0 }},
 		basicRate: {{ $employee->rate->last()->rate }},
 		extraRate: {{ $employee->rate->last()->extraRate }},
 		rates: [
