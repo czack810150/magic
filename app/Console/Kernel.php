@@ -42,6 +42,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("calculate:total $yesterday")->dailyAt('01:30');
         $schedule->command("pendingStatus:update")->dailyAt('00:10');
         $schedule->command('employee:pendingReview 180 420')->dailyAt('00:05');
+        $schedule->command('employee:checkTrials 180')->daily();
     }
 
     /**

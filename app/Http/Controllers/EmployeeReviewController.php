@@ -42,7 +42,7 @@ class EmployeeReviewController extends Controller
             'manager_id' => $request->manager,
             'reviewed' => true,
             'exam_id' => $exam,
-            'pass' => $request->examPassed == 'true'? true:false,
+            'pass' => $request->examPassed == 1? true:false,
             'reviewDate' => $request->reviewDate,
             'nextReview' => $request->nextReview,
             'manager_score' => $request->managerScore,
@@ -117,14 +117,14 @@ class EmployeeReviewController extends Controller
     public function updateReview(Request $request)
     {
         $review = EmployeeReview::find($request->id);
-        $review->pass = $request->examPassed == 'true'? true:false;
+        $review->pass = $request->examPassed == 1? true:false;
         $review->reviewDate = $request->reviewDate;
         $review->nextReview = $request->nextReview;
         $review->manager_score = $request->managerScore;
         $review->self_score = $request->selfScore;
         $review->performance = $request->performance;
            
-        $review->result = $request->pass == 'true'? true:false;
+        $review->result = $request->pass == 1? true:false;
         $review->description = $request->resultDescription;
         $review->manager_note = $request->managerNote;
         $review->self_note = $request->selfNote;

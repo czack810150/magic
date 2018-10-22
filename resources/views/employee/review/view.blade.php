@@ -167,26 +167,32 @@
 			if(this.total >= 100 && this.examPassed) {
 				this.action = '+$ 1.00'
 				this.resultDescription = '极度卓越'
+				this.pass = true;
 				return '极度卓越'
 			} else if(this.total >= 95 && this.examPassed){
 				this.action = '+$ 0.75'
 				this.resultDescription = '卓越'
+				this.pass = true;
 				return '卓越'
 			} else if(this.total >= 85 && this.examPassed){
 				this.action = '+$ 0.50'
 				this.resultDescription = '优秀'
+				this.pass = true;
 				return '优秀'
 			} else if(this.total >= 70 && this.examPassed) {
 				this.action = '+$ 0.25'
 				this.resultDescription = '良好'
+				this.pass = true;
 				return '良好'
 			} else if(this.total >= 50 && this.examPassed){
 				this.action = '薪资不变'
 				this.resultDescription = '合格'
+				this.pass = true;
 				return '合格'
 			} else {
 				this.action = '-$ 0.50 或辞退'
 				this.resultDescription = '不合格'
+				this.pass = false;
 				return '不合格'
 			} 
 		},
@@ -255,7 +261,6 @@
 			this.reviewDate = e.format('yyyy-mm-dd')
 			this.nextDate = moment(e.format('yyyy-mm-dd')).add(180,'d').format('YYYY-MM-DD');
 		});
-		console.log('mounted')
 	}
 
 })

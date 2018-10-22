@@ -292,7 +292,7 @@ Route::get('/my_availability','AvailabilityController@my');
 	Route::post('/employeeReview/getPerformance','EmployeeReviewController@getPerformance');
 	Route::post('/employeeReview/submitReview','EmployeeReviewController@store');
 	Route::post('/employeeReview/verify','EmployeeReviewController@update');
-	Route::get('/employeeReview/{review}/view','EmployeeReviewController@show');
+	Route::get('/employeeReview/{review}/view/{type?}','EmployeeReviewController@show');
 	Route::post('/employeeReview/updateReview','EmployeeReviewController@updateReview');
 
 								}); // end of grouped auth
