@@ -16,16 +16,16 @@ class QuestionController extends Controller
         $stats['total'] = Question::count();
         $stats['mc'] = Question::where('mc',true)->count();
         $stats['sa'] = Question::where('mc',false)->count();
-        $categories = Question_category::get();
-        foreach($categories as $c){
-            $stats['categories'][$c->name] = $c->question->count();
-        }
+        $categories = Question_category::with('question')->get();
+        // foreach($categories as $c){
+        //     $stats['categories'][$c->name] = $c->question->count();
+        // }
         foreach($questions as $q){
             $q->category = $q->question_category?$q->question_category->name:'no category';
             $q->type = $q->mc?'选择':'简答';
             $q->created = $q->created_at->toFormattedDateString();
         }
-        return view('exam.question.index',compact('questions','subheader','stats'));
+        return view('exam.question.index',compact('questions','subheader','stats','categories'));
     }
 
     /**
@@ -175,5 +175,17 @@ class QuestionController extends Controller
     public function getCategory()
     {
         return Question_category::get();
+    }
+    public function fetch(Question_category $category)
+    {
+        $questions = $category->question;
+        if(count($questions)){
+             foreach($questions as $q)
+        {
+            $q->link = "/question/$q->id/show";
+        }
+        }
+       
+        return $questions;
     }
 }

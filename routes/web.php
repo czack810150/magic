@@ -166,6 +166,7 @@ Route::get('/question/create','QuestionController@create');
 Route::post('/question/create','QuestionController@store');
 Route::post('/question/createShortAnswer','QuestionController@storeShortAnswer');
 Route::post('/question/categoryQuestions','QuestionController@questionsByCategory');
+Route::get('/question/fetch/{category}','QuestionController@fetch');
 // test training
 Route::get('/exam/learn','ExamTrainingController@index');
 Route::get('/exam/learn/create','ExamTrainingController@create');

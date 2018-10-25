@@ -5,7 +5,7 @@
 
 
 <!--Begin::Main Portlet-->
-<div class="m-portlet">
+<div class="m-portlet" id="root">
   <div class="m-portlet__body m-portlet__body--no-padding">
     <div class="row m-row--no-padding m-row--col-separator-xl">
       <div class="col-md-12 col-lg-12 col-xl-4">
@@ -18,7 +18,7 @@
 				<span class="m-widget1__desc">题库类别</span>
 			</div>
 			<div class="col m--align-right">
-				<span class="m-widget1__number m--font-warning">{{ count($stats['categories']) }}</span>
+				<span class="m-widget1__number m--font-warning">{{ count($categories) }}</span>
 			</div>
 		</div>
 	</div>
@@ -65,7 +65,7 @@
 				<div class="m-section">
 					
 					<div class="m-section__content">
-						<table class="table table-sm m-table m-table--head-bg-brand">
+						<table class="table table-sm m-table m-table--head-bg-brand table-hover">
 						  	<thead class="thead-inverse">
 						    	<tr>
 						      		<th>Category</th>
@@ -73,10 +73,10 @@
 						    	</tr>
 						  	</thead>
 						  	<tbody>
-						  		@foreach($stats['categories'] as $key => $val)
-						    	<tr>
-							      	<th scope="row">	{{ $key }}</th>
-							      	<td>{{$val}}</td>
+						  		@foreach($categories as $c)
+						    	<tr @click="loadQuestions({{ $c->id }})">
+							      	<th scope="row">	{{ $c->name }}</th>
+							      	<td>{{ $c->question->count() }}</td>
 						    	</tr>
 	@endforeach
 						    
@@ -86,108 +86,65 @@
 				</div>
 				<!--end::Section-->
        </div>
+
+       <div class="col-md-12 col-xl-4">
+       	<table v-if="selected" class="table table-sm m-table m-table--head-bg-info table-hover">
+       		<thead>
+       			<tr><th>Question</th><th>Difficulty</th><th>Type</th></tr>
+       		</thead>
+       		<tbody>
+       			<tr v-for="q in questions" >
+       				<td><a :href="q.link">@{{ q.body }}</a></td>
+       				<td>@{{ q.difficulty }}</td>
+       				<td v-if="q.mc ==1">选择题</td>
+       				<td v-else>简答题</td>
+
+       			</tr>
+       		</tbody>
+
+       	</table>
+       </div>
+
     </div>
   </div>
 </div>
 <!--End::Main Portlet-->
 
-<table id="questionTable">
 
-</table>
 
 @endsection
 @section('pageJS')
 <script>
-console.log('pageJS');
-$(document).ready(function(){
-	const jString = '{!! $questions !!}';
-	const dataJSONArray = JSON.parse(jString);
-
-
-	var options = {
-		data: {
-			type:'local',
-			source: dataJSONArray,
-			pageSize: 10
-		},
-	  // layout definition
-         layout: {
-            theme: 'default',
-                // datatable theme
-            class: '',
-                // custom wrapper class
-            scroll: false,
-                // enable/disable datatable scroll both horizontal and vertical when needed.
-                // height: 450, // datatable's body's fixed height
-            footer: false // display/hide footer
-            },
-
-            // column sorting
-        sortable: true,
-        pagination: true,
-
-        columns: [
-        	{
-        		field: "category",
-        		title: "Category",
-        		width: 100,
-        		sortable: true,
-        		selector: false,
-        		taxtAlign: 'center'
-        	},
-			{
-        		field: "type",
-        		title: "Type",
-        		width: 50,
-        		sortable: true,
-        		selector: false,
-        		taxtAlign: 'center'
-        	},
-			{
-        		field: "difficulty",
-        		title: "Difficulty",
-        		width: 100,
-        		sortable: true,
-        		selector: false,
-        		taxtAlign: 'center'
-        	},
-        	{
-        		field: "body",
-        		title: "Question",
-        		width: 500,
-        		sortable: false,
-        		selector: false,
-        		taxtAlign: 'center',
-				template: function(row){
-					return '<a href="/question/'+row.id+'/show">'+row.body+'</a>';
-				}
-        	},
-			{
-        		field: "created_by",
-        		title: "Author",
-        		width: 50,
-        		sortable: true,
-        		selector: false,
-        		taxtAlign: 'center'
-        	},
-			{
-        		field: "created",
-        		title: "Created at",
-        		width: 150,
-        		sortable: true,
-        		selector: false,
-        		taxtAlign: 'center',
-				
-        	},
-        	
-        	
-        ]
+var app = new Vue({
+	el:'#root',
+	data:{
+		questions:[],
+	},
+	computed:{
+		selected(){
+			return this.questions.length;
+		}
+	},
+	methods:{
+		loadQuestions(category){
+			
+			axios.get('/question/fetch/'+category)
+			.then(res => {
+				this.questions = res.data;
+				console.log(this.questions);
+			}).catch(e =>{
+				alert(e);
+				console.log(e);
+			});
+		}
+	},
+	mounted()
+	{
+		
 	}
 
+});
 
-	
-	$('#questionTable').mDatatable(options);
-})
 
 </script>
 @endsection
