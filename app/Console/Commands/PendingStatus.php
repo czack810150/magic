@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Employee;
 use App\EmployeePending;
+use App\Events\employeeTerminated;
 use Carbon\Carbon;
 
 class PendingStatus extends Command
@@ -49,6 +50,10 @@ class PendingStatus extends Command
             {
                 $p->employee->status = $p->status;
                 $p->employee->save();
+
+                if($p->status == 'terminated'){
+                    event(new EmployeeTerminated($p->employee));
+                }
                 $count++;
             }
         }
