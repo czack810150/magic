@@ -27,6 +27,8 @@ class Score_log extends Model
         $result = collect();
         $result->put('score',100);
         $result->put('pass',true);
+        $result->put('from',$dt->toDateString());
+        $result->put('to',$date);
         $items = collect();
         $categories = Score_category::get();
         foreach($categories as $c){
@@ -36,11 +38,13 @@ class Score_log extends Model
             // array_push($cateItems,'infractions' => 0);
             foreach($scores as $s){
                 if($s->score_item->score_category_id == $c->id){
-                    array_push($cateItems,$s->score_item);
+                    $s->score_item;
+                    array_push($cateItems,$s);
                     if($s->value < 0){
                         $c->infractions += 1;
                         $result['score'] -= 1;
-                    } 
+                    }
+                    
                 } 
             }
             $c->items = $cateItems;

@@ -287,16 +287,20 @@ Route::get('/my_availability','AvailabilityController@my');
 	Route::post('rateSubmit','EmployeeController@rateSubmit');		
 	Route::post('rateGet','EmployeeController@rateGet');
 // Employee Review
-	Route::get('/employeeReview','EmployeeReviewController@index')->name('employeeReview.index');
-	Route::get('/employeeReview/getAllReviews','EmployeeReviewController@getAllReviews');
-	Route::get('/employeeReview/{employee}','EmployeeReviewController@create')->name('employeeReview');
-	Route::post('/employeeReview/getPerformance','EmployeeReviewController@getPerformance');
-	Route::post('/employeeReview/submitReview','EmployeeReviewController@store');
-	Route::post('/employeeReview/verify','EmployeeReviewController@update');
-	Route::get('/employeeReview/{review}/view/{type?}','EmployeeReviewController@show');
-	Route::post('/employeeReview/updateReview','EmployeeReviewController@updateReview');
+Route::prefix('employeeReview')->name('employeeReview.')->group(function(){
+	Route::get('/','EmployeeReviewController@index')->name('index');
+	Route::get('getAllReviews','EmployeeReviewController@getAllReviews');
+	Route::get('/{employee}','EmployeeReviewController@create')->name('employeeReview');
+	Route::post('getPerformance','EmployeeReviewController@getPerformance');
+	Route::post('submitReview','EmployeeReviewController@store');
+	Route::post('verify','EmployeeReviewController@update');
+	Route::get('{review}/view/{type?}','EmployeeReviewController@show');
+	Route::post('updateReview','EmployeeReviewController@updateReview');
+	Route::post('showPerformance','EmployeeReviewController@showPerformance');
+});	
+	
 
-								}); // end of grouped auth
+}); // end of grouped auth
 
 Auth::routes();
 //Users

@@ -89,12 +89,6 @@ class EmployeeReviewController extends Controller
         
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
@@ -132,10 +126,15 @@ class EmployeeReviewController extends Controller
         return ['status'=>'success','message'=>'Employee Review Updated.'];
     }
     public function getPerformance(Request $r){
-        // return $r->reviewDate;
+        
         $performance =  Score_log::reviewScore($r->employee,$r->reviewDate);
         $score = round($performance['score']*.7,0);
         return $score;
+    }
+    public function showPerformance(Request $r){
+     
+        $performance =  Score_log::reviewScore($r->employee,$r->reviewDate);
+        return $performance;
     }
     public function getAllReviews()
     {

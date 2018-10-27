@@ -81,9 +81,14 @@
 						<div class="col-2">
 							<input v-model="performance" class="form-control m-input" type="number" min="0" max="70">
 						</div>
-						<div class="col-2">
-							<button class="btn btn-info" type="button" @click="getPerformance">Get Score</button>
+						<div class="col-8">
+							<div class="m-demo__preview  m-demo__preview--btn">
+								<button class="btn btn-info" type="button" @click="getPerformance">计算得分</button>
+								<button class="btn btn-secondary" type="button" @click="showPerformance" data-toggle="modal" data-target="#m_modal_6">表现记录</button>
+							</div>
+							
 						</div>
+						
 					</div>
 					<div class="form-group m-form__group row">
 						<label class="col-2 col-form-label">店长评分</label>
@@ -135,7 +140,69 @@
 				</div>
 			
 	</form>
+
+<!-- Modal -->
+<div class="modal fade" id="m_modal_6" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">表现报告</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+        <div class="m-widget12">
+			<div class="m-widget12__item">					 	 
+				<span class="m-widget12__text1">开始日期<br><span>@{{ formattedDate(performanceRecords.from) }}</span></span> 			 		 
+				<span class="m-widget12__text2">结束日期<br><span>@{{ formattedDate(performanceRecords.to) }}</span></span> 		 	 
+			</div>
+			
+		</div>			 
+        <!--begin::Section-->
+				<div class="m-section">
+					<div class="m-section__content">
+						<table class="table table-striped m-table">
+						  	<thead>
+						    	<tr>
+						      		<th>类别</th>
+						      		<th>违规次数 / 允许次数</th>
+						      		<th>项目</th>
+						      		
+						    	</tr>
+						  	</thead>
+						  	<tbody>
+						    	<tr v-for="category in performanceRecords.categories">
+							      	<th scope="row">@{{ category.name }}</th>
+							      	<td class="text-center">@{{ category.infractions }} / @{{ category.allowance }}</td>
+							      	<td class="text-right">
+							      		<p v-for="item in category.items">@{{ item.score_item.name }} 
+							      			<span v-if="item.value > 0" class="m--font-success">@{{ item.value }}</span>
+							      			<span v-else class="m--font-danger">@{{ item.value }}</span>
+							      			<span class="float right">@{{ formattedDate(item.date) }}</span>
+							      		</p>
+							      	</td>
+							    
+						    	</tr>
+						    	
+						  	</tbody>
+						</table>
+					</div>
+				</div>
+				<!--end::Section-->
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
 </div>
+
+</div> <!-- root end -->
+
 @endsection
 @section('pageJS')
 <script>
@@ -156,7 +223,8 @@
 		selfNote:'{{ $review->self_note }}',
 		examPassed:{{ $review->pass }},
 		resultDescription:null,
-		pass: {{ $review->result }}
+		pass: {{ $review->result }},
+		performanceRecords:{},
 
 	},
 	computed:{
@@ -199,6 +267,9 @@
 		
 	},
 	methods:{
+		formattedDate(dt){
+			return moment(dt).format('MMM D, YYYY');
+		},
 		getPerformance(){
 		
 			axios.post('/employeeReview/getPerformance',{
@@ -207,6 +278,15 @@
 			}).then(res => {
 				this.performance = res.data
 			})
+		},
+		showPerformance(){
+			axios.post('/employeeReview/showPerformance',{
+				employee: this.employee,
+				reviewDate:this.reviewDate,
+			}).then(res => {
+				console.log(res.data);
+				this.performanceRecords = res.data;
+			}).catch(e => console.log(e));
 		},
 		updateReview()
 		{
