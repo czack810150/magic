@@ -3,10 +3,6 @@
 
 @include('exam.question.nav')
 
-
-
-
-
 <div class="row">
 	<div class="col-lg-10 col-md-10 col-12">
 @if(isset($question))
@@ -29,6 +25,9 @@
 					<ul class="m-portlet__nav">
 						<li class="m-portlet__nav-item">
 							{{ Form::submit('Update',['class' => 'm-portlet__nav-link btn btn-light m-btn m-btn--pill m-btn--air']) }}
+						</li>
+						<li class="m-portlet__nav-item">
+							<a class="m-portlet__nav-link btn btn-light m-btn m-btn--pill m-btn--air" href="{{ url("/question/$question->id/delete")}}">Delete</a>
 						</li>
 						
 					</ul>
@@ -102,7 +101,7 @@
 
 
 
-<a href="/question">Back</a>
+<a href="{{ url()->previous() }}">Back</a>
 
 
 @endsection
