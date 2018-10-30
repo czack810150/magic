@@ -38,16 +38,16 @@
 
 		@switch($staff->status)
 			@case('terminated')
-				<small><span class="m--font-danger">Terminated</span></small> 
+				<span class="m-badge m-badge--danger m-badge--wide m-badge--rounded">已离职</span>
 			@break
 			@case('sick')
-				<small><span class="m--font-info">Sick Leave</span> </small> 
+				<span class="m-badge m-badge--info m-badge--wide m-badge--rounded">病假中</span> 
 			@break
 			@case('vacation')
-				<small><span class="m--font-warning">On Vacation</span> </small> 
+				<span class="m-badge m-badge--warning m-badge--wide m-badge--rounded">休假中</span>
 			@break
 			@default
-				<small><span class="m--font-success">Active</span> </small> 
+				<span class="m-badge m-badge--success m-badge--wide m-badge--rounded">在职</span> 
 		@endswitch
 		@if($staff->job_group == 'trial' && $staff->effectiveHours >= 180 )
 		<span class="m-badge m-badge--warning m-badge--wide m-badge--rounded">试用期满</span>
@@ -57,7 +57,19 @@
 		<div><span class="m--font-danger">To be terminated on {{$staff->termination->toFormattedDateString()}}</span></div> 
 		@endif
 
-	<div>{{ $staff->job->rank }} | {{ $staff->location->name }} </div>
+	<div>@switch($staff->job_group)
+			@case('trial')
+				<span class="m--font-danger">试用期员工</span>
+			@break
+			@case('manager')
+				<span class="m--font-info">经理</span> 
+			@break
+			@case('supervisor')
+				<span class="m--font-warning">Supervisor</span> 
+			@break
+			@default
+				<span class="m--font-info">普通员工</span> 
+		@endswitch | {{ $staff->job->rank }} | {{ $staff->location->name }} </div>
 	<div>Joined since {{ $staff->hired->toFormattedDateString() }}   ({{ $staff->hired->diffForHumans() }})</div>
 	
 		@can('update-profile-picture',$staff->id)

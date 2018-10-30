@@ -22,7 +22,7 @@
                 </td>
                  <td>{{Carbon\Carbon::now()->diffInDays($p->hired)}}</td>
                 @endif
-              <td>@if($p->reviewable)<a class="btn btn-primary btn-sm" href="{{route('employeeReview',['id' => $p->id])}}">Review</a>@endif</td>
+              <td>@if($p->reviewable)<a class="btn btn-primary btn-sm" href="{{route('employeeReview.employeeReview',['id' => $p->id])}}">Review</a>@endif</td>
 
             </tr>
         @endforeach
