@@ -238,4 +238,8 @@ class Employee extends Model
     {
         return self::where('job_group','trial')->where('location_id',$location_id)->where('status','active')->get();
     }
+
+    public function getCurrentReviewAttribute(){
+        return $this->review->where('reviewDate','<=',Carbon::now()->toDateString())->where('nextReview','>',Carbon::now()->toDateString())->first();
+    }
 }

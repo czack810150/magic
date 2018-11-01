@@ -1,80 +1,25 @@
 @extends('layouts.master')
 
 @section('content')
+@if(auth()->user()->authorization->employee->currentReview)
 <div class="row">
-    @if(count($promotions))
-    <div class="col-8">
-<!--begin::Portlet Promotions-->
-        <div class="m-portlet">
-            <div class="m-portlet__head">
-                <div class="m-portlet__head-caption">
-                    <div class="m-portlet__head-title">
-                        <span class="m-portlet__head-icon">
-                            <i class="flaticon-up-arrow-1"></i>
-                        </span>
-                        <h3 class="m-portlet__head-text">
-                            My promotion <small>我的晋级申请</small>
-                        </h3>
-                    </div>          
-                </div>
-            </div>
-            <div class="m-portlet__body">
-<table class="table  m-table">
-                            <thead>
-                                <tr>
-                                    <th>Location</th>
-                                    <th>Staff</th>
-                                    <th>Current Position</th>
-                                    <th>New Position</th>
-                                    <th>Status</th>
-                                    <th>Date applied</th>
-                                    <th>Action Taken</th>
-                                    <th>Action By</th>
-
-                                    <th>Comment</th>
-                                   
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($promotions as $p)
-                                @if(Carbon\Carbon::now()->diffInDays($p->created_at)<=30)
-                                <tr>
-                                    <td>{{ $p->newLocation->name }}</td>
-                                     <td>{{ $p->employee->cName }}</td>
-                                    <td>{{ $p->oldJob->rank }}</td>
-                                     <td>{{ $p->newJob->rank }}</td>
-                                    
-                                    
-                                    @switch($p->status)
-                                    @case('pending')
-                                    <td><span class="m-badge m-badge--primary m-badge--wide">{{ $p->status }}</span></td>
-                                    @break
-                                    @case('approved')
-                                    <td><span class="m-badge m-badge--success m-badge--wide">{{ $p->status }}</span></td>
-                                    @break
-                                    @case('rejected')
-                                    <td><span class="m-badge m-badge--danger m-badge--wide">{{ $p->status }}</span></td>
-                                    @break
-                                    @default
-                                    <td><span class="m-badge m-badge--secondary m-badge--wide">{{ $p->status }}</span></td>
-                                    @endswitch
-                                     <td>{{ $p->created_at->toFormattedDateString() }}</td>
-                                     <td>{{ $p->updated_at->toFormattedDateString() }}</td>
-                                     <td>{{ $p->modifiedBy? $p->modifiedBy->cName:'' }}</td>
-                                    <td>{{ $p->comment }}</td>
-                                   
-                                </tr>
-                                @endif
-                                @endforeach
-                            </tbody>
-</table>
-            </div>
-        </div>  
-<!--end::Portlet Promotions-->
+<div class="col-12">
+<div class="m-alert m-alert--icon m-alert--outline alert alert-primary" role="alert">
+    <div class="m-alert__icon">
+        <i class="la la-warning"></i>
+    </div>
+    <div class="m-alert__text">
+        <strong>Attention!</strong> You are now being reviewed. 你已达到考核标准，正被考核中。请提供自我评价。 
+    </div>  
+    <div class="m-alert__actions" style="width: 200px;">
+        <a href="{{ route('self') }}" class="btn btn-brand" >自我评价
+        </a>
+         
+    </div>              
+</div>
+</div>
 </div>
 @endif
-</div>
-
 <div class="row">
     
     <div class="col-12">

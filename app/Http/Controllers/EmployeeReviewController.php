@@ -154,4 +154,7 @@ class EmployeeReviewController extends Controller
         $employee = Employee::with('review')->findOrFail($r->employee);
         return view('employee.profile.review.index',compact('employee'));
     }
+    public function selfReview(){
+        return 'self';
+    }
 }

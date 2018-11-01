@@ -239,6 +239,7 @@ Route::post('/employee/performance','EmployeePerformanceController@employee');
 // employee profile reviews
 Route::post('/employee/reviews','EmployeeReviewController@employeeReviews');
 
+
 // compensation
 Route::post('/employee/compensation','EmployeeController@compensation');
 // Account
@@ -297,8 +298,9 @@ Route::prefix('employeeReview')->name('employeeReview.')->group(function(){
 	Route::get('{review}/view/{type?}','EmployeeReviewController@show');
 	Route::post('updateReview','EmployeeReviewController@updateReview');
 	Route::post('showPerformance','EmployeeReviewController@showPerformance');
-});	
 	
+});	
+Route::get('self_review','EmployeeReviewController@selfReview')->name('self');	
 
 }); // end of grouped auth
 
