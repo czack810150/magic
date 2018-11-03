@@ -71,7 +71,7 @@ class HomeController extends Controller
     private function employee()
     {
             $employee = Employee::find(Auth::user()->authorization->employee_id);
-            $promotions = $employee->promotion;
+            
             $shifts = $employee->schedule->where('start','>=',Carbon::now()->toDateString())->sortBy('start');
             return view('dashboard.employee.home',compact('promotions','shifts'));
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Employee;
 use App\Score_log;
 use App\EmployeeReview;
@@ -17,8 +18,13 @@ class EmployeeReviewController extends Controller
    
     public function index()
     {
-        $subheader = 'Employee Review';
-        return view('employee/review/index',compact('subheader'));
+        if(Gate::allows('view-review')){
+             $subheader = 'Employee Review';
+            return view('employee/review/index',compact('subheader'));
+        } else {
+            abort(404);
+        }
+       
     }
 
     public function create(Employee $employee)
@@ -154,7 +160,13 @@ class EmployeeReviewController extends Controller
         $employee = Employee::with('review')->findOrFail($r->employee);
         return view('employee.profile.review.index',compact('employee'));
     }
-    public function selfReview(){
-        return 'self';
+    public function selfReview(EmployeeReview $employeeReview){
+        $subheader = 'My Performance Review';
+        if($employeeReview->employee == Auth::user()->authorization->employee){
+            return view('employeeUser.review.my',compact('employeeReview','subheader'));
+        } else {
+            return abort(404);
+        }
+        
     }
 }

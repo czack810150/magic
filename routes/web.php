@@ -300,7 +300,7 @@ Route::prefix('employeeReview')->name('employeeReview.')->group(function(){
 	Route::post('showPerformance','EmployeeReviewController@showPerformance');
 	
 });	
-Route::get('self_review','EmployeeReviewController@selfReview')->name('self');	
+Route::get('self_review/{employeeReview}','EmployeeReviewController@selfReview')->name('self');	
 
 }); // end of grouped auth
 

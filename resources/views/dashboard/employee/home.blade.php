@@ -12,7 +12,7 @@
         <strong>Attention!</strong> You are now being reviewed. 你已达到考核标准，正被考核中。请提供自我评价。 
     </div>  
     <div class="m-alert__actions" style="width: 200px;">
-        <a href="{{ route('self') }}" class="btn btn-brand" >自我评价
+        <a href="{{ route('self',['employeeReview' => auth()->user()->authorization->employee->currentReview]) }}" class="btn btn-brand" >自我评价
         </a>
          
     </div>              
