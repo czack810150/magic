@@ -141,19 +141,19 @@
 					<div class="form-group m-form__group row">
 						<label for="firstName" class="col-4 col-form-label">First Name</label>
 						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="First Name" ="" id="firstName" name="firstName" required>
+							<input class="form-control m-input" type="text" placeholder="First Name in English" ="" id="firstName" name="firstName" required>
 						</div>
 					</div>
 					<div class="form-group m-form__group row">
 						<label for="lastName" class="col-4 col-form-label">Last Name</label>
 						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="Last Name" ="" id="lastName" name="lastName" required>
+							<input class="form-control m-input" type="text" placeholder="Last Name in English" ="" id="lastName" name="lastName" required>
 						</div>
 					</div>
 					<div class="form-group m-form__group row">
 						<label for="cName" class="col-4 col-form-label">中文名</label>
 						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="Chinese Name" ="" id="cName" name="cName">
+							<input class="form-control m-input" type="text" placeholder="中文全名 如果没有就用英文全名" ="" id="cName" name="cName">
 						</div>
 					</div>
 					<div class="form-group m-form__group row">
@@ -264,7 +264,12 @@ var app = new Vue({
 				app.employees = response.data;
 			})
 		}
-	}
+	},
+	mounted(){
+		$('#hireDate').datepicker({
+			format:'yyyy-mm-dd',
+		});
+	},
 })
 
 </script>

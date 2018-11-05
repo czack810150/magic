@@ -73,7 +73,7 @@
 
       <!--begin::Form-->
 			<form class="m-form m-form--fit m-form--label-align-right" method="POST" action="/exam_templates/store">
-				{{ csrf_field() }}
+				@csrf
       <div class="modal-body">	
 
 			
