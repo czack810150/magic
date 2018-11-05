@@ -18,9 +18,10 @@ class EmployeeReviewController extends Controller
    
     public function index()
     {
+        
         if(Gate::allows('view-review')){
              $subheader = 'Employee Review';
-            return view('employee/review/index',compact('subheader'));
+            return view('employee.review.index',compact('subheader'));
         } else {
             abort(404);
         }
@@ -30,7 +31,7 @@ class EmployeeReviewController extends Controller
     public function create(Employee $employee)
     {
         $subheader = 'Employee Review';
-        return view('employee/review/create',compact('employee','subheader'));
+        return view('employee.review.create',compact('employee','subheader'));
     }
    
     public function store(Request $request)
@@ -123,7 +124,7 @@ class EmployeeReviewController extends Controller
         $review->manager_score = $request->managerScore;
         $review->self_score = $request->selfScore;
         $review->performance = $request->performance;
-           
+        $review->self_data  = $request->questions;          
         $review->result = $request->pass == 1? true:false;
         $review->description = $request->resultDescription;
         $review->manager_note = $request->managerNote;

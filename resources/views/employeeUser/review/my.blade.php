@@ -48,7 +48,7 @@
 					</div>
 					<div class="m-widget_content-item">
 				 		<span>员工自评（10%）</span>
-				 		<span>@{{selfScore}}</span>
+				 		<span>@{{questionScore}}</span>
 					</div>
 					
 				</div>	
@@ -56,6 +56,16 @@
 		</div>
 		<!--end::Widget 29--> 
 		<section v-if="!verified">
+			<div class="form-group m-form__group row">
+						<label class="col-2 col-form-label">考核日期</label>
+						<div class="col-2">
+							<input v-model="reviewDate"  id="reviewDate" class="form-control m-input" type="date" disabled>
+						</div>
+						<label class="col-2 col-form-label">下次考核</label>
+						<div class="col-2">
+							<input v-model="nextDate" id="nextDate" class="form-control m-input" type="date" disabled>
+						</div>
+					</div>
 		<div class="m-form__group form-group row" >
 				<label class="col-2 col-form-label">知识考试通过</label>
 										<div class="col-2">
@@ -79,38 +89,34 @@
 						</div>
 						
 					</div>
-					<div class="form-group m-form__group row">
-						<label class="col-2 col-form-label">店长评分</label>
-						<div class="col-2">
-							<input v-model="managerScore" class="form-control m-input" disabled>
-						</div>
-					</div>
-					<div class="form-group m-form__group row">
-						<label class="col-2 col-form-label">员工自评</label>
-						<div class="col-2">
-							<input v-model="selfScore" class="form-control m-input" type="number"  min="0" max="10" step="1">
-						</div>
-					</div>
 					
 					
-					<div class="form-group m-form__group row">
-						<label class="col-2 col-form-label">考核日期</label>
-						<div class="col-2">
-							<input v-model="reviewDate"  id="reviewDate" class="form-control m-input" type="date" disabled>
-						</div>
-						<label class="col-2 col-form-label">下次考核</label>
-						<div class="col-2">
-							<input v-model="nextDate" id="nextDate" class="form-control m-input" type="date" disabled>
-						</div>
-					</div>
 					<div class="form-group m-form__group row">
 						<label class="col-2 col-form-label">店长评语</label>
 						<div class="col-6">
 							<textarea v-model="managerNote" class="form-control m-input" rows="8" maxlength="500" disabled></textarea>
 						</div>
 					</div>
+					<div class="m-form__group form-group row">
+										<label class="col-2">自我评判</label>
+										<div class="m-checkbox-list">
+											<label class="m-checkbox m-checkbox--success" v-for="question in questions">
+											<input type="checkbox" v-model="question.checked" :id="question.id" >@{{ question.question }}
+											<span></span>
+											</label>
+											
+											</label>
+										</div>
+										
+					</div>
+
+
+					
+						
+									
+
 					<div class="form-group m-form__group row">
-						<label class="col-2 col-form-label">员工自评</label>
+						<label class="col-2 col-form-label">自我评述</label>
 						<div class="col-6">
 							<textarea v-model="selfNote" class="form-control m-input" rows="8" maxlength="500"></textarea>
 						</div>
@@ -214,9 +220,19 @@
 		resultDescription:null,
 		pass: {{ $employeeReview->result }},
 		performanceRecords:{},
-
+		savedQuestions:'{!! json_encode($employeeReview->self_data,JSON_HEX_APOS) !!}',
+		questions:[],
 	},
 	computed:{
+		questionScore(){
+			var score = 0;
+			this.questions.forEach(question => {
+				if(question.checked == true){
+					score += 1;
+				}
+			});
+			return score;
+		},
 		total(){ 
 			return +(this.performance) + +(this.managerScore) + +(this.selfScore)
 		},
@@ -256,6 +272,24 @@
 		
 	},
 	methods:{
+		parseQuestions(){
+			if(JSON.parse(this.savedQuestions) != null && JSON.parse(this.savedQuestions).length){
+				this.questions = JSON.parse(this.savedQuestions);
+			} else {
+				this.questions = [
+					{'id':1,'question':'对工作持积极态度,服从工作分配，减少管理成本，忠于职守，坚守岗位，出品合格','checked':false},
+					{'id':2,'question':'工作积极主动，不违反规章制度，不打乱工作秩序，不妨碍他人工作','checked':false},
+					{'id':3,'question':'半年里有受到客人或店长嘉令状表杨','checked':false},
+					{'id':4,'question':'能带领及感召周围同事，协调上级，配合同事，同事关系融洽，形成团队凝聚力','checked':false},
+					{'id':5,'question':'能主动参与周，月，季度卫生并做好记录，使门店工作顺利安全进行','checked':false},
+					{'id':6,'question':'能发现工作中的问题，并提出解决问题的方案，用于现场管理','checked':false},
+					{'id':7,'question':'能控制营运中复杂局面，能准确迅速完成上级交办的任务并有记录有交待','checked':false},
+					{'id':8,'question':'严格遵守工作制度，有效利用工作时间，工作方法合理，各项资源的使用有效','checked':false},
+					{'id':9,'question':'有责任心，工作能分清主次，业务处理得当，经常保持良好成绩','checked':false},
+					{'id':10,'question':'着装整洁，礼貌待客，严守纪律，基本掌握业务知识，有节约意识','checked':false},
+					];
+			}
+		},
 		formattedDate(dt){
 			return moment(dt).format('MMM D, YYYY');
 		},
@@ -286,7 +320,8 @@
 				nextReview: this.nextDate,
 				performance: this.performance,
 				managerScore: this.managerScore,
-				selfScore: this.selfScore,
+				selfScore: this.questionScore,
+				questions: this.questions,
 		
 				managerNote: this.managerNote,
 				selfNote: this.selfNote,
@@ -322,6 +357,7 @@
 		}
 	},
 	mounted(){
+		this.parseQuestions();
 		$('#reviewDate').datepicker({
 			autoclose:true,
 			todayBtn:'linked',
