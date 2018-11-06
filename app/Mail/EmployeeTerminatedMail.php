@@ -30,6 +30,6 @@ class EmployeeTerminatedMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('大槐树员工离职通知')->from('DoNotReply@mail.magicnoodleteam.com')->markdown('email.employee.terminatede');
+        return $this->subject('大槐树员工离职通知')->from('DoNotReply@mail.magicnoodleteam.com')->markdown('email.employee.terminated');
     }
 }

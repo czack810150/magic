@@ -22,7 +22,7 @@ use Carbon\Carbon;
 use App\Leave;
 use App\Events\EmployeeAdded;
 use App\Events\EmployeeToBeTerminated;
-use App\Events\employeeTerminated;
+use App\Events\EmployeeTerminated;
 use App\EmployeePending;
 use App\EmployeeRate;
 
@@ -547,7 +547,7 @@ class EmployeeController extends Controller
              if($terminationDate->lessThanOrEqualTo($today)){
                 $employee->status = 'terminated';  
                 $employee->save();
-                event(new employeeTerminated($employee));
+                event(new EmployeeTerminated($employee));
              }  else {
                 $employeePending = EmployeePending::create([
                 'employee_id' => $employee->id,
