@@ -5,11 +5,9 @@
                         <a class="nav-link m-tabs__link active" data-toggle="tab" href="#sales_tab" role="tab">SALES</a>
                     </li>
                    
+            
                     <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link" data-toggle="tab" href="#new_employees_tab" role="tab">NEW EMPLOYEES</a>
-                    </li>
-                    <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link" data-toggle="tab" href="#promotions_tab" role="tab">PROMOTIONS</a>
+                        <a class="nav-link m-tabs__link" data-toggle="tab" href="#hr_tab" role="tab">员工</a>
                     </li>
                 </ul>                        
                 <div class="tab-content">
@@ -226,12 +224,12 @@
     </div>
 </div>
 </section>
-                    </div>
-                    <div class="tab-pane" id="promotions_tab" role="tabpanel">
+</div>
+<div class="tab-pane" id="hr_tab" role="tabpanel">
+    @foreach($stores as $s)
 <div class="row">
-    @if(count($promotions))
-    <div class="col-8">
-<!--begin::Portlet Promotions-->
+    <div class="col-12">
+<!--begin::Portlet hr-->
         <div class="m-portlet">
             <div class="m-portlet__head">
                 <div class="m-portlet__head-caption">
@@ -240,133 +238,45 @@
                             <i class="flaticon-up-arrow-1"></i>
                         </span>
                         <h3 class="m-portlet__head-text">
-                            Recent Promotions <small>员工晋级</small>
+                            {{ $s->name }} <small>{{ $s->address }}, {{ $s->city }} {{ $s->phone }} 营业时间:@if($s->open) 自{{ $s->open->format('g:ia') }}至{{ $s->close->format('g:ia') }}@else 24小时 @endif 店长: <a href="{{ route('employee.profile',['id'=>$s->manager->id]) }}">{{ $s->manager->name }}</a></small>
                         </h3>
                     </div>          
                 </div>
             </div>
             <div class="m-portlet__body">
-<table class="table  m-table">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4">
+                        <h5>新员工<small>(点击更改)</small></h5>
+                        <table class="table table-bordered table-hover m-table ">
                             <thead>
                                 <tr>
-                                    <th>Location</th>
-                                    <th>Staff</th>
-                                    <th>Current Position</th>
-                                    <th>New Position</th>
-                                    <th>Status</th>  
-                                    <th>Date applied</th>
-                                    <th>Action Taken</th>
-                                    <th>Action By</th>
-                                   
+                                    <th>员工</th>
+                                    <th>追踪</th>  
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($promotions as $p)
-                                @if(Carbon\Carbon::now()->diffInDays($p->created_at)<=7)
-                                <tr>
-                                    <td>{{ $p->newLocation->name }}</td>
-                                     <td>{{ $p->employee->cName }}</td>
-                                    <td>{{ $p->oldJob->rank }}</td>
-                                     <td>{{ $p->newJob->rank }}</td>
-                                    
-                                    
-                                    @switch($p->status)
-                                    @case('pending')
-                                    <td><span class="m-badge m-badge--primary m-badge--wide">{{ $p->status }}</span></td>
-                                    @break
-                                    @case('approved')
-                                    <td><span class="m-badge m-badge--success m-badge--wide">{{ $p->status }}</span></td>
-                                    @break
-                                    @case('rejected')
-                                    <td><span class="m-badge m-badge--danger m-badge--wide">{{ $p->status }}</span></td>
-                                    @break
-                                    @default
-                                    <td><span class="m-badge m-badge--secondary m-badge--wide">{{ $p->status }}</span></td>
-                                    @endswitch
-                                     <td>{{ $p->created_at->toFormattedDateString() }}</td>
-                                     <td>{{ $p->updated_at->toFormattedDateString() }}</td>
-                                     <td>{{ $p->modifiedBy? $p->modifiedBy->cName:'' }}</td>
-                                   
-                                </tr>
-                                @endif
-                                @endforeach
-                            </tbody>
-</table>
-            </div>
-        </div>  
-<!--end::Portlet Promotions-->
-</div>
-@endif
-</div>
-                    </div>
-                    <div class="tab-pane" id="new_employees_tab" role="tabpanel">
-<!--begin::Portlet-->
-        <div class="m-portlet">
-            <div class="m-portlet__head">
-                <div class="m-portlet__head-caption">
-                    <div class="m-portlet__head-title">
-                        <span class="m-portlet__head-icon">
-                            <i class="flaticon-user-ok"></i>
-                        </span>
-                        <h3 class="m-portlet__head-text">
-                            New Employees <small>新员工追踪</small>
-                        </h3>
-                    </div>          
-                </div>
-            </div>
-            <div class="m-portlet__body">
-             
-            <div class="row">
-              @foreach($locations as $location)
-        <div class="col-md-6 col-lg-3">
-        <!--begin::Portlet-->
-        <div class="m-portlet m-portlet--mobile">
-            <div class="m-portlet__head">
-                <div class="m-portlet__head-caption">
-                    <div class="m-portlet__head-title">
-                        <h3 class="m-portlet__head-text">
-                            {{ $location->name}} <small>{{ $location->type}}</small>
-                        </h3>
-                    </div>          
-                </div>
-            </div>
-            <div class="m-portlet__body">   
-                <div class="m-widget4 m-widget4--progress">
-                @foreach($location->employee as $e)
-                    @if($e->employee_trace && $e->employee_trace->pass_interview == true
-                    && (Carbon\Carbon::now()->diffInDays(Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->interview))<=30 || is_null($e->employee_trace->pass_training) )  )
-
-                    <div class="m-widget4__item employee-trace" onclick="employeeTrace('{{ $e->id }}')">
-                        <div class="m-widget4__img m-widget4__img--pic">
-                            @if($e->employee_profile)
-                            <img src="/storage/{{ $e->employee_profile->img }}" alt="employee avatar">
-                            @else
-                            <img src="/storage/employee/avatar.png" alt="employee avatar">
-                            @endif
-                        </div>
-                        <div class="m-widget4__info">
-                            <span class="m-widget4__title">{{ $e->cName }}</span>
-                            <br>
-                            <span class="m-widget4__sub">{{ $e->employee_profile?$e->employee_profile->alias:'' }}</span>
-                        </div>
-                        <div class="m-widget4__info">
-                          @if($e->employee_trace->pass_interview)
+                                @foreach($s->employee as $e)
+                                    @if($e->employee_trace && $e->employee_trace->pass_interview
+                    && Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($e->employee_trace->interview))<= 30 ) 
+                                    <tr onclick="employeeTrace('{{ $e->id }}')">
+                                        <td><a href="{{ route('employee.profile',['id'=>$e->id]) }}">{{ $e->name }} {{ $e->employee_profile?$e->employee_profile->alias:'' }}</a></td>
+                                        <td>
+                                            @if($e->employee_trace->pass_interview)
                          
                             <span class="m--font-accent">面试通过</span>
-                            <br>
-                            <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->interview)->diffForHumans() }}</span>
+                            <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->interview)->toDateString() }}</span>
                             @if($e->employee_trace->enlist)
                             <br>
                             <span class="m--font-info">门店报到</span>
+                        
+                            <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->enlist)->toDateString() }}</span>
                             <br>
-                            <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->enlist)->diffForHumans() }}</span>
-
                                 @if($e->employee_trace->pass_training)
-                                <br>
+                             
                                 <span class="m--font-primary">培训结束</span>
-                                <br>
-                                 <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->pass_training)->diffForHumans() }}</span>
-                                 <br>
+                           
+                                 <span class="m-widget4__sub">{{ Carbon\Carbon::createFromFormat('Y-m-d',$e->employee_trace->pass_training)->toDateString() }}</span>
+                                    <br>
                                  @switch($e->employee_trace->result)
                                     @case('pass')
                                         <span class="m--font-success">完成</span>
@@ -378,39 +288,77 @@
                                         <span class="m--font-danger">本人退出</span>
                                     @break
                                 @endswitch    
-                             @endif
+                                @endif
 
                             @else
-                            <br>
+                           
                             <span class="m--font-warning">等待报到</span>
-                        @endif
-
-                        @endif
-                       
-                        
-                        </div>
+                            @endif
+                            @endif
+                                         </td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-
-            
-                    @endif
-                @endforeach
-            </div>
-
-            
-            </div>
-        </div>  
-        <!--end::Portlet-->
-        </div>
-        @endforeach
-        </div>
-
-
-            </div>
-          
-        </div>  
-        <!--end::Portlet-->
+                    <div class="col-xs-12 col-sm-12 col-md-4">
+                        <h5>试用期完成</h5>
+                        <table class="table table-bordered table-hover m-table ">
+                            <thead>
+                                <tr>
+                                    <th>员工</th>
+                                    <th>工时</th>
+                                    <th>入职</th>  
+                                </tr>
+                            </thead>
+                            <tbody>     
+                            @foreach($s->employee->where('job_group','trial')->where('status','active') as $e)
+                                @if($e->effectiveHours >= 180)
+                                    <tr>
+                                        <td><a href="{{ route('employee.profile',['id'=>$e->id]) }}">{{ $e->name }}</a></td>
+                                        <td>{{ round($e->effectiveHours,1) }}</td>
+                                        <td>{{ $e->hired->toDateString() }}</td>
+                                    </tr>
+                                @endif
+                            @endforeach               
+                            </tbody>
+                        </table>
                     </div>
+                    <div class="col-xs-12 col-sm-12 col-md-4">
+                        <h5>达到考核标准员工</h5>
+                        <table class="table table-bordered table-hover m-table ">
+                            <thead>
+                                <tr>
+                                    <th>员工</th>
+                                    <th>工时</th>
+                                    <th>入职</th>  
+                                </tr>
+                            </thead>
+                            <tbody>     
+                            @foreach($s->employee as $e)
+                                @if($e->reviewable()['result'])
+                                    <tr>
+                                        <td><a href="{{ route('employee.profile',['id'=>$e->id]) }}">{{ $e->name }}</a></td>
+                                        <td>{{ round($e->effectiveHours,1) }}</td>
+                                        <td>{{ $e->hired->toDateString() }}</td>
+                                    </tr>
+                                @endif
+                            @endforeach               
+                            </tbody>
+                        </table>
+                    </div>
+                    
                 </div>
+            </div>
+        </div>  
+<!--end::Portlet hr-->
+</div>
+</div>
+    @endforeach
+</div>
+                    
+</div>
 
 
 

@@ -226,6 +226,55 @@ class Employee extends Model
         }
         return $pendings;
     }
+    public function reviewable()
+    {
+        if($this->status != 'terminated')
+        {   
+            $days = 180;
+            $minimumReviewHour = 420;
+            $today = Carbon::now()->startOfDay();
+            if(count($this->job_location)){ // check if the employee has been promoted before ( not new employee)
+                $lastReviewDate = $this->job_location->last()->review->startOfDay();
+                if( $lastReviewDate->copy()->addDays($days)->lt($today) ){
+                    $hours = Hour::where('employee_id',$this->id)->where('start','>=',$lastReviewDate->copy()->toDateString())
+                    ->where('start','<',$lastReviewDate->copy()->addDays($days))->get();
+                    $this->effectiveHours = $hours->sum('wk1Effective') + $hours->sum('wk2Effective') + $hours->sum('wk1EffectiveCash') + $hours->sum('wk2EffectiveCash');
+                   if( $this->effectiveHours >= $minimumReviewHour ) {
+                    return ['result' => true,
+                    ]; 
+                    } else {
+
+                    return ['result' => false,
+                        'reason' => "Hours less than $minimumReviewHour"
+                     ];
+                    }
+                } else {
+                    return ['result' => false,
+                        'reason' => "Last review date less than $days days from today"
+                     ];
+                }
+            } else {
+                if( $this->hired->startOfDay()->copy()->addDays($days)->lt($today) ){
+                    $hours = $this->hours->where('start','>=',$this->hired->copy()->toDateString());
+                    $this->effectiveHours = $hours->sum('wk1Effective') + $hours->sum('wk2Effective') + $hours->sum('wk1EffectiveCash') + $hours->sum('wk2EffectiveCash');
+                    if($this->effectiveHours >= $minimumReviewHour)
+                    {
+                        return ['result' => true];
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return ['result' => false,
+                        'reason' => "Hire date less than $days days from today"
+                     ];
+                }
+            }
+        } else {
+            return ['result' => false,
+                    'reason' => 'Terminated Employee'
+            ];
+        } 
+    }
     public function getEffectiveHoursAttribute()
     {
         $hours =  $this->hours;

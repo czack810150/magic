@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 
 
@@ -40,6 +41,16 @@ class Location extends Model
     public function sales()
     {
         return $this->hasMany('App\Sale');
+    }
+
+    //attributes
+    public function getOpenAttribute($value)
+    {
+        return !is_null($value)?Carbon::parse($value):null;
+    }
+    public function getCloseAttribute($value)
+    {
+        return !is_null($value)?Carbon::parse($value):null;
     }
 
 

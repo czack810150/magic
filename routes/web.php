@@ -198,7 +198,7 @@ Route::get('/exam/learn/{id}/view','ExamTrainingController@view');
 Route::post('/employee/store','EmployeeController@store');
 Route::post('/filter/employee/list','EmployeeController@filterEmployees');
 Route::get('/employee','EmployeeController@index');
-Route::get('/staff/profile/{id}/show','EmployeeController@show')->where('id','[0-9]+');
+Route::get('/staff/profile/{id}/show','EmployeeController@show')->where('id','[0-9]+')->name('employee.profile');
 Route::post('/employee/edit/personal','EmployeeController@editPersonal');
 Route::post('/employee/edit/personal/cancel','EmployeeController@cancelPersonal');
 Route::post('/employee/edit/personal/update','EmployeeController@updatePersonal');
