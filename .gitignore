@@ -23,3 +23,4 @@ DBBackup-54.244.182.197-2018-05-04
 composer.lock
 .DS_Store
 
+.phpintel/index
