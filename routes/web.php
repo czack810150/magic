@@ -210,6 +210,9 @@ Route::post('/employee/edit/address/cancel','EmployeeController@cancelAddress');
 Route::post('/employee/edit/address/update','EmployeeController@updateAddress');
 // search
 Route::post('/employee/search','EmployeeController@search');
+// Legacy data
+Route::get('/employee/{employee}/legacy','EmployeeController@legacy');
+Route::post('/employee/legacy','EmployeeController@storeLegacy');
 
 // Employee background
 Route::post('/employee/background/{id}/show','EmployeeController@background');

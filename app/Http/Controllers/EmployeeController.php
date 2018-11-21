@@ -1025,4 +1025,12 @@ class EmployeeController extends Controller
        
         return $rates;
      }
+     public function legacy(Employee $employee)
+     {
+        return $employee->other_data;
+     }
+     public function storeLegacy(request $r)
+     {
+        return $r->all();
+     }
 }

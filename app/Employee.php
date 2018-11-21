@@ -12,7 +12,11 @@ use App\Hour;
 
 class Employee extends Model
 {
-    protected $fillable = ['job_group','employeeNumber','email','firstName','lastName','name','cName','location_id','hired','termination','status','job_id','job_group'];
+    protected $guarded = [];
+    protected  $casts = [
+        'other_data' => 'array'
+    ];
+
     public function user()
     {
         return $this->hasOne('App\Authorization');
