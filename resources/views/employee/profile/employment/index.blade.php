@@ -139,6 +139,36 @@
 		@endcan
 	</div>
 <div class="m-portlet__body">
+	<!--begin::Section-->
+				<div class="m-section">
+					<div class="m-section__content">
+						<table class="table table-bordered m-table">
+						  	<thead>
+						    	<tr>
+						      		<th>门店</th>
+						      		<th>职位</th>
+						      		<th>时薪</th>
+						      		<th>工时</th>
+						      		<th>开始日期</th>
+						      		<th>结束日期</th>
+						    	</tr>
+						  	</thead>
+						  	<tbody>
+						    	<tr v-for="job in legacyJobs">
+							      	
+							      	<td>@{{ job.name }}</td>
+							      	<td>@{{ job.job }}</td>
+							      	<td>@{{ job.rate }}</td>
+							      	<td>@{{ job.hours }}</td>
+							      	<td>@{{ job.from }}</td>
+							      	<td>@{{ job.to }}</td>
+						    	</tr>
+						    	
+						  	</tbody>
+						</table>
+					</div>
+				</div>
+				<!--end::Section-->
 
 <form class="m-form m-form--fit m-form--label-align-right" v-if="displayForm">
 				
@@ -206,7 +236,7 @@
 	var app = new Vue({
 		el: '#employmentHistory',
 		data:{
-			legacy:null,
+			legacyJobs:null,
 			newLegacy:{
 				location:{
 					name:'',
@@ -222,8 +252,7 @@
 			getHistory(){
 				axios.get('/employee/{{ $employee->id }}/legacy')
 				.then(res => {
-					console.log(res.data);
-					this.legacy = res.data;
+					this.legacyJobs = res.data;
 				}).catch(e => {
 					alert(e);
 					console.log(e);
@@ -237,20 +266,22 @@
 			},
 			submitLegacy(){
 				
-				axios.post('/employee/legacy',{
+				axios.post('/employee/{{ $employee->id }}/legacy',{
 					employee: {{ $employee->id }},
 					legacy:this.newLegacy,
 				}).then(res => {
-					console.log(res.data);
+					this.getHistory();
 				}).catch(e => {
-					
+					alert(e);
+					console.log(e);
 				});
 
 			}
 		},
 		mounted(){
 			this.getHistory();
-			$('#from').datepicker();
+			$('#from').datepicker({
+			format:'yyyy-mm-dd'});
 			$('#to').datepicker();
 		}
 	});

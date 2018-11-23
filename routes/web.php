@@ -212,7 +212,7 @@ Route::post('/employee/edit/address/update','EmployeeController@updateAddress');
 Route::post('/employee/search','EmployeeController@search');
 // Legacy data
 Route::get('/employee/{employee}/legacy','EmployeeController@legacy');
-Route::post('/employee/legacy','EmployeeController@storeLegacy');
+Route::post('/employee/{employee}/legacy','EmployeeController@storeLegacy');
 
 // Employee background
 Route::post('/employee/background/{id}/show','EmployeeController@background');

@@ -1027,10 +1027,32 @@ class EmployeeController extends Controller
      }
      public function legacy(Employee $employee)
      {
-        return $employee->other_data;
+        if(isset($employee->other_data['history']['locations'])){
+            return $employee->other_data['history']['locations'];
+        } else {
+            return [];
+        }
+        
      }
-     public function storeLegacy(request $r)
+     public function storeLegacy(Employee $employee,request $r)
      {
-        return $r->all();
+        
+        if(!isset($employee->other_data['history']['locations'])){
+            $history = [
+            'history' => [
+                'locations' => [
+                    $r->legacy['location'],
+                ],
+            ],
+            ];
+            $employee->other_data = $history;
+        } else {
+            $locations = $employee->other_data['history']['locations'];
+            $locations[] = $r->legacy['location'];
+            $employee->other_data = ['history'=>['locations' => $locations]];
+        }
+        
+        $employee->save();
+        return $employee->other_data;
      }
 }
