@@ -153,7 +153,7 @@
 					<div class="form-group m-form__group row">
 						<label for="cName" class="col-4 col-form-label">中文名</label>
 						<div class="col-8">
-							<input class="form-control m-input" type="text" placeholder="中文全名 如果没有就用英文全名" ="" id="cName" name="cName">
+							<input class="form-control m-input" type="text" placeholder="中文全名 如果没有就用英文全名" ="" id="cName" name="cName" required>
 						</div>
 					</div>
 					<div class="form-group m-form__group row">

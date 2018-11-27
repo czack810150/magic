@@ -41,7 +41,7 @@ class EmployeeController extends Controller
            
 
         $locations = Location::pluck('name','id');
-        $employeeLocations = Location::pluck('name','id');
+        $employeeLocations = [Location::pluck('name','id')];
         $locations[-1] = 'All Locations';
         $status = array(
             'active' => 'Active staffs only',
@@ -62,7 +62,7 @@ class EmployeeController extends Controller
 
             $employees = Employee::where('location_id',Auth::user()->authorization->employee->location_id)->get();
             $locations = Location::where('id',Auth::user()->authorization->employee->location_id)->pluck('name','id');
-            $employeeLocations = Location::pluck('name','id');
+            $employeeLocations = Location::where('id',Auth::user()->authorization->employee->location_id)->pluck('name','id');
             
             $status = array(
             'active' => 'Active staffs only',
