@@ -133,9 +133,6 @@
   </div>
 </div>
 
-<p>
-    {{$applicants}}
-</p>
 
 @endsection
 @section('pageJS')

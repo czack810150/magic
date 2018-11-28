@@ -28,8 +28,12 @@ class ApplicantController extends Controller
             'rejected' => 'Rejected',
            // 'hired' => 'Hired'
         ];
-
-        $applicants = DB::connection('applicants')->table('applicants')->where('applicant_status','<>','hired')->latest()->get();
+        if(auth()->user()->authorization->type == 'manager'){
+            $applicants = DB::connection('applicants')->table('applicants')->where('applicant_status','<>','hired')->where('location',auth()->user()->authorization->location_id)->latest()->get();
+        } else {
+            $applicants = DB::connection('applicants')->table('applicants')->where('applicant_status','<>','hired')->latest()->get();
+        }
+        
         foreach($applicants as $a){
             $a->location = Location::where('id',$a->location)->first()->name;
             $a->job = Job::where('id',$a->role)->first()->rank;
