@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Location;
@@ -12,6 +12,7 @@ use App\Hour;
 
 class Employee extends Model
 {
+    use Notifiable;
     protected $guarded = [];
     protected  $casts = [
         'other_data' => 'array'
