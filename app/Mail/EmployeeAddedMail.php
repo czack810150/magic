@@ -29,6 +29,6 @@ class EmployeeAddedMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('email.employee.added');
+        return $this->subject('新员工加入'.$this->employee->location->name)->markdown('email.employee.added');
     }
 }

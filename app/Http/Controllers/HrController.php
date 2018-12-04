@@ -45,10 +45,13 @@ class HrController extends Controller
     {
         if(Gate::allows('view-hr')){
             $subheader = 'Team';
-            $locations = Location::pluck('name','id');
+            if(auth()->user()->authorization->type == 'manager'){
+                $locations = Location::where('id',Auth::user()->authorization->employee->location_id)->pluck('name','id');
+            } else {
+              $locations = Location::pluck('name','id');
+                
+            }
             $currentTeam = Location::find(Auth::user()->authorization->employee->location_id);
-          
-            
            
             return view('hr.team.index',compact('currentTeam','data','locations','subheader'));
         } else {

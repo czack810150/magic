@@ -831,7 +831,7 @@ class EmployeeController extends Controller
         'employee_id' => $employee->id,
         'type' => 'hour',
         'cheque' => true,
-        'rate' => 0,//$config->minimumPay,
+        'rate' => $config->minimumPay,
         'change' => 0,
         'start' => $r->hireDate,
        ]);

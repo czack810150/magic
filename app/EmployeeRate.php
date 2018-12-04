@@ -14,7 +14,9 @@ class EmployeeRate extends Model
     	return $this->belongsTo(Employee::class);
     }
 
-
+    public function pay(){
+        return $this->rate + $this->variableRate + $this->extraRate;
+    }
 
     public static function syncRates()
     {

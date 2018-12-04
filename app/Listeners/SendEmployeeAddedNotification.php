@@ -22,7 +22,7 @@ class SendEmployeeAddedNotification implements ShouldQueue
     public function handle(EmployeeAdded $event)
     {
         $staffs = Authorization::group(['hr','dm','gm','admin']);
-        Mail::to('suhiro@gmail.com')
+        Mail::to($event->employee->location->manager)
             ->cc($staffs)
             ->send(new EmployeeAddedMail($event->employee));
     }
