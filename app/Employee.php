@@ -22,6 +22,10 @@ class Employee extends Model
     {
         return $this->hasOne('App\Authorization');
     }
+    public function authorization()
+    {
+        return $this->hasOne('App\Authorization','employee_id');
+    }
     public function rate()
     {
         return $this->hasMany(EmployeeRate::class);
@@ -91,10 +95,7 @@ class Employee extends Model
     {
         return $this->belongsTo('App\Job');
     }
-    public function authorization()
-    {
-        return $this->hasOne('App\Authorization');
-    }
+    
 
     public static function jobBreakdown($location)
     {

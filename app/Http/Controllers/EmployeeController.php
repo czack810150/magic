@@ -160,7 +160,8 @@ class EmployeeController extends Controller
                   'employeeLocation' => 'required|numeric',
                   'employeeRole' => 'required|numeric',
                   'employeeNumber' => 'required|string|max:32|unique:employees',
-                  'hireDate' => 'required|date_format:Y-m-d'
+                  'hireDate' => 'required|date_format:Y-m-d',
+                  'sin' => 'required|numeric|unique:employee_profiles',
                 ]);
        $employee = Employee::create([
             'job_group' => 'trial',
@@ -193,6 +194,7 @@ class EmployeeController extends Controller
        ]);
        $employee_profile = Employee_profile::create([
         'employee_id' => $employee->id,
+        'sin' => $request->sin,
        ]);
        $employee_background = Employee_background::create([
         'employee_id' => $employee->id,
@@ -488,7 +490,7 @@ class EmployeeController extends Controller
     }
     public function updateEmployment(Request $r)
     {
-      
+        
         $profile = Employee_profile::where('employee_id',$r->employee)->first();
         if(is_null($profile)){
 
@@ -512,8 +514,11 @@ class EmployeeController extends Controller
         }
 
         $employee = Employee::find($r->employee);
+
         if($employee->job_id != $r->job){
+
              $promotion = new JobPromotion;
+
              $promotion->employee_id = $employee->id;
              $promotion->oldLocation = $employee->location_id;
                 $promotion->newLocation = $employee->location_id;
@@ -521,7 +526,8 @@ class EmployeeController extends Controller
                 $promotion->newJob = $r->job;
                 $promotion->status = 'approved';
                 $promotion->modifiedBy = Auth::user()->authorization->employee_id;
-                $status = $promotion->save();
+                $promotion->save();
+
         }
 
         $employee->job_id = $r->job;
@@ -811,7 +817,8 @@ class EmployeeController extends Controller
                   'employeeLocation' => 'required|numeric',
                   'employeeRole' => 'required|numeric',
                   'employeeNumber' => 'required|string|max:32|unique:employees',
-                  'hireDate' => 'required|date_format:Y-m-d'
+                  'hireDate' => 'required|date_format:Y-m-d',
+                  'sin' => 'required|numeric|unique:employee_profiles',
                 ]);
        $employee = Employee::create([
             'job_group' => 'trial',
@@ -854,6 +861,7 @@ class EmployeeController extends Controller
        }
        $employee_profile = Employee_profile::create([
         'employee_id' => $employee->id,
+        'sin' => $r->sin,
         'phone' => $applicant->phone,
         'address' => $applicant->address,
         'city' => $applicant->city,

@@ -16,6 +16,7 @@
 				
 			</div>
 			<div class="m-portlet__body">	
+                @include('layouts.errors')
                 <div id="applicants"></div>
 			</div>
 		</div>	
@@ -71,6 +72,12 @@
                         <label for="job" class="col-4 col-form-label">Job Title</label>
                         <div class="col-8">
                             {{Form::select('job',$jobs,null,['class'=>'form-control m-input','id'=>'job'])}}
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label for="sin" class="col-4 col-form-label">SIN</label>
+                        <div class="col-8">
+                            <input class="form-control m-input" type="text" placeholder="Social Insurance Number" id="sin" name="sin" required>
                         </div>
                     </div>
                     <div class="form-group m-form__group row">

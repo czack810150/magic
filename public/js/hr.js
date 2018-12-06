@@ -233,9 +233,29 @@ function updateEmployment(employee){
 	} else {
 		sup = 0;
 	}
-	$.post(
-		'/employee/employment/update',
-		{
+	// $.post(
+	// 	'/employee/employment/update',
+	// 	{
+	// 		_token: $("input[name=_token]").val(),
+	// 		employee: employee,
+	// 		job: $('select[name=job]').val(),
+	// 		employeeNumber: $('input[name=employeeNumber]').val(),
+	// 		hired: $('input[name=hired]').val(),
+	// 		termination: $('input[name=termination]').val(),
+	// 		type: $('select[name=type]').val(),
+	// 		location: $('select[name=location]').val(),
+	// 		sin: $('input[name=sin]').val(),
+	// 		supervisor: sup,
+	// 	},
+	// 	function(data,status){
+	// 		if(status == 'success'){
+	// 			notify('Employment details have been saved!','primary');
+	// 			employment(employee);
+	// 		}
+	// 	}
+	// 	);
+
+	axios.post('/employee/employment/update',{
 			_token: $("input[name=_token]").val(),
 			employee: employee,
 			job: $('select[name=job]').val(),
@@ -246,14 +266,15 @@ function updateEmployment(employee){
 			location: $('select[name=location]').val(),
 			sin: $('input[name=sin]').val(),
 			supervisor: sup,
-		},
-		function(data,status){
-			if(status == 'success'){
-				notify('Employment details have been saved!','primary');
-				employment(employee);
-			}
+	}).then(res => {
+		console.log(res.data);
+		if(res.data == 1){
+			notify('Employment details have been saved!','primary');
+			employment(employee);
 		}
-		);
+	}).catch(e => {
+		alert(e);
+	});
 }
 function employeeNote(employee)
 {
