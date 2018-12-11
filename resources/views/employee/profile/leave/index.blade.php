@@ -23,6 +23,23 @@
 										
 									</div>
 <div class="m-portlet__body">
+	<div class="row" id="app">
+		<div class="col-4">
+			<form class="m-form">
+				<div class="m-form__group form-group row">
+					<label class="col-3 col-form-label">休假中</label>
+					<div class="col-3">
+						<span class="m-switch m-switch--success">
+							<label>
+	                        <input type="checkbox" v-model="onVacation" @click="updateStatus">
+	                        <span></span>
+	                        </label>
+	                    </span>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 
 <div class="row">
 	<div class="col-12">
@@ -71,3 +88,34 @@
 </div><!-- end of timeoff detailes -->																	
 </div>
 <!--end::Portlet-->
+<script>
+let app  = new Vue({
+	el: '#app',
+	data: {
+		onVacation:{{ $employee->status == 'vacation'? 'true':'false' }},
+		test:'test'
+	},
+	computed:{
+		leaveStatus(){
+			if(this.onVacation){
+				return 1;
+			}
+			return 0;
+		}
+	},
+	methods:{
+		updateStatus(){
+			axios.post('/employee/timeoff/{{ $employee->id }}/update',{
+				leave:this.leaveStatus,
+			}).then(res => {
+				console.log(res.data);
+			}).catch(e => {
+				console.log(e);
+			});
+		}
+	},
+	mounted(){
+		
+	}
+});
+</script>

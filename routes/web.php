@@ -269,6 +269,7 @@ Route::get('/training/my','EmployeeUserController@training');
 
 // employee timeoff
 Route::post('/employee/timeoff/{id}/show','EmployeeController@showTimeoff');
+Route::post('/employee/timeoff/{employee}/update','EmployeeController@updateLeaveStatus');
 
 // Employee Skills
 Route::get('/employee_skill','EmployeeSkillController@index');

@@ -202,7 +202,7 @@ class Employee extends Model
     {
         $locations = Location::store()->pluck('id');
 
-        $employees = self::whereIn('location_id',$locations)->where('status','!=','terminated')->where('termination',null)->with('job_location')->get();
+        $employees = self::whereIn('location_id',$locations)->where('status','active')->where('termination',null)->with('job_location')->get();
         $today = Carbon::now()->startOfDay();
         $pendings = collect();
         foreach($employees as $e)

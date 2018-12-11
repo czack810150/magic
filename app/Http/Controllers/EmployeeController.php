@@ -273,6 +273,22 @@ class EmployeeController extends Controller
     {
         //
     }
+    public function updateLeaveStatus(Request $request,Employee $employee)
+    {
+       
+        if($request->leave){
+            $employee->status = 'vacation';
+            $employee->save();
+        } else {
+            $employee->status = 'active';
+            $employee->save();
+        }
+        return [
+            'success' => true,
+            'data' => $employee->status,
+            'message' => 'Status updated.'
+        ];
+    }
 
     /**
      * Remove the specified resource from storage.
