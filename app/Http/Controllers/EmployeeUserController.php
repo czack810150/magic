@@ -130,6 +130,7 @@ class EmployeeUserController extends Controller
     {
         $end = Carbon::createFromFormat('Y-m-d',$r->period)->addDays(14)->toDateString();
         $shifts = Shift::where('employee_id',Auth::user()->authorization->employee_id)->
+                    where('published',true)->
                     whereBetween('start',[$r->period,$end])->
                     orderBy('start')->
                     get();

@@ -139,10 +139,15 @@ class LeaveController extends Controller
             $leave->approvedBy = Auth::user()->authorization->employee_id;
             $leave->save();
 
+            if($leave->type->id == 2){
+                $status = 'vacation';
+            } else {
+                $status = $leave->type->name;
+            }
             // add to EmployeePending
             $pending = EmployeePending::create([
                 'employee_id' => $leave->employee_id,
-                'status' => $leave->type->name,
+                'status' => $status,
                 'start' => $leave->from,
                 'end' => $leave->to
             ]);
