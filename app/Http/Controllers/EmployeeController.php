@@ -36,7 +36,7 @@ class EmployeeController extends Controller
     {
         $subheader = 'Staff Directory';
         if(Gate::allows('view-allEmployee')){
-        $employees = Employee::activeEmployee()->get();
+        $employees = Employee::activeEmployee()->where('location_id',Auth::user()->authorization->location_id)->get();
 
            
 
@@ -310,7 +310,7 @@ class EmployeeController extends Controller
         return $employee;
     }
     public function location(Request $r){
-        $employees = Employee::where('location_id',$r->location)->pluck('cName','id');
+        $employees = Employee::where('location_id',$r->location)->where('status','!=','terminated')->pluck('cName','id');
         return $employees;
     }
     public function editPersonal(Request $r)
