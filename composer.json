@@ -12,6 +12,7 @@
         "laravel/framework": "5.7.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
+        "league/flysystem-aws-s3-v3": "~1.0",
         "nesbot/carbon": "^1.32",
         "nexmo/laravel": "^1.1",
         "swiftmailer/swiftmailer": "^6.0",
