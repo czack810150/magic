@@ -326,7 +326,7 @@ Route::post('/shift/getShift', array('as'=>'ajaxdata','uses'=>'ShiftController@g
 
 
 //Clocks
-Route::get('/clocks','ClockController@shiftClocks');
+Route::get('/clocks','ClockController@shiftClocks')->middleware('management');
 Route::get('/clocks/view','ClockController@viewClocks');
 
 Route::post('/clock/clocksByLocationDate','ClockController@clocksByLocationDate');

@@ -1,5 +1,6 @@
 @extends('layouts.master')
 @section('content')
+<div id="root">
 <div class="m-portlet m-portlet--bordered m-portlet--rounded m-portlet--unair">
 	<div class="m-portlet__head">
 		<div class="m-portlet__head-caption">
@@ -18,10 +19,13 @@
 						<div class="col-md-4">
 							<div class="m-form__group m-form__group--inline">
 								<div class="m-form__label">
-									<labe for="location">Store:</label>
+									<label for="location">Store:</label>
 								</div>
 								<div class="m-form__control">
-									{{ Form::select('location',$locations,null,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','placeholder' => 'Choose a location','id'=>'location','onchange'=>'changeLocation()'])}}
+									<select v-model="selectedLocation" class="custom-select mb-2 mr-sm-2 mb-sm-0" placeholder="Choose a location" :disabled="isManager">
+										<option value="" disabled>Choose a location</option>
+										<option v-for="(text,key) in locations" :value="key "v-text="text"></option>
+									</select>
 								</div>
 							</div>
 							<div class="d-md-none m--margin-bottom-10"></div>
@@ -33,7 +37,7 @@
 								</div>
 								<div class="m-form__control">
 								
-			<input type="text" class="form-control m-input m-input--solid" placeholder="Pick a date..." id="clockDatePikcer">
+			<input type="text" class="form-control m-input m-input--solid" placeholder="Pick a date..." id="clockDatePikcer" v-model="selectedDate" @change="updateList">
 								</div>
 							</div>
 							<div class="d-md-none m--margin-bottom-10"></div>
@@ -56,6 +60,22 @@
 		</div>
 		<!--end: Search Form -->
 		<section id="clockTable">
+			<table class="table" v-if="clocks.length">
+				<thead><tr><th>Employee</th><th>Location</th><th>ClockIn</th><th>ClockOut</th><th>Comment<th>Edit</th></tr></thead>
+				<tbody>
+					<tr v-for="clock in clocks">
+						<td>@{{ clock.employee.name }}</td>
+						<td>@{{ clock.location.name }}</td>
+						<td>@{{ clock.clockIn }}</td>
+						<td>@{{ clock.clockOut }}</td>
+						<td>@{{ clock.comment }}</td>
+						<td><button type="button" class="btn btn-primary" @click="edit(clock)">Edit</button></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="alert alert-default" role="alert" v-else>
+				Please choose a location and pick a date.
+			</div>
 		</section>			
 	</div>
 </div>
@@ -89,13 +109,13 @@
 												<label for="clockInTime">
 													Clock-in Time
 												</label>
-												<input type="text" class="form-control m-input datetimepicker" id="clockInTime"" aria-describedby="clockInTime" value="">
+												<input type="text" class="form-control m-input datetimepicker" v-model="editClock.in" id="clockInTime" aria-describedby="clockInTime">
 											</div>
 											<div class="form-group m-form__group">
 												<label for="clockOutTime">
 													Clock-out Time
 												</label>
-												<input type="text" class="form-control m-input  datetimepicker" id="clockOutTime"" aria-describedby="clockOutTime" value="">
+												<input type="text" class="form-control m-input  datetimepicker" v-model="editClock.out" id="clockOutTime" aria-describedby="clockOutTime" >
 											</div>
 											
 											
@@ -104,7 +124,7 @@
 												<label for="comment">
 													Comment
 												</label>
-												<textarea class="form-control m-input" id="comment" rows="3"></textarea>
+												<textarea class="form-control m-input" id="comment" rows="3" v-model="editClock.comment"></textarea>
 											</div>
 										</div>
 										
@@ -117,8 +137,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		<button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteClock()">删除</button>
-        <button type="button" class="btn btn-success" onclick="updateClock()">保存</button>
+		<button type="button" class="btn btn-danger" data-dismiss="modal" @click="deleteClock(editClock.id)">删除</button>
+        <button type="button" class="btn btn-success" @click="updateClock(editClock)">保存</button>
       </div>
     </div>
   </div>
@@ -150,7 +170,7 @@
 
 
 											<div class="form-group m-form__group">
-												<labe for="missingEmployee">Employee:</label>
+												<label for="missingEmployee">Employee:</label>
 						
 												<select class="form-control m-input" id="missingList">
 												
@@ -198,66 +218,117 @@
 </div>
 
 
-
+</div>
 @endsection
 
 @section('pageJS')
 
 <script>
+let app = new Vue({
+	el:'#root',
+	data:{
+		selectedLocation:@can('manage-managers') '' @else {{ auth()->user()->authorization->location_id }} @endcan,
+		selectedDate:null,
+		selectedDateString:null,
+		clocks:[],
+		locations: @json($locations),
+		isManager:@can('manage-managers') false @else true @endcan,
+		editClock:{
+			id:null,
+			in:null,
+			out:null,
+			comment:null,
+		}
+	},
+	methods:{
+		updateList(){
+			axios.post('/clock/clocksByLocationDate',
+			{
+				location: this.selectedLocation,
+				date: this.selectedDateString,
+			}).then(res => {
+				this.clocks = res.data;
+			}).catch(e => {
+				console.log(e);
+				alert(e);
+			});
+		},
+		edit(clock){
+			this.editClock.id = clock.id;
+			this.editClock.in = clock.clockIn;
+			this.editClock.out = clock.clockOut;
+			this.editClock.comment = clock.comment;
+			$('#clockModal').modal('show');
+		},
+		deleteClock(id){
+			axios.post('/clock/'+id+'/delete',{
+			}).then(res => {
+				$('#clockModal').modal('hide');
+				this.updateList();
+			}).catch(e => {
+				alert(e);
+				console.log(e);
+			})
+		},
+		updateClock(clock){
+			console.log(clock);
+			axios.post('/clock/update',{
+				clockId: clock.id,
+				clockIn: clock.in,
+				clockOut: clock.out,
+				comment: clock.comment,
+			}).then(res => {
+				$('#clockModal').modal('hide');
+				this.updateList();
+			}).catch(e => {
+				console.log(e);
+				alert(e);
+			});
+		}
+	},
+	mounted(){
 
-var dateStringx = '';
-
-	$('#clockDatePikcer').datepicker({
-		todayHighlight: true,
-		orientation: "bottom left",
-		 templates: {
+		$('#clockDatePikcer').datepicker({
+			todayHighlight: true,
+			orientation: "bottom left",
+		 	templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
             }
-	});
-	$('.datetimepicker').datetimepicker({
-		todayHighlight: false,
-		orientation: "bottom left",
-		 templates: {
-                leftArrow: '<i class="la la-angle-left"></i>',
-                rightArrow: '<i class="la la-angle-right"></i>'
-            }
-	});
+		});
 
+		$('#clockDatePikcer').on('hide',function(e){
+			var location = this.selectedLocation;
+			if(location != '' ){
+				app.selectedDateString = e.format('yyyy-mm-dd');
+				app.updateList();
+			} else {
+				alert('Must provide a location.');
+			}
+		});
 
-$('#clockDatePikcer').on('hide',function(e){
-	var location = $('#location').val();
-	if(location != '' ){
-		dateStringx = e.format('yyyy-mm-dd');
-		updateTable();
-	} else {
-		alert('Must provide a location.');
+		$('.datetimepicker').datetimepicker({
+			todayHighlight: false,
+			orientation: "bottom left",
+			 templates: {
+	                leftArrow: '<i class="la la-angle-left"></i>',
+	                rightArrow: '<i class="la la-angle-right"></i>'
+	            }
+		});
+
+		$('#clockInTime').on('hide', function(e){
+			console.log(e);
+			console.log(moment(e.date).format('YYYY-MM-DD HH:mm'));
+			app.editClock.in = moment(e.date).format('YYYY-MM-DD HH:mm');
+		});
+
 	}
 });
 
-function changeLocation(){
-	var location = $('#location').val();
-	if( $('#clockDatePikcer').val() != ''){
-		updateTable();
-	}
-}
 
-function updateTable(){
-	$.post(
-			'/clock/clocksByLocationDate',
-			{
-				_token:'{{csrf_token()}}',
-				location: $('#location').val(),
-				date: dateStringx,
-			},
-			function(data,status){
-				if(status == 'success'){
-					$('#clockTable').html(data);
-				}
-			},
-			
-			);
-}
+
+
+
 var clockID = 0;
 function editClock(clockId){
 	clockID = clockId;
@@ -279,39 +350,7 @@ function editClock(clockId){
 		);
 	$('#clockModal').modal();
 }
-function updateClock(){
-	$.post(
-		'/clock/update',
-		{
-			_token:'{{ csrf_token() }}',
-			clockId: clockID,
-			clockIn: $('#clockInTime').val(),
-			clockOut: $('#clockOutTime').val(),
-			comment: $('#comment').val(),
-		},
-		function(data,status){
-			if(status == 'success'){
-				$('#clockModal').modal('hide');
-				updateTable();
-			}
-		}
-		);
-}
-function deleteClock(){
-	$.post(
-		'/clock/'+clockID+'/delete',
-		{
-			_token:'{{ csrf_token() }}',
-		},
-		function(data,status){
-			if(status == 'success'){
-				$('#clockModal').modal('hide');
-				updateTable();
-				console.log(data);
-			}
-		}
-		);
-}
+
 function addMissing(){
 	$.post(
 	'/api/employeeBylocation',

@@ -223,7 +223,8 @@ class ClockController extends Controller
     public function clocksByLocationDate(Request $r)
     {
       $clocks = Clock::where('location_id',$r->location)->whereDate('clockIn',$r->date)->get();
-      return View::make('clock.clockTable',compact('clocks'))->render();
+      $clocks->load('employee','location');
+      return $clocks;
 
     }
     public function show(Request $r)
