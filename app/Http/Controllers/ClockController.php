@@ -259,7 +259,11 @@ class ClockController extends Controller
       $clock->clockOut = $r->clockOut.':00';
       $clock->comment = $r->comment;
       $clock->save();
-      return 'success';
+      return [
+          'success' => true,
+          'data' => $clock,
+          'message' => 'Clock record saved!'
+        ];
     }
     public function destroy($id)
     {

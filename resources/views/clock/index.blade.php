@@ -48,7 +48,7 @@
 					</div>
 				</div>
 				<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-					<button type="button" class="btn btn-accent m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill" onclick="addMissing()">
+					<button type="button" class="btn btn-accent m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill" @click="addMissing">
 						<span>
 							<i class="la la-plus"></i>
 							<span>Missing Clock</span>
@@ -95,50 +95,51 @@
       <div class="modal-body">
        
       	<!--begin::Portlet-->
-								<div class="m-portlet m-portlet--tab">
-					
-									<!--begin::Form-->
-									<form class="m-form m-form--fit m-form--label-align-right">
-										<div class="m-portlet__body">
-											<div class="form-group m-form__group m--margin-top-10">
-												<div class="alert m-alert m-alert--default" role="alert">
-													Be sure to leave a comment.
-												</div>
-											</div>
-											<div class="form-group m-form__group">
-												<label for="clockInTime">
-													Clock-in Time
-												</label>
-												<input type="text" class="form-control m-input datetimepicker" v-model="editClock.in" id="clockInTime" aria-describedby="clockInTime">
-											</div>
-											<div class="form-group m-form__group">
-												<label for="clockOutTime">
-													Clock-out Time
-												</label>
-												<input type="text" class="form-control m-input  datetimepicker" v-model="editClock.out" id="clockOutTime" aria-describedby="clockOutTime" >
-											</div>
-											
-											
-											
-											<div class="form-group m-form__group">
-												<label for="comment">
-													Comment
-												</label>
-												<textarea class="form-control m-input" id="comment" rows="3" v-model="editClock.comment"></textarea>
-											</div>
-										</div>
-										
-									</form>
-									<!--end::Form-->
-								</div>
-								<!--end::Portlet-->
+	<div class="m-portlet m-portlet--tab">
+
+		<!--begin::Form-->
+		<form class="m-form m-form--fit m-form--label-align-right">
+			<div class="m-portlet__body">
+				<div class="form-group m-form__group m--margin-top-10">
+					<div class="alert m-alert m-alert--default" role="alert">
+						Be sure to leave a comment.
+					</div>
+				</div>
+
+				<div class="form-group m-form__group">
+					<label for="clockInTime">
+						Clock-in Time
+					</label>
+					<input type="text" class="form-control m-input datetimepicker" v-model="editClock.in" id="clockInTime" aria-describedby="clockInTime">
+				</div>
+				<div class="form-group m-form__group">
+					<label for="clockOutTime">
+						Clock-out Time
+					</label>
+					<input type="text" class="form-control m-input  datetimepicker" v-model="editClock.out" id="clockOutTime" aria-describedby="clockOutTime" >
+				</div>
+				
+				
+				
+				<div class="form-group m-form__group">
+					<label for="comment">
+						Comment
+					</label>
+					<textarea class="form-control m-input" id="comment" rows="3" v-model="editClock.comment"></textarea>
+				</div>
+			</div>
+			
+		</form>
+		<!--end::Form-->
+	</div>
+	<!--end::Portlet-->
 
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		<button type="button" class="btn btn-danger" data-dismiss="modal" @click="deleteClock(editClock.id)">删除</button>
-        <button type="button" class="btn btn-success" @click="updateClock(editClock)">保存</button>
+		<button type="button" class="btn btn-danger" data-dismiss="modal" @click="deleteClock(editClock.id)">Remove</button>
+        <button type="button" class="btn btn-success" @click="updateClock(editClock)">Save</button>
       </div>
     </div>
   </div>
@@ -157,61 +158,77 @@
       <div class="modal-body">
        
       	<!--begin::Portlet-->
-								<div class="m-portlet m-portlet--tab">
+		<div class="m-portlet m-portlet--tab">
+
+			<!--begin::Form-->
+			<form class="m-form m-form--fit m-form--label-align-right">
+				<div class="m-portlet__body">
+					<div class="form-group m-form__group m--margin-top-10">
+						<div class="alert m-alert m-alert--default" role="alert">
+							Make sure it is a valid clock time.
+						</div>
+					</div>
+
+
+					<div class="m-form__group form-group">
+						<label for="">For Location</label>
+						<div class="m-radio-inline">
+							<label class="m-radio">
+							<input type="radio" name="example_3" value="1"> 本店员工
+							<span></span>
+							</label>
+							<label class="m-radio">
+							<input type="radio" name="example_3" value="2"> 借用员工
+							<span></span>
+							</label>
+						</div>
+						<span class="m-form__help">用于添加借用员工在本店的工时</span>
+					</div>
+
+					<div class="form-group m-form__group">
+						<label for="missingEmployee">Member</label>
+
+						<select class="form-control m-input" id="missingList" v-model="add.selectedEmployee">
+							<option value="null" disabled>Choose an employee</option>
+							<option v-for="(employee,key) in employees" :value="key" v-text="employee"></option>
+						</select>
+					</div>
+
+		
+	<div class="d-md-none m--margin-bottom-10"></div>
+					<div class="form-group m-form__group">
+						<label for="missingClockInTime">
+							Clock-in Time
+						</label>
+						<input type="text" class="form-control m-input datetimepicker" v-model="add.in" id="missingClockInTime" aria-describedby="missingClockInTime">
+					</div>
+					<div class="form-group m-form__group">
+						<label for="missingClockOutTime">
+							Clock-out Time
+						</label>
+						<input type="text" class="form-control m-input datetimepicker" v-model="add.out" id="missingClockOutTime" aria-describedby="missingClockOutTime">
+					</div>
 					
-									<!--begin::Form-->
-									<form class="m-form m-form--fit m-form--label-align-right">
-										<div class="m-portlet__body">
-											<div class="form-group m-form__group m--margin-top-10">
-												<div class="alert m-alert m-alert--default" role="alert">
-													Make sure it is a valid clock time.
-												</div>
-											</div>
-
-
-											<div class="form-group m-form__group">
-												<label for="missingEmployee">Employee:</label>
-						
-												<select class="form-control m-input" id="missingList">
-												
-												</select>
-											</div>
-
-								
-							<div class="d-md-none m--margin-bottom-10"></div>
-											<div class="form-group m-form__group">
-												<label for="missingClockInTime">
-													Clock-in Time
-												</label>
-												<input type="text" class="form-control m-input datetimepicker" id="missingClockInTime"" aria-describedby="missingClockInTime" value="">
-											</div>
-											<div class="form-group m-form__group">
-												<label for="missingClockOutTime">
-													Clock-out Time
-												</label>
-												<input type="text" class="form-control m-input datetimepicker" id="missingClockOutTime"" aria-describedby="missingClockOutTime" value="">
-											</div>
-											
-											
-											
-											<div class="form-group m-form__group">
-												<label for="missingComment">
-													Comment
-												</label>
-												<textarea class="form-control m-input" id="missingComment" rows="3"></textarea>
-											</div>
-										</div>
-										
-									</form>
-									<!--end::Form-->
-								</div>
-								<!--end::Portlet-->
+					
+					
+					<div class="form-group m-form__group">
+						<label for="missingComment">
+							Message
+						</label>
+						<textarea class="form-control m-input" id="missingComment" v-model="add.comment" rows="3" placeholder="Enter the reason for adding this clock record" required></textarea>
+					</div>
+				</div>
+				
+			</form>
+			<!--end::Form-->
+		</div>
+		<!--end::Portlet-->
 
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="saveMissing()">Save changes</button>
+        <button type="button" class="btn btn-primary" @click="saveMissing">Add</button>
       </div>
     </div>
   </div>
@@ -233,8 +250,17 @@ let app = new Vue({
 		clocks:[],
 		locations: @json($locations),
 		isManager:@can('manage-managers') false @else true @endcan,
+		employees:[],
+		
+		otherLocation:false,
 		editClock:{
 			id:null,
+			in:null,
+			out:null,
+			comment:null,
+		},
+		add:{
+			selectedEmployee:null,
 			in:null,
 			out:null,
 			comment:null,
@@ -280,9 +306,49 @@ let app = new Vue({
 			}).then(res => {
 				$('#clockModal').modal('hide');
 				this.updateList();
+				notify('Updated!','primary');
 			}).catch(e => {
 				console.log(e);
 				alert(e);
+			});
+		},
+		addMissing(){
+
+			axios.post('/api/employeeBylocation',{
+				location: this.selectedLocation,
+			}).then(res => {
+				console.log(res.data);
+				this.employees = res.data;
+			}).catch(e => {
+				console.log(e);
+				alert(e);
+			});
+
+			$('#addModal').modal('show');
+		},
+		saveMissing(){
+			axios.post('/clock/add',{
+				location: this.selectedLocation,
+				employee: this.add.selectedEmployee,
+				clockIn: this.add.in,
+				clockOut: this.add.out,
+				comment: this.add.comment
+			}).then(res => {
+				if(res.data.success){
+					$('#addModal').modal('hide');
+					this.add = { selectedEmployee:null };
+
+					this.selectedDateString = moment(res.data.data.clockIn).format('YYYY-MM-DD');
+					this.updateList();
+					notify(res.data.message,'primary');
+
+				} else {
+					notify('Add failed.','danger');
+				}
+				
+			}).catch(e => {
+				alert(e);
+				console.log(e);
 			});
 		}
 	},
@@ -316,78 +382,21 @@ let app = new Vue({
 	            }
 		});
 
-		$('#clockInTime').on('hide', function(e){
-			console.log(e);
-			console.log(moment(e.date).format('YYYY-MM-DD HH:mm'));
-			app.editClock.in = moment(e.date).format('YYYY-MM-DD HH:mm');
+		$('#clockInTime').on('changeDate', function(e){
+			app.editClock.in = $('#clockInTime').val();
+		});
+		$('#clockOutTime').on('changeDate', function(e){
+			app.editClock.out = $('#clockOutTime').val();
+		});
+		$('#missingClockInTime').on('changeDate', function(e){
+			app.add.in = $('#missingClockInTime').val();
+		});
+		$('#missingClockOutTime').on('changeDate', function(e){
+			app.add.out = $('#missingClockOutTime').val();
 		});
 
 	}
 });
-
-
-
-
-
-var clockID = 0;
-function editClock(clockId){
-	clockID = clockId;
-	$.post(
-		'/clock/edit',
-		{
-			_token:'{{ csrf_token() }}',
-			clockId: clockId,
-		},
-		function(data,status){
-			if(status == 'success'){
-				$('#clockInTime').val(data.clockIn);
-				$('#clockOutTime').val(data.clockOut);
-				$('#comment').val(data.comment);
-				
-			}
-		},
-		'json'
-		);
-	$('#clockModal').modal();
-}
-
-function addMissing(){
-	$.post(
-	'/api/employeeBylocation',
-	{
-		location: $('#location').val()
-	},
-	function(data,status){
-		if(status == 'success'){
-			var html = '';
-			for(i in data){
-				html += '<option value="'+ i +'">' + data[i] + '</option>';
-			}
-
-			$('#missingList').html(html);
-			$('#addModal').modal();
-		}
-	},'json'
-);	
-}
-function saveMissing(){
-	$.post(
-	'/clock/add',
-	{
-		location: $('#location').val(),
-		employee: $('#missingList').val(),
-		_token:'{{ csrf_token() }}',
-			clockIn: $('#missingClockInTime').val(),
-			clockOut: $('#missingClockOutTime').val(),
-			comment: $('#missingComment').val(),
-	},
-	function(data,status){
-		if(status == 'success'){
-			$('#addModal').modal('hide');
-		}
-	}
-);
-}
 
 </script>
 @endsection
