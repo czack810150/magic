@@ -174,15 +174,24 @@
 						<label for="">For Location</label>
 						<div class="m-radio-inline">
 							<label class="m-radio">
-							<input type="radio" name="example_3" value="1"> 本店员工
+							<input type="radio" :value="false" v-model="otherLocation" @click="updateEmployeeList"> 本店员工
 							<span></span>
 							</label>
 							<label class="m-radio">
-							<input type="radio" name="example_3" value="2"> 借用员工
+							<input type="radio" :value="true" v-model="otherLocation"  @click="updateEmployeeList"> 借用员工
 							<span></span>
 							</label>
 						</div>
 						<span class="m-form__help">用于添加借用员工在本店的工时</span>
+					</div>
+
+					<div class="form-group m-form__group" v-if="otherLocation">
+						<label>Location</label>
+
+						<select class="form-control m-input" v-model="otherLocationSelected" @change="updateEmployeeList">
+							<option value="null" disabled>Choose location</option>
+							<option v-for="(text,key) in locations" :value="key "v-text="text"></option>
+						</select>
 					</div>
 
 					<div class="form-group m-form__group">
@@ -227,7 +236,7 @@
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" @click="close">Close</button>
         <button type="button" class="btn btn-primary" @click="saveMissing">Add</button>
       </div>
     </div>
@@ -249,6 +258,7 @@ let app = new Vue({
 		selectedDateString:null,
 		clocks:[],
 		locations: @json($locations),
+		otherLocationSelected:null,
 		isManager:@can('manage-managers') false @else true @endcan,
 		employees:[],
 		
@@ -312,17 +322,24 @@ let app = new Vue({
 				alert(e);
 			});
 		},
-		addMissing(){
-
+		updateEmployeeList(){
+			var listLocation = null;
+			if(this.otherLocation){
+				listLocation = this.otherLocationSelected;
+			} else {
+				listLocation = this.selectedLocation;
+			}
 			axios.post('/api/employeeBylocation',{
-				location: this.selectedLocation,
+				location: listLocation
 			}).then(res => {
-				console.log(res.data);
 				this.employees = res.data;
 			}).catch(e => {
 				console.log(e);
 				alert(e);
 			});
+		},
+		addMissing(){
+			this.updateEmployeeList();
 
 			$('#addModal').modal('show');
 		},
@@ -335,9 +352,7 @@ let app = new Vue({
 				comment: this.add.comment
 			}).then(res => {
 				if(res.data.success){
-					$('#addModal').modal('hide');
-					this.add = { selectedEmployee:null };
-
+					this.close();
 					this.selectedDateString = moment(res.data.data.clockIn).format('YYYY-MM-DD');
 					this.updateList();
 					notify(res.data.message,'primary');
@@ -350,6 +365,12 @@ let app = new Vue({
 				alert(e);
 				console.log(e);
 			});
+		},
+		close(){
+			$('#addModal').modal('hide');
+			this.otherLocation = false;
+			this.otherLocationSelected = null;
+			this.add = { selectedEmployee:null };
 		}
 	},
 	mounted(){
