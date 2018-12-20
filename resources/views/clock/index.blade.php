@@ -358,7 +358,8 @@ let app = new Vue({
 					notify(res.data.message,'primary');
 
 				} else {
-					notify('Add failed.','danger');
+					this.close();
+					notify(res.data.message,'danger');
 				}
 				
 			}).catch(e => {

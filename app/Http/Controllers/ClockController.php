@@ -252,6 +252,15 @@ class ClockController extends Controller
     }
     public function store(Request $r)
     { 
+
+      if(empty($r->clockIn) || empty($r->clockOut)){
+        return [
+          'success' => false,
+          'data' => [],
+          'message' => 'You must provide both clock in and clock out time!'
+        ];
+      }
+
       $clock = new Clock;
       $clock->location_id = $r->location;
       $clock->employee_id = $r->employee;
