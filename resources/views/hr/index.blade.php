@@ -9,6 +9,8 @@
 
 @include('hr.locationTab')
 
+@include('hr.new_gone')
+
   <!--begin:: Widgets/Finance Summary-->
 <div class="m-portlet m-portlet--full-height ">
 	<div class="m-portlet__head">

@@ -69,11 +69,15 @@ Route::post('/file/employee/{id}/file','FileUploadController@fileUpload');
 Route::get('/storage/{id}/delete','FileUploadController@destroy');
 
 // HR
-Route::get('/hr','HrController@index');
-Route::post('/hr/location/breakdown','HrController@locationBreakdown');
-Route::post('/hr/employee/trace','EmployeeTraceController@trace');
-Route::post('/hr/employee/trace/update','EmployeeTraceController@update');
-Route::get('/team/location','HrController@team');
+Route::prefix('hr')->name('hr.')->middleware('management')->group(function(){
+	Route::get('/','HrController@index')->name('index');
+	Route::post('location/breakdown','HrController@locationBreakdown');
+	Route::post('employee/trace','EmployeeTraceController@trace');
+	Route::post('employee/trace/update','EmployeeTraceController@update');
+	Route::get('location','HrController@team');
+	Route::post('hires_terminations','HrController@hires_terminations');
+});
+
 
 Route::post('/team/chart','HrController@teamChart');
 //Team
