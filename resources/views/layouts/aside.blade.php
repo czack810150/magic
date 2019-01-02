@@ -224,7 +224,7 @@
 										</li>
 										@endcan
 										<li class="m-menu__item " aria-haspopup="true" >
-											<a  href="/payroll/basic" class="m-menu__link ">
+											<a  href="{{ route('payroll.basic') }}" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>

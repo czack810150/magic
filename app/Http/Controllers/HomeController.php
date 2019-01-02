@@ -48,7 +48,9 @@ class HomeController extends Controller
         $data['magicBeefs'] = Sale::whereYear('from',$dt->year)->whereMonth('from',$dt->month)->where('location_id','!=',0)->where('itemCode','S01001')->sum('qty');
         $data['monthlySales'] = Sale_total::whereYear('date',$dt->year)->whereMonth('date',$dt->month)->where('location_id',-1)->sum('total');
         $data['preMonthlySales'] = Sale_total::whereYear('date',$dt->year)->whereMonth('date',$dt->copy()->subMonth()->month)->where('location_id',-1)->sum('total');
-        
+        if($data['preMonthlySales'] == 0){
+            $data['preMonthlySales'] = 1;
+        }
         $items = Item::menuItems()->get();
         $categories = ItemCategory::get();
         
@@ -57,14 +59,16 @@ class HomeController extends Controller
     }
     private function management()
     {
-        $dt = Carbon::now();
+        $dt = now();
         $promotions = JobPromotion::get();
         $locations = Location::get();
         $stores = Location::store()->get();
         $data['magicBeefs'] = Sale::whereYear('from',$dt->year)->whereMonth('from',$dt->month)->where('location_id','!=',0)->where('itemCode','S01001')->sum('qty');
         $data['monthlySales'] = Sale_total::whereYear('date',$dt->year)->whereMonth('date',$dt->month)->where('location_id',-1)->sum('total');
         $data['preMonthlySales'] = Sale_total::whereYear('date',$dt->year)->whereMonth('date',$dt->copy()->subMonth()->month)->where('location_id',-1)->sum('total');
-        
+        if($data['preMonthlySales'] == 0){
+            $data['preMonthlySales'] = 1;
+        }
         $items = Item::menuItems()->get();
         $categories = ItemCategory::get();
         

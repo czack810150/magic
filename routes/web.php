@@ -349,17 +349,20 @@ Route::get('/tips/{id}/delete','PayrollTipController@destroy');
 Route::get('/tips/{id}/update','PayrollTipController@show');
 Route::post('/tips/{id}/update','PayrollTipController@update');
 //Payroll
-Route::get('/payroll','PayrollController@index');
-Route::get('/payroll/basic','PayrollController@basic');
-Route::get('/payroll/compute','PayrollController@compute');
-Route::post('/payroll/compute','PayrollController@computePayroll');
-Route::post('/payroll/fetch','PayrollController@fetch');
-Route::get('/payroll/employee/{employee}/{year}','PayrollController@employeeYear');
-Route::get('/payroll/employee','PayrollController@employee');
-Route::get('/payroll/{id}/destroy','PayrollController@destroy');
-Route::get('/payroll/paystubs','PayrollController@paystubs');
-Route::post('/payroll/paystubs','PayrollController@paystubsData');
-Route::post('/payroll/chequeNumber','PayrollController@chequeNumber');
+Route::prefix('payroll')->name('payroll.')->group(function(){
+	Route::get('/','PayrollController@index');
+	Route::get('basic','PayrollController@basic')->name('basic');
+	Route::get('compute','PayrollController@compute')->name('compute');
+	Route::post('compute','PayrollController@computePayroll');
+	Route::post('fetch','PayrollController@fetch');
+	Route::get('employee/{employee}/{year}','PayrollController@employeeYear');
+	Route::get('employee','PayrollController@employee');
+	Route::get('/{id}/destroy','PayrollController@destroy');
+	Route::get('paystubs','PayrollController@paystubs');
+	Route::post('paystubs','PayrollController@paystubsData');
+	Route::post('chequeNumber','PayrollController@chequeNumber');
+});
+
 
 
 

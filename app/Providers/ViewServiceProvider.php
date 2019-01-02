@@ -16,7 +16,12 @@ class ViewServiceProvider extends ServiceProvider
     public function boot()
     {
         View::composer(
-            'hr.index',FilterComposer::class
+            [
+                'hr.index',
+                'payroll.basic.index',
+                'payroll.compute.index'
+            ],
+            FilterComposer::class
         );
     }
 

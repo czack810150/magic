@@ -14,7 +14,7 @@ class FilterComposer
      * @var UserRepository
      */
     protected $locationOptions;
-    protected $yearOptions = [2016,2017,2018];
+    protected $yearOptions = [2016,2017,2018,2019];
 
     /**
      * Create a new profile composer.
