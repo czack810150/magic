@@ -81,6 +81,7 @@ Route::prefix('hr')->name('hr.')->middleware('management')->group(function(){
 
 Route::post('/team/chart','HrController@teamChart');
 //Team
+Route::get('/team/location','HrController@team');
 Route::get('/team/taskforce','TeamController@index');
 Route::get('/team/taskforce/create','TeamController@create');
 Route::post('/team/taskforce/create','TeamController@store');
