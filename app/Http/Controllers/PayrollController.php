@@ -224,4 +224,7 @@ class PayrollController extends Controller
         $payLog->chequeNumber = $r->chequeNumber;
         $payLog->save();
     }
+    public function periods(Request $r){
+        return $dates = \App\Helpers\PayrollPeriods::dates($r->year);
+    }
 }

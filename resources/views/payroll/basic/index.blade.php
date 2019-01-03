@@ -16,7 +16,10 @@
 		<div class="m-portlet__head-tools">
 			<ul class="m-portlet__nav">
 				<li class="m-portlet__nav-item">
-{{ Form::select('location',$locations,null,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','placeholder' => 'Choose a location','id'=>'location'])}}											
+					<select class="custom-select mb-2 mr-sm-2 mb-sm-0" v-model="selectedLocation">
+						<option value="null" disabled>Select Location</option>
+						<option v-for="(name,id) in locations" :value="id" v-text="name"></option>
+					</select>										
 				</li>
 				<li class="m-portlet__nav-item">
 					<select class="custom-select mb-2 mr-sm-2 mb-sm-0" v-model="selectedYear" @change="changeYear">
@@ -26,11 +29,15 @@
 				</li>
 				
 				<li class="m-portlet__nav-item">
-{{ Form::select('dateRange',$dates,null,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','placeholder'=>'Choose date range','id'=>'dateRange']) }}
+					<select class="custom-select mb-2 mr-sm-2 mb-sm-0" v-model="selectedPeriod">
+						<option value="null" disabled>Select period</option>
+						<option v-for="(period,start) in dates" :value="start" v-text="period"></option>
+					</select>
+
 				</li>
 				<li class="m-portlet__nav-item">
 				
-						{{ Form::button('View',['class'=>'btn btn-primary','onclick'=>'viewLocationData()']) }}
+						<button type="button" class="btn btn-primary" :class="{ disabled: !canView}" @click="viewPayroll">View</button>
 				
 				</li>
 				<li class="m-portlet__nav-item">
@@ -44,7 +51,9 @@
 	<div class="m-portlet__body">
 
 	
-		<main id="payroll"></main>
+		<main id="dataTable">
+			@{{ selectedLocation }}
+		</main>
 	</div>
 </div>
 <!--end::Portlet-->
@@ -56,35 +65,49 @@ let payroll = new Vue({
 	el:'#payroll',
 	data:{
 		selectedYear: new Date().getFullYear(),
+		selectedPeriod: null,
+		selectedLocation:null,
 		years:@json($yearOptions),
-
+		dates:@json($dates),
+		locations:@json($locationOptions),
+		
+	},
+	computed:{
+		canView(){
+			if(this.selectedLocation == null || this.selectedPeriod == null){
+				return false;
+			}
+			return true;
+		}
 	},
 	methods:{
 		changeYear(){
-			alert('change year:'+this.selectedYear);
-		}
+			axios.post('/payroll/periods',{
+				year: this.selectedYear,
+			}).then(res => {
+				console.log(res.data);
+				this.dates = res.data;
+				this.selectedPeriod = null;
+			}).catch(e => {
+				alert(e);
+				console.log(e);
+			});
+
+		},
+		viewPayroll(){
+			if(this.canView){
+				axios.post('/payroll/fetch',
+					{
+						location: this.selectedLocation,
+						startDate: this.selectedPeriod,
+					}).then( res => {
+						$("#dataTable").html(res.data);
+					})
+			}
+			
+		},
 	}
 });
-	// function viewLocationData(){
-	// 	if($("#location").val() == '' || $("#dateRange").val()== ''){
-	// 		alert('You must choose a location and a date range.');
-	// 	} else{
-	// 		$("#payroll").html(transition);
-	// 		$.post(
-	// 			'/payroll/fetch',
-	// 			{
-	// 				location: $("#location").val(),
-	// 				startDate: $("#dateRange").val(),
-	// 				_token: '{{csrf_token()}}'
-	// 			},
-	// 			function(data,status){                    
-	// 				if(status == 'success'){
-	// 					$("#payroll").html(data);	
-	// 				}
-	// 			}
-	// 			);
-	// 	}
-		
-	// }
+	
 </script>
 @endsection

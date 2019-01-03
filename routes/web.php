@@ -361,6 +361,7 @@ Route::prefix('payroll')->name('payroll.')->group(function(){
 	Route::get('paystubs','PayrollController@paystubs');
 	Route::post('paystubs','PayrollController@paystubsData');
 	Route::post('chequeNumber','PayrollController@chequeNumber');
+	Route::post('/periods','PayrollController@periods');
 });
 
 
