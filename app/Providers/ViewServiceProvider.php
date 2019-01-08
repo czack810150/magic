@@ -19,7 +19,8 @@ class ViewServiceProvider extends ServiceProvider
             [
                 'hr.index',
                 'payroll.basic.index',
-                'payroll.compute.index'
+                'payroll.compute.index',
+                'hour.index',
             ],
             FilterComposer::class
         );

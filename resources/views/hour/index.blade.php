@@ -6,19 +6,38 @@
 
 
 <form class="form-inline my-2" method="POST" action="/hours">
-
+@csrf
 	
 		<div class="form-group">
 		<label class="mr-sm-2" for="location">Location</label>
-{{ Form::select('location',$locations,$location,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','placeholder' => 'Choose a location','id'=>'location'])}}
+
+					<select class="custom-select mb-2 mr-sm-2 mb-sm-0" v-model="selectedLocation"  name="location">
+						<option value="null" disabled>Select Location</option>
+						<option v-for="(name,id) in locations" :value="id" v-text="name"></option>
+					</select>
+		</div>
+
+		<div class="form-group">
+					<select class="custom-select mb-2 mr-sm-2 mb-sm-0" v-model="selectedYear" @change="changeYear">
+						<option value="null" disabled>Select year</option>
+						<option v-for="year in years" :value="year" v-text="year"></option>
+					</select>
+
 		</div>
 
 		<div class="form-group mx-sm-3">
 			{{ Form::label('dateRange','Date range',['class'=>'mx-sm-3'])}}
-			{{ Form::select('dateRange',$dates,$date,['class'=>'custom-select mb-2 mr-sm-2 mb-sm-0','placeholder'=>'Choose date range']) }}
+		
+					<select class="custom-select mb-2 mr-sm-2 mb-sm-0" v-model="selectedPeriod" name="dateRange">
+						<option value="null" disabled>Select period</option>
+						<option v-for="(period,start) in dates" :value="start" v-text="period"></option>
+					</select>
+
+		
+
 		</div>
-		{{ Form::submit('Submit',['class'=>'btn btn-primary']) }}
-		{{csrf_field()}}
+		<button type="submit" class="btn btn-primary" :class="{ disabled: !canView}">View</button>
+		
 
 </form>
 @if(count($hours))
@@ -163,24 +182,42 @@
 	var app = new Vue({
 		el: '#hours',
 		data: {
+			selectedYear:new Date().getFullYear(),
+			selectedPeriod:null,
+			selectedLocation:null,
+			years:@json($yearOptions),
 			shifts: [
 			],
-			dates:[],
+			dates:@json($dates),
+			locations:@json($locationOptions),
+
 		},
 		methods: {
+			changeYear(){
+			axios.post('/payroll/periods',{
+				year: this.selectedYear,
+			}).then(res => {
+				console.log(res.data);
+				this.dates = res.data;
+				this.selectedPeriod = null;
+			}).catch(e => {
+				alert(e);
+				console.log(e);
+			});
+			},
 			hoursBreakDown: function(e) {
 				$.post(
 					'/hours/breakdown',
 					{
 						employee: e,
-						location: $('#location').val(),
-						startDate: $('#dateRange').val(),
+						location: this.selectedLocation,
+						startDate: this.selectedPeriod,
 						_token: '{{csrf_token()}}',
 					},
 					function(data,status){
 						if(status == 'success'){
 							console.log(data);
-							app.dates = data;
+							// app.dates = data;
 							html = '';
 							for(i in data){
 								html += '<tr><td>' + data[i]['shiftDate'] + '</td>';
@@ -205,8 +242,28 @@
 					);
 
 				$('#breakdownModal').modal();
+			},
+			viewHours(){
+			if(this.canView){
+				axios.post('/hours/breakdown',
+					{
+						location: this.selectedLocation,
+						startDate: this.selectedPeriod,
+					}).then( res => {
+						$("#dataTable").html(res.data);
+					})
 			}
+			
+		},
+		},
+		computed:{
+		canView(){
+			if(this.selectedLocation == null || this.selectedPeriod == null){
+				return false;
+			}
+			return true;
 		}
+	},
 	});
 
 

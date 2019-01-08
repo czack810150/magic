@@ -28,8 +28,8 @@ class HourController extends Controller
     public function index(Request $r)
     {
         $subheader = "Hours";
-        $locations = Location::pluck('name','id');
-        $dates = Datetime::periods(Carbon::now()->year);
+        // $locations = Location::pluck('name','id');
+        $dates = \App\Helpers\PayrollPeriods::dates(2018);
        // $dates = Datetime::periods(2017);
         $location = $r->location;
         $date = $r->dateRange;
