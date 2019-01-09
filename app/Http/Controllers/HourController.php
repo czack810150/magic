@@ -28,13 +28,17 @@ class HourController extends Controller
     public function index(Request $r)
     {
         $subheader = "Hours";
-        // $locations = Location::pluck('name','id');
-        $dates = \App\Helpers\PayrollPeriods::dates(2018);
-       // $dates = Datetime::periods(2017);
+        if($r->has('year')){
+            $year = $r->year;
+        } else {
+            $year = now()->year;
+        }
+        $dates = \App\Helpers\PayrollPeriods::dates($year);
         $location = $r->location;
         $date = $r->dateRange;
         $stats = ['scheduled' => 0, 'effective' => 0];
         $index = false;
+        
 
        if(isset($location) && isset($date)){
             $dt = Carbon::createFromFormat('Y-m-d',$date)->startOfDay();
@@ -60,15 +64,16 @@ class HourController extends Controller
        }
      
    
-        return view('hour.index',compact('index','locations','dates','hours','scheduledEmployees','stats','subheader','location','date'));
+        return view('hour.index',compact('index','locations','dates','hours','scheduledEmployees','stats','subheader','location','date','year'));
    
     }
     public function compute()
     {
-        $dates = Datetime::periods(Carbon::now()->year);
+        $dates = Datetime::periods(now()->year);
         $locations = Location::pluck('name','id');
         $locations->put('all','All locations');
         $subheader = 'Hours';
+        $dates = \App\Helpers\PayrollPeriods::dates(now()->year);
         return view('hour.compute',compact('dates','locations','subheader'));
     }
     public function computeEngine(Request $r)
@@ -161,6 +166,7 @@ class HourController extends Controller
         //
     }
     public function breakdown(Request $r){
+
         return Hour::breakdown($r->employee,$r->location,$r->startDate);
     }
     public function scheduledHourReport(){

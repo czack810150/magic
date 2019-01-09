@@ -18,7 +18,7 @@
 		</div>
 
 		<div class="form-group">
-					<select class="custom-select mb-2 mr-sm-2 mb-sm-0" v-model="selectedYear" @change="changeYear">
+					<select class="custom-select mb-2 mr-sm-2 mb-sm-0" v-model="selectedYear" @change="changeYear" name="year">
 						<option value="null" disabled>Select year</option>
 						<option v-for="year in years" :value="year" v-text="year"></option>
 					</select>
@@ -102,7 +102,7 @@
 		@else
 		<td>{{ $h->employee_id }}</td>
 		@endif
-		<td>{{ $h->employee->job->rank }}</td>
+		<td>@if($h->employee) {{ $h->employee->job->rank }} @endif </td>
 		<td class="alert alert-primary">
 			{{ $h->wk1Scheduled +$h->wk2Scheduled  }} 
 			{{ ($h->wk1ScheduledCash + $h->wk2ScheduledCash) > 0? '('.($h->wk1ScheduledCash + $h->wk2ScheduledCash).')':''  }}
@@ -147,8 +147,18 @@
       </div>
       <div class="modal-body">
         <table class="table table-sm">
-        	<thead><tr><th>Date</th><th>ScheduleIn</th><th>ScheduleOut</th><th>Scheduled</th><th>Effective</th><th>Clocks</th></tr></thead>
-        	<tbody id="data"></tbody>
+        	<thead><tr><th>Date</th><th>ScheduleIn</th><th>ScheduleOut</th><th>Scheduled</th><th>Effective</th></tr></thead>
+        	<tbody>
+        		<tr v-for="day in days">
+        			<td>@{{ day.shiftDate }}</td>
+        			<td>@{{ day.scheduleIn }}</td>
+        			<td>@{{ day.scheduleOut }}</td>
+        			<td>@{{ day.scheduledHour }}</td>
+        			<td>@{{ day.effectiveHours.hours }}</td>
+        			
+        		</tr>
+        		
+        	</tbody>
         </table>
       </div>
       <div class="modal-footer">
@@ -190,58 +200,36 @@
 			],
 			dates:@json($dates),
 			locations:@json($locationOptions),
-
+			days:[],
 		},
 		methods: {
 			changeYear(){
-			axios.post('/payroll/periods',{
-				year: this.selectedYear,
-			}).then(res => {
-				console.log(res.data);
-				this.dates = res.data;
-				this.selectedPeriod = null;
-			}).catch(e => {
-				alert(e);
-				console.log(e);
-			});
+				axios.post('/payroll/periods',{
+					year: this.selectedYear,
+				}).then(res => {
+					console.log(res.data);
+					this.dates = res.data;
+					this.selectedPeriod = null;
+				}).catch(e => {
+					alert(e);
+					console.log(e);
+				});
 			},
-			hoursBreakDown: function(e) {
-				$.post(
-					'/hours/breakdown',
-					{
+			hoursBreakDown(e) {
+				
+				axios.post('/hours/breakdown',{
 						employee: e,
 						location: this.selectedLocation,
 						startDate: this.selectedPeriod,
-						_token: '{{csrf_token()}}',
-					},
-					function(data,status){
-						if(status == 'success'){
-							console.log(data);
-							// app.dates = data;
-							html = '';
-							for(i in data){
-								html += '<tr><td>' + data[i]['shiftDate'] + '</td>';
-								html += '<td>' + data[i]['scheduleIn'] + '</td>';
-								html += '<td>' + data[i]['scheduleOut'] + '</td>';
-								html += '<td>' + data[i]['scheduledHour'] + '</td>';
-								html += '<td>' + data[i]['effectiveHours']['hours'] + '</td><td class="text-muted">';
-								
-
-								for(j in data[i]['clocks']){
-									var clockIn = moment(data[i]['clocks'][j]['clockIn']);
-									var clockOut = moment(data[i]['clocks'][j]['clockOut']);
-									html += clockIn.format('H:mm:ss') + ' - ' + clockOut.format('H:mm:ss') + '<br>';
-								}
-
-								html += '</td></tr>';
-							}
-							$('#data').html(html);
-						}
-					},
-					'json'
-					);
-
-				$('#breakdownModal').modal();
+					}).then(res => {
+					
+							this.days = res.data;
+					
+						$('#breakdownModal').modal();
+					}).catch(e => {
+						console.log(e);
+						alert(e);
+					});	
 			},
 			viewHours(){
 			if(this.canView){
@@ -263,7 +251,14 @@
 			}
 			return true;
 		}
-	},
+		},
+	mounted(){
+		@if(!empty($data) || !empty($location))
+		this.selectedPeriod = '{{ $date }}';
+		this.selectedLocation = '{{ $location }}';
+		this.selectedYear = '{{ $year }}';
+		@endif
+	}
 	});
 
 

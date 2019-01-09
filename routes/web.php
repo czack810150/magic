@@ -339,7 +339,7 @@ Route::post('/clocks/employeeClocksByDateRange','ClockController@employeeClocksB
 //Hours
 Route::get('/hours','HourController@index');
 Route::get('/hours/compute','HourController@compute');
-Route::post('/hours/computeEngine','HourController@computeEngine');
+Route::post('/hours/compute','HourController@computeEngine');
 Route::post('/hours','HourController@index');
 Route::post('/hours/breakdown','HourController@breakdown');
 //Tips
