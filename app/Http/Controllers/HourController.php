@@ -69,7 +69,7 @@ class HourController extends Controller
     }
     public function compute()
     {
-        $dates = Datetime::periods(now()->year);
+       
         $locations = Location::pluck('name','id');
         $locations->put('all','All locations');
         $subheader = 'Hours';
