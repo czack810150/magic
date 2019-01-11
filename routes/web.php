@@ -337,11 +337,16 @@ Route::get('/clocks/view','ClockController@viewClocks');
 Route::post('/clock/clocksByLocationDate','ClockController@clocksByLocationDate');
 Route::post('/clocks/employeeClocksByDateRange','ClockController@employeeClocksByDateRange');
 //Hours
-Route::get('/hours','HourController@index');
-Route::get('/hours/compute','HourController@compute');
-Route::post('/hours/compute','HourController@computeEngine');
-Route::post('/hours','HourController@index');
-Route::post('/hours/breakdown','HourController@breakdown');
+Route::prefix('hours')->name('hours.')->group(function(){
+	Route::get('','HourController@index');
+	Route::get('compute','HourController@compute');
+	Route::post('compute','HourController@computeEngine');
+	Route::post('','HourController@index');
+	Route::post('breakdown','HourController@breakdown');
+	Route::get('store','HourController@viewStore')->name('store')->middleware('high.management');
+	Route::post('store/year','HourController@storeYear');
+});
+
 //Tips
 Route::get('/tips','TipController@index');
 Route::get('/tips/create','TipController@create');

@@ -62,11 +62,48 @@ class HourController extends Controller
         $scheduledEmployees = 0;
         $index = false;
        }
-     
-   
         return view('hour.index',compact('index','locations','dates','hours','scheduledEmployees','stats','subheader','location','date','year'));
-   
     }
+
+    public function viewStore()
+    {
+        $subheader = "Hours";
+        
+        $year = now()->year;
+        $locationsStats = Location::get();
+        foreach($locationsStats as $l){
+            $l->scheduled = Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk1Scheduled') + Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk2Scheduled');
+            $l->scheduled = round($l->scheduled,1);
+            $l->effective = Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk1Effective') + Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk2Effective');
+            $l->effective = round($l->effective,1);
+            $l->overtime = Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk1Overtime') + Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk2Overtime');
+            $l->overtime = round($l->overtime,1);
+            $l->night = Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk1Night') + Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk2Night');
+            $l->night = round($l->night,1);
+
+        }
+       
+        return view('hour.store.index',compact('subheader','year','locationsStats'));
+    }
+
+    public function storeYear(Request $request)
+    {
+        $year = $request->year;
+        $locationsStats = Location::get();
+        foreach($locationsStats as $l){
+            $l->scheduled = Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk1Scheduled') + Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk2Scheduled');
+            $l->scheduled = round($l->scheduled,1);
+            $l->effective = Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk1Effective') + Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk2Effective');
+            $l->effective = round($l->effective,1);
+            $l->overtime = Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk1Overtime') + Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk2Overtime');
+            $l->overtime = round($l->overtime,1);
+            $l->night = Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk1Night') + Hour::where('location_id',$l->id)->whereYear('start',$year)->sum('wk2Night');
+            $l->night = round($l->night,1);
+
+        }
+        return $locationsStats;
+    }
+
     public function compute()
     {
        

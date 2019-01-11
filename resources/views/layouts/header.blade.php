@@ -229,6 +229,14 @@
 																	</span>
 																</a>
 															</li>
+															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">
+																<a  href="{{route('hours.store')}}" class="m-menu__link ">
+																	<i class="m-menu__link-icon flaticon-clipboard"></i>
+																	<span class="m-menu__link-text">
+																		Store Hours Report
+																	</span>
+																</a>
+															</li>
 															@endcan
 															
 															<li class="m-menu__item "  data-redirect="true" aria-haspopup="true">

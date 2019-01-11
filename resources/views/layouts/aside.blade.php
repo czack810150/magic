@@ -279,14 +279,27 @@
 								</a>
 								<div class="m-menu__submenu">
 									<span class="m-menu__arrow"></span>
+									
 									<ul class="m-menu__subnav">
+										@can('view-hr')
 										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="{{ route('hours.store') }}" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													Store Hours
+												</span>
+											</a>
+										</li>
+										@endcan
+										<li class="m-menu__item" aria-haspopup="true" >
 											<a  href="/hours" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
 													<span></span>
 												</i>
 												<span class="m-menu__link-text">
-													View Hours
+													Employee Hours
 												</span>
 											</a>
 										</li>
