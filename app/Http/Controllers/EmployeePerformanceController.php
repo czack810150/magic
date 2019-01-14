@@ -29,7 +29,7 @@ class EmployeePerformanceController extends Controller
     {
         $subheader = 'Employee Performance Evalucation';
         $locations = Location::Store()->pluck('name','id');
-        $dates = Datetime::periods(Carbon::now()->year);
+        $dates = \App\Helpers\PayrollPeriods::dates(now()->year);
         return view('employee.performance.index',compact('locations','dates','subheader'));
     }
 

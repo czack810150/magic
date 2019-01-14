@@ -99,8 +99,9 @@ class Cra extends Model
     private static function canadaEmploymentCredit($A)
     {
     	// 2017 $A>1178? $k4 = 0.15 * 1178 : $k4 = 0.15 * $A;
-    	// 2018
-    	$A > 1195 ? $k4 = 0.15 * 1195 : $k4 = 0.15 * $A;
+    	// 2018 $A > 1195 ? $k4 = 0.15 * 1195 : $k4 = 0.15 * $A;
+    	// 2019
+    	$A > 1222 ? $k4 = 0.15 * 1222 : $k4 = 0.15 * $A;
 		return $k4;
     }
     private static function federalTaxDeduction($t3){
@@ -114,11 +115,12 @@ class Cra extends Model
 		$A = self::annualTaxableIncome($income,$P);
     	$table = self::taxRate($year,'ON',$A);
     	$V = $table->rate;
-		$KP = $table->k; // 0 for annual income below 42201 in ontraio
+		$KP = $table->k; // 0 for annual income below 4XXXX in ontraio
 		//$k1p = 0.0505 * 10171.00; // claim amount;
 		$k1p = DB::table('payroll_cra_claim')->where('year',$year)->where('zone','ON')->where('code',$code)->first()->k;
 		$k2p = self::CPP_EI_taxCredits($C,$EI,$P,$year,'ON');
-		$k3p = 0;
+
+		$k3p = 0; // other provincial or territorial tax credits
 		
 		$T4 = $V * $A - $KP - $k1p - $k2p - $k3p;
 		$T4 = $T4 < 0?0:round($T4,2);
@@ -141,14 +143,21 @@ class Cra extends Model
 		// 	return 0.2 * ($T4 - 4556) + 0.36 * ($T4 - 5831);
 
 		//2018
-		if($T4 <= 4638){
+		// if($T4 <= 4638){
+		// 	return 0;
+		// } else if($T4 > 4638 && $T4 <= 5936){
+		// 	return 0.2 * ($T4 - 4638);
+		// } else if($T4 > 5936)
+		// 	return 0.2 * ($T4 - 4638) + 0.36 * ($T4 - 5936);
+		//2019
+		if($T4 <= 4740){
 			return 0;
-		} else if($T4 > 4638 && $T4 <= 5936){
-			return 0.2 * ($T4 - 4638);
-		} else if($T4 > 5936)
-			return 0.2 * ($T4 - 4638) + 0.36 * ($T4 - 5936);
+		} else if($T4 > 4740 && $T4 <= 6067){
+			return 0.2 * ($T4 - 4740);
+		} else if($T4 > 6067)
+			return 0.2 * ($T4 - 4740) + 0.36 * ($T4 - 6067);
 	}
-	private static function additionalTax($A){ // for ontario surtax V1
+	private static function additionalTax($A){ // for ontario health premium
 		if($A <= 20000){
 			return 0;
 		} else if($A > 20000 && $A <= 36000){
@@ -193,12 +202,25 @@ class Cra extends Model
 		// }
 
 		// 2018
-		$Y = 442 * $num_dependant;
-		if(($t4 + $v1) > (2*(239 + $Y) - ($t4 + $v1)) ){
-			if( (2*(239 + $Y) - ($t4 + $v1)) < 0){
+		// $Y = 442 * $num_dependant;
+		// if(($t4 + $v1) > (2*(239 + $Y) - ($t4 + $v1)) ){
+		// 	if( (2*(239 + $Y) - ($t4 + $v1)) < 0){
+		// 		return 0;
+		// 	} else {
+		// 		return (2*(239 + $Y) - ($t4 + $v1));
+		// 	}
+			
+		// } else {
+		// 	return ($t4 + $v1);
+		// }
+
+		// 2019
+		$Y = 452 * $num_dependant;
+		if(($t4 + $v1) > (2*(244 + $Y) - ($t4 + $v1)) ){
+			if( (2*(244 + $Y) - ($t4 + $v1)) < 0){
 				return 0;
 			} else {
-				return (2*(239 + $Y) - ($t4 + $v1));
+				return (2*(244 + $Y) - ($t4 + $v1));
 			}
 			
 		} else {

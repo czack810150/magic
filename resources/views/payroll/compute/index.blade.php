@@ -24,7 +24,7 @@
 						<div class="alert m-alert m-alert--default" role="alert">
 							A place to compute employee payroll based on effective hours, overtime hours and night shift hours for a given payroll period.
 						</div>
-						{{ $yearOptions }}
+						
 					</div>
 					<div class="form-group m-form__group"  id="errors">
 					@if ($errors->any())

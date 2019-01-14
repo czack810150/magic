@@ -185,7 +185,7 @@ class Payroll extends Model
 
         $periodStart =  $startDate;
         $startDate = Carbon::createFromFormat('Y-m-d',$startDate,'America/Toronto')->startOfDay();
-        $config = DB::table('payroll_config')->where('year',$startDate->year)->first();
+        $config = DB::table('payroll_config')->where('year',2019)->first();
         $basicRate = $config->minimumPay/100;
         $wk1Start = $startDate->toDateString();
         $wk1End = $startDate->addDays(6)->toDateString();
