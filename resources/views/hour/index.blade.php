@@ -147,7 +147,7 @@
       </div>
       <div class="modal-body">
         <table class="table table-sm">
-        	<thead><tr><th>Date</th><th>ScheduleIn</th><th>ScheduleOut</th><th>Scheduled</th><th>Effective</th></tr></thead>
+        	<thead><tr><th>Date</th><th>ScheduleIn</th><th>ScheduleOut</th><th>Scheduled</th><th>Effective</th><th>Details</th></tr></thead>
         	<tbody>
         		<tr v-for="day in days">
         			<td>@{{ day.shiftDate }}</td>
@@ -155,7 +155,9 @@
         			<td>@{{ day.scheduleOut }}</td>
         			<td>@{{ day.scheduledHour }}</td>
         			<td>@{{ day.effectiveHours.hours }}</td>
-        			
+        			<td>
+        				<p v-for="clock in day.clocks">@{{ clock.clockIn }} - @{{ clock.clockOut }}</p>
+        			</td>
         		</tr>
         		
         	</tbody>
@@ -163,7 +165,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+       
       </div>
     </div>
   </div>

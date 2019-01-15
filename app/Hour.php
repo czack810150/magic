@@ -415,10 +415,13 @@ class Hour extends Model
 			$data['clocks'] = self::clockHours($employee,$location,$s->start,$s->end);
 			$data['totalClock'] = 0;
 			foreach($data['clocks'] as $c){
-				$clockIn =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockIn);
-				$clockOut =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockOut);
-				$c->clockTime = round($clockIn->diffInSeconds($clockOut)/3600,2);
-				$data['totalClock'] += $c->clockTime;
+				if(!is_null($c->clockOut)){
+					$clockIn =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockIn);
+					$clockOut =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockOut);
+					$c->clockTime = round($clockIn->diffInSeconds($clockOut)/3600,2);
+					$data['totalClock'] += $c->clockTime;
+				}
+				
 			}
 			$data['effectiveHours'] = self::effectiveShift($shiftStart,$shiftEnd,$data['clocks'],$config);
 
@@ -442,6 +445,7 @@ class Hour extends Model
     	$totalSeconds = 0;
     	foreach($clocks as $c)
     	{
+    		if(!is_null($c->clockOut)){
     		$clockIn =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockIn);
 			$clockOut =  Carbon::createFromFormat('Y-m-d H:i:s',$c->clockOut);
 			// comming to work
@@ -472,6 +476,7 @@ class Hour extends Model
 								}
 						}
 			$totalSeconds += $aggregatedStart->diffInSeconds($aggregatedEnd);
+						}
     		}
     	}
    				 $result = array(
