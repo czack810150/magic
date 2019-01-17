@@ -20,6 +20,8 @@ class ExamCreatedListener implements ShouldQueue
     public function handle(ExamCreated $event)
     {
        $group = Authorization::group(['admin','hr','dm']);
+       $manager = $event->exam->employee->location->manager;
+       $group->push($manager);
        Mail::to($event->exam->employee)->cc($group)->send(new ExamCreatedMail($event->exam));
     }
 }

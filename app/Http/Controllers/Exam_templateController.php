@@ -12,6 +12,9 @@ use App\Exam;
 use App\Exam_question;
 use App\Exam_template;
 use App\Exam_template_question;
+use App\Authorization;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ExamCreatedMail;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
@@ -63,6 +66,10 @@ class Exam_templateController extends Controller
             $question = Exam_question::create(['question_id'=>$q->question_id]);
             $exam->question()->save($question);
         }
+           $group = Authorization::group(['admin','hr','dm']);
+           $manager = $exam->employee->location->manager;
+           $group->push($manager);
+           Mail::to($exam->employee)->cc($group)->send(new ExamCreatedMail($exam));
         return view('exam.template.success',compact('subheader'));
     }
 
