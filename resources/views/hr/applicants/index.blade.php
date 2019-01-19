@@ -21,7 +21,7 @@
 			</div>
 		</div>	
 		<!--end::Portlet-->
-
+{{ $applicants }}
 
 
 
@@ -148,7 +148,8 @@
         format:'yyyy-mm-dd',
     });
 	var jString = '{!! $applicants !!}';
-	var dataJSONArray = JSON.parse(jString);
+	
+    let dataJSONArray = @json($applicants);
 
 	var options = {
 		data: {
