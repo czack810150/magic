@@ -47,8 +47,8 @@
 						  		@foreach($employeeLeaves as $l)
 						    	<tr>
 						    		<td>{{ $l->location->name }}</td>
-						    		<td>{{ $l->employee->cName }}</td>
-							      	<td>{{ $l->type->cName }}</td>
+						    		<td>{{ $l->employee?$l->employee->cName: $l->employee_id }}</td>
+							      	<td>{{ $l->type->name }}</td>
 							      	<td>{{ $l->from->toFormattedDateString() }}</td>
 							      	<td>{{ $l->to->toFormattedDateString() }}</td>
 							      	<td>{{ $l->from->diffInDays($l->to)+1 }} days</td>
@@ -100,6 +100,7 @@
 						    	@endforeach
 						  	</tbody>
 						</table>
+							{{ $employeeLeaves->links() }}
 					</div>
 				</div>
 				<!--end::Section-->
@@ -155,7 +156,7 @@
 							      	<td>{{ $l->type->cName }}</td>
 							      	<td>{{ $l->from->toFormattedDateString() }}</td>
 							      	<td>{{ $l->to->toFormattedDateString() }}</td>
-							      	<td>{{ $l->from->diffInDays($l->to)+1 }} days</td>
+							      	<td>{{ $l->from->diffInDays($l->to)+1 }} {{ str_plural('day',$l->from->diffInDays($l->to)+1) }}</td>
 							      	@switch($l->status)
 							      	@case('pending')
 							      	<td><span class="m-badge m-badge--primary m-badge--wide">{{ $l->status }}</span></td>

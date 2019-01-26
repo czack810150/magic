@@ -7,6 +7,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Mail\LeaveRejectedMail;
 use Illuminate\Support\Facades\Mail;
+use App\Authorization;
 
 class LeaveRejectedListener implements ShouldQueue
 {
@@ -28,6 +29,9 @@ class LeaveRejectedListener implements ShouldQueue
      */
     public function handle(LeaveRejected $event)
     {
-        Mail::to($event->leave->employee)->send(new LeaveRejectedMail($event->leave));
+        $group = Authorization::group(['admin','hr','dm']);
+        $manager = $event->leave->employee->location->manager;
+        $group->push($manager);
+        Mail::to($event->leave->employee)->cc($group)->send(new LeaveRejectedMail($event->leave));
     }
 }

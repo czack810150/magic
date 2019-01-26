@@ -16,36 +16,28 @@ use App\Events\LeaveRejected;
 
 class LeaveController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function index()
     {
-        $subheader = 'Leave Management';
+        $subheader = 'Time off requests';
         $leaves = Leave::where('employee_id',Auth::user()->authorization->employee_id)->get(); // own leaves
         if(Auth::user()->authorization->type == 'employee'){
             return view('leave.index',compact('subheader','leaves'));
         } else if(Auth::user()->authorization->type == 'manager') {
-            $employeeLeaves = Location::find(Auth::user()->authorization->employee->location_id)->first()->leave;
+            $employeeLeaves = Leave::where('location_id',Auth::user()->authorization->location_id)->where('employee_id','!=',Auth::user()->authorization->employee_id)->orderBy('from','desc')->paginate(15);
             return view('leave.index',compact('subheader','leaves','employeeLeaves'));
         } else if(in_array(Auth::user()->authorization->type,['hr','dm','accounting','gm','admin']))
         {
-            $employeeLeaves = Leave::where('employee_id','!=',Auth::user()->authorization->employee_id)->orderBy('from')->get(); // own leaves
+            $employeeLeaves = Leave::where('employee_id','!=',Auth::user()->authorization->employee_id)->orderBy('from','desc')->paginate(15);
             return view('leave.index',compact('subheader','leaves','employeeLeaves'));
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function create()
     {
-        $subheader = 'Leave Management';
-        $types = LeaveType::pluck('cName','id');
+        $subheader = 'Time off requests';
+        $types = LeaveType::pluck('name','id');
         if(Auth::user()->authorization->type == 'manager')
         {
             $employees = Employee::where('location_id',Auth::user()->authorization->employee->location_id)->activeAndVacationEmployees()->pluck('cName','id');
@@ -55,12 +47,6 @@ class LeaveController extends Controller
         }   
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $employee = Employee::find($request->employee);
@@ -77,49 +63,27 @@ class LeaveController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        $subheader = 'Leave Management';
+        $subheader = 'Time off requests';
         $leave = Leave::findOrFail($id);
         if($leave->employee_id != Auth::user()->authorization->employee_id){
             return 'No authorization';
@@ -130,7 +94,7 @@ class LeaveController extends Controller
     }
     public function approve($id)
     {
-        $subheader = 'Leave Management';
+        $subheader = 'Time off requests';
         $leave = Leave::findOrFail($id);
         if($leave->employee_id == Auth::user()->authorization->employee_id){
             return 'No authorization! You can not approve your own leave request.';
@@ -159,7 +123,7 @@ class LeaveController extends Controller
     }
     public function deny($id)
     {
-        $subheader = 'Leave Management';
+        $subheader = 'Time off requests';
         $leave = Leave::findOrFail($id);
         if($leave->employee_id == Auth::user()->authorization->employee_id){
             return 'No authorization! You can not reject your own leave request.';
@@ -173,7 +137,7 @@ class LeaveController extends Controller
     }
      public function pending($id)
     {
-        $subheader = 'Leave Management';
+        $subheader = 'Time off requests';
         $leave = Leave::findOrFail($id);
       
             $leave->status = 'pending';

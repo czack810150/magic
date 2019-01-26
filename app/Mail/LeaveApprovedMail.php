@@ -18,13 +18,8 @@ class LeaveApprovedMail extends Mailable
         $this->leave = $leave;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build()
     {
-        return $this->markdown('email.leave.approved');
+        return $this->subject('大槐树员工休假通知')->from('DoNotReply@mail.magicnoodleteam.com')->markdown('email.leave.approved');
     }
 }

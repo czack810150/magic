@@ -34,7 +34,7 @@
 
 					
 						<div class="form-group m-form__group">
-							<label>Leave Type</label>
+							<label>Policy</label>
 {{ Form::select('leaveType',$types,null,['class'=>'custom-select m-input']) }}
 							<span class="m-form__help">We'll never share your email with anyone else</span>
 						</div>			
@@ -46,15 +46,15 @@
 						
 						</div>			
 						<div class="m-form__group form-group">
-							<label for="">Comments</label>
-							<textarea class="form-control m-input" rows="3" name="comment"></textarea>
+							<label for="">Message</label>
+							<textarea class="form-control m-input" rows="3" name="comment" placeholder="Enter the reason you are requesting this time off"></textarea>
 		                </div>
 		            </div>
 
 	            </div>
 	            <div class="m-portlet__foot m-portlet__foot--fit">
 					<div class="m-form__actions m-form__actions">
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button type="submit" class="btn btn-primary">Send</button>
 						<button type="reset" class="btn btn-secondary">Cancel</button>
 					</div>
 				</div>

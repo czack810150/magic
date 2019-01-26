@@ -250,7 +250,7 @@
 									<span class="m-menu__link-title">
 										<span class="m-menu__link-wrap">
 											<span class="m-menu__link-text">
-												Leave
+												Time off
 											</span>
 											
 										</span>

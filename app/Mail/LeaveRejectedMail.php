@@ -25,6 +25,6 @@ class LeaveRejectedMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('email.leave.denied');
+        return $this->subject('员工休假拒否通知')->from('DoNotReply@mail.magicnoodleteam.com')->markdown('email.leave.denied');
     }
 }
