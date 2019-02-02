@@ -151,26 +151,61 @@ class PayrollController extends Controller
         $employee = Employee::findOrFail($request->employee);
         $payrolls = Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->get();
         $sum = array(
-            'regular' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('week1') + Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('week2'),
+            'regular' => $payrolls->sum('week1') + $payrolls->sum('week2'),
 
-            'overtime' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('ot1') +Payroll_log::where('employee_id',$request->employee)->sum('ot2'),
-            'regularPay' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('regularPay'),
-            'overtimePay' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('overtimePay'),
-            'premiumPay' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('premiumPay'),
-            'holidayPay' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('holidayPay'),
-            'grossIncome' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('grossIncome'),
-            'EI' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('EI'),
-            'CPP' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('CPP'),
-            'federalTax' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('federalTax'),
-            'provincialTax' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('provincialTax'),
-            'cheque' => Payroll_log::whereYear('startDate',$request->year)->where('employee_id',$request->employee)->sum('cheque'),
+            'overtime' => $payrolls->sum('ot1') + $payrolls->sum('ot2'),
+            'regularPay' => $payrolls->sum('regularPay'),
+            'overtimePay' => $payrolls->sum('overtimePay'),
+            'premiumPay' => $payrolls->sum('premiumPay'),
+            'holidayPay' => $payrolls->sum('holidayPay'),
+            'grossIncome' => $payrolls->sum('grossIncome'),
+            'EI' => $payrolls->sum('EI'),
+            'CPP' => $payrolls->sum('CPP'),
+            'federalTax' => $payrolls->sum('federalTax'),
+            'provincialTax' => $payrolls->sum('provincialTax'),
+            'cheque' => $payrolls->sum('cheque'),
+            'cash' => $payrolls->sum('cashPay')/100 +$payrolls->sum('variablePay'),
+            'net' => $payrolls->sum('totalPay'),
+            'cost' => $payrolls->sum('grossIncome') + $payrolls->sum('cashPay')/100 +$payrolls->sum('variablePay'),
         );
        // sdd($payrolls);
         return view('payroll/employee/year',compact('payrolls','employee','sum'));
     }
+    public function locationYear(Request $request)
+    {
+        $subheader = 'Payroll';
+        $location = Location::find($request->location);
+        $payrolls = Payroll_log::whereYear('startDate',$request->year)->where('location_id',$request->location)->get();
+        $sum = array(
+            'regular' => $payrolls->sum('week1') + $payrolls->sum('week2'),
+
+            'overtime' => $payrolls->sum('ot1') + $payrolls->sum('ot2'),
+            'regularPay' => $payrolls->sum('regularPay'),
+            'overtimePay' => $payrolls->sum('overtimePay'),
+            'premiumPay' => $payrolls->sum('premiumPay'),
+            'holidayPay' => $payrolls->sum('holidayPay'),
+            'grossIncome' => $payrolls->sum('grossIncome'),
+            'EI' => $payrolls->sum('EI'),
+            'CPP' => $payrolls->sum('CPP'),
+            'federalTax' => $payrolls->sum('federalTax'),
+            'provincialTax' => $payrolls->sum('provincialTax'),
+            'cheque' => $payrolls->sum('cheque'),
+            'cash' => $payrolls->sum('cashPay')/100 +$payrolls->sum('variablePay'),
+            'net' => $payrolls->sum('totalPay'),
+            'cost' => $payrolls->sum('grossIncome') + $payrolls->sum('cashPay')/100 +$payrolls->sum('variablePay'),
+        );
+       // sdd($payrolls);
+        return view('payroll/location/year',compact('location','sum','subheader'));
+    }
+     public function location(){
+        $subheader = 'Payroll';
+        
+        return view('payroll.location.index',compact('subheader'));
+    }
     public function employee(){
-         $locations = Location::Store()->pluck('name','id');
-        return view('payroll.employee.index')->withLocations($locations);
+        $subheader = 'Payroll';
+        
+        return view('payroll.employee.index',compact('subheader'));
     }
     public function compute(){
         $dates = Datetime::periods(YEAR);

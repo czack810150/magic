@@ -255,6 +255,7 @@
 											</a>
 										</li>
 										@endcan
+										@can('is-office')
 										<li class="m-menu__item " aria-haspopup="true" >
 											<a  href="/payroll/employee" class="m-menu__link ">
 												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
@@ -265,6 +266,17 @@
 												</span>
 											</a>
 										</li>
+										<li class="m-menu__item " aria-haspopup="true" >
+											<a  href="{{ route('payroll.location') }}" class="m-menu__link ">
+												<i class="m-menu__link-bullet m-menu__link-bullet--dot">
+													<span></span>
+												</i>
+												<span class="m-menu__link-text">
+													Location Year Summary
+												</span>
+											</a>
+										</li>
+										@endcan
 									</ul>
 								</div>
 							</li>

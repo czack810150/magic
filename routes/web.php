@@ -361,8 +361,10 @@ Route::prefix('payroll')->name('payroll.')->group(function(){
 	Route::get('compute','PayrollController@compute')->name('compute');
 	Route::post('compute','PayrollController@computePayroll');
 	Route::post('fetch','PayrollController@fetch');
-	Route::get('employee/{employee}/{year}','PayrollController@employeeYear');
+	Route::post('employee/year','PayrollController@employeeYear');
 	Route::get('employee','PayrollController@employee');
+	Route::post('location/year','PayrollController@locationYear');
+	Route::get('location','PayrollController@location')->name('location');
 	Route::get('/{id}/destroy','PayrollController@destroy');
 	Route::get('paystubs','PayrollController@paystubs');
 	Route::post('paystubs','PayrollController@paystubsData');

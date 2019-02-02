@@ -110,5 +110,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('view-review', function($user){
             return in_array($user->authorization->type,['admin','dm','manager','gm','accounting']);
         });
+        Gate::define('is-office',function($user){
+            return in_array($user->authorization->type,['admin','dm','gm','accounting']);
+        });
     }
 }
